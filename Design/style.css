@@ -1,0 +1,100 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@500&display=swap');
+
+*, *::before, *::after {
+  box-sizing: border-box;
+  
+}
+
+* {
+  margin: 0;
+}
+
+body{
+    background-color: rgb(223, 223, 223);
+}
+
+nav{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: white;
+    font-family: 'Roboto', sans-serif;
+    font-size: 18px;
+    padding: 2.5vh;
+    box-shadow: 15px black;
+}
+  
+nav a{
+    display: inline-block;
+    padding: 10px 15px;
+    text-align: center;
+    text-decoration: none;
+}
+
+nav img{
+    height: 40px;
+    width: 40px;
+}
+
+#presentacion:hover{
+    background-color: aliceblue;
+    border-radius: 5.5px;
+    color: black;
+}
+
+nav button{
+    font-family: 'Roboto', sans-serif;
+    font-size: 16px;
+    border-radius: 7px;
+    padding: 10px;
+    border: 0;
+    cursor: pointer;
+}
+
+#log-in{
+    color: black;
+    background-color: white;
+    border: 2.5px solid;
+}
+
+#log-in:hover{
+    color: white;
+    background-color: black;
+    border: 2.5px solid;
+}
+
+#log-out{
+    color: white;
+    background-color: black;
+    border: 2.5px solid white;
+}
+
+#log-out:hover{
+    background-color: white;
+    border: 2.5px solid black;
+    color: black;
+    cursor: pointer;
+}
+
+#log-in:active, #log-out:active{
+    background-color: #999;
+    transform: translateY(2px);
+}
+
+.start{
+    border-radius: 5px;
+    background-color: rgba(40, 1, 114, 0.068);
+}
+
+#title{
+    font-size: 24px;
+    color: black;
+}
+
+
+@media screen and (max-width: 600px) {
+    nav{
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+}
