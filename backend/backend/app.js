@@ -1,47 +1,29 @@
 const express = require("express");
-const { pokemon } = require("./utils");
+const {} = require("./utils");
+const { signIn } = require("./auth");
+const bodyParser = require("body-parser");
+
 const app = express();
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: false }));
+const PORT = 80;
 
-const PORT = 3000;
-
-/* Con este get traes la info de los pokemones en el 'cache' */
-app.get("/cache", async (req, res) => {
-  const result = await pokemon.getCache();
-  console.log(result)
-  if(result==null){
-    res.status(500).json({message: 'Algo sucedio'});
-  }else{
-    res.json(result);
+app.post("/login", async (req, res) => {
+  const loginData = await signIn(req.body);
+  if (loginData.success == false) {
+    res.status(500).json({ message: "Error al iniciar sessión" });
+  } else {
+    res.json(loginData);
   }
 });
 
-/* Mediante esta ruta se devolvera toda la informacion del pokemon */
-app.get("/pokemon/:id", async (req, res, ) => {
-  const { id } = req.params;
-  const response = await pokemon.get(id);
-  if(response==0){
-    res.status(500).json({message: 'Algo sucedio'});
-  }else{
-    res.json(response);
-  }
-});
-
-/* Mediante esta ruta se devolvera toda la informacion del pokemon */
-app.get("/habilidad/:id", async (req, res) => {
-  const { id } = req.params;
-  const response = await pokemon.getPokemAbility(id);
-  if(response==0){
-    res.status(500).json({message: 'Algo sucedio'});
-  }else{
-    res.json(response);
-  }
-});
-
-/* Esto es para evitar cross origin error, al usar un framework o contenedores en la misma maquina */
-app.use(function(req, res, next) {
+app.use(function (req, res, next) {
   req.setTimeout(120000);
   res.header("Access-Control-Allow-Origin", "*");
-  res.header('Access-Control-Allow-Methods', 'GET, OPTIONS, POST, PATCH, DELETE');
+  res.header(
+    "Access-Control-Allow-Methods",
+    "GET, OPTIONS, POST, PATCH, DELETE"
+  );
   return next();
 });
 
