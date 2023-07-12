@@ -9,10 +9,21 @@ module.exports = {
       email: email,
       password: password,
     });
-    if (error) {
-      console.log(error);
-      return { success: false, error: error };
-    }
+    if (error) return { success: false, error };
+
     return { success: true, data: data };
+  },
+  async signUp({ email, password }) {
+    const { data, error } = await supabase.auth.signUp({
+      email: email,
+      password: password,
+    });
+    if (error) return { success: false, error };
+    return { success: true, data: data };
+  },
+  async signOut() {
+    const { error } = await supabase.auth.signOut();
+    if (error) return { success: false, error };
+    return { success: true };
   },
 };
