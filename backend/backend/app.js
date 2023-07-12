@@ -1,11 +1,10 @@
 const express = require("express");
 const {} = require("./utils");
 const { signIn } = require("./auth");
-const bodyParser = require("body-parser");
 
 const app = express();
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: false }));
+app.use(express.json()); // for parsing application/json
+app.use(express.urlencoded({ extended: true }));
 const PORT = 80;
 
 app.post("/login", async (req, res) => {
