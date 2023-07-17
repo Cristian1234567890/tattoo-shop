@@ -11,7 +11,7 @@
 
 body{
     /*background-color: rgb(223, 223, 223);*/
-    background-image: url('/Img/1403.jpg');
+    background-image: url('/frontend/Img/1403.jpg');
     background-size:cover;
         -webkit-animation: slidein 100s;
         animation: slidein 100s;
