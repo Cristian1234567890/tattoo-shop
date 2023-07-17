@@ -35,9 +35,12 @@
     border-radius: 7px;
 }
 
-.session #radio{
-    margin-left: 10px;
-    margin-top: 10px;
+.session select{
+    width: 270px;
+    height: 55px;
+    padding: 15px;
+    border-radius: 7px;
+    border: 2px solid black;
 }
 
 .session .submit{
