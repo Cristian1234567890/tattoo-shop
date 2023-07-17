@@ -16,6 +16,7 @@ body {
   animation-iteration-count: infinite;
   animation-direction: alternate;
 }
+
 @keyframes slidein {
   from {
     background-position: top;
@@ -26,6 +27,7 @@ body {
     background-size: 1750px;
   }
 }
+
 nav {
   display: flex;
   justify-content: space-between;
@@ -112,6 +114,10 @@ nav button {
   font-style: italic;
 }
 
+footer{
+  padding-top: 310px;
+}
+
 #footer {
   display: flex;
   align-items: center;
@@ -119,7 +125,6 @@ nav button {
   justify-content: space-between;
   font-family: "Roboto", sans-serif;
   font-size: 12px;
-  bottom: 0;
   background-color: rgba(3, 3, 44, 0.96);
   color: white;
 }
@@ -167,6 +172,7 @@ nav button {
     z-index: 99;
   }
 }
+
 @media screen and (max-width: 400px) {
   nav {
     flex-wrap: wrap;
@@ -194,6 +200,7 @@ nav button {
     z-index: 99;
   }
 }
+
 /*Modos Oscuro y Claro*/
 .switch {
   font-size: 17px;

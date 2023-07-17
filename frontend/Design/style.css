@@ -113,6 +113,10 @@ nav button {
   font-style: italic;
 }
 
+footer {
+  padding-top: 310px;
+}
+
 #footer {
   display: flex;
   align-items: center;
@@ -120,7 +124,6 @@ nav button {
   justify-content: space-between;
   font-family: "Roboto", sans-serif;
   font-size: 12px;
-  bottom: 0;
   background-color: rgba(3, 3, 44, 0.96);
   color: white;
 }

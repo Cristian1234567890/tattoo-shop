@@ -5,7 +5,7 @@
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    margin: 7rem;
+    margin-top: 3rem;
     font-family: 'Roboto', sans-serif;
 }
 
@@ -22,6 +22,11 @@
     text-align: center;
     font-size: 40px;
     margin-bottom: 25px;
+}
+
+.session img{
+    width: e0px;
+    height: 30px;
 }
 
 .session p, .submit{
@@ -62,4 +67,12 @@
 
 .pages a{
     text-decoration: none;
+}
+
+.back{
+    display: flex;
+    justify-content: center;
+    align-content: center;
+    align-items: center;
+    padding: 15px;
 }
