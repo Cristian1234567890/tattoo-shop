@@ -16,7 +16,6 @@ body {
   animation-iteration-count: infinite;
   animation-direction: alternate;
 }
-
 @keyframes slidein {
   from {
     background-position: top;
@@ -296,4 +295,4 @@ nav button {
 
 .input:checked + .slider:before {
   transform: translateX(30px);
-}/*# sourceMappingURL=style.css.map */
+}
