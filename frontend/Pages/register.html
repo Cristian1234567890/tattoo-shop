@@ -31,22 +31,28 @@
         <div class="container">
             <div class="session">
                 <h1>Registarse</h1>
-                <form action="">
+                <form action="createUserForm" id="createUserForm">
                     <div class="log">
                         <p>Nombre</p>
-                        <input type="text" name="" id="name">
+                        <input type="text" name="" id="bar">
                         <p>Apellido</p>
-                        <input type="text" name="" id="name">
+                        <input type="text" name="" id="bar">
                         <p>Edad</p>
-                        <input type="date" name="" id="">
+                        <input type="date" name="" id="bar">
                         <p>Correo Electrónico</p>
-                        <input type="email" name="" id="" required>
+                        <input type="email" name="" id="bar" required>
                         <p>Contraseña</p>
-                        <input type="password" name="" id="" required>
+                        <input type="password" name="" id="bar" required>
                         <p>Confirmar Contraseña</p>
-                        <input type="password" name="" id="" required>
+                        <input type="password" name="" id="bar" required>
+                        <p>¿Qué eres?</p>
+                        <select name="" id="options">
+                            <option value="" selected disabled>Seleccione una opción</option>
+                            <option value="Cliente">Cliente 🤩</option>
+                            <option value="Tatuador">Tatuador 😎</option>
+                        </select>
                     </div>
-                    <button type="submit" class="submit">Registrar</button>
+                    <button type="submit" class="submit" onclick="mostrarMensaje()">Registrar</button>
                 </form>
             </div>
             <div class="pages">
@@ -55,6 +61,18 @@
             </div>
         </div>
     </div>
+    <div id="mensajeEmergente">
+        <p>Para está opción requieres de una suscripción.</p>
+        <p>Suscríbete por tan solo 1.99$/mes.</p>
+        <br>
+        <p>¿Deseas continuar?</p>
+        <a href="/frontend/Pages/Subscription/creditcard.html"><button onclick="continuar()">Continuar</button></a>
+        <button onclick="salir()">No</button>
+    </div>
+    <div class="back">
+        <a href="/frontend/index.html"><img src="/frontend/Img/Back To White.png" alt=""></a>
+    </div>
+    <script src="/frontend/JS/messages/tattoo.js"></script>
 </body>
 
 </html>

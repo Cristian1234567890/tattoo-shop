@@ -27,6 +27,7 @@ body {
     background-size: 1750px;
   }
 }
+
 nav {
   display: flex;
   justify-content: space-between;
@@ -113,7 +114,7 @@ nav button {
   font-style: italic;
 }
 
-footer {
+footer{
   padding-top: 310px;
 }
 
@@ -171,6 +172,7 @@ footer {
     z-index: 99;
   }
 }
+
 @media screen and (max-width: 400px) {
   nav {
     flex-wrap: wrap;
@@ -198,6 +200,7 @@ footer {
     z-index: 99;
   }
 }
+
 /*Modos Oscuro y Claro*/
 .switch {
   font-size: 17px;
@@ -299,4 +302,4 @@ footer {
 
 .input:checked + .slider:before {
   transform: translateX(30px);
-}/*# sourceMappingURL=style.css.map */
+}
