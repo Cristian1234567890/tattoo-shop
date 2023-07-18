@@ -1,4 +1,5 @@
 const express = require("express");
+const cors = require("cors");
 const {} = require("./utils");
 const { signIn, signUp, signOut } = require("./auth");
 
@@ -6,6 +7,8 @@ const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 const PORT = 80;
+
+app.use(cors());
 
 app.post("/login", async (req, res) => {
   const loginData = await signIn(req.body);
@@ -36,16 +39,6 @@ app.post("/logout", async (req, res) => {
   } else {
     res.json(logout);
   }
-});
-
-app.use((req, res, next) => {
-  req.setTimeout(120000);
-  res.header("Access-Control-Allow-Origin", "*");
-  res.header(
-    "Access-Control-Allow-Methods",
-    "GET, OPTIONS, POST, PATCH, DELETE"
-  );
-  return next();
 });
 
 app.listen(PORT, () => {
