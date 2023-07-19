@@ -1,0 +1,262 @@
+@import url("https://fonts.googleapis.com/css2?family=Roboto:wght@500&display=swap");
+/* Reset de estilos y estilos generales */
+body, ul {
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: "Roboto", sans-serif;
+  background-color: gray;
+}
+
+.container {
+  display: flex;
+  justify-content: center;
+}
+
+.start {
+  border-radius: 15px;
+  background-color: white;
+  margin-left: 70px;
+  margin-right: 70px;
+  margin-bottom: 50px;
+  width: 120px;
+  height: 105px;
+  box-shadow: 1px 5px 15px rgba(0, 0, 0, 0.5);
+}
+.start a {
+  display: inline-block;
+  padding: 10px 10px;
+  text-align: center;
+  text-decoration: none;
+  color: black;
+}
+.start img {
+  height: 40px;
+  width: 40px;
+}
+
+#title {
+  font-size: 20px;
+  color: black;
+  font-style: italic;
+}
+
+.column1 {
+  flex: 1;
+  padding-top: 20px;
+  padding-bottom: 20px;
+  padding-left: 10px;
+  margin-right: 20px;
+  background-color: black;
+  color: white;
+  box-shadow: 1px 5px 15px rgba(0, 0, 0, 0.5);
+}
+
+.column2 {
+  flex: 5;
+  text-align: center;
+  padding-top: 20px;
+  padding-bottom: 20px;
+  padding-left: 10px;
+  margin-left: 50px;
+  background-color: black;
+  color: white;
+  box-shadow: 1px 5px 15px rgba(0, 0, 0, 0.5);
+}
+
+.column2 .search {
+  display: flex;
+  justify-content: center;
+}
+.column2 .search input {
+  margin-left: 15px;
+  border-radius: 50px;
+  background-color: rgba(255, 255, 255, 0.9);
+  width: 400px;
+  padding-left: 25px;
+}
+
+/*
+.column3 {
+    flex: 1;
+    text-align: end;
+    padding-top: 20px;
+    padding-bottom: 20px;
+    padding-left: 10px;
+    margin-left: 20px;
+    background-color: black;
+    color: white;
+}*/
+.right {
+  position: relative;
+}
+
+.menu-toggle {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  background-color: black;
+  color: white;
+  border: none;
+  padding: 10px;
+  font-size: 18px;
+  z-index: 1;
+}
+
+.menu {
+  position: fixed;
+  top: 0;
+  right: 0;
+  width: 200px;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.7);
+  transform: translateX(100%);
+  transition: transform 0.3s ease-in-out;
+  z-index: 1;
+}
+
+.menu.open {
+  transform: translateX(0);
+}
+
+.menu ul {
+  list-style: none;
+  padding: 20px;
+}
+
+.menu li {
+  padding: 20px 0;
+}
+
+.menu a {
+  text-decoration: none;
+  color: white;
+  display: block;
+  padding-left: 60px;
+}
+
+.profile {
+  background-color: white;
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  overflow: hidden;
+  margin: 20px auto;
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
+}
+
+.profile img {
+  width: 100%;
+  height: 100%;
+  -o-object-fit: cover;
+     object-fit: cover;
+}
+
+/*Modos Oscuro y Claro*/
+.switch {
+  font-size: 17px;
+  position: relative;
+  display: inline-block;
+  width: 64px;
+  height: 34px;
+}
+
+.switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #73C0FC;
+  transition: 0.4s;
+  border-radius: 30px;
+}
+
+.slider:before {
+  position: absolute;
+  content: "";
+  height: 30px;
+  width: 30px;
+  border-radius: 20px;
+  left: 2px;
+  bottom: 2px;
+  z-index: 2;
+  background-color: #e8e8e8;
+  transition: 0.4s;
+}
+
+.sun svg {
+  position: absolute;
+  top: 6px;
+  left: 36px;
+  z-index: 1;
+  width: 24px;
+  height: 24px;
+}
+
+.moon svg {
+  fill: #73C0FC;
+  position: absolute;
+  top: 5px;
+  left: 5px;
+  z-index: 1;
+  width: 24px;
+  height: 24px;
+}
+
+/* .switch:hover */
+.sun svg {
+  animation: rotate 15s linear infinite;
+}
+
+@keyframes rotate {
+  0% {
+    transform: rotate(0);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+/* .switch:hover */
+.moon svg {
+  animation: tilt 5s linear infinite;
+}
+
+@keyframes tilt {
+  0% {
+    transform: rotate(0deg);
+  }
+  25% {
+    transform: rotate(-10deg);
+  }
+  75% {
+    transform: rotate(10deg);
+  }
+  100% {
+    transform: rotate(0deg);
+  }
+}
+.input:checked + .slider {
+  background-color: #183153;
+}
+
+.input:focus + .slider {
+  box-shadow: 0 0 1px #183153;
+}
+
+.input:checked + .slider:before {
+  transform: translateX(30px);
+}
+
+#btn-switch {
+  padding: 70px;
+}/*# sourceMappingURL=user.css.map */
