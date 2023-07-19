@@ -12,33 +12,17 @@ app.use(cors());
 
 app.post("/login", async (req, res) => {
   const loginData = await signIn(req.body);
-  if (loginData.success == false) {
-    res
-      .status(loginData.error.status)
-      .json({ message: loginData.error.message });
-  } else {
-    res.json(loginData);
-  }
+  res.json(loginData);
 });
 
 app.post("/register", async (req, res) => {
   const registerData = await signUp(req.body);
-  if (registerData.success == false) {
-    res
-      .status(registerData.error.status)
-      .json({ message: registerData.error.message });
-  } else {
-    res.json(registerData);
-  }
+  res.json(registerData);
 });
 
 app.post("/logout", async (req, res) => {
   const logout = await signOut();
-  if (logout.success == false) {
-    res.status(logout.error.status).json({ message: logout.error.message });
-  } else {
-    res.json(logout);
-  }
+  res.json(logout);
 });
 
 app.listen(PORT, () => {

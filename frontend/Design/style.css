@@ -1,5 +1,7 @@
 @import url("https://fonts.googleapis.com/css2?family=Roboto:wght@500&display=swap");
-*, *::before, *::after {
+*,
+*::before,
+*::after {
   box-sizing: border-box;
 }
 
@@ -9,7 +11,7 @@
 
 body {
   /*background-color: rgb(223, 223, 223);*/
-  background-image: url("/frontend/Img/1403.jpg");
+  background-image: url("../Img/1403.jpg");
   background-size: cover;
   animation: slidein 100s;
   animation-fill-mode: forwards;
@@ -93,7 +95,8 @@ nav button {
   cursor: pointer;
 }
 
-#log-in:active, #log-out:active {
+#log-in:active,
+#log-out:active {
   background-color: #999;
   transform: translateY(2px);
 }
@@ -220,7 +223,7 @@ footer {
   left: 0;
   right: 0;
   bottom: 0;
-  background-color: #73C0FC;
+  background-color: #73c0fc;
   transition: 0.4s;
   border-radius: 30px;
 }
@@ -248,7 +251,7 @@ footer {
 }
 
 .moon svg {
-  fill: #73C0FC;
+  fill: #73c0fc;
   position: absolute;
   top: 5px;
   left: 5px;
@@ -299,4 +302,4 @@ footer {
 
 .input:checked + .slider:before {
   transform: translateX(30px);
-}/*# sourceMappingURL=style.css.map */
+} /*# sourceMappingURL=style.css.map */
