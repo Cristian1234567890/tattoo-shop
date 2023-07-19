@@ -129,7 +129,7 @@ si success es FALSE
           });
           return data;
         } catch (error) {
-          return console.log(error);
+          console.log(error);
         }
       },
       saveSession(user) {

@@ -34,25 +34,25 @@
                 <form action="createUserForm" id="createUserForm">
                     <div class="log">
                         <p>Nombre</p>
-                        <input type="text" name="" id="bar">
+                        <input type="text" name="nombre" id="bar">
                         <p>Apellido</p>
-                        <input type="text" name="" id="bar">
+                        <input type="text" name="apellido" id="bar">
                         <p>Edad</p>
-                        <input type="date" name="" id="bar">
+                        <input type="date" name="edad" id="bar">
                         <p>Correo Electrónico</p>
-                        <input type="email" name="" id="bar" required>
+                        <input type="email" name="email" id="bar" required>
                         <p>Contraseña</p>
-                        <input type="password" name="" id="bar" required>
+                        <input type="password" name="password" id="bar" required>
                         <p>Confirmar Contraseña</p>
                         <input type="password" name="" id="bar" required>
                         <p>¿Qué eres?</p>
-                        <select name="" id="options">
+                        <select name="tipo" id="options">
                             <option value="" selected disabled>Seleccione una opción</option>
                             <option value="Cliente">Cliente 🤩</option>
                             <option value="Tatuador">Tatuador 😎</option>
                         </select>
                     </div>
-                    <button type="submit" class="submit" onclick="mostrarMensaje()">Registrar</button>
+                    <button type="submit" class="submit" id="btn-submit">Registrar</button>
                 </form>
             </div>
             <div class="pages">
@@ -66,13 +66,15 @@
         <p>Suscríbete por tan solo 1.99$/mes.</p>
         <br>
         <p>¿Deseas continuar?</p>
-        <a href="/frontend/Pages/Subscription/creditcard.html"><button onclick="continuar()">Continuar</button></a>
-        <button onclick="salir()">No</button>
+        <a href="./Subscription/creditcard.html"><button id="btn-continuar">Continuar</button></a>
+        <button id="btn-no-continuar">No</button>
     </div>
     <div class="back">
-        <a href="/frontend/index.html"><img src="/frontend/Img/Back To White.png" alt=""></a>
+        <a href="../index.html"><img src="../Img/Back To White.png" alt=""></a>
     </div>
-    <script src="/frontend/JS/messages/tattoo.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <!--<script src="../JS/messages/tattoo.js"></script>-->
+    <script src="../JS/register.js"></script>
 </body>
 
 </html>
