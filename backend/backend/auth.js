@@ -13,7 +13,7 @@ module.exports = {
 
     return { success: true, data: data };
   },
-  async signUp({ email, password, nombre, apellido, edad }) {
+  async signUp({ email, password, nombre, apellido, edad, tipo }) {
     const { data, error } = await supabase.auth.signUp({
       email: email,
       password: password,
@@ -22,6 +22,7 @@ module.exports = {
           nombre,
           apellido,
           edad,
+          tipo,
         },
       },
     });
