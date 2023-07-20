@@ -4,6 +4,7 @@
       userForm: document.getElementById("createUserForm"),
       btnContinuar: document.getElementById("btn-continuar"),
       btnNoContinuar: document.getElementById("btn-no-continuar"),
+      btnSalir: document.getElementById("btn-salir"),
     },
     init() {
       App.htmlElements.userForm.addEventListener(
@@ -17,6 +18,10 @@
       App.htmlElements.btnContinuar.addEventListener(
         "click",
         App.handlers.handleContinuar
+      );
+      App.htmlElements.btnSalir.addEventListener(
+        "click",
+        App.handlers.handleSalir
       );
     },
     handlers: {
@@ -39,8 +44,10 @@
           App.methods
             .register(email, password, nombre, apellido, edad, tipo)
             .then((rsp) => {
-              alert(JSON.stringify(rsp.success));
-              if (rsp.success) App.methods.saveSession(rsp.data);
+              if (rsp.success) {
+                App.methods.saveSession(rsp.data);
+                App.methods.enroll2FA();
+              }
             });
         }
       },
@@ -48,8 +55,13 @@
         event.preventDefault();
         App.methods.ocultarMensaje();
       },
+      handleSalir(event) {
+        event.preventDefault();
+        App.methods.ocultarQR();
+      },
       handleContinuar(event) {
         event.preventDefault();
+        App.methods.ocultarMensaje();
         const email = document.getElementsByName("email")[0].value;
         const password = document.getElementsByName("password")[0].value;
         const nombre = document.getElementsByName("nombre")[0].value;
@@ -59,8 +71,10 @@
         App.methods
           .register(email, password, nombre, apellido, edad, tipo)
           .then((rsp) => {
-            alert(JSON.stringify(rsp.success));
-            if (rsp.success) App.methods.saveSession(rsp.data);
+            if (rsp.success) {
+              App.methods.saveSession(rsp.data);
+              App.methods.enroll2FA();
+            }
           });
       },
     },
@@ -87,6 +101,36 @@
         const mensajeEmergente = document.getElementById("mensajeEmergente");
         if (mensajeEmergente) {
           mensajeEmergente.style.display = "none";
+        }
+      },
+      ocultarQR() {
+        const ventanaQR = document.getElementById("ventanaQR");
+        if (ventanaQR) {
+          ventanaQR.style.display = "none";
+        }
+        window.location.href = "/frontend/Pages/User Screen/user.html";
+      },
+      async enroll2FA() {
+        try {
+          const { session } = JSON.parse(sessionStorage.getItem("user"));
+          const { data } = await axios.post(
+            "http://localhost:80/enroll",
+            {},
+            {
+              headers: {
+                Authorization: `Bearer ${session.access_token}`,
+                refresh: session.refresh_token,
+              },
+            }
+          );
+          if (data.success) {
+            const img = document.getElementById("qr");
+            img.src = data.data.totp.qr_code;
+            const ventanaQR = document.getElementById("ventanaQR");
+            ventanaQR.style.display = "block";
+          } else console.log(data.error);
+        } catch (error) {
+          console.log(error);
         }
       },
     },
