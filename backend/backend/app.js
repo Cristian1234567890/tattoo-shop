@@ -1,7 +1,7 @@
 const express = require("express");
 const cors = require("cors");
 const {} = require("./utils");
-const { signIn, signUp, signOut } = require("./auth");
+const { signIn, signUp, signOut, enroll2FA, verify2FA } = require("./auth");
 
 const app = express();
 app.use(express.json());
@@ -23,6 +23,20 @@ app.post("/register", async (req, res) => {
 app.post("/logout", async (req, res) => {
   const logout = await signOut();
   res.json(logout);
+});
+
+app.post("/enroll", async (req, res) => {
+  const token = req.headers.authorization.split(" ")[1];
+  const refresh = req.headers.refresh_token;
+  const enroll = await enroll2FA(token, refresh);
+  res.json(enroll);
+});
+
+app.post("/verify2fa", async (req, res) => {
+  const token = req.headers.authorization.split(" ")[1];
+  const refresh = req.headers.refresh_token;
+  const verify = await verify2FA(req.body, token, refresh);
+  res.json(verify);
 });
 
 app.listen(PORT, () => {
