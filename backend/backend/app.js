@@ -2,6 +2,7 @@ const express = require("express");
 const cors = require("cors");
 const {} = require("./utils");
 const { signIn, signUp, signOut, enroll2FA, verify2FA } = require("./auth");
+const { subscription, createProduct } = require("./paypal");
 
 const app = express();
 app.use(express.json());
@@ -37,6 +38,16 @@ app.post("/verify2fa", async (req, res) => {
   const refresh = req.headers.refresh_token;
   const verify = await verify2FA(req.body, token, refresh);
   res.json(verify);
+});
+
+app.post("/createproduct", async (req, res) => {
+  const product = await createProduct(req, res);
+  res.json(product);
+});
+
+app.post("/subscribe", async (req, res) => {
+  const subscribe = await subscription(req.body);
+  res.json(subscribe);
 });
 
 app.listen(PORT, () => {
