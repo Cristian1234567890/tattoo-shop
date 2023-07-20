@@ -1,57 +1,99 @@
-@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@500&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Roboto:wght@500&display=swap");
 
-.log{
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    margin: 7rem;
-    font-family: 'Roboto', sans-serif;
+.log {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  margin: 7rem;
+  font-family: "Roboto", sans-serif;
 }
 
-.container{
-    background-color: white;
-    padding-left: 50px;
-    padding-right: 50px;
-    padding-top: 40px;
-    padding-bottom: 10px;
-    border-radius: 10px;
+.container {
+  background-color: white;
+  padding-left: 50px;
+  padding-right: 50px;
+  padding-top: 40px;
+  padding-bottom: 10px;
+  border-radius: 10px;
 }
 
-.session h1{
-    text-align: center;
-    font-size: 40px;
-    margin-bottom: 25px;
+.session h1 {
+  text-align: center;
+  font-size: 40px;
+  margin-bottom: 25px;
 }
 
-.session p, .submit{
-    margin-top: 20px;
+.session p,
+.submit {
+  margin-top: 20px;
 }
 
-.session input, .submit{
-    width: 270px;
-    height: 55px;
-    padding: 15px;
-    border-radius: 7px;
+.session input,
+.submit {
+  width: 270px;
+  height: 55px;
+  padding: 15px;
+  border-radius: 7px;
 }
 
-.session .submit{
-    font-family: 'Roboto', sans-serif;
-    font-size: 16px;
-    color: white;
-    background-color: black;
-    border: 2.5px solid white;
-    cursor: pointer;
+.session .submit {
+  font-family: "Roboto", sans-serif;
+  font-size: 16px;
+  color: white;
+  background-color: black;
+  border: 2.5px solid white;
+  cursor: pointer;
 }
 
-.pages{
-    display: flex;
-    flex-direction: column;
-    text-align: center;
-    padding: 5px;
-    margin: 15px;
+.pages {
+  display: flex;
+  flex-direction: column;
+  text-align: center;
+  padding: 5px;
+  margin: 15px;
 }
 
-.pages a{
-    text-decoration: none;
+.pages a {
+  text-decoration: none;
+}
+
+#mensajeEmergente {
+  display: none;
+  position: fixed;
+  font-family: "Roboto", sans-serif;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: white;
+  padding: 20px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+#mensajeEmergente button {
+  font-family: "Roboto", sans-serif;
+  font-size: 16px;
+  color: white;
+  padding: 5px;
+  margin: 5px;
+  width: 100px;
+  border-radius: 5px;
+  background-color: black;
+  cursor: pointer;
+}
+
+#mensajeEmergente button:hover {
+  background-color: white;
+  border: 2.5px solid black;
+  color: black;
+  cursor: pointer;
+}
+
+#mensajeEmergent input {
+  width: 270px;
+  height: 55px;
+  padding: 15px;
+  border-radius: 7px;
 }
