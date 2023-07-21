@@ -88,7 +88,8 @@
 }
 
 #mensajeEmergente,
-#ventanaQR {
+#ventanaQR,
+#paypal-button-container {
   display: none;
   position: fixed;
   font-family: "Roboto", sans-serif;
