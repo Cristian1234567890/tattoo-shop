@@ -72,7 +72,9 @@
           .register(email, password, nombre, apellido, edad, tipo)
           .then((rsp) => {
             if (rsp.success) {
+              // guarda session en sessionStorage
               App.methods.saveSession(rsp.data);
+              // registra metodo de auth multi factor
               App.methods.enroll2FA();
             }
           });
@@ -108,7 +110,19 @@
         if (ventanaQR) {
           ventanaQR.style.display = "none";
         }
-        window.location.href = "/frontend/Pages/User Screen/user.html";
+        const selectedOption = document.getElementById("options").value;
+
+        // Mostrar mensaje solo si la opción seleccionada es "opcion2"
+        if (selectedOption === "Tatuador") {
+          // pago con paypal
+          App.methods.createPaypalSubscription().then((created) => {
+            if (created) {
+              App.methods.renderPaypalButtons();
+            }
+          });
+        } else {
+          window.location.href = "/frontend/Pages/User Screen/user.html";
+        }
       },
       async enroll2FA() {
         try {
@@ -119,7 +133,7 @@
             {
               headers: {
                 Authorization: `Bearer ${session.access_token}`,
-                refresh: session.refresh_token,
+                refresh_token: session.refresh_token,
               },
             }
           );
@@ -132,6 +146,81 @@
         } catch (error) {
           console.log(error);
         }
+      },
+      async createPaypalSubscription() {
+        try {
+          const { session, user } = JSON.parse(sessionStorage.getItem("user"));
+
+          const { data: product_data } = await axios.post(
+            "http://localhost:80/createproduct"
+          );
+          const { data: subscription_data } = await axios.post(
+            "http://localhost:80/subscribe",
+            {
+              id: product_data.id,
+              name: product_data.name,
+              description: product_data.description,
+            }
+          );
+          const { data } = await axios.post(
+            "http://localhost:80/usersubscription",
+            {
+              id: user.id,
+              product_id: subscription_data.product_id,
+              subscription_id: subscription_data.id,
+            },
+            {
+              headers: {
+                Authorization: `Bearer ${session.access_token}`,
+                refresh_token: session.refresh_token,
+              },
+            }
+          );
+          if (data.success) return true;
+
+          console.log(data.error);
+          return false;
+        } catch (error) {
+          console.log(error);
+          return false;
+        }
+      },
+      renderPaypalButtons() {
+        const { session, user } = JSON.parse(sessionStorage.getItem("user"));
+
+        axios
+          .get(`http://localhost:80/usersubscription/${user.id}`, {
+            headers: {
+              Authorization: `Bearer ${session.access_token}`,
+              refresh_token: session.refresh_token,
+            },
+          })
+          .then(({ data: { data: usersubscription } }) => {
+            console.log(usersubscription);
+            const paypal_button_container = document.getElementById(
+              "paypal-button-container"
+            );
+            paypal_button_container.style.display = "block";
+            paypal
+              .Buttons({
+                createSubscription: function (data, actions) {
+                  return actions.subscription.create({
+                    plan_id: usersubscription[0].subscription_id, // Creates the subscription
+                  });
+                },
+                onApprove: function (data, actions) {
+                  alert(
+                    "You have successfully subscribed to " + data.subscriptionID
+                  ); // Optional message given to subscriber
+                  window.location.href =
+                    "/frontend/Pages/User Screen/user.html";
+                },
+              })
+              .render("#paypal-button-container"); // Renders the PayPal button
+          })
+          .catch((error) => {
+            console.log(error);
+          });
       },
     },
   };

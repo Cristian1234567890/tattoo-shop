@@ -3,6 +3,10 @@ const cors = require("cors");
 const {} = require("./utils");
 const { signIn, signUp, signOut, enroll2FA, verify2FA } = require("./auth");
 const { subscription, createProduct } = require("./paypal");
+const {
+  insertUserSubscription,
+  getUserSubscription,
+} = require("./user-subscription");
 
 const app = express();
 app.use(express.json());
@@ -48,6 +52,21 @@ app.post("/createproduct", async (req, res) => {
 app.post("/subscribe", async (req, res) => {
   const subscribe = await subscription(req.body);
   res.json(subscribe);
+});
+
+// user_subscription table
+app.get("/usersubscription/:id", async (req, res) => {
+  const { id } = req.params;
+  const token = req.headers.authorization.split(" ")[1];
+  const refresh = req.headers.refresh_token;
+  const data = await getUserSubscription(token, refresh, id);
+  res.json(data);
+});
+app.post("/usersubscription", async (req, res) => {
+  const token = req.headers.authorization.split(" ")[1];
+  const refresh = req.headers.refresh_token;
+  const data = await insertUserSubscription(token, refresh, req.body);
+  res.json(data);
 });
 
 app.listen(PORT, () => {
