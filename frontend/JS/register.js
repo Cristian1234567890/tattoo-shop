@@ -94,6 +94,7 @@
           return data;
         } catch (error) {
           console.log(error);
+          App.methods.showMessageError("Error al registrar usuario");
         }
       },
       saveSession(user) {
@@ -145,6 +146,7 @@
           } else console.log(data.error);
         } catch (error) {
           console.log(error);
+          App.methods.showMessageError("Error al registrar 2FA");
         }
       },
       async createPaypalSubscription() {
@@ -182,6 +184,7 @@
           return false;
         } catch (error) {
           console.log(error);
+          App.methods.showMessageError("Error al crear plan de subscripción");
           return false;
         }
       },
@@ -209,18 +212,39 @@
                   });
                 },
                 onApprove: function (data, actions) {
-                  alert(
-                    "You have successfully subscribed to " + data.subscriptionID
-                  ); // Optional message given to subscriber
-                  window.location.href =
-                    "/frontend/Pages/User Screen/user.html";
+                  paypal_button_container.style.display = "none";
+                  App.methods.showMessageSuccess(
+                    "Te haz subscrito correctamente al plan con ID: " +
+                      data.subscriptionID
+                  );
                 },
               })
               .render("#paypal-button-container"); // Renders the PayPal button
           })
           .catch((error) => {
             console.log(error);
+            App.methods.showMessageError(
+              "Error al consultar datos de la subscripcion"
+            );
           });
+      },
+      showMessageSuccess(message) {
+        Swal.fire({
+          title: message,
+          icon: "success",
+          confirmButtonText: "Ok",
+        }).then((result) => {
+          if (result.isConfirmed) {
+            window.location.href = "/frontend/Pages/User Screen/user.html";
+          }
+        });
+      },
+      showMessageError(message) {
+        Swal.fire({
+          title: message,
+          icon: "error",
+          confirmButtonText: "Ok",
+        });
       },
     },
   };
