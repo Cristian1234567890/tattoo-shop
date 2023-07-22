@@ -7,7 +7,24 @@ body, ul {
   
 body{
     font-family: "Roboto", sans-serif;
-    background-color: gray;
+    //background-color: gray;
+    background-image: url("/frontend/Img/1403.jpg");
+    background-size: cover;
+    animation: slidein 100s;
+    animation-fill-mode: forwards;
+    animation-iteration-count: infinite;
+    animation-direction: alternate;
+
+    @keyframes slidein {
+      from {
+        background-position: top;
+        background-size: 2000px;
+      }
+      to {
+        background-position: -100px 0px;
+        background-size: 1750px;
+      }
+    }
 }
 
 .container {
@@ -49,7 +66,6 @@ body{
     flex: 1;
     padding-top: 20px;
     padding-bottom: 20px;
-    padding-left: 10px;
     margin-right: 20px;
     background-color: black;
     color: white;
@@ -74,7 +90,6 @@ body{
     text-align: center;
     padding-top: 20px;
     padding-bottom: 20px;
-    padding-left: 10px;
     margin-left: 50px;
     background-color: black;
     color: white;
