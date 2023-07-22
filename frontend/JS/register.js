@@ -47,6 +47,8 @@
               if (rsp.success) {
                 App.methods.saveSession(rsp.data);
                 App.methods.enroll2FA();
+              } else {
+                App.methods.showMessageError(rsp.error.message);
               }
             });
         }
@@ -76,6 +78,8 @@
               App.methods.saveSession(rsp.data);
               // registra metodo de auth multi factor
               App.methods.enroll2FA();
+            } else {
+              App.methods.showMessageError(rsp.error.message);
             }
           });
       },
