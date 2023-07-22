@@ -25,6 +25,8 @@
             const mensajeEmergente =
               document.getElementById("mensajeEmergente");
             mensajeEmergente.style.display = "block";
+          } else {
+            App.methods.showMessageError(rsp.error.message);
           }
         });
       },
