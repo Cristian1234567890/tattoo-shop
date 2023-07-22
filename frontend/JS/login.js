@@ -43,6 +43,9 @@
           return data;
         } catch (error) {
           console.log(error);
+          App.methods.showMessageError(
+            "Error al iniciar sesión con credenciales"
+          );
         }
       },
       saveSession(user) {
@@ -72,14 +75,33 @@
           );
           if (data.success) {
             App.methods.saveSession(data.data);
-            window.location.href = "/frontend/Pages/User Screen/user.html";
+            App.methods.showMessageSuccess("Sesión establecida correctamente!");
           } else {
             console.log(data.error);
             App.methods.ocultarMensaje();
           }
         } catch (error) {
           console.log(error);
+          App.methods.showMessageError("Error al verificar 2FA");
         }
+      },
+      showMessageSuccess(message) {
+        Swal.fire({
+          title: message,
+          icon: "success",
+          confirmButtonText: "Ok",
+        }).then((result) => {
+          if (result.isConfirmed) {
+            window.location.href = "/frontend/Pages/User Screen/user.html";
+          }
+        });
+      },
+      showMessageError(message) {
+        Swal.fire({
+          title: message,
+          icon: "error",
+          confirmButtonText: "Ok",
+        });
       },
     },
   };
