@@ -29,7 +29,7 @@ module.exports = {
           '{"consumer":{"accountNumber":1181198218909172527,"merchantId":"5KW8F2FXKX5HA"},"merchant":{"accountNumber":1659371090107732880,"merchantId":"2J6QB8YJQSJRJ"},"apiCaller":{"clientId":"AdtlNBDhgmQWi2xk6edqJVKklPFyDWxtyKuXuyVT-OgdnnKpAVsbKHgvqHHP","appId":"APP-6DV794347V142302B","payerId":"2J6QB8YJQSJRJ","accountNumber":"1659371090107732880"},"scopes":["https://api-m.paypal.com/v1/subscription/.*","https://uri.paypal.com/services/subscription","openid"]}',
         "Content-Type": "application/json",
         Accept: "application/json",
-        "PayPal-Request-Id": "PRODUCT-18062019-001",
+        "PayPal-Request-Id": Date.now(),
         Prefer: "return=representation",
         Authorization: `Bearer ${accessToken}`,
       },
@@ -54,7 +54,7 @@ module.exports = {
           '{"consumer":{"accountNumber":1181198218909172527,"merchantId":"5KW8F2FXKX5HA"},"merchant":{"accountNumber":1659371090107732880,"merchantId":"2J6QB8YJQSJRJ"},"apiCaller":{"clientId":"AdtlNBDhgmQWi2xk6edqJVKklPFyDWxtyKuXuyVT-OgdnnKpAVsbKHgvqHHP","appId":"APP-6DV794347V142302B","payerId":"2J6QB8YJQSJRJ","accountNumber":"1659371090107732880"},"scopes":["https://api-m.paypal.com/v1/subscription/.*","https://uri.paypal.com/services/subscription","openid"]}',
         "Content-Type": "application/json",
         Accept: "application/json",
-        "PayPal-Request-Id": "PLAN-18062019-001",
+        "PayPal-Request-Id": product.id + Date.now(),
         Prefer: "return=representation",
         Authorization: `Bearer ${accessToken}`,
       },
@@ -66,39 +66,21 @@ module.exports = {
         billing_cycles: [
           {
             frequency: { interval_unit: "MONTH", interval_count: 1 },
-            tenure_type: "TRIAL",
-            sequence: 1,
-            total_cycles: 2,
-            pricing_scheme: {
-              fixed_price: { value: "3", currency_code: "USD" },
-            },
-          },
-          {
-            frequency: { interval_unit: "MONTH", interval_count: 1 },
-            tenure_type: "TRIAL",
-            sequence: 2,
-            total_cycles: 3,
-            pricing_scheme: {
-              fixed_price: { value: "6", currency_code: "USD" },
-            },
-          },
-          {
-            frequency: { interval_unit: "MONTH", interval_count: 1 },
             tenure_type: "REGULAR",
-            sequence: 3,
+            sequence: 1,
             total_cycles: 12,
             pricing_scheme: {
-              fixed_price: { value: "10", currency_code: "USD" },
+              fixed_price: { value: "1.99", currency_code: "USD" },
             },
           },
         ],
         payment_preferences: {
           auto_bill_outstanding: true,
-          setup_fee: { value: "10", currency_code: "USD" },
+          setup_fee: { value: "0", currency_code: "USD" },
           setup_fee_failure_action: "CONTINUE",
           payment_failure_threshold: 3,
         },
-        taxes: { percentage: "10", inclusive: false },
+        taxes: { percentage: "0", inclusive: false },
       }),
     });
     const data = await response.json();
