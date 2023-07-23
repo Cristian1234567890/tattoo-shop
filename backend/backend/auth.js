@@ -24,7 +24,7 @@ module.exports = {
     direccion = "",
   }) {
     const default_profile_url =
-      "https://unsftvudwxwbzwekokgr.supabase.co/storage/v1/object/sign/user_profile/tatto-default-profile.png?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1cmwiOiJ1c2VyX3Byb2ZpbGUvdGF0dG8tZGVmYXVsdC1wcm9maWxlLnBuZyIsImlhdCI6MTY5MDEyODIzNCwiZXhwIjoxNzIxNjY0MjM0fQ.wh7jLsaNgGYy99Qv2EMUIIIZDyq8eKav1qXiTROVUI8&t=2023-07-23T16%3A03%3A54.320Z";
+      "https://unsftvudwxwbzwekokgr.supabase.co/storage/v1/object/sign/user_profile/tatto-default-profile.png?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1cmwiOiJ1c2VyX3Byb2ZpbGUvdGF0dG8tZGVmYXVsdC1wcm9maWxlLnBuZyIsImlhdCI6MTY5MDE0OTk1OCwiZXhwIjoxNzIxNjg1OTU4fQ.v05WhR1PAzpz4O41-8Hv5igqunqolAhkwXpc2t2F6F8&t=2023-07-23T22%3A05%3A58.105Z";
     const { data, error } = await supabase.auth.signUp({
       email: email,
       password: password,
