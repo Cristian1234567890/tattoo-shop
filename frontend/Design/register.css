@@ -87,6 +87,10 @@
   padding: 15px;
 }
 
+select{
+  font-family: "Roboto", sans-serif;
+}
+
 #mensajeEmergente,
 #ventanaQR,
 #paypal-button-container {
