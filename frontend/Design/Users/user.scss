@@ -30,6 +30,13 @@ body{
 .container {
     display: flex;
     justify-content: center;
+
+    hr{
+      height: 3px;
+      background-color: white;
+      border-radius: 5px;
+      width: 85%;
+    }
 }
 
 .start {
@@ -65,7 +72,7 @@ body{
 .column1 {
     flex: 1;
     padding-top: 20px;
-    padding-bottom: 20px;
+    //padding-bottom: 20px;
     margin-right: 20px;
     background-color: black;
     color: white;
@@ -86,11 +93,11 @@ body{
 }
 
 .column2 {
-    flex: 17;
+    flex: 10;
     text-align: center;
     padding-top: 20px;
-    padding-bottom: 20px;
-    margin-left: 50px;
+    //padding-bottom: 20px;
+    //margin-left: 50px;
     background-color: black;
     color: white;
     box-shadow: 1px 5px 15px rgba(0, 0, 0, 0.5);
@@ -101,10 +108,11 @@ body{
     justify-content: center;
 
     input{
+        font-family: "Roboto", sans-serif;
+        font-size: 16px;
         margin-left: 15px;
         border-radius: 50px;
         background-color: white;
-        background-image: url('searchicon.png');
         background-position: 10px 10px; 
         background-repeat: no-repeat;
         width: 400px;
@@ -147,10 +155,17 @@ body{
     right: 0;
     width: 200px;
     height: 100vh;
-    background-color: rgba(48, 48, 48, 0.7);
+    border-radius: 5px 0px 0px 5px;
+    box-shadow: 1px 5px 15px rgba(255, 255, 255, 0.5);
+    background-color: rgb(255, 255, 255);
     transform: translateX(100%);
     transition: transform 0.3s ease-in-out;
     z-index: 1;
+
+    hr{
+      height: 5px;
+      background-color: black;
+    }
 }
   
 .menu.open {
@@ -163,26 +178,25 @@ body{
 }
   
 .menu li {
-    padding: 20px 0;
+    padding: 10px 0;
 }
   
 .menu .list {
     text-decoration: none;
-    color: white;
+    color: rgb(0, 0, 0);
     display: block;
     padding-left: 60px;
     margin-bottom: 400px;
 }
 
 .menu p{
-  color: white;
-  padding-top: 450px;
-  padding-left: 55px;
+  color: rgb(0, 0, 0);
+  padding-left: 45px;
 }
 
 .menu .logOut{
   text-decoration: none;
-  color: white;
+  color: rgb(0, 0, 0);
   display: block;
   padding-left: 60px;
   margin-bottom: 20px;
@@ -202,6 +216,10 @@ body{
     width: 100%;
     height: 100%;
     object-fit: cover;
+}
+
+.username{
+  color: white;
 }
 
 /*Modos Oscuro y Claro*/
