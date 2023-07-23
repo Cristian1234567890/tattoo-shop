@@ -37,6 +37,7 @@
         const provincia = document.getElementById("province");
         const ciudad = document.getElementById("city");
         const direccion = document.getElementById("direction");
+        const profile = document.getElementById("profile-img");
         // setting the data from session
         const {
           user: { user_metadata },
@@ -49,6 +50,7 @@
         provincia.value = user_metadata.provincia;
         ciudad.value = user_metadata.ciudad;
         direccion.value = user_metadata.direccion;
+        profile.setAttribute("src", user_metadata.profile);
       },
       handleSubmit(event) {
         event.preventDefault();
