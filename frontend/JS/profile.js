@@ -54,7 +54,8 @@
       },
       handleSubmit(event) {
         event.preventDefault();
-        const dataUpdate = {
+
+        let dataUpdate = {
           nombre: document.getElementById("name").value,
           apellido: document.getElementById("last-name").value,
           edad: document.getElementById("date").value,
@@ -63,6 +64,7 @@
           ciudad: document.getElementById("city").value,
           direccion: document.getElementById("direction").value,
         };
+
         App.methods.updateData(dataUpdate);
       },
     },
@@ -79,9 +81,10 @@
             },
           }
         );
-        if (data.success)
+        if (data.success) {
           App.methods.showMessageSuccess("Perfil actualizado correctamente!");
-        else App.methods.showMessageError("Error al actualizar el perfil");
+          App.methods.updateImg();
+        } else App.methods.showMessageError("Error al actualizar el perfil");
       },
       showMessageSuccess(message) {
         Swal.fire({
@@ -95,6 +98,48 @@
           title: message,
           icon: "error",
           confirmButtonText: "Ok",
+        });
+      },
+      async updateImg() {
+        const {
+          access_token,
+          refresh_token,
+          user: { user_metadata },
+        } = JSON.parse(sessionStorage.getItem("user"));
+
+        const imageInput = document.getElementById("selected-image");
+        if (imageInput.src !== user_metadata.profile) {
+          const base64Data = await App.methods.getBase64FromSrc();
+
+          await axios.post(
+            "http://localhost:80/updateuserimg",
+            { imageData: base64Data },
+            {
+              headers: {
+                Authorization: `Bearer ${access_token}`,
+                refresh_token: refresh_token,
+              },
+            }
+          );
+        }
+      },
+      getBase64FromSrc() {
+        const imageElement = document.getElementById("selected-image");
+        const imageSrc = imageElement.src;
+
+        return new Promise((resolve, reject) => {
+          const xhr = new XMLHttpRequest();
+          xhr.onload = function () {
+            const reader = new FileReader();
+            reader.onloadend = function () {
+              const base64Data = reader.result.split(",")[1];
+              resolve(base64Data);
+            };
+            reader.readAsDataURL(xhr.response); // Directly pass xhr.response to readAsDataURL
+          };
+          xhr.open("GET", imageSrc);
+          xhr.responseType = "blob";
+          xhr.send();
         });
       },
     },

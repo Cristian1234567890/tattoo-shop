@@ -1,4 +1,5 @@
 const { supabase } = require("./utils");
+const { decode } = require("base64-arraybuffer");
 
 module.exports = {
   async signIn({ email, password }) {
@@ -107,5 +108,41 @@ module.exports = {
     });
     if (error) return { success: false, error };
     return { success: true, data };
+  },
+  async updateUserImg({ imageData }, token, refresh) {
+    const session = await supabase.auth.setSession({
+      access_token: token,
+      refresh_token: refresh,
+    });
+
+    const { data, error } = await supabase.storage
+      .from("user_profile")
+      .upload(`${session.data.user.id}/profile.png`, decode(imageData), {
+        contentType: "image/png",
+      });
+    if (error) {
+      if (error.error === "Duplicate") {
+        const { data: data_update, error: error_update } =
+          await supabase.storage
+            .from("user_profile")
+            .update(`${session.data.user.id}/profile.png`, decode(imageData), {
+              contentType: "image/png",
+            });
+        if (error_update) console.log(error_update);
+      }
+    }
+
+    const { data: data_url, error: error_url } = await supabase.storage
+      .from("user_profile")
+      .createSignedUrl(`${session.data.user.id}/profile.png`, 3.154e7);
+
+    const { data: img_updated, error: error_updated } =
+      await supabase.auth.updateUser({
+        data: {
+          profile: data_url.signedUrl,
+        },
+      });
+    if (error_updated) return { success: false, error };
+    return { success: true };
   },
 };
