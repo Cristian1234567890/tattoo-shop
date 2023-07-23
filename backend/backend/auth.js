@@ -10,7 +10,18 @@ module.exports = {
 
     return { success: true, data: data };
   },
-  async signUp({ email, password, nombre, apellido, edad, tipo }) {
+  async signUp({
+    email,
+    password,
+    nombre,
+    apellido,
+    edad,
+    tipo,
+    telefono = "",
+    provincia = "",
+    ciudad = "",
+    direccion = "",
+  }) {
     const { data, error } = await supabase.auth.signUp({
       email: email,
       password: password,
@@ -20,6 +31,10 @@ module.exports = {
           apellido,
           edad,
           tipo,
+          telefono,
+          provincia,
+          ciudad,
+          direccion,
         },
       },
     });
@@ -51,6 +66,41 @@ module.exports = {
     const { data, error } = await supabase.auth.mfa.challengeAndVerify({
       factorId,
       code,
+    });
+    if (error) return { success: false, error };
+    return { success: true, data };
+  },
+  async updateUser(
+    {
+      nombre,
+      apellido,
+      edad,
+      tipo,
+      telefono = "",
+      provincia = "",
+      ciudad = "",
+      direccion = "",
+      profile_photo = null,
+    },
+    token,
+    refresh
+  ) {
+    await supabase.auth.setSession({
+      access_token: token,
+      refresh_token: refresh,
+    });
+
+    const { data, error } = await supabase.auth.updateUser({
+      data: {
+        nombre,
+        apellido,
+        edad,
+        tipo,
+        telefono,
+        provincia,
+        ciudad,
+        direccion,
+      },
     });
     if (error) return { success: false, error };
     return { success: true, data };

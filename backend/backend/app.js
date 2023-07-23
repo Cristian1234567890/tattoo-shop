@@ -1,7 +1,14 @@
 const express = require("express");
 const cors = require("cors");
 const {} = require("./utils");
-const { signIn, signUp, signOut, enroll2FA, verify2FA } = require("./auth");
+const {
+  signIn,
+  signUp,
+  signOut,
+  enroll2FA,
+  verify2FA,
+  updateUser,
+} = require("./auth");
 const { subscription, createProduct } = require("./paypal");
 const {
   insertUserSubscription,
@@ -23,6 +30,13 @@ app.post("/login", async (req, res) => {
 app.post("/register", async (req, res) => {
   const registerData = await signUp(req.body);
   res.json(registerData);
+});
+
+app.post("/updateuser", async (req, res) => {
+  const token = req.headers.authorization.split(" ")[1];
+  const refresh = req.headers.refresh_token;
+  const data = await updateUser(req.body, token, refresh);
+  res.json(data);
 });
 
 app.post("/logout", async (req, res) => {
