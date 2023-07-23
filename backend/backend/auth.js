@@ -43,6 +43,26 @@ module.exports = {
       },
     });
 
+    if (tipo === "Tatuador") {
+      const data_to_insert = {
+        nombre,
+        apellido,
+        work_type: "",
+        telefono,
+        provincia,
+        ciudad,
+        direccion,
+        facebook: "",
+        twitter: "",
+        instagram: "",
+        link: "",
+        profile: default_profile_url,
+      };
+      const { error: error_insert } = await supabase
+        .from("tatuadores_data")
+        .insert({ id: data.user.id, data: data_to_insert });
+      if (error) return { success: false, error_insert };
+    }
     if (error) return { success: false, error };
     return { success: true, data: data };
   },
@@ -74,38 +94,24 @@ module.exports = {
     if (error) return { success: false, error };
     return { success: true, data };
   },
-  async updateUser(
-    {
-      nombre,
-      apellido,
-      edad,
-      tipo,
-      telefono = "",
-      provincia = "",
-      ciudad = "",
-      direccion = "",
-      profile_photo = null,
-    },
-    token,
-    refresh
-  ) {
-    await supabase.auth.setSession({
+  async updateUser(user_data, token, refresh) {
+    const session = await supabase.auth.setSession({
       access_token: token,
       refresh_token: refresh,
     });
 
     const { data, error } = await supabase.auth.updateUser({
-      data: {
-        nombre,
-        apellido,
-        edad,
-        tipo,
-        telefono,
-        provincia,
-        ciudad,
-        direccion,
-      },
+      data: user_data,
     });
+
+    if (session.data.user.user_metadata.tipo === "Tatuador") {
+      const { error: error_update } = await supabase
+        .from("tatuadores_data")
+        .update({ data: user_data })
+        .eq("id", session.data.user.id);
+      if (error) return { success: false, error_update };
+    }
+
     if (error) return { success: false, error };
     return { success: true, data };
   },
