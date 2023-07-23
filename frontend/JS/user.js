@@ -21,10 +21,27 @@
         "click",
         App.handler.handleLogout
       );
+      document.addEventListener("DOMContentLoaded", App.handler.handleSetData);
     },
     handler: {
       handleLogout() {
         App.methods.logout();
+      },
+      handleSetData(event) {
+        event.preventDefault();
+        const nombre = document.getElementById("name");
+        const address = document.getElementById("address");
+        const profile = document.getElementById("profile-img");
+        // setting the data from session
+        const {
+          user: { user_metadata },
+        } = JSON.parse(sessionStorage.getItem("user"));
+        nombre.textContent = `${user_metadata.nombre} ${user_metadata.apellido}`;
+
+        address.textContent = `${
+          user_metadata.provincia ? user_metadata.provincia : "Panamá"
+        }, ${user_metadata.ciudad ? user_metadata.ciudad : "Panamá"}`;
+        profile.setAttribute("src", user_metadata.profile);
       },
     },
     methods: {

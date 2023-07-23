@@ -7,12 +7,37 @@ body, ul {
   
 body{
     font-family: "Roboto", sans-serif;
-    background-color: gray;
+    //background-color: gray;
+    background-image: url("/frontend/Img/1403.jpg");
+    background-size: cover;
+    animation: slidein 100s;
+    animation-fill-mode: forwards;
+    animation-iteration-count: infinite;
+    animation-direction: alternate;
+    overflow-y: hidden;
+
+    @keyframes slidein {
+      from {
+        background-position: top;
+        background-size: 2000px;
+      }
+      to {
+        background-position: -100px 0px;
+        background-size: 1750px;
+      }
+    }
 }
 
 .container {
     display: flex;
     justify-content: center;
+
+    hr{
+      height: 3px;
+      background-color: white;
+      border-radius: 5px;
+      width: 85%;
+    }
 }
 
 .start {
@@ -48,8 +73,7 @@ body{
 .column1 {
     flex: 1;
     padding-top: 20px;
-    padding-bottom: 20px;
-    padding-left: 10px;
+    //padding-bottom: 20px;
     margin-right: 20px;
     background-color: black;
     color: white;
@@ -61,22 +85,28 @@ body{
     }
 
     input{
-      margin: 20px;
+      margin-left: 20px;
+      margin-bottom: 10px;
     }
 
     label {
       cursor: pointer;
     }
+
+    h4{
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+    }
 }
 
 .column2 {
-    flex: 17;
+    flex: 10;
     text-align: center;
     padding-top: 20px;
-    padding-bottom: 20px;
-    padding-left: 10px;
-    margin-left: 50px;
-    background-color: black;
+    //padding-bottom: 20px;
+    //margin-left: 50px;
+    background-color: rgba(0, 0, 0, 0.8);
     color: white;
     box-shadow: 1px 5px 15px rgba(0, 0, 0, 0.5);
 }
@@ -86,10 +116,11 @@ body{
     justify-content: center;
 
     input{
+        font-family: "Roboto", sans-serif;
+        font-size: 16px;
         margin-left: 15px;
         border-radius: 50px;
         background-color: white;
-        background-image: url('searchicon.png');
         background-position: 10px 10px; 
         background-repeat: no-repeat;
         width: 400px;
@@ -124,6 +155,7 @@ body{
     padding: 10px;
     font-size: 18px;
     z-index: 1;
+    cursor: pointer;
 }
   
 .menu {
@@ -132,10 +164,17 @@ body{
     right: 0;
     width: 200px;
     height: 100vh;
-    background-color: rgba(48, 48, 48, 0.7);
+    border-radius: 5px 0px 0px 5px;
+    box-shadow: 1px 5px 15px rgba(255, 255, 255, 0.5);
+    background-color: rgb(255, 255, 255);
     transform: translateX(100%);
     transition: transform 0.3s ease-in-out;
     z-index: 1;
+
+    hr{
+      height: 5px;
+      background-color: black;
+    }
 }
   
 .menu.open {
@@ -148,26 +187,25 @@ body{
 }
   
 .menu li {
-    padding: 20px 0;
+    padding: 10px 0;
 }
   
 .menu .list {
     text-decoration: none;
-    color: white;
+    color: rgb(0, 0, 0);
     display: block;
     padding-left: 60px;
     margin-bottom: 400px;
 }
 
 .menu p{
-  color: white;
-  padding-top: 450px;
-  padding-left: 55px;
+  color: rgb(0, 0, 0);
+  padding-left: 45px;
 }
 
 .menu .logOut{
   text-decoration: none;
-  color: white;
+  color: rgb(0, 0, 0);
   display: block;
   padding-left: 60px;
   margin-bottom: 20px;
@@ -181,12 +219,15 @@ body{
     overflow: hidden;
     margin: 25px auto;
     box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
+  
+    img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+  }
 }
-
-.profile img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
+.username{
+  color: white;
 }
 
 /*Modos Oscuro y Claro*/

@@ -1,7 +1,15 @@
 const express = require("express");
 const cors = require("cors");
 const {} = require("./utils");
-const { signIn, signUp, signOut, enroll2FA, verify2FA } = require("./auth");
+const {
+  signIn,
+  signUp,
+  signOut,
+  enroll2FA,
+  verify2FA,
+  updateUser,
+  updateUserImg,
+} = require("./auth");
 const { subscription, createProduct } = require("./paypal");
 const {
   insertUserSubscription,
@@ -9,8 +17,8 @@ const {
 } = require("./user-subscription");
 
 const app = express();
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
+app.use(express.json({ limit: "50mb" }));
+app.use(express.urlencoded({ limit: "50mb", extended: true }));
 const PORT = 80;
 
 app.use(cors());
@@ -23,6 +31,20 @@ app.post("/login", async (req, res) => {
 app.post("/register", async (req, res) => {
   const registerData = await signUp(req.body);
   res.json(registerData);
+});
+
+app.post("/updateuser", async (req, res) => {
+  const token = req.headers.authorization.split(" ")[1];
+  const refresh = req.headers.refresh_token;
+  const data = await updateUser(req.body, token, refresh);
+  res.json(data);
+});
+
+app.post("/updateuserimg", async (req, res) => {
+  const token = req.headers.authorization.split(" ")[1];
+  const refresh = req.headers.refresh_token;
+  const data = await updateUserImg(req.body, token, refresh);
+  res.json(data);
 });
 
 app.post("/logout", async (req, res) => {

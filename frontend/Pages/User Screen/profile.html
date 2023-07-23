@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/frontend/Design/Users/profile.css">
+    <title>TooTienda🚬</title>
+</head>
+
+<body>
+    <div class="container">
+        <div class="column1">
+            <div class="return">
+                <a href="/frontend/Pages/User Screen/user.html"><img src="/frontend/Img/Back To White.png" alt=""></a>
+            </div>
+            <hr>
+            <div class="list">
+                <ul>
+                    <li>Perfil</li>
+                </ul>
+            </div>
+        </div>
+        <div class="column2">
+            <h1>Perfil</h1>
+            <hr>
+            <div class="form-act">
+                <form action="" id="profileForm">
+                    <h3>Foto de Perfil</h3>
+                    <div class="profile">
+                        <img src="" alt="Perfil" id="profile-img">
+                    </div>
+                    <div class="upload">
+                        <!-- <button>Subir foto</button> -->
+                        <input type="file" accept="image/*" id="file-input">
+                        <div id="image-container">
+                            <img id="selected-image" src="" alt="Imagen seleccionada">
+                        </div>
+                    </div>
+                    <hr>
+                    <div class="data">
+                        <h3>Personal</h3>
+                        <input type="text" name="" id="name" placeholder="Nombre">
+                        <input type="text" name="" id="last-name" placeholder="Apellido">
+                        <input type="number" name="" id="phone" placeholder="Telefóno">
+                        <br>
+                        <hr>
+                        <h3>Edad</h3>
+                        <label for="date">Edad: </label><input type="date" name="date" id="date" disabled>
+                        <br>
+                        <hr>
+                        <h3>Dirección</h3>
+                        <select name="" id="province">
+                            <option value="" selected disabled>Seleccione una Provincia</option>
+                            <option value="Panamá">Panamá</option>
+                            <option value="Bocas del Toro">Bocas del Toro</option>
+                            <option value="Colón">Colón</option>
+                            <option value="Chiriquí">Chiriquí</option>
+                            <option value="Darién">Darién</option>
+                            <option value="Herrera">Herrera</option>
+                            <option value="Los Santos">Los Santos</option>
+                            <option value="Panamá Oeste">Panamá Oeste</option>
+                            <option value="Veraguas">Veraguas</option>
+                            <option value="Emberá-Wounaan">Emberá-Wounaan</option>
+                            <option value="Guna Yala">Guna Yala</option>
+                            <option value="Ngöbe-Buglé">Ngöbe-Buglé</option>
+                        </select>
+                        <input type="text" name="" id="city" placeholder="Ciudad">
+                        <input type="text" name="" id="direction" placeholder="Dirección">
+                        <br>
+                        <hr>
+                        <h3>Credenciales</h3>
+                        <input type="email" name="" id="email" placeholder="Correo Electrónico">
+                        <input type="password" name="" id="password" placeholder="Contraseña">
+                        <input type="password" name="" id="new-password" placeholder="Nueva Contraseña">
+                        <br>
+                        <hr>
+                        <button type="submit" id="submit">Actualizar</button>
+                        <br>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <!-- <div class="column3">Columna 3</div> -->
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script src="/frontend/JS/profile.js"></script>
+</body>
+
+</html>
