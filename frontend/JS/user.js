@@ -32,6 +32,7 @@
         const nombre = document.getElementById("name");
         const address = document.getElementById("address");
         const profile = document.getElementById("profile-img");
+        const profile_link = document.getElementById("profile-link");
         // setting the data from session
         const {
           user: { user_metadata },
@@ -42,6 +43,13 @@
           user_metadata.provincia ? user_metadata.provincia : "Panamá"
         }, ${user_metadata.ciudad ? user_metadata.ciudad : "Panamá"}`;
         profile.setAttribute("src", user_metadata.profile);
+
+        profile_link.setAttribute(
+          "href",
+          user_metadata.tipo === "Cliente"
+            ? " /frontend/Pages/User Screen/profile.html"
+            : "/frontend/Pages/User Screen/tattoo.html"
+        );
       },
     },
     methods: {
