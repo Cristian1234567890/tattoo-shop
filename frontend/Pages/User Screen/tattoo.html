@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/frontend/Design/Users/profile.css">
+    <link rel="shortcut icon" href="/frontend/Img/Tattoo Machine Rotary.png">
+    <title>TooTienda🚬</title>
+</head>
+<body>
+    <div class="container">
+        <div class="column1">
+            <div class="return">
+                <a href="/frontend/Pages/User Screen/user.html"><img src="/frontend/Img/Back To White.png" alt=""></a>
+            </div>
+            <hr>
+            <div class="list">
+                <ul>
+                    <li>Perfil</li>
+                </ul>
+            </div>
+        </div>
+        <div class="column2">
+            <h1>Perfil</h1>
+            <hr>
+            <div class="form-act">
+                <form action="" id="profileForm">
+                    <h3>Foto de Perfil</h3>
+                    <div class="profile">
+                        <img src="/frontend/Img/Tattoo Machine Rotary.png" alt="Perfil">
+                    </div>
+                    <div class="upload">
+                        <!-- <button>Subir foto</button> -->
+                        <input type="file" accept="image/*" id="file-input">
+                        <div id="image-container">
+                            <img id="selected-image" src="" alt="Imagen seleccionada">
+                        </div>
+                    </div>
+                    <hr>
+                    <div class="data">
+                        <h3>Personal</h3>
+                        <input type="text" name="" id="name" placeholder="Nombre">
+                        <input type="text" name="" id="last-name" placeholder="Apellido">
+                        <input type="number" name="" id="phone" placeholder="Telefóno">
+                        <br><hr>
+                        <h3>Edad</h3>
+                        <input type="date" name="date" id="date" disabled>
+                        <br><hr>
+                        <h3>Tipo de Trabajo</h3>
+                        <select name="" id="province">
+                            <option value="" selected disabled>Seleccione un tipo de trabajo</option>
+                            <option value="realista">Realista</option>
+                            <option value="tradicional">Tradicional</option>
+                            <option value="neotradicional">Neotradicional</option>
+                            <option value="blackwork">Blackwork</option>
+                            <option value="japones">Japonés</option>
+                            <option value="tribal">Tribal</option>
+                            <option value="acuarela">Acuarela</option>
+                        </select>
+                        <br><hr>
+                        <h3>Redes Sociales</h3>
+                            <img src="/frontend/Img/Facebook White.png" id="social" alt=""><input type="url" name="" id="facebook" placeholder="Facebook">
+                            <br>
+                            <img src="/frontend/Img/Twitter White.png" id="social" alt=""><input type="url" name="" id="twitter" placeholder="Twitter">
+                            <br>
+                            <img src="/frontend/Img/Instagram White.png" id="social" alt=""><input type="url" name="" id="instagram" placeholder="Instagram">
+                            <br>
+                            <img src="/frontend/Img/Link White.png" id="social" alt=""><input type="url" name="" id="link" placeholder="Link">
+                        <br><hr>
+                        <h3>Dirección</h3>
+                        <select name="" id="province">
+                            <option value="" selected disabled>Seleccione una Provincia</option>
+                            <option value="panama">Panamá</option>
+                            <option value="bocasT">Bocas del Toro</option>
+                            <option value="colon">Colón</option>
+                            <option value="chiriqui">Chiriquí</option>
+                            <option value="darien">Darién</option>
+                            <option value="herrera">Herrera</option>
+                            <option value="los_santos">Los Santos</option>
+                            <option value="panama_oeste">Panamá Oeste</option>
+                            <option value="veraguas">Veraguas</option>
+                            <option value="embera">Emberá-Wounaan</option>
+                            <option value="guna">Guna Yala</option>
+                            <option value="nobe">Ngöbe-Buglé</option>
+                        </select>
+                        <input type="text" name="" id="city" placeholder="Ciudad">
+                        <input type="text" name="" id="direction" placeholder="Dirección">
+                        <br><hr>
+                        <h3>Credenciales</h3>
+                        <input type="email" name="" id="email" placeholder="Correo Electrónico">
+                        <input type="password" name="" id="password" placeholder="Contraseña">
+                        <input type="password" name="" id="new-password" placeholder="Nueva Contraseña">
+                        <br><hr>
+                        <button type="submit" id="submit">Actualizar</button>
+                        <br>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <!-- <div class="column3">Columna 3</div> -->
+    </div>
+    <script src="/frontend/JS/profile.js"></script>
+</body>
+</html>
