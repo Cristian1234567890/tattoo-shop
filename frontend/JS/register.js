@@ -222,6 +222,10 @@
                       data.subscriptionID
                   );
                 },
+                onError(err) {
+                  // For example, redirect to a specific error page
+                  console.log(err);
+                },
               })
               .render("#paypal-button-container"); // Renders the PayPal button
           })
@@ -239,7 +243,7 @@
           confirmButtonText: "Ok",
         }).then((result) => {
           if (result.isConfirmed) {
-            window.location.href = "/frontend/Pages/User Screen/user.html";
+            window.location.href = "/frontend/Pages/login.html";
           }
         });
       },

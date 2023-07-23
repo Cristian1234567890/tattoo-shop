@@ -1,11 +1,13 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="/frontend/Design/Users/profile.css">
     <title>TooTienda🚬</title>
 </head>
+
 <body>
     <div class="container">
         <div class="column1">
@@ -26,7 +28,7 @@
                 <form action="" id="profileForm">
                     <h3>Foto de Perfil</h3>
                     <div class="profile">
-                        <img src="/frontend/Img/Tattoo Machine Rotary.png" alt="Perfil">
+                        <img src="" alt="Perfil" id="profile-img">
                     </div>
                     <div class="upload">
                         <!-- <button>Subir foto</button> -->
@@ -41,34 +43,38 @@
                         <input type="text" name="" id="name" placeholder="Nombre">
                         <input type="text" name="" id="last-name" placeholder="Apellido">
                         <input type="number" name="" id="phone" placeholder="Telefóno">
-                        <br><hr>
+                        <br>
+                        <hr>
                         <h3>Edad</h3>
                         <label for="date">Edad: </label><input type="date" name="date" id="date" disabled>
-                        <br><hr>
+                        <br>
+                        <hr>
                         <h3>Dirección</h3>
                         <select name="" id="province">
                             <option value="" selected disabled>Seleccione una Provincia</option>
-                            <option value="">Panamá</option>
-                            <option value="">Bocas del Toro</option>
-                            <option value="">Colón</option>
-                            <option value="">Chiriquí</option>
-                            <option value="">Darién</option>
-                            <option value="">Herrera</option>
-                            <option value="">Los Santos</option>
-                            <option value="">Panamá Oeste</option>
-                            <option value="">Veraguas</option>
-                            <option value="">Emberá-Wounaan</option>
-                            <option value="">Guna Yala</option>
-                            <option value="">Ngöbe-Buglé</option>
+                            <option value="Panamá">Panamá</option>
+                            <option value="Bocas del Toro">Bocas del Toro</option>
+                            <option value="Colón">Colón</option>
+                            <option value="Chiriquí">Chiriquí</option>
+                            <option value="Darién">Darién</option>
+                            <option value="Herrera">Herrera</option>
+                            <option value="Los Santos">Los Santos</option>
+                            <option value="Panamá Oeste">Panamá Oeste</option>
+                            <option value="Veraguas">Veraguas</option>
+                            <option value="Emberá-Wounaan">Emberá-Wounaan</option>
+                            <option value="Guna Yala">Guna Yala</option>
+                            <option value="Ngöbe-Buglé">Ngöbe-Buglé</option>
                         </select>
                         <input type="text" name="" id="city" placeholder="Ciudad">
                         <input type="text" name="" id="direction" placeholder="Dirección">
-                        <br><hr>
+                        <br>
+                        <hr>
                         <h3>Credenciales</h3>
                         <input type="email" name="" id="email" placeholder="Correo Electrónico">
                         <input type="password" name="" id="password" placeholder="Contraseña">
                         <input type="password" name="" id="new-password" placeholder="Nueva Contraseña">
-                        <br><hr>
+                        <br>
+                        <hr>
                         <button type="submit" id="submit">Actualizar</button>
                         <br>
                     </div>
@@ -77,6 +83,9 @@
         </div>
         <!-- <div class="column3">Columna 3</div> -->
     </div>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <script src="/frontend/JS/profile.js"></script>
 </body>
+
 </html>
