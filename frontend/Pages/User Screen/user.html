@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -9,7 +8,6 @@
     <link rel="shortcut icon" href="/frontend/Img/Tattoo Machine Rotary.png">
     <title>TooTienda🚬</title>
 </head>
-
 <body>
     <div class="container">
         <div class="column1">
@@ -22,6 +20,7 @@
             <p>Filtros</p>
             <hr>
             <br>
+            <h4>Tipo de tatuaje</h4>
             <input type="checkbox" name="" id="realista"><label for="realista">Realista</label>
             <br>
             <input type="checkbox" name="" id="tradicional"><label for="tradicional">Tradicional</label>
@@ -47,7 +46,7 @@
             <div class="wrapper">
                 <div class="profile-card js-profile-card">
                   <div class="profile-card__img">
-                    <img src="/frontend/Img/GB.jpeg" alt="profile card">
+                    <img src="/frontend/Img/GB Tattoo.jpg" alt="profile card">
                   </div>
               
                   <div class="profile-card__cnt js-profile-cnt">
@@ -113,10 +112,19 @@
                         <div class="profile-card-form__container">
                             <textarea placeholder="¿Qué quisieras hacerte?"></textarea>
                         </div>
+                        <hr>
                         <div class="dragdrop">
-                            <div class="draggable" draggable="true">Ingresa una foto ⤵️</div>
+                            <div class="draggable" draggable="true">Ingresa un ejemplo de tatuaje ⤵️</div>
                             <div class="droppable">Suelta aquí</div>
                         </div>
+                        <div class="upload">
+                          <!-- <button>Subir foto</button> -->
+                          <input type="file" accept="image/*" id="file-input">
+                          <div id="image-container">
+                            <img id="selected-image" src="" alt="Imagen seleccionada">
+                          </div>
+                        </div>
+                      <hr>
                       <div class="profile-card-form__bottom">
                         <button class="profile-card__button button--blue js-message-close">
                           Enviar
@@ -172,7 +180,7 @@
             <br>
             <hr>
             <ul>
-                <li><a href="#" class="list">Perfil</a></li>
+                <li><a href="/frontend/Pages/User Screen/profile.html" class="list">Perfil</a></li>
                 <!-- Agrega más opciones aquí si es necesario -->
             </ul>
             <div id="btn-switch">

@@ -38,6 +38,7 @@ a, a:hover {
 
 .profile-card {
   width: 525px;
+  height: 650px;
   min-height: 500px;
   margin: auto;
   box-shadow: 0px 8px 60px -10px rgba(13, 28, 39, 0.6);
@@ -57,10 +58,14 @@ a, a:hover {
 }
 .profile-card.active .profile-card-form {
   transform: none;
-  width: 400px;
-  height: 370px;
-  padding: 50px;
+  width: 1200px;
+  height: 440px;
+  padding: 35px 45px;
   transition-delay: 0.1s;
+}
+.profile-card.active .profile-card-form hr {
+  background-color: black;
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
 }
 .profile-card__img {
   width: 150px;
@@ -212,9 +217,9 @@ a, a:hover {
   font-family: "Quicksand", sans-serif;
   font-weight: 700;
   font-size: 19px;
-  margin: 3.5px;
+  margin: 15px 15px;
   padding: 15px 40px;
-  min-width: 201px;
+  min-width: 200px;
   border-radius: 50px;
   min-height: 55px;
   color: #fff;
@@ -320,16 +325,16 @@ a, a:hover {
   }
 }
 .profile-card textarea {
-  width: 300px;
+  width: 330px;
   resize: none;
-  height: 100px;
-  margin-bottom: 20px;
+  height: 80px;
+  margin-bottom: 5px;
   border: 2px solid #dcdcdc;
   border-radius: 10px;
-  padding: 15px 20px;
+  padding: 10px 15px;
   color: #324e63;
   font-weight: 500;
-  font-family: "Quicksand", sans-serif;
+  font-family: "Roboto", sans-serif;
   outline: none;
   transition: all 0.3s;
 }
@@ -364,7 +369,7 @@ a, a:hover {
 .dragdrop .droppable {
   color: black;
   width: 350px;
-  height: 100px;
+  height: 90px;
   border: 2px dashed #ccc;
   display: flex;
   justify-content: center;
@@ -388,4 +393,36 @@ a, a:hover {
   height: 100%;
   -o-object-fit: cover;
      object-fit: cover;
+}
+
+.upload {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 20px;
+  color: black;
+}
+.upload #image-container {
+  display: none;
+  max-width: 100%;
+  max-height: 300px;
+}
+.upload #image-container img {
+  width: 50px;
+  height: 50px;
+}
+.upload button {
+  font-family: "Roboto", sans-serif;
+  font-size: 16px;
+  font-weight: 500;
+  border-radius: 50px;
+  width: 170px;
+  height: 50px;
+  cursor: pointer;
+  background: linear-gradient(45deg, #d5135a, #f05924);
+  box-shadow: 0px 4px 30px rgba(223, 45, 70, 0.35);
+  color: white;
+  border: none;
+}
+.upload button:hover {
+  box-shadow: 0px 7px 30px rgba(223, 45, 70, 0.75);
 }/*# sourceMappingURL=tattoocard.css.map */

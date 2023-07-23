@@ -1,7 +1,7 @@
-var messageBox = document.querySelector('.js-message');
-var btn = document.querySelector('.js-message-btn');
-var card = document.querySelector('.js-profile-card');
-var closeBtn = document.querySelectorAll('.js-message-close');
+const messageBox = document.querySelector('.js-message');
+const btn = document.querySelector('.js-message-btn');
+const card = document.querySelector('.js-profile-card');
+const closeBtn = document.querySelectorAll('.js-message-close');
 
 btn.addEventListener('click',function (e) {
     e.preventDefault();
@@ -37,4 +37,17 @@ document.addEventListener("DOMContentLoaded", () => {
       const element = document.getElementById(data);
       droppableElement.appendChild(element);
     });
+  });
+
+  document.getElementById("file-input").addEventListener("change", function(event) {
+    var file = event.target.files[0];
+    if (file && file.type.startsWith("image/")) {
+      var reader = new FileReader();
+      reader.onload = function() {
+        var image = document.getElementById("selected-image");
+        image.src = reader.result;
+        document.getElementById("image-container").style.display = "block";
+      };
+      reader.readAsDataURL(file);
+    }
   });
