@@ -148,6 +148,20 @@ module.exports = {
           profile: data_url.signedUrl,
         },
       });
+    if (session.data.user.user_metadata.tipo === "Tatuador") {
+      let { data: tatuador_data, error: error_tatuador } = await supabase
+        .from("tatuadores_data")
+        .select()
+        .eq("id", session.data.user.id);
+      tatuador_data[0].data.profile = data_url.signedUrl;
+      if (error_tatuador) console.log(error_tatuador);
+      const { error: error_update } = await supabase
+        .from("tatuadores_data")
+        .update({ data: tatuador_data[0].data })
+        .eq("id", session.data.user.id);
+      if (error) return { success: false, error_update };
+    }
+
     if (error_updated) return { success: false, error };
     return { success: true };
   },
