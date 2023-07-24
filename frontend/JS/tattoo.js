@@ -38,6 +38,13 @@
         const ciudad = document.getElementById("city");
         const direccion = document.getElementById("direction");
         const profile = document.getElementById("profile-img");
+        //seccion de tatuador
+        const work_type = document.getElementById("work-type");
+        const facebook = document.getElementById("facebook");
+        const twitter = document.getElementById("twitter");
+        const instagram = document.getElementById("instagram");
+        const link = document.getElementById("link");
+
         // setting the data from session
         const {
           user: { user_metadata },
@@ -55,6 +62,13 @@
           ? user_metadata.direccion
           : "";
         profile.setAttribute("src", user_metadata.profile);
+        work_type.value = user_metadata.trabajo ? user_metadata.trabajo : "";
+        facebook.value = user_metadata.facebook ? user_metadata.facebook : "";
+        twitter.value = user_metadata.twitter ? user_metadata.twitter : "";
+        instagram.value = user_metadata.instagram
+          ? user_metadata.instagram
+          : "";
+        link.value = user_metadata.link ? user_metadata.link : "";
       },
       handleSubmit(event) {
         event.preventDefault();
@@ -67,6 +81,11 @@
           provincia: document.getElementById("province").value,
           ciudad: document.getElementById("city").value,
           direccion: document.getElementById("direction").value,
+          work_type: document.getElementById("work-type").value,
+          facebook: document.getElementById("facebook").value,
+          twitter: document.getElementById("twitter").value,
+          instagram: document.getElementById("instagram").value,
+          link: document.getElementById("link").value,
         };
 
         App.methods.updateData(dataUpdate);

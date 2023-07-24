@@ -1,4 +1,4 @@
-const messageBox = document.querySelector('.js-message');
+/*const messageBox = document.querySelector('.js-message');
 const btn = document.querySelector('.js-message-btn');
 const card = document.querySelector('.js-profile-card');
 const closeBtn = document.querySelectorAll('.js-message-close');
@@ -50,4 +50,4 @@ document.addEventListener("DOMContentLoaded", () => {
       };
       reader.readAsDataURL(file);
     }
-  });
+  });*/

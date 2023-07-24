@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,6 +8,7 @@
     <link rel="shortcut icon" href="/frontend/Img/Tattoo Machine Rotary.png">
     <title>TooTienda🚬</title>
 </head>
+
 <body>
     <div class="container">
         <div class="column1">
@@ -27,7 +29,7 @@
                 <form action="" id="profileForm">
                     <h3>Foto de Perfil</h3>
                     <div class="profile">
-                        <img src="/frontend/Img/Tattoo Machine Rotary.png" alt="Perfil">
+                        <img src="" alt="Perfil" id="profile-img">
                     </div>
                     <div class="upload">
                         <!-- <button>Subir foto</button> -->
@@ -42,12 +44,14 @@
                         <input type="text" name="" id="name" placeholder="Nombre">
                         <input type="text" name="" id="last-name" placeholder="Apellido">
                         <input type="number" name="" id="phone" placeholder="Telefóno">
-                        <br><hr>
+                        <br>
+                        <hr>
                         <h3>Edad</h3>
                         <input type="date" name="date" id="date" disabled>
-                        <br><hr>
+                        <br>
+                        <hr>
                         <h3>Tipo de Trabajo</h3>
-                        <select name="" id="province">
+                        <select name="" id="work-type">
                             <option value="" selected disabled>Seleccione un tipo de trabajo</option>
                             <option value="realista">Realista</option>
                             <option value="tradicional">Tradicional</option>
@@ -57,40 +61,48 @@
                             <option value="tribal">Tribal</option>
                             <option value="acuarela">Acuarela</option>
                         </select>
-                        <br><hr>
+                        <br>
+                        <hr>
                         <h3>Redes Sociales</h3>
-                            <img src="/frontend/Img/Facebook White.png" id="social" alt=""><input type="url" name="" id="facebook" placeholder="Facebook">
-                            <br>
-                            <img src="/frontend/Img/Twitter White.png" id="social" alt=""><input type="url" name="" id="twitter" placeholder="Twitter">
-                            <br>
-                            <img src="/frontend/Img/Instagram White.png" id="social" alt=""><input type="url" name="" id="instagram" placeholder="Instagram">
-                            <br>
-                            <img src="/frontend/Img/Link White.png" id="social" alt=""><input type="url" name="" id="link" placeholder="Link">
-                        <br><hr>
+                        <img src="/frontend/Img/Facebook White.png" id="social" alt=""><input type="url" name=""
+                            id="facebook" placeholder="Facebook">
+                        <br>
+                        <img src="/frontend/Img/Twitter White.png" id="social" alt=""><input type="url" name=""
+                            id="twitter" placeholder="Twitter">
+                        <br>
+                        <img src="/frontend/Img/Instagram White.png" id="social" alt=""><input type="url" name=""
+                            id="instagram" placeholder="Instagram">
+                        <br>
+                        <img src="/frontend/Img/Link White.png" id="social" alt=""><input type="url" name="" id="link"
+                            placeholder="Link">
+                        <br>
+                        <hr>
                         <h3>Dirección</h3>
                         <select name="" id="province">
                             <option value="" selected disabled>Seleccione una Provincia</option>
-                            <option value="panama">Panamá</option>
-                            <option value="bocasT">Bocas del Toro</option>
-                            <option value="colon">Colón</option>
-                            <option value="chiriqui">Chiriquí</option>
-                            <option value="darien">Darién</option>
-                            <option value="herrera">Herrera</option>
-                            <option value="los_santos">Los Santos</option>
-                            <option value="panama_oeste">Panamá Oeste</option>
-                            <option value="veraguas">Veraguas</option>
-                            <option value="embera">Emberá-Wounaan</option>
-                            <option value="guna">Guna Yala</option>
-                            <option value="nobe">Ngöbe-Buglé</option>
+                            <option value="Panamá">Panamá</option>
+                            <option value="Bocas del Toro">Bocas del Toro</option>
+                            <option value="Colón">Colón</option>
+                            <option value="Chiriquí">Chiriquí</option>
+                            <option value="Darién">Darién</option>
+                            <option value="Herrera">Herrera</option>
+                            <option value="Los Santos">Los Santos</option>
+                            <option value="Panamá Oeste">Panamá Oeste</option>
+                            <option value="Veraguas">Veraguas</option>
+                            <option value="Emberá-Wounaan">Emberá-Wounaan</option>
+                            <option value="Guna Yala">Guna Yala</option>
+                            <option value="Ngöbe-Buglé">Ngöbe-Buglé</option>
                         </select>
                         <input type="text" name="" id="city" placeholder="Ciudad">
                         <input type="text" name="" id="direction" placeholder="Dirección">
-                        <br><hr>
+                        <br>
+                        <hr>
                         <h3>Credenciales</h3>
                         <input type="email" name="" id="email" placeholder="Correo Electrónico">
                         <input type="password" name="" id="password" placeholder="Contraseña">
                         <input type="password" name="" id="new-password" placeholder="Nueva Contraseña">
-                        <br><hr>
+                        <br>
+                        <hr>
                         <button type="submit" id="submit">Actualizar</button>
                         <br>
                     </div>
@@ -99,6 +111,9 @@
         </div>
         <!-- <div class="column3">Columna 3</div> -->
     </div>
-    <script src="/frontend/JS/profile.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script src="/frontend/JS/tattoo.js"></script>
 </body>
+
 </html>
