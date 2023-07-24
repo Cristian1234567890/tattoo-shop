@@ -47,7 +47,7 @@
 
         // setting the data from session
         const {
-          user: { user_metadata },
+          user: { email, user_metadata },
         } = JSON.parse(sessionStorage.getItem("user"));
         nombre.value = user_metadata.nombre;
         apellido.value = user_metadata.apellido;
@@ -74,6 +74,7 @@
         event.preventDefault();
 
         let dataUpdate = {
+          email,
           nombre: document.getElementById("name").value,
           apellido: document.getElementById("last-name").value,
           edad: document.getElementById("date").value,

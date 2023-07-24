@@ -45,6 +45,7 @@ module.exports = {
 
     if (tipo === "Tatuador") {
       const data_to_insert = {
+        email,
         nombre,
         apellido,
         work_type: "",
