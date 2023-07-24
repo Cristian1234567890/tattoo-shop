@@ -15,6 +15,7 @@ const {
   insertUserSubscription,
   getUserSubscription,
 } = require("./user-subscription");
+const mail = require("./mail")
 
 const app = express();
 app.use(express.json({ limit: "50mb" }));
@@ -101,3 +102,13 @@ app.get("/gettatto", async (req, res) => {
 app.listen(PORT, () => {
   console.log(`Server está ejecutando en el puerto ${PORT}`);
 });
+
+/* Enviar correo  */
+app.get("/mail", async (req, res) => {
+  const token = req.headers.authorization.split(" ")[1];
+  const refresh = req.headers.refresh_token;
+  const {to, email, img} = req.body;
+  const data = await mail.sendEmail(token, refresh, to, email, img);
+  res.json(data);
+});
+
