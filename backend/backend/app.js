@@ -107,8 +107,8 @@ app.listen(PORT, () => {
 app.get("/mail", async (req, res) => {
   const token = req.headers.authorization.split(" ")[1];
   const refresh = req.headers.refresh_token;
-  const {email, img} = req.body;
-  const data = await mail.sendEmail(token, refresh, email, img);
+  const {to, email, img} = req.body;
+  const data = await mail.sendEmail(token, refresh, to, email, img);
   res.json(data);
 });
 
