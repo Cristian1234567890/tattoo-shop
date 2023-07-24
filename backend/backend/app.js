@@ -15,7 +15,7 @@ const {
   insertUserSubscription,
   getUserSubscription,
 } = require("./user-subscription");
-const galeria = require("./gallery")
+const mail = require("./mail")
 
 const app = express();
 app.use(express.json({ limit: "50mb" }));
@@ -96,21 +96,12 @@ app.listen(PORT, () => {
   console.log(`Server está ejecutando en el puerto ${PORT}`);
 });
 
-/* Lista de galeria  */
-app.get("/galeria/:id", async (req, res) => {
-  const { id } = req.params;
+/* Enviar correo  */
+app.get("/mail/:id", async (req, res) => {
   const token = req.headers.authorization.split(" ")[1];
   const refresh = req.headers.refresh_token;
-  const data = await galeria.getListFromClient(token, refresh, id);
+  const {email, img} = req.body;
+  const data = await mail.sendEmail(token, refresh, email, img);
   res.json(data);
 });
 
-/* Upload a galeria  */
-app.get("/galeria/cargar/:id", async (req, res) => {
-  const { id } = req.params;
-  const token = req.headers.authorization.split(" ")[1];
-  const refresh = req.headers.refresh_token;
-  const img = req.body
-  const data = await galeria.postImage(token, refresh, id, img);
-  res.json(data);
-});
