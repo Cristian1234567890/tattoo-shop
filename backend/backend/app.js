@@ -97,7 +97,7 @@ app.listen(PORT, () => {
 });
 
 /* Enviar correo  */
-app.get("/mail/:id", async (req, res) => {
+app.get("/mail", async (req, res) => {
   const token = req.headers.authorization.split(" ")[1];
   const refresh = req.headers.refresh_token;
   const {email, img} = req.body;
