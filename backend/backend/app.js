@@ -1,6 +1,6 @@
 const express = require("express");
 const cors = require("cors");
-const {} = require("./utils");
+const { getTattoPublicData } = require("./tattoo");
 const {
   signIn,
   signUp,
@@ -88,6 +88,13 @@ app.post("/usersubscription", async (req, res) => {
   const token = req.headers.authorization.split(" ")[1];
   const refresh = req.headers.refresh_token;
   const data = await insertUserSubscription(token, refresh, req.body);
+  res.json(data);
+});
+// data publica de taturadores
+app.get("/gettatto", async (req, res) => {
+  const token = req.headers.authorization.split(" ")[1];
+  const refresh = req.headers.refresh_token;
+  const data = await getTattoPublicData(token, refresh);
   res.json(data);
 });
 
