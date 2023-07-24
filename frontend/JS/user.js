@@ -81,13 +81,14 @@
             if (data.success) {
               const container = document.getElementById("card-container");
               const cards = data.data;
-              const tempDiv = document.createElement("div");
-              tempDiv.classList.add("wrapper");
+
               for (let i = 0; i < cards.length; i++) {
+                const tempDiv = document.createElement("div");
+                tempDiv.classList.add("wrapper");
                 const card_data = cards[i].data;
                 // Create a temporary div element to hold the HTML content
                 console.log(card_data);
-                tempDiv.innerHTML += `
+                tempDiv.innerHTML = `<div class="wrapper">
           <div class="profile-card js-profile-card">
             <div class="profile-card__img">
               <img src="${card_data.profile}" alt="profile card" id="profile-img"">
@@ -189,7 +190,7 @@
               </form>
               <div class="profile-card__overlay js-message-close"></div>
             </div>
-          </div>
+          </div></div>
               `;
 
                 // Append the profile card to the container
