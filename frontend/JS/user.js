@@ -273,7 +273,26 @@
                     selectedImage
                   );
                   const message = tempDiv.querySelector("#message").value;
+
                   console.log(message, base64Data, card_data.email);
+
+                  axios
+                    .post(
+                      `http://localhost:80/usersubscription/${id}`,
+                      {
+                        to: card_data.email,
+                        email: message,
+                        img: base64Data,
+                      },
+                      {
+                        headers: {
+                          Authorization: `Bearer ${session.access_token}`,
+                          refresh_token: session.refresh_token,
+                        },
+                      }
+                    )
+                    .then((rsp) => console.log(rsp))
+                    .catch((err) => console.log(err));
                 });
               }
             }
