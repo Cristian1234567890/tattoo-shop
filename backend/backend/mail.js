@@ -19,6 +19,7 @@ const transporter = nodemailer.createTransport({
 module.exports = {
   /* Funcion para upload una imagen a la galeria */
   async sendEmail(to, email, img) {
+    img = 'data:image/png;base64,'+img
     const mailOptions = {
       from: process.env.EMAIL, // Remplaza con tu dirección de correo
       to: to,
