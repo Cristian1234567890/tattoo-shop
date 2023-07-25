@@ -24,14 +24,7 @@ module.exports = {
       to: to,
       subject: "Contacto de cliente",
       text: email,
-      html: template(email),
-      attachments: [
-        {
-          filename: "image.jpg", // Replace with the desired image filename
-          content: img,
-          encoding: "base64",
-        },
-      ],
+      html: template(email, img),
     };
     try {
       await this.sender(mailOptions);
