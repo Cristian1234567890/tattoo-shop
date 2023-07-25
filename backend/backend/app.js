@@ -10,11 +10,16 @@ const {
   updateUser,
   updateUserImg,
 } = require("./auth");
-const { subscription, createProduct } = require("./paypal");
+const {
+  subscription,
+  createProduct,
+  getSubscriptionData,
+} = require("./paypal");
 const {
   insertUserSubscription,
   getUserSubscription,
 } = require("./user-subscription");
+//const mail = require("./mail")
 
 const app = express();
 app.use(express.json({ limit: "50mb" }));
@@ -76,6 +81,12 @@ app.post("/subscribe", async (req, res) => {
   res.json(subscribe);
 });
 
+app.get("/paypalsubscription/:id", async (req, res) => {
+  const { id } = req.params;
+  const data = await getSubscriptionData(id);
+  res.json(data);
+});
+
 // user_subscription table
 app.get("/usersubscription/:id", async (req, res) => {
   const { id } = req.params;
@@ -100,4 +111,13 @@ app.get("/gettatto", async (req, res) => {
 
 app.listen(PORT, () => {
   console.log(`Server está ejecutando en el puerto ${PORT}`);
+});
+
+/* Enviar correo  */
+app.get("/mail", async (req, res) => {
+  const token = req.headers.authorization.split(" ")[1];
+  const refresh = req.headers.refresh_token;
+  const { to, email, img } = req.body;
+  const data = await mail.sendEmail(token, refresh, to, email, img);
+  res.json(data);
 });
