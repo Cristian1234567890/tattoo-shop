@@ -1,7 +1,7 @@
 // Importa el cliente de Supabase
 require("dotenv").config();
-const nodemailer = require('nodemailer');
-const {template} = require("./mail-template.js");
+const nodemailer = require("nodemailer");
+const { template } = require("./mail-template.js");
 
 // Configuración del servicio de correo (Gmail)
 // create reusable transporter object using the default SMTP transport
@@ -17,24 +17,30 @@ const transporter = nodemailer.createTransport({
 });
 
 module.exports = {
-    /* Funcion para upload una imagen a la galeria */
-    async sendEmail(to, email, img) {
-        img = 'data:image/png;base64,' + img
-        const mailOptions = {
-            from: process.env.EMAIL, // Remplaza con tu dirección de correo
-            to: to,
-            subject: 'Contacto de cliente',
-            text: email,
-            html: template(email, img),
-          };
-        try {
-            await this.sender(mailOptions)
-            return 'Correo enviado'
-        } catch (error) {
-            return undefined
-        }
-    },
-    async sender (mailOptions){
-        return transporter.sendMail(mailOptions)
+  /* Funcion para upload una imagen a la galeria */
+  async sendEmail(to, email, img) {
+    const mailOptions = {
+      from: process.env.EMAIL, // Remplaza con tu dirección de correo
+      to: to,
+      subject: "Contacto de cliente",
+      text: email,
+      html: template(email),
+      attachments: [
+        {
+          filename: "image.jpg", // Replace with the desired image filename
+          content: img,
+          encoding: "base64",
+        },
+      ],
+    };
+    try {
+      await this.sender(mailOptions);
+      return "Correo enviado";
+    } catch (error) {
+      return undefined;
     }
-  };
+  },
+  async sender(mailOptions) {
+    return transporter.sendMail(mailOptions);
+  },
+};
