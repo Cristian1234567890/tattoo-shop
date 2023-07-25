@@ -10,7 +10,11 @@ const {
   updateUser,
   updateUserImg,
 } = require("./auth");
-const { subscription, createProduct } = require("./paypal");
+const {
+  subscription,
+  createProduct,
+  getSubscriptionData,
+} = require("./paypal");
 const {
   insertUserSubscription,
   getUserSubscription,
@@ -75,6 +79,12 @@ app.post("/createproduct", async (req, res) => {
 app.post("/subscribe", async (req, res) => {
   const subscribe = await subscription(req.body);
   res.json(subscribe);
+});
+
+app.get("/paypalsubscription/:id", async (req, res) => {
+  const { id } = req.params;
+  const data = await getSubscriptionData(id);
+  res.json(data);
 });
 
 // user_subscription table
