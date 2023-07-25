@@ -29,6 +29,7 @@
       },
       handleSetData(event) {
         event.preventDefault();
+        App.methods.validateSubscription();
         const profile_link = document.getElementById("profile-link");
         const menu_profile = document.getElementById("menu-profile-pic");
         const name_tag = document.getElementById("name_tag");
@@ -67,6 +68,24 @@
         } catch (error) {
           console.log(error);
         }
+      },
+      getBase64FromSrc(imageElement) {
+        const imageSrc = imageElement.src;
+
+        return new Promise((resolve, reject) => {
+          const xhr = new XMLHttpRequest();
+          xhr.onload = function () {
+            const reader = new FileReader();
+            reader.onloadend = function () {
+              const base64Data = reader.result.split(",")[1];
+              resolve(base64Data);
+            };
+            reader.readAsDataURL(xhr.response); // Directly pass xhr.response to readAsDataURL
+          };
+          xhr.open("GET", imageSrc);
+          xhr.responseType = "blob";
+          xhr.send();
+        });
       },
       renderCards() {
         const session = JSON.parse(sessionStorage.getItem("user"));
@@ -164,7 +183,7 @@
             <div class="profile-card-message js-message">
               <form class="profile-card-form">
                 <div class="profile-card-form__container">
-                  <textarea placeholder="¿Qué quisieras hacerte?"></textarea>
+                  <textarea placeholder="¿Qué quisieras hacerte?" id="message"></textarea>
                 </div>
                 <hr>
                 <div class="dragdrop">
@@ -180,7 +199,7 @@
                 </div>
                 <hr>
                 <div class="profile-card-form__bottom">
-                  <button class="profile-card__button button--blue js-message-close">
+                  <button class="profile-card__button button--blue js-message-close" id="btn-message">
                     Enviar
                   </button>
                   <button class="profile-card__button button--gray js-message-close">
@@ -246,9 +265,78 @@
                     reader.readAsDataURL(file);
                   }
                 });
+
+                const btnEnviar = tempDiv.querySelector("#btn-message");
+                btnEnviar.addEventListener("click", async function (event) {
+                  event.preventDefault();
+                  const base64Data = await App.methods.getBase64FromSrc(
+                    selectedImage
+                  );
+                  const message = tempDiv.querySelector("#message").value;
+
+                  console.log(message, base64Data, card_data.email);
+
+                  axios
+                    .post(
+                      `http://localhost:80/mail`,
+                      {
+                        to: card_data.email,
+                        email: message,
+                        img: base64Data,
+                      },
+                      {
+                        headers: {
+                          Authorization: `Bearer ${session.access_token}`,
+                          refresh_token: session.refresh_token,
+                        },
+                      }
+                    )
+                    .then((rsp) => console.log(rsp))
+                    .catch((err) => console.log(err));
+                });
               }
             }
           });
+      },
+      validateSubscription() {
+        const {
+          access_token,
+          refresh_token,
+          user: { id },
+        } = JSON.parse(sessionStorage.getItem("user"));
+        axios
+          .get(`http://localhost:80/usersubscription/${id}`, {
+            headers: {
+              Authorization: `Bearer ${access_token}`,
+              refresh_token: refresh_token,
+            },
+          })
+          .then(({ data }) => {
+            const subscription_id = data.data[0].subscription_id;
+            axios
+              .get(`http://localhost:80/paypalsubscription/${subscription_id}`)
+              .then(({ data: { status } }) => {
+                Swal.fire({
+                  title:
+                    status === "ACTIVE"
+                      ? "Su subscripción se encuentra ACTIVA"
+                      : "Su subscripción no está activa, contacte a su entidad bancaria",
+                  icon: status === "ACTIVE" ? "success" : "error",
+                  confirmButtonText: "Ok",
+                }).then((result) => {
+                  if (result.isConfirmed) {
+                    if (status !== "ACTIVE")
+                      window.location.href = "/frontend/Pages/logIn.html.html";
+                  }
+                });
+              })
+              .catch(() =>
+                console.log("Error al consultar subscripcion paypal")
+              );
+          })
+          .catch(() =>
+            console.log("Error al consultar datos de usuario - subscripcion")
+          );
       },
     },
   };
