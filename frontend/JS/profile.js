@@ -40,7 +40,7 @@
         const profile = document.getElementById("profile-img");
         // setting the data from session
         const {
-          user: { email, user_metadata },
+          user: { user_metadata },
         } = JSON.parse(sessionStorage.getItem("user"));
         nombre.value = user_metadata.nombre;
         apellido.value = user_metadata.apellido;
@@ -60,7 +60,6 @@
         event.preventDefault();
 
         let dataUpdate = {
-          email,
           nombre: document.getElementById("name").value,
           apellido: document.getElementById("last-name").value,
           edad: document.getElementById("date").value,
@@ -106,27 +105,22 @@
         });
       },
       async updateImg() {
-        const {
-          access_token,
-          refresh_token,
-          user: { user_metadata },
-        } = JSON.parse(sessionStorage.getItem("user"));
+        const { access_token, refresh_token } = JSON.parse(
+          sessionStorage.getItem("user")
+        );
 
-        const imageInput = document.getElementById("selected-image");
-        if (imageInput.src !== user_metadata.profile) {
-          const base64Data = await App.methods.getBase64FromSrc();
+        const base64Data = await App.methods.getBase64FromSrc();
 
-          await axios.post(
-            "http://localhost:80/updateuserimg",
-            { imageData: base64Data },
-            {
-              headers: {
-                Authorization: `Bearer ${access_token}`,
-                refresh_token: refresh_token,
-              },
-            }
-          );
-        }
+        await axios.post(
+          "http://localhost:80/updateuserimg",
+          { imageData: base64Data },
+          {
+            headers: {
+              Authorization: `Bearer ${access_token}`,
+              refresh_token: refresh_token,
+            },
+          }
+        );
       },
       getBase64FromSrc() {
         const imageElement = document.getElementById("selected-image");
