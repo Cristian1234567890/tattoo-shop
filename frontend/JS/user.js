@@ -278,7 +278,7 @@
 
                   axios
                     .post(
-                      `http://localhost:80/usersubscription/${id}`,
+                      `http://localhost:80/mail`,
                       {
                         to: card_data.email,
                         email: message,
