@@ -1,8 +1,15 @@
 Comandos de Podman
 
+Inicializar la maquina:
+	podman machine init
+
+Iniciar la maquina:
+	podman machine start
+
 Crear un Pod
 	cd D:\Documents\GitHub\tattoo-shop-react
-	podman pod create --name tootienda -p 8080:80
+	podman machine ssh sudo dnf upgrade -y
+	podman pod create --label tootienda -p 51116:80
 
 Crear Red:
 	podman network create mi_red
@@ -10,13 +17,30 @@ Crear Red:
 Comprobar Conexión:
 	podman ps
 
-Proyecto:
+Proyecto por PODS:
+	Frontend:
+	Windows: cd D:\Documents\GitHub\tattoo-shop-react\frontend
+	Linux:  cd /mnt/d/Documents/GitHub/tattoo-shop-react/frontend
+	podman build -t frontend-app -f Dockerfile .
+	podman run -d --pod tootienda --name frontend-container frontend-app
+	
+	Backend:
+	Windows: cd D:\Documents\GitHub\tattoo-shop-react\backend\backend
+	Linux: cd /mnt/d/Documents/GitHub/tattoo-shop-react/frontend/backend/backend
+	podman build -t backend-app -f Dockerfile .
+	podman run -d --pod tootienda --name backend-container backend-app
+
+
+Proyecto por Separado:
 	Frontend:
 	cd D:\Documents\GitHub\tattoo-shop-react\frontend
 	podman build -t frontend-app .
-	podman run -d --pod tootienda --name frontend-container frontend-app
+	podman run -d --name frontend-container -p 80:80 frontend-app
 	
 	Backend
 	cd D:\Documents\GitHub\tattoo-shop-react\backend\backend
 	podman build -t backend-app .
-	podman run -d --pod tootienda --name backend-container backend-app
+	podman run -d --name backend-container -p 3000:3000 backend-app
+
+	podman run -d --name frontend-container --network mi_red -p 80:80 frontend-app
+	podman run -d --name backend-container --network mi_red -p 3000:3000 backend-app

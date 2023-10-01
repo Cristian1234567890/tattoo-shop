@@ -6,9 +6,6 @@ WORKDIR /usr/src/app
 
 # Copia los archivos necesarios del servidor Node.js al directorio de trabajo del contenedor
 COPY package.json package-lock.json ./
-COPY .env ./
-COPY src/ ./src/
-COPY public/ ./public/
 
 RUN npm install
 
