@@ -1,0 +1,22 @@
+Comandos de Podman
+
+Crear un Pod
+	cd D:\Documents\GitHub\tattoo-shop-react
+	podman pod create --name tootienda -p 8080:80
+
+Crear Red:
+	podman network create mi_red
+
+Comprobar Conexión:
+	podman ps
+
+Proyecto:
+	Frontend:
+	cd D:\Documents\GitHub\tattoo-shop-react\frontend
+	podman build -t frontend-app .
+	podman run -d --pod tootienda --name frontend-container frontend-app
+	
+	Backend
+	cd D:\Documents\GitHub\tattoo-shop-react\backend\backend
+	podman build -t backend-app .
+	podman run -d --pod tootienda --name backend-container backend-app
