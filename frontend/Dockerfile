@@ -1,14 +1,14 @@
-# Usa una imagen base que incluya un servidor web (por ejemplo, nginx)
+# Usa la imagen oficial de Nginx como base
 FROM nginx:latest
 
-# Establece el directorio de trabajo dentro del contenedor
+# Establece el directorio de trabajo en /usr/share/nginx/html
 WORKDIR /usr/share/nginx/html
 
-COPY . /usr/share/nginx/html
-COPY .* .
+# Copia los archivos estáticos al contenedor
+COPY . .
 
 # Exponer el puerto 8081
 EXPOSE 8080
 
-# Comando para iniciar el servidor web al ejecutar el contenedor
+# Comando para iniciar el servidor Nginx en primer plano (no se detiene el contenedor cuando el proceso principal termina)
 CMD ["nginx", "-g", "daemon off;"]
