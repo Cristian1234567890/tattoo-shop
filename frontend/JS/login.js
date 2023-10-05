@@ -38,7 +38,7 @@
     methods: {
       async login(email, password) {
         try {
-          const { data } = await axios.post("http://localhost:80/login", {
+          const { data } = await axios.post("http://localhost:8080/login", {
             email: email,
             password: password,
           });
@@ -63,7 +63,7 @@
         try {
           const { session, user } = JSON.parse(sessionStorage.getItem("user"));
           const { data } = await axios.post(
-            "http://localhost:80/verify2fa",
+            "http://localhost:8080/verify2fa",
             {
               factorId: user.factors[0].id,
               code,
@@ -94,7 +94,7 @@
           confirmButtonText: "Ok",
         }).then((result) => {
           if (result.isConfirmed) {
-            window.location.href = "/frontend/Pages/User Screen/user.html";
+            window.location.href = "../Pages/User Screen/user.html";
           }
         });
       },

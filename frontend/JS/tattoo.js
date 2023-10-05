@@ -100,7 +100,7 @@
       async updateData(dataUpdate) {
         const session = JSON.parse(sessionStorage.getItem("user"));
         const { data } = await axios.post(
-          "http://localhost:80/updateuser",
+          "http://localhost:8080/updateuser",
           dataUpdate,
           {
             headers: {
@@ -136,7 +136,7 @@
         const base64Data = await App.methods.getBase64FromSrc();
 
         await axios.post(
-          "http://localhost:80/updateuserimg",
+          "http://localhost:8080/updateuserimg",
           { imageData: base64Data },
           {
             headers: {

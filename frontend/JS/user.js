@@ -41,8 +41,8 @@
         profile_link.setAttribute(
           "href",
           user_metadata.tipo === "Cliente"
-            ? " /frontend/Pages/User Screen/profile.html"
-            : "/frontend/Pages/User Screen/tattoo.html"
+            ? " ../Pages/User Screen/profile.html"
+            : "../Pages/User Screen/tattoo.html"
         );
         menu_profile.setAttribute("src", user_metadata.profile);
         name_tag.textContent = `${user_metadata.nombre} ${user_metadata.apellido}`;
@@ -54,7 +54,7 @@
         try {
           const session = JSON.parse(sessionStorage.getItem("user"));
           const { data } = await axios.post(
-            "http://localhost:80/logout",
+            "http://localhost:8080/logout",
             {},
             {
               headers: {
@@ -90,7 +90,7 @@
       renderCards() {
         const session = JSON.parse(sessionStorage.getItem("user"));
         axios
-          .get(`http://localhost:80/gettatto`, {
+          .get(`http://localhost:8080/gettatto`, {
             headers: {
               Authorization: `Bearer ${session.access_token}`,
               refresh_token: session.refresh_token,
@@ -278,7 +278,7 @@
 
                   axios
                     .post(
-                      `http://localhost:80/mail`,
+                      `http://localhost:8080/mail`,
                       {
                         to: card_data.email,
                         email: message,
@@ -305,7 +305,7 @@
           user: { id },
         } = JSON.parse(sessionStorage.getItem("user"));
         axios
-          .get(`http://localhost:80/usersubscription/${id}`, {
+          .get(`http://localhost:8080/usersubscription/${id}`, {
             headers: {
               Authorization: `Bearer ${access_token}`,
               refresh_token: refresh_token,
@@ -314,7 +314,7 @@
           .then(({ data }) => {
             const subscription_id = data.data[0].subscription_id;
             axios
-              .get(`http://localhost:80/paypalsubscription/${subscription_id}`)
+              .get(`http://localhost:8080/paypalsubscription/${subscription_id}`)
               .then(({ data: { status } }) => {
                 Swal.fire({
                   title:
@@ -326,7 +326,7 @@
                 }).then((result) => {
                   if (result.isConfirmed) {
                     if (status !== "ACTIVE")
-                      window.location.href = "/frontend/Pages/logIn.html.html";
+                      window.location.href = "../Pages/logIn.html";
                   }
                 });
               })

@@ -87,7 +87,7 @@
     methods: {
       async register(email, password, nombre, apellido, edad, tipo) {
         try {
-          const { data } = await axios.post("http://localhost:80/register", {
+          const { data } = await axios.post("http://localhost:8080/register", {
             email,
             password,
             nombre,
@@ -111,6 +111,7 @@
         }
       },
       ocultarQR() {
+        //Hacer que el codigo se le envie al usuario por correo para que pueda atenticarse
         const ventanaQR = document.getElementById("ventanaQR");
         if (ventanaQR) {
           ventanaQR.style.display = "none";
@@ -126,14 +127,14 @@
             }
           });
         } else {
-          window.location.href = "/frontend/Pages/User Screen/user.html";
+          window.location.href = "../Pages/User Screen/user.html";
         }
       },
       async enroll2FA() {
         try {
           const { session } = JSON.parse(sessionStorage.getItem("user"));
           const { data } = await axios.post(
-            "http://localhost:80/enroll",
+            "http://localhost:8080/enroll",
             {},
             {
               headers: {
@@ -158,10 +159,10 @@
           const { session, user } = JSON.parse(sessionStorage.getItem("user"));
 
           const { data: product_data } = await axios.post(
-            "http://localhost:80/createproduct"
+            "http://localhost:8080/createproduct"
           );
           const { data: subscription_data } = await axios.post(
-            "http://localhost:80/subscribe",
+            "http://localhost:8080/subscribe",
             {
               id: product_data.id,
               name: product_data.name,
@@ -169,7 +170,7 @@
             }
           );
           const { data } = await axios.post(
-            "http://localhost:80/usersubscription",
+            "http://localhost:8080/usersubscription",
             {
               id: user.id,
               product_id: subscription_data.product_id,
@@ -196,7 +197,7 @@
         const { session, user } = JSON.parse(sessionStorage.getItem("user"));
 
         axios
-          .get(`http://localhost:80/usersubscription/${user.id}`, {
+          .get(`http://localhost:8080/usersubscription/${user.id}`, {
             headers: {
               Authorization: `Bearer ${session.access_token}`,
               refresh_token: session.refresh_token,
@@ -243,7 +244,7 @@
           confirmButtonText: "Ok",
         }).then((result) => {
           if (result.isConfirmed) {
-            window.location.href = "/frontend/Pages/login.html";
+            window.location.href = "../Pages/login.html";
           }
         });
       },
