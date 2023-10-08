@@ -1,12 +1,15 @@
-Comandos de Podman
+☁️Comandos de Docker/Podman🦫
 
-Inicializar la maquina:
+Para dependencias en docker:
+	docker pull postgres
+
+Inicializar la maquina (Podman):
 	podman machine init
 
-Iniciar la maquina:
+Iniciar la maquina (Podman):
 	podman machine start
 
-Crear un Pod
+Crear un Pod:
 	cd D:\Documents\GitHub\tattoo-shop-react
 	podman machine ssh sudo dnf upgrade -y
 	podman pod create --name tootienda -p 8080:80
@@ -18,26 +21,38 @@ Comprobar Conexión:
 	podman ps
 
 Proyecto por PODS:
-	Frontend:
+	➡️Frontend:
 	Windows: cd D:\Documents\GitHub\tattoo-shop-react\frontend
 	Linux:  cd /mnt/d/Documents/GitHub/tattoo-shop-react/frontend
+
+	☁️Para Docker
+	docker build -t frontend-app .
+	docker run -d --name frontend-container frontend-app
+
+	🦫Para Podman
 	podman build -t frontend-app .
 	podman run -d --pod tootienda --name frontend-container frontend-app
 	
-	Backend:
+	➡️Backend:
 	Windows: cd D:\Documents\GitHub\tattoo-shop-react\backend\backend
 	Linux: cd /mnt/d/Documents/GitHub/tattoo-shop-react/frontend/backend/backend
+
+	☁️Para Docker
+	docker build -t backend-app .
+	docker run -d --name backend-container backend-app
+
+	🦫Para Podman
 	podman build -t backend-app .
 	podman run -d --pod tootienda --name backend-container backend-app
 
 
 Proyecto por Separado:
-	Frontend:
+	➡️Frontend:
 	cd D:\Documents\GitHub\tattoo-shop-react\frontend
 	podman build -t frontend-app .
 	podman run -d --name frontend-container -p 8080:80 frontend-app
 	
-	Backend
+	➡️Backend
 	cd D:\Documents\GitHub\tattoo-shop-react\backend\backend
 	podman build -t backend-app .
 	podman run -d --name backend-container -p 3100:3000 backend-app
@@ -50,10 +65,21 @@ Proyecto por Separado:
 
 	podman run -e HTTP_PROXY=http://http://127.0.0.1/:8080 -d --name backend-proxy backend-app
 
-Base de Datos:
-
-	podman pod create -n mypod
-
-	podman-compose -p mypod -f podman-compose.yml up -d
+👨🏻‍💻 Base de Datos:
 	
-	podman ps -a --pod
+	# Get the code
+	git clone --depth 1 https://github.com/supabase/supabase
+
+	# Go to the docker folder
+	cd supabase/docker
+
+	# Copy the fake env vars
+	cp .env.example .env
+
+	# Pull the latest images
+	docker compose pull
+
+	# Start the services (in detached mode)
+	docker compose up -d
+
+	docker compose ps
