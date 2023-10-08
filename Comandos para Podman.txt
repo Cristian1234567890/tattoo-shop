@@ -49,3 +49,11 @@ Proyecto por Separado:
 	podman run -d --name backend-container --network mi_red -p 3000:80 backend-app
 
 	podman run -e HTTP_PROXY=http://http://127.0.0.1/:8080 -d --name backend-proxy backend-app
+
+Base de Datos:
+
+	podman pod create -n mypod
+
+	podman-compose -p mypod -f podman-compose.yml up -d
+	
+	podman ps -a --pod
