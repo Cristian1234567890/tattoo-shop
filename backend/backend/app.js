@@ -24,8 +24,8 @@ const mail = require("./mail");
 const app = express();
 app.use(express.json({ limit: "50mb" }));
 app.use(express.urlencoded({ limit: "50mb", extended: true }));
-//PUERTO 3000 o 80
-const PORT = 8080;
+//PUERTO 3000 o 80 --> Tenia el 8080
+const PORT = 3100;
 
 //Quitar los '/' del app.use que corresponda a una aplicación normal o docker
 //Normal

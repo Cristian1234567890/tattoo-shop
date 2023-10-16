@@ -48,14 +48,18 @@ Proyecto por PODS:
 
 Proyecto por Separado:
 	➡️Frontend:
-	cd D:\Documents\GitHub\tattoo-shop-react\frontend
+	Windows: cd D:\Documents\GitHub\tattoo-shop-react\frontend
+	Linux:  cd /mnt/d/Documents/GitHub/tattoo-shop-react/frontend
+	
 	podman build -t frontend-app .
 	podman run -d --name frontend-container -p 8080:80 frontend-app
 	
 	➡️Backend
-	cd D:\Documents\GitHub\tattoo-shop-react\backend\backend
+	Windows: cd D:\Documents\GitHub\tattoo-shop-react\backend\backend
+	Linux: cd /mnt/d/Documents/GitHub/tattoo-shop-react/frontend/backend/backend
+
 	podman build -t backend-app .
-	podman run -d --name backend-container -p 3100:3000 backend-app
+	podman run -d --name backend-container -p 3150:3100 backend-app
 
 	
 	EXTRA
@@ -66,7 +70,10 @@ Proyecto por Separado:
 	podman run -e HTTP_PROXY=http://http://127.0.0.1/:8080 -d --name backend-proxy backend-app
 
 👨🏻‍💻 Base de Datos:
-	
+
+	#
+	sudo apt-get -y install podman podman-docker docker-compose	
+
 	# Get the code
 	git clone --depth 1 https://github.com/supabase/supabase
 
@@ -76,7 +83,24 @@ Proyecto por Separado:
 	# Copy the fake env vars
 	cp .env.example .env
 
+	#
+	sudo nano /etc/containers/registries.conf
+	
+	#
+	unqualified-search-registries = ['docker.io']
+
+	[[registry]]
+	prefix = "docker.io"
+	location = "docker.io"
+
+	[[registry.mirror]]
+	prefix = "docker.io"
+	location = "docker.mirrors.ustc.edu.cn"
+	
+
 	# Pull the latest images
+	sudo docker-compose up
+
 	docker compose pull
 
 	# Start the services (in detached mode)
