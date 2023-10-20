@@ -1,7 +1,7 @@
 ☁️Comandos de Docker/Podman🦫
 
-Para dependencias en docker:
-	docker pull postgres
+Para dependencias en docker/podman:
+	docker pull postgres / podman pull postgres
 
 Inicializar la maquina (Podman):
 	podman machine init
@@ -83,7 +83,7 @@ Proyecto por Separado:
 	# Copy the fake env vars
 	cp .env.example .env
 
-	#
+	# In Linux is:
 	sudo nano /etc/containers/registries.conf
 	
 	#
@@ -107,3 +107,13 @@ Proyecto por Separado:
 	docker compose up -d
 
 	docker compose ps
+
+
+	# Adicional hay que configurar el .ENV con lo siguiente:
+	
+	POSTGRES_PASSWORD=your-super-secret-and-long-postgres-password
+	JWT_SECRET=your-super-secret-jwt-token-with-at-least-32-characters-long
+	ANON_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoiYW5vbiIsImlzcyI6InN1cGFiYXNlLWRlbW8iLCJpYXQiOjE2NDE3NjkyMDAsImV4cCI6MTc5OTUzNTYwMH0.zXImLM1HMNLjmESVlpgfmdcNMLrAmO_vsFKVZlQqgrU
+	SERVICE_ROLE_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoic2VydmljZV9yb2xlIiwiaXNzIjoic3VwYWJhc2UtZGVtbyIsImlhdCI6MTY0MTc2OTIwMCwiZXhwIjoxNzk5NTM1NjAwfQ.2skc3Gb_tjeZEEnOzyqlgMP0OD_OBCTzNJvzTSP-Ax8
+	DASHBOARD_USERNAME=supabase
+	DASHBOARD_PASSWORD=this_password_is_insecure_and_should_be_updated

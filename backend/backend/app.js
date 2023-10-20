@@ -25,7 +25,7 @@ const app = express();
 app.use(express.json({ limit: "50mb" }));
 app.use(express.urlencoded({ limit: "50mb", extended: true }));
 //PUERTO 3000 o 80 --> Tenia el 8080
-const PORT = 3100;
+const PORT = 3850;
 
 //Quitar los '/' del app.use que corresponda a una aplicación normal o docker
 //Normal
