@@ -1,0 +1,34 @@
+{
+  "name": "tattoo-shop-v2-e2e",
+  "version": "2.0.0",
+  "description": "Comprehensive 4-tier requirement-driven E2E test suite for Tattoo Shop V2",
+  "type": "module",
+  "main": "run_tests.ts",
+  "scripts": {
+    "test": "node --experimental-strip-types --no-warnings run_tests.ts",
+    "test:tsx": "npx tsx run_tests.ts",
+    "test:tier1": "node --experimental-strip-types --no-warnings run_tests.ts --tier 1",
+    "test:tier2": "node --experimental-strip-types --no-warnings run_tests.ts --tier 2",
+    "test:tier3": "node --experimental-strip-types --no-warnings run_tests.ts --tier 3",
+    "test:tier4": "node --experimental-strip-types --no-warnings run_tests.ts --tier 4",
+    "test:dom": "node --experimental-strip-types --no-warnings run_tests.ts --dom-only",
+    "test:build": "node --experimental-strip-types --no-warnings run_tests.ts --build-only",
+    "test:json": "node --experimental-strip-types --no-warnings run_tests.ts --json",
+    "test:list": "node --experimental-strip-types --no-warnings run_tests.ts --list",
+    "typecheck": "tsc --noEmit"
+  },
+  "keywords": [
+    "e2e",
+    "testing",
+    "tattoo-shop",
+    "integration",
+    "opaque-box"
+  ],
+  "author": "testwriter_e2e",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/node": "^22.10.2",
+    "tsx": "^4.19.2",
+    "typescript": "^5.7.2"
+  }
+}

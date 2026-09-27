@@ -1,0 +1,606 @@
+@import url("https://fonts.googleapis.com/css2?family=Inconsolata:wght@400;700&family=Open+Sans:wght@400;600;700&family=Quicksand:wght@600;700&family=Roboto:ital,wght@0,400;0,500;0,700;1,400;1,700&display=swap");
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  font-family: 'Roboto', sans-serif;
+  color-scheme: light dark;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  min-height: 100vh;
+  background-image: url("/assets/1403.jpg");
+  background-size: cover;
+  background-attachment: fixed;
+  animation: slidein 100s infinite alternate forwards;
+  color: #1a1a1a;
+}
+
+.dark body {
+  color: #f5f5f5;
+}
+
+@keyframes slidein {
+  from {
+    background-position: top;
+    background-size: 2000px;
+  }
+  to {
+    background-position: -100px 0px;
+    background-size: 1750px;
+  }
+}
+
+/* =========================================
+   Theme Switch: Animated Sun & Moon
+========================================= */
+.switch {
+  font-size: 17px;
+  position: relative;
+  display: inline-block;
+  width: 64px;
+  height: 34px;
+}
+
+.switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #73c0fc;
+  transition: 0.4s;
+  border-radius: 30px;
+}
+
+.slider:before {
+  position: absolute;
+  content: "";
+  height: 30px;
+  width: 30px;
+  border-radius: 20px;
+  left: 2px;
+  bottom: 2px;
+  z-index: 2;
+  background-color: #e8e8e8;
+  transition: 0.4s;
+}
+
+.sun svg {
+  position: absolute;
+  top: 6px;
+  left: 36px;
+  z-index: 1;
+  width: 24px;
+  height: 24px;
+  animation: rotate 15s linear infinite;
+}
+
+.moon svg {
+  fill: #73c0fc;
+  position: absolute;
+  top: 5px;
+  left: 5px;
+  z-index: 1;
+  width: 24px;
+  height: 24px;
+  animation: tilt 5s linear infinite;
+}
+
+@keyframes rotate {
+  0% { transform: rotate(0); }
+  100% { transform: rotate(360deg); }
+}
+
+@keyframes tilt {
+  0% { transform: rotate(0deg); }
+  25% { transform: rotate(-10deg); }
+  75% { transform: rotate(10deg); }
+  100% { transform: rotate(0deg); }
+}
+
+.input:checked + .slider {
+  background-color: #183153;
+}
+
+.input:focus + .slider {
+  box-shadow: 0 0 1px #183153;
+}
+
+.input:checked + .slider:before {
+  transform: translateX(30px);
+}
+
+/* =========================================
+   Artist Profile Card Styles
+========================================= */
+.profile-card {
+  width: 100%;
+  max-width: 525px;
+  min-height: 520px;
+  margin: auto;
+  box-shadow: 0px 8px 60px -10px rgba(13, 28, 39, 0.6);
+  background: #ffffff;
+  border-radius: 12px;
+  position: relative;
+  transition: all 0.3s;
+}
+
+.dark .profile-card {
+  background: #1e222d;
+  color: #f0f0f0;
+  box-shadow: 0px 8px 60px -10px rgba(0, 0, 0, 0.8);
+}
+
+.profile-card.active .profile-card__cnt {
+  filter: blur(6px);
+}
+
+.profile-card.active .profile-card-message,
+.profile-card.active .profile-card__overlay {
+  opacity: 1;
+  pointer-events: auto;
+  transition-delay: 0.1s;
+}
+
+.profile-card.active .profile-card-form {
+  transform: scale(1);
+  opacity: 1;
+}
+
+.profile-card__img {
+  width: 150px;
+  height: 150px;
+  margin-left: auto;
+  margin-right: auto;
+  transform: translateY(-50%);
+  border-radius: 50%;
+  overflow: hidden;
+  position: relative;
+  z-index: 4;
+  box-shadow: 0px 5px 50px 0px rgb(108, 68, 252), 0px 0px 0px 7px rgba(107, 74, 255, 0.5);
+  background-color: #111;
+}
+
+.profile-card__img img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 50%;
+}
+
+.profile-card__cnt {
+  margin-top: -55px;
+  text-align: center;
+  padding: 0 20px;
+  padding-bottom: 30px;
+  transition: all 0.3s;
+}
+
+.profile-card__name {
+  font-weight: 700;
+  font-size: 24px;
+  color: #6944ff;
+  margin-bottom: 8px;
+}
+
+.profile-card__txt {
+  font-size: 16px;
+  font-weight: 500;
+  color: #324e63;
+  margin-bottom: 15px;
+}
+
+.dark .profile-card__txt {
+  color: #9cb3c9;
+}
+
+.profile-card__txt strong {
+  font-weight: 700;
+}
+
+.profile-card-inf {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  margin-top: 25px;
+}
+
+.profile-card-inf__item {
+  padding: 8px 18px;
+  min-width: 110px;
+}
+
+.profile-card-inf__title {
+  font-weight: 700;
+  font-size: 22px;
+  color: #324e63;
+}
+
+.dark .profile-card-inf__title {
+  color: #e2e8f0;
+}
+
+.profile-card-inf__txt {
+  font-weight: 500;
+  font-size: 14px;
+  margin-top: 4px;
+  color: #555;
+}
+
+.dark .profile-card-inf__txt {
+  color: #a0aec0;
+}
+
+.profile-card-social {
+  margin-top: 15px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.profile-card-social__item {
+  display: inline-flex;
+  width: 44px;
+  height: 44px;
+  margin: 8px;
+  border-radius: 50%;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  background: #405de6;
+  box-shadow: 0px 7px 20px rgba(43, 98, 169, 0.5);
+  font-size: 18px;
+  transition: all 0.3s;
+}
+
+.profile-card-social__item:hover {
+  transform: scale(1.15);
+}
+
+.profile-card-social__item.facebook {
+  background: linear-gradient(45deg, #3b5998, #0078d7);
+}
+
+.profile-card-social__item.twitter {
+  background: linear-gradient(45deg, #1da1f2, #0e71c8);
+}
+
+.profile-card-social__item.instagram {
+  background: linear-gradient(45deg, #405de6, #5851db, #833ab4, #c13584, #e1306c, #fd1d1d);
+}
+
+.profile-card-social__item.link {
+  background: linear-gradient(45deg, #d5135a, #f05924);
+}
+
+.profile-card-ctr {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 25px;
+  gap: 12px;
+}
+
+.profile-card__button {
+  border: none;
+  font-family: "Quicksand", sans-serif;
+  font-weight: 700;
+  font-size: 16px;
+  padding: 12px 30px;
+  border-radius: 50px;
+  color: #fff;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.profile-card__button:hover {
+  transform: translateY(-2px);
+}
+
+.profile-card__button.button--blue {
+  background: linear-gradient(45deg, #1da1f2, #0e71c8);
+  box-shadow: 0px 4px 20px rgba(19, 127, 212, 0.4);
+}
+
+.profile-card__button.button--orange {
+  background: linear-gradient(45deg, #d5135a, #f05924);
+  box-shadow: 0px 4px 20px rgba(223, 45, 70, 0.35);
+}
+
+.profile-card__button.button--gray {
+  background: #dcdcdc;
+  color: #142029;
+}
+
+/* =========================================
+   Message Overlay on Artist Card
+========================================= */
+.profile-card-message {
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+  opacity: 0;
+  pointer-events: none;
+  transition: all 0.3s;
+  z-index: 10;
+}
+
+.profile-card__overlay {
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+  pointer-events: none;
+  opacity: 0;
+  background: rgba(22, 33, 72, 0.5);
+  border-radius: 12px;
+  transition: all 0.3s;
+}
+
+.profile-card-form {
+  box-shadow: 0 4px 30px rgba(15, 22, 56, 0.35);
+  width: 100%;
+  max-width: 440px;
+  background: #fff;
+  border-radius: 10px;
+  padding: 24px;
+  transform: scale(0.9);
+  position: relative;
+  z-index: 12;
+  transition: all 0.3s;
+}
+
+.dark .profile-card-form {
+  background: #252a38;
+  color: #fff;
+}
+
+.profile-card textarea {
+  width: 100%;
+  resize: none;
+  height: 75px;
+  margin-bottom: 8px;
+  border: 2px solid #dcdcdc;
+  border-radius: 10px;
+  padding: 10px 12px;
+  color: #324e63;
+  font-weight: 500;
+  font-family: "Roboto", sans-serif;
+  outline: none;
+}
+
+.dark .profile-card textarea {
+  background: #1a1e29;
+  border-color: #4a5568;
+  color: #e2e8f0;
+}
+
+.dragdrop {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  margin: 12px 0;
+}
+
+.dragdrop .draggable {
+  color: #333;
+  font-size: 13px;
+  margin-bottom: 5px;
+}
+
+.dark .dragdrop .draggable {
+  color: #cbd5e1;
+}
+
+.dragdrop .droppable {
+  color: #444;
+  width: 100%;
+  max-width: 320px;
+  height: 60px;
+  border: 2px dashed #999;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 13px;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.dark .dragdrop .droppable {
+  color: #94a3b8;
+  border-color: #64748b;
+}
+
+.profile-card-form__bottom {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: 15px;
+}
+
+/* =========================================
+   3D Credit Card Simulator Styles
+========================================= */
+.checkout {
+  margin: 120px auto 40px;
+  position: relative;
+  width: 100%;
+  max-width: 480px;
+  background: rgba(255, 255, 255, 0.96);
+  border-radius: 15px;
+  padding: 150px 35px 30px;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.25);
+}
+
+.dark .checkout {
+  background: rgba(26, 32, 44, 0.96);
+  color: #f7fafc;
+}
+
+.credit-card-box {
+  perspective: 1000px;
+  width: 380px;
+  height: 240px;
+  position: absolute;
+  top: -100px;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.credit-card-box.hover .flip,
+.credit-card-box:hover .flip {
+  transform: rotateY(180deg);
+}
+
+.credit-card-box .flip {
+  transition: 0.6s;
+  transform-style: preserve-3d;
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+.credit-card-box .front,
+.credit-card-box .back {
+  width: 380px;
+  height: 240px;
+  border-radius: 15px;
+  backface-visibility: hidden;
+  background-image: url("/assets/1571.jpg");
+  background-size: cover;
+  background-position: center;
+  position: absolute;
+  color: #fff;
+  font-family: 'Inconsolata', monospace;
+  top: 0;
+  left: 0;
+  text-shadow: 0 1px 1px rgba(0, 0, 0, 0.5);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
+  padding: 20px;
+}
+
+.credit-card-box .front {
+  z-index: 2;
+  transform: rotateY(0deg);
+}
+
+.credit-card-box .back {
+  transform: rotateY(180deg);
+  padding: 0;
+}
+
+.credit-card-box .chip {
+  position: absolute;
+  width: 52px;
+  height: 40px;
+  top: 25px;
+  left: 25px;
+  background: linear-gradient(135deg, #d3c4e3 0%, #b3d7ee 44%, #f8dfd8 100%);
+  border-radius: 6px;
+  box-shadow: inset 0 1px 2px rgba(0,0,0,0.2);
+}
+
+.credit-card-box .logo {
+  position: absolute;
+  top: 20px;
+  right: 25px;
+  width: 55px;
+}
+
+.credit-card-box .number {
+  position: absolute;
+  top: 100px;
+  left: 25px;
+  font-size: 22px;
+  letter-spacing: 2.5px;
+  font-weight: 700;
+}
+
+.credit-card-box .card-holder {
+  position: absolute;
+  bottom: 25px;
+  left: 25px;
+  text-transform: uppercase;
+  max-width: 200px;
+}
+
+.credit-card-box .card-holder label,
+.credit-card-box .card-expiration-date label {
+  display: block;
+  font-size: 10px;
+  opacity: 0.8;
+  letter-spacing: 1px;
+}
+
+.credit-card-box .card-holder div {
+  font-size: 15px;
+  font-weight: 600;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.credit-card-box .card-expiration-date {
+  position: absolute;
+  bottom: 25px;
+  right: 25px;
+  text-align: right;
+}
+
+.credit-card-box .card-expiration-date div {
+  font-size: 15px;
+  font-weight: 600;
+}
+
+.credit-card-box .back .strip {
+  background: #111;
+  height: 44px;
+  width: 100%;
+  margin-top: 30px;
+}
+
+.credit-card-box .back .ccv {
+  position: absolute;
+  top: 110px;
+  right: 30px;
+  text-align: right;
+}
+
+.credit-card-box .back .ccv label {
+  font-size: 10px;
+  display: block;
+  margin-bottom: 4px;
+}
+
+.credit-card-box .back .ccv div {
+  background: #fff;
+  color: #111;
+  padding: 4px 12px;
+  border-radius: 4px;
+  font-weight: 700;
+  font-size: 14px;
+  min-width: 60px;
+}
