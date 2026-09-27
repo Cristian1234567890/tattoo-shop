@@ -1,1 +1,125 @@
+# =====================================================================
+# Tattoo Shop - Global .gitignore
+# Excluye información sensitiva, credenciales, dependencias,
+# artefactos de compilación y archivos que no corresponden a git.
+# =====================================================================
+
+# ---------------------------------------------------------------------
+# 1. INFORMACIÓN SENSITIVA Y CREDENCIALES (NUNCA SUBIR AL REPOSITORIO)
+# ---------------------------------------------------------------------
+.env
+.env.*
+*.env
+!*.env.example
+!*.env.test.example
+
+# Archivos de respaldo de claves, tokens y variables de entorno
+DOTENV*
+DOTENV_Supabase.txt
+*.key
+*.pem
+*.cert
+*.crt
+*.pfx
+*.p12
+credentials.json
+*serviceAccount*.json
+*secret*.json
+secrets.json
+
+# Respaldos de base de datos y dumps con datos sensibles
+*.dump
+*.sql.dump
+*.backup
+*.bak
+
+# ---------------------------------------------------------------------
+# 2. DEPENDENCIAS (NODE / JS / NPM / YARN / PNPM)
+# ---------------------------------------------------------------------
 node_modules/
+**/node_modules/
+jspm_packages/
+web_modules/
+.pnp
+.pnp.js
+
+# Logs de gestores de paquetes y depuración
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+# ---------------------------------------------------------------------
+# 3. ARTEFACTOS DE COMPILACIÓN Y SALIDAS DE BUILD
+# ---------------------------------------------------------------------
+dist/
+**/dist/
+build/
+**/build/
+out/
+**/out/
+.next/
+.output/
+.turbo/
+*.tsbuildinfo
+.eslintcache
+.stylelintcache
+
+# ---------------------------------------------------------------------
+# 4. PRUEBAS, COBERTURA Y RESULTADOS TEMPORALES
+# ---------------------------------------------------------------------
+coverage/
+**/coverage/
+.nyc_output/
+*.lcov
+results.json
+**/results.json
+
+# ---------------------------------------------------------------------
+# 5. PLATAFORMAS EN LA NUBE Y DESPLIEGUE SERVERLESS
+# ---------------------------------------------------------------------
+.vercel/
+**/.vercel/
+.serverless/
+.firebase/
+
+# ---------------------------------------------------------------------
+# 6. CONFIGURACIONES DE ENTORNO Y EDITORES (IDE)
+# ---------------------------------------------------------------------
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+*.swo
+*.swn
+
+# ---------------------------------------------------------------------
+# 7. ARCHIVOS ESPECÍFICOS DEL SISTEMA OPERATIVO
+# ---------------------------------------------------------------------
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+
+# ---------------------------------------------------------------------
+# 8. AGENTES IA Y TEMPORALES DE DESARROLLO LOCAL
+# ---------------------------------------------------------------------
+.agent/
+.agents/teamwork/
+.gemini/
+scratch/

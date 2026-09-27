@@ -8,7 +8,8 @@ import {
   PayPalPlan,
   UserSubscriptionRecord,
   User,
-  Session
+  Session,
+  UserProfile
 } from '../types';
 
 export const API_BASE_URL =
@@ -76,8 +77,29 @@ class ApiClient {
     provincia?: string;
     ciudad?: string;
     direccion?: string;
+    legal_accepted?: boolean;
+    legal_accepted_at?: string;
   }): Promise<AuthResponse> {
     const res = await this.axiosInstance.post<AuthResponse>('/register', payload);
+    return res.data;
+  }
+
+  // 2.1 POST /complete-onboarding
+  async completeOnboarding(payload: {
+    role: 'Cliente' | 'Tatuador';
+    legal_accepted: boolean;
+    legal_accepted_at?: string;
+    full_name?: string;
+    phone_number?: string;
+    avatar_url?: string;
+  }): Promise<{ success: boolean; data?: any; error?: any }> {
+    const res = await this.axiosInstance.post('/complete-onboarding', payload);
+    return res.data;
+  }
+
+  // 2.2 GET /userprofile
+  async getUserProfile(): Promise<{ success: boolean; data?: UserProfile; error?: any }> {
+    const res = await this.axiosInstance.get('/userprofile');
     return res.data;
   }
 

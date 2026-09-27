@@ -1,0 +1,9 @@
+# Frontend V2 .gitignore
+node_modules/
+dist/
+build/
+.env
+.env.*
+!*.example
+.vercel/
+*.log

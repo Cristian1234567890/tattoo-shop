@@ -12,4 +12,12 @@ router.post('/updateuserimg', requireAuth, (req, res, next) => {
   userController.updateUserImg(req, res).catch(next);
 });
 
+router.post('/complete-onboarding', requireAuth, (req, res, next) => {
+  userController.completeOnboarding(req, res).catch(next);
+});
+
+router.get('/userprofile', requireAuth, (req, res, next) => {
+  userController.getUserProfile(req, res).catch(next);
+});
+
 export default router;

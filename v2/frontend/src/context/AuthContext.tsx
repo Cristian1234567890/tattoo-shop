@@ -1,6 +1,7 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { User, Session, UserMetadata } from '../types';
 import { api } from '../api/client';
+import { supabase } from '../api/supabase';
 
 interface AuthContextType {
   user: User | null;
@@ -20,12 +21,93 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [isLoading, setIsLoading] = useState<boolean>(true);
 
   useEffect(() => {
-    const stored = api.getStoredSession();
-    if (stored?.user && stored?.session) {
-      setUser(stored.user);
-      setSession(stored.session);
-    }
-    setIsLoading(false);
+    const syncUserProfile = async (currentUser: User) => {
+      try {
+        const res = await api.getUserProfile();
+        if (res.success && res.data) {
+          updateUserMetadata({
+            tipo: (res.data.role as any) || undefined,
+            role: (res.data.role as any) || undefined,
+            legal_accepted: res.data.legal_accepted,
+            legal_accepted_at: res.data.legal_accepted_at || undefined,
+            onboarding_completed: res.data.onboarding_completed,
+            full_name: res.data.full_name || undefined,
+            avatar_url: res.data.avatar_url || undefined,
+            phone_number: res.data.phone_number || undefined,
+            telefono: res.data.phone_number || undefined,
+          });
+          return;
+        }
+      } catch {}
+
+      // Fallback: direct Supabase query
+      try {
+        const { data: dbProfile } = await supabase
+          .from('user_profiles')
+          .select('*')
+          .eq('id', currentUser.id)
+          .maybeSingle();
+        if (dbProfile) {
+          updateUserMetadata({
+            tipo: dbProfile.role || undefined,
+            role: dbProfile.role || undefined,
+            legal_accepted: dbProfile.legal_accepted,
+            legal_accepted_at: dbProfile.legal_accepted_at || undefined,
+            onboarding_completed: dbProfile.onboarding_completed,
+            full_name: dbProfile.full_name || undefined,
+            avatar_url: dbProfile.avatar_url || undefined,
+            phone_number: dbProfile.phone_number || undefined,
+            telefono: dbProfile.phone_number || undefined,
+          });
+        }
+      } catch {}
+    };
+
+    // 1. Initialize session and sync profile before marking loading false
+    const initSession = async () => {
+      const stored = api.getStoredSession();
+      if (stored?.user && stored?.session) {
+        setUser(stored.user);
+        setSession(stored.session);
+        await syncUserProfile(stored.user);
+      }
+
+      try {
+        const { data: { session: supaSession } } = await supabase.auth.getSession();
+        if (supaSession?.user) {
+          const authUser = supaSession.user as any;
+          const authSession = supaSession as any;
+          setUser(authUser);
+          setSession(authSession);
+          api.setStoredSession({ user: authUser, session: authSession });
+          await syncUserProfile(authUser);
+        }
+      } catch {}
+
+      setIsLoading(false);
+    };
+
+    initSession();
+
+    // 3. Listen to Supabase auth state changes
+    const { data: authListener } = supabase.auth.onAuthStateChange((event, supaSession) => {
+      if (supaSession?.user && (event === 'SIGNED_IN' || event === 'TOKEN_REFRESHED' || event === 'USER_UPDATED')) {
+        const authUser = supaSession.user as any;
+        const authSession = supaSession as any;
+        setUser(authUser);
+        setSession(authSession);
+        api.setStoredSession({ user: authUser, session: authSession });
+        syncUserProfile(authUser);
+      } else if (event === 'SIGNED_OUT') {
+        setUser(null);
+        setSession(null);
+        api.clearStoredSession();
+      }
+    });
+
+    return () => {
+      authListener?.subscription?.unsubscribe();
+    };
   }, []);
 
   const login = (data: { user: User; session: Session }) => {
@@ -37,8 +119,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const logout = async () => {
     try {
       if (session?.access_token) {
-        await api.logout();
+        await api.logout().catch(() => {});
       }
+      await supabase.auth.signOut().catch(() => {});
     } catch (err) {
       console.error('Logout error:', err);
     } finally {
@@ -49,18 +132,23 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   };
 
   const updateUserMetadata = (metadata: Partial<UserMetadata>) => {
-    if (!user) return;
-    const updatedUser: User = {
-      ...user,
-      user_metadata: {
-        ...user.user_metadata,
-        ...metadata,
-      },
-    };
-    setUser(updatedUser);
-    if (session) {
-      api.setStoredSession({ user: updatedUser, session });
-    }
+    setUser((prevUser) => {
+      if (!prevUser) return null;
+      const updatedUser: User = {
+        ...prevUser,
+        user_metadata: {
+          ...prevUser.user_metadata,
+          ...metadata,
+        },
+      };
+      setSession((prevSession) => {
+        if (prevSession) {
+          api.setStoredSession({ user: updatedUser, session: prevSession });
+        }
+        return prevSession;
+      });
+      return updatedUser;
+    });
   };
 
   return (

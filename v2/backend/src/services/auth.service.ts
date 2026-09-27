@@ -174,6 +174,29 @@ export class AuthService {
       };
     }
 
+    // Rejection if client explicitly rejects or provides falsy legal acceptance
+    if (
+      dto.legal_accepted === false ||
+      String(dto.legal_accepted).toLowerCase() === 'false' ||
+      (dto.legal_accepted as any) === null ||
+      (dto.legal_accepted as any) === 0 ||
+      String(dto.legal_accepted) === '0'
+    ) {
+      return {
+        success: false,
+        error: {
+          message: 'Debes aceptar los Términos y Condiciones y la Política de Privacidad para registrarte',
+          status: 400,
+        },
+      };
+    }
+
+    const legal_accepted = dto.legal_accepted === true || String(dto.legal_accepted) === 'true';
+    const legal_accepted_at = legal_accepted
+      ? (dto.legal_accepted_at || new Date().toISOString())
+      : null;
+    const onboarding_completed = legal_accepted;
+
     const userMetadata = {
       nombre,
       apellido,
@@ -184,6 +207,9 @@ export class AuthService {
       ciudad,
       direccion,
       profile: defaultProfileUrl,
+      legal_accepted,
+      legal_accepted_at,
+      onboarding_completed,
     };
 
     // Use admin.createUser with email_confirm: true to avoid public email rate-limiting
@@ -211,6 +237,27 @@ export class AuthService {
     }
 
     const user = createData.user;
+
+    // Persist into public.user_profiles
+    if (user) {
+      const profileData = {
+        id: user.id,
+        role: tipo,
+        legal_accepted,
+        legal_accepted_at,
+        full_name: `${nombre} ${apellido}`.trim() || email.split('@')[0],
+        avatar_url: defaultProfileUrl,
+        phone_number: telefono || null,
+        is_verified: false,
+        onboarding_completed,
+      };
+
+      try {
+        await supabaseAdmin.from('user_profiles').upsert(profileData);
+      } catch (errProfile: any) {
+        console.warn('Note: user_profiles upsert in signUp:', errProfile?.message || errProfile);
+      }
+    }
 
     // Auto-create artist profile if role is Tatuador
     if (tipo === 'Tatuador' && user) {

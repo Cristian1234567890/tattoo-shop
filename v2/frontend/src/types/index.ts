@@ -12,10 +12,11 @@ export type TattooStyle =
   | 'acuarela';
 
 export interface UserMetadata {
-  nombre: string;
-  apellido: string;
-  edad: string;
-  tipo: UserRole;
+  nombre?: string;
+  apellido?: string;
+  edad?: string;
+  tipo?: UserRole;
+  role?: UserRole;
   telefono?: string;
   provincia?: string;
   ciudad?: string;
@@ -26,6 +27,15 @@ export interface UserMetadata {
   twitter?: string;
   instagram?: string;
   link?: string;
+  legal_accepted?: boolean;
+  legal_accepted_at?: string;
+  onboarding_completed?: boolean;
+  full_name?: string;
+  avatar_url?: string;
+  phone_number?: string;
+  name?: string;
+  picture?: string;
+  [key: string]: any;
 }
 
 export interface User {
@@ -113,4 +123,18 @@ export interface UserSubscriptionRecord {
   id: string;
   product_id: string;
   subscription_id: string;
+}
+
+export interface UserProfile {
+  id: string;
+  role?: UserRole | null;
+  legal_accepted: boolean;
+  legal_accepted_at?: string | null;
+  full_name?: string | null;
+  avatar_url?: string | null;
+  phone_number?: string | null;
+  is_verified?: boolean;
+  onboarding_completed: boolean;
+  created_at?: string;
+  updated_at?: string;
 }

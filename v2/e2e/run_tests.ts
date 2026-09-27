@@ -19,6 +19,7 @@ import { registerGalleryEndpointsTests } from './tier1_feature_coverage/test_gal
 import { registerSubscriptionEndpointsTests } from './tier1_feature_coverage/test_subscription_endpoints.ts';
 import { registerMailEndpointsTests } from './tier1_feature_coverage/test_mail_endpoints.ts';
 import { registerFrontendInteractionsTests } from './tier1_feature_coverage/test_frontend_interactions.ts';
+import { registerAuthOnboardingLegalTests } from './tier1_feature_coverage/test_auth_onboarding_legal.ts';
 
 import { registerMissingHeadersTests } from './tier2_boundary_corner/test_missing_headers.ts';
 import { registerInvalidTypesTests } from './tier2_boundary_corner/test_invalid_types_malformed.ts';
@@ -47,6 +48,7 @@ function registerAllSuites(client: ApiClient, validator: DomValidator) {
   registerSubscriptionEndpointsTests(client);
   registerMailEndpointsTests(client);
   registerFrontendInteractionsTests(validator);
+  registerAuthOnboardingLegalTests(validator, client);
 
   // Tier 2
   registerMissingHeadersTests(client);
@@ -133,11 +135,13 @@ async function main() {
     registerFrontendBuildTests(validator);
     registerDomStructureTests(validator);
     registerFrontendInteractionsTests(validator);
+    registerAuthOnboardingLegalTests(validator);
   } else if (!isOnline && !forceAll) {
     // When offline, execute frontend and DOM tests and structural validation
     registerFrontendInteractionsTests(validator);
     registerDomStructureTests(validator);
     registerFrontendBuildTests(validator);
+    registerAuthOnboardingLegalTests(validator);
   } else {
     // When online (or forceAll), register full 4-tier E2E suite
     registerAllSuites(client, validator);

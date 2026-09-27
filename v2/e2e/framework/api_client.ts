@@ -146,6 +146,14 @@ export class ApiClient {
     return this.request('/updateuserimg', { method: 'POST', body, headers: authHeaders });
   }
 
+  async completeOnboarding(body: any, authHeaders?: Record<string, string>) {
+    return this.request('/complete-onboarding', { method: 'POST', body, headers: authHeaders });
+  }
+
+  async getUserProfile(authHeaders?: Record<string, string>) {
+    return this.request('/userprofile', { method: 'GET', headers: authHeaders });
+  }
+
   // Artist Gallery
   async getTatto(authHeaders?: Record<string, string>) {
     return this.request('/gettatto', { method: 'GET', headers: authHeaders });

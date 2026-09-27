@@ -2,7 +2,7 @@ import { decode } from 'base64-arraybuffer';
 import { User } from '@supabase/supabase-js';
 import { supabaseAdmin, createScopedClient } from '../config/supabase';
 import { ApiResponse } from '../types/api.types';
-import { UpdateUserDTO } from '../types/auth.types';
+import { UpdateUserDTO, CompleteOnboardingDTO } from '../types/auth.types';
 
 export class UserService {
   async updateUser(
@@ -75,6 +75,31 @@ export class UserService {
       if (error_update) {
         return { success: false, error_update };
       }
+    }
+
+    // Synchronize public.user_profiles
+    const profileUpdates: any = {
+      id: user.id,
+      updated_at: new Date().toISOString(),
+    };
+    const candidateRole = userData.role || userData.tipo;
+    if (candidateRole === 'Cliente' || candidateRole === 'Tatuador') {
+      profileUpdates.role = candidateRole;
+    }
+    if (userData.legal_accepted !== undefined) profileUpdates.legal_accepted = userData.legal_accepted;
+    if (userData.legal_accepted_at !== undefined) profileUpdates.legal_accepted_at = userData.legal_accepted_at;
+    if (userData.full_name || userData.nombre) {
+      profileUpdates.full_name = userData.full_name || `${userData.nombre || ''} ${userData.apellido || ''}`.trim();
+    }
+    if (userData.profile || userData.avatar_url) profileUpdates.avatar_url = userData.profile || userData.avatar_url;
+    if (userData.telefono || userData.phone_number) profileUpdates.phone_number = userData.telefono || userData.phone_number;
+    if (userData.onboarding_completed !== undefined) profileUpdates.onboarding_completed = userData.onboarding_completed;
+    if (userData.is_verified !== undefined) profileUpdates.is_verified = userData.is_verified;
+
+    try {
+      await supabaseAdmin.from('user_profiles').upsert(profileUpdates);
+    } catch (errUp: any) {
+      console.warn('Note: user_profiles upsert in updateUser:', errUp?.message || errUp);
     }
 
     return {
@@ -205,6 +230,163 @@ export class UserService {
     }
 
     return { success: true };
+  }
+
+  async completeOnboarding(
+    dto: CompleteOnboardingDTO,
+    user: User,
+    token: string,
+    refresh?: string
+  ): Promise<ApiResponse> {
+    if (!dto.role || (dto.role !== 'Cliente' && dto.role !== 'Tatuador')) {
+      return {
+        success: false,
+        error: { message: 'El rol debe ser Cliente o Tatuador', status: 400 },
+      };
+    }
+
+    if (dto.legal_accepted !== true && String(dto.legal_accepted) !== 'true') {
+      return {
+        success: false,
+        error: { message: 'Debes aceptar los Términos y Condiciones y la Política de Privacidad', status: 400 },
+      };
+    }
+
+    // Preserve existing legal acceptance audit timestamp if user already accepted terms
+    let legal_accepted_at: string | null = null;
+    if (user.user_metadata?.legal_accepted === true && user.user_metadata?.legal_accepted_at) {
+      legal_accepted_at = user.user_metadata.legal_accepted_at;
+    } else {
+      try {
+        const { data: existingProfile } = await supabaseAdmin
+          .from('user_profiles')
+          .select('legal_accepted, legal_accepted_at')
+          .eq('id', user.id)
+          .maybeSingle();
+        if (existingProfile?.legal_accepted && existingProfile?.legal_accepted_at) {
+          legal_accepted_at = existingProfile.legal_accepted_at;
+        }
+      } catch {}
+    }
+
+    if (!legal_accepted_at) {
+      legal_accepted_at = dto.legal_accepted_at || new Date().toISOString();
+    }
+    const fullName = dto.full_name?.trim() || user.user_metadata?.full_name || user.user_metadata?.name || user.email?.split('@')[0] || '';
+    const avatarUrl = dto.avatar_url || user.user_metadata?.avatar_url || user.user_metadata?.picture || user.user_metadata?.profile || '';
+    const phoneNumber = dto.phone_number || user.user_metadata?.telefono || user.user_metadata?.phone_number || null;
+
+    const profileData = {
+      id: user.id,
+      role: dto.role,
+      legal_accepted: true,
+      legal_accepted_at,
+      full_name: fullName,
+      avatar_url: avatarUrl,
+      phone_number: phoneNumber,
+      is_verified: false,
+      onboarding_completed: true,
+      updated_at: new Date().toISOString(),
+    };
+
+    try {
+      await supabaseAdmin.from('user_profiles').upsert(profileData);
+    } catch (err: any) {
+      console.warn('Note: user_profiles upsert in completeOnboarding:', err?.message || err);
+    }
+
+    // Update user auth metadata
+    const updatedMetadata = {
+      ...(user.user_metadata || {}),
+      tipo: dto.role,
+      role: dto.role,
+      legal_accepted: true,
+      legal_accepted_at,
+      full_name: fullName,
+      avatar_url: avatarUrl,
+      telefono: phoneNumber,
+      onboarding_completed: true,
+    };
+
+    try {
+      await supabaseAdmin.auth.admin.updateUserById(user.id, {
+        user_metadata: updatedMetadata,
+      });
+    } catch (errMeta: any) {
+      console.warn('Note: auth.admin.updateUserById in completeOnboarding:', errMeta?.message || errMeta);
+    }
+
+    // If role is Tatuador, ensure initial artist data exists in tatuadores_data
+    if (dto.role === 'Tatuador') {
+      const data_to_insert = {
+        email: user.email,
+        nombre: fullName.split(' ')[0] || '',
+        apellido: fullName.split(' ').slice(1).join(' ') || '',
+        work_type: '',
+        telefono: phoneNumber || '',
+        provincia: '',
+        ciudad: '',
+        direccion: '',
+        facebook: '',
+        twitter: '',
+        instagram: '',
+        link: '',
+        profile: avatarUrl || '',
+      };
+
+      try {
+        await supabaseAdmin.from('tatuadores_data').upsert({ id: user.id, data: data_to_insert });
+      } catch (errArt: any) {
+        console.warn('Note: tatuadores_data upsert in completeOnboarding:', errArt?.message || errArt);
+      }
+    }
+
+    return {
+      success: true,
+      data: {
+        profile: profileData,
+        user: {
+          ...user,
+          user_metadata: updatedMetadata,
+        },
+      },
+    };
+  }
+
+  async getUserProfile(user: User): Promise<ApiResponse> {
+    try {
+      const { data, error } = await supabaseAdmin
+        .from('user_profiles')
+        .select('*')
+        .eq('id', user.id)
+        .maybeSingle();
+
+      if (!error && data) {
+        return {
+          success: true,
+          data,
+        };
+      }
+    } catch (err) {
+      // Fallback to metadata
+    }
+
+    const fallbackProfile = {
+      id: user.id,
+      role: user.user_metadata?.tipo || user.user_metadata?.role || null,
+      legal_accepted: !!user.user_metadata?.legal_accepted,
+      legal_accepted_at: user.user_metadata?.legal_accepted_at || null,
+      full_name: user.user_metadata?.full_name || `${user.user_metadata?.nombre || ''} ${user.user_metadata?.apellido || ''}`.trim() || user.email?.split('@')[0],
+      avatar_url: user.user_metadata?.avatar_url || user.user_metadata?.picture || user.user_metadata?.profile || null,
+      phone_number: user.user_metadata?.telefono || user.user_metadata?.phone_number || null,
+      is_verified: false,
+      onboarding_completed: !!user.user_metadata?.onboarding_completed,
+    };
+
+    return {
+      success: true,
+      data: fallbackProfile,
+    };
   }
 }
 

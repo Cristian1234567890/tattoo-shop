@@ -5,6 +5,9 @@ import { OffCanvasMenu } from '../components/dashboard/OffCanvasMenu';
 import { SvgIcons } from '../components/common/SvgIcons';
 import { TattooArtistCard } from '../types';
 import { api } from '../api/client';
+import { useAuth } from '../context/AuthContext';
+import { OnboardingModal } from '../components/auth/OnboardingModal';
+import { SubscriptionNoticeModal } from '../components/auth/SubscriptionNoticeModal';
 
 export const DashboardPage: React.FC = () => {
   const [artists, setArtists] = useState<TattooArtistCard[]>([]);
@@ -13,8 +16,44 @@ export const DashboardPage: React.FC = () => {
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string>('');
 
+  const { user, isLoading: authLoading } = useAuth();
+  const [showOnboarding, setShowOnboarding] = useState<boolean>(false);
+  const [showArtistNotice, setShowArtistNotice] = useState<boolean>(false);
+
+  useEffect(() => {
+    if (!authLoading && user) {
+      const meta = user.user_metadata || {};
+      const normalizedRole = (meta.tipo || meta.role || '').toLowerCase();
+      const hasValidRole = normalizedRole === 'cliente' || normalizedRole === 'tatuador';
+      const hasCompletedOnboarding =
+        meta.onboarding_completed === true &&
+        meta.legal_accepted === true &&
+        hasValidRole;
+
+      if (!hasCompletedOnboarding) {
+        setShowOnboarding(true);
+      } else {
+        setShowOnboarding(false);
+      }
+    } else {
+      setShowOnboarding(false);
+    }
+  }, [user, authLoading]);
+
+  const handleOnboardingCompleted = (selectedRole?: string) => {
+    setShowOnboarding(false);
+    const meta = user?.user_metadata || {};
+    const finalRole = selectedRole || meta.tipo || meta.role;
+    if (finalRole === 'Tatuador') {
+      setShowArtistNotice(true);
+    }
+  };
+
   useEffect(() => {
     fetchArtists();
+    if (window.location.hash && window.location.hash.includes('access_token')) {
+      window.history.replaceState(null, '', window.location.pathname + window.location.search);
+    }
   }, []);
 
   const fetchArtists = async () => {
@@ -120,6 +159,20 @@ export const DashboardPage: React.FC = () => {
           )}
         </div>
       </div>
+
+      {user && (
+        <OnboardingModal
+          isOpen={showOnboarding}
+          user={user}
+          onCompleted={handleOnboardingCompleted}
+        />
+      )}
+
+      <SubscriptionNoticeModal
+        isOpen={showArtistNotice}
+        onContinue={() => setShowArtistNotice(false)}
+        onCancel={() => setShowArtistNotice(false)}
+      />
     </div>
   );
 };

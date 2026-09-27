@@ -32,3 +32,51 @@ Refactorizar la API REST utilizando TypeScript. Mantener la lógica de negocio, 
 
 ### Backend Verification
 - [ ] Un agente auditor independiente crea y ejecuta scripts o llamadas `cURL` contra la nueva API y confirma explícitamente que el comportamiento, parámetros esperados y respuestas de los endpoints son idénticos a los definidos en el backend original.
+
+## Follow-up — 2026-09-27T05:40:05Z
+
+# Teamwork Project Prompt — Draft
+
+> Status: Launched
+> Goal: Craft prompt → get user approval → delegate to teamwork_preview
+> Requested team: Small focused team
+
+This is a single self-contained fix; keep it small and focused.
+
+El objetivo es corregir el enrutamiento post-login (Google y Manual) hacia `/user` de forma dinámica para evitar saltos a `localhost` en producción, e implementar la aceptación obligatoria de los Términos y Condiciones para todos los usuarios nuevos.
+
+Working directory: c:\Users\giova\OneDrive\Documentos\proyectos\tattoo-shop\v2
+Integrity mode: development
+
+## Requirements
+
+### R1. Corrección de Redirecciones (Google y Manual)
+El botón de "Continuar con Google" y el login manual deben redirigir al usuario correctamente a la ruta `/user` (Dashboard principal) usando el origen dinámico de la ventana (`window.location.origin`).
+
+### R2. Aceptación Legal en Registro Manual
+La página de registro (`v2/frontend/src/pages/RegisterPage.tsx`) debe incluir casillas de verificación obligatorias para los Términos y Privacidad. Estos datos deben enviarse al backend para quedar registrados.
+
+### R3. Onboarding Interceptado para Google Auth (OAuth)
+Dado que Google Auth crea la cuenta automáticamente sin preguntar detalles, la interfaz debe detectar si es el primer inicio de sesión del usuario. De ser así, debe mostrar un flujo de "Completar Perfil" obligatorio donde el usuario:
+1. Elija su tipo de cuenta (Cliente o Tatuador).
+2. Lea y acepte los Términos y Condiciones mediante checkboxes.
+
+### R4. Registro en Base de Datos (Auditoría Legal y Rol)
+Se debe crear un mecanismo en Supabase (una migración SQL para la tabla `public.user_profiles` vinculada a `auth.users`) que almacene:
+- `id` (uuid referenciando a auth.users)
+- `role` (Cliente o Tatuador)
+- `legal_accepted` (boolean)
+- `legal_accepted_at` (timestamp, indicando la fecha exacta de aceptación)
+- `full_name` (text, obtenido de Google o registro manual)
+- `avatar_url` (text, para fotos de perfil)
+- `phone_number` (text)
+- `is_verified` (boolean, default false)
+- `onboarding_completed` (boolean, para saber si ya pasó la pantalla inicial)
+
+## Acceptance Criteria
+
+### Verificación de Frontend y Base de Datos
+- [ ] La redirección a `window.location.origin + '/user'` se ejecuta dinámicamente, sin ir a `localhost` en Vercel.
+- [ ] El flujo de Google Auth detiene a los usuarios nuevos, exigiéndoles seleccionar su rol y aceptar términos.
+- [ ] Tras el registro (Google o Manual), la base de datos de Supabase refleja exitosamente el rol elegido, los metadatos y la marca de tiempo exacta de cuando el usuario aceptó los documentos legales.
+

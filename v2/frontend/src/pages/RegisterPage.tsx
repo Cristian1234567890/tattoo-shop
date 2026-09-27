@@ -15,6 +15,8 @@ export const RegisterPage: React.FC = () => {
   const [password, setPassword] = useState<string>('');
   const [confirmPassword, setConfirmPassword] = useState<string>('');
   const [tipo, setTipo] = useState<'Cliente' | 'Tatuador' | ''>('');
+  const [termsAccepted, setTermsAccepted] = useState<boolean>(false);
+  const [privacyAccepted, setPrivacyAccepted] = useState<boolean>(false);
 
   const [loading, setLoading] = useState<boolean>(false);
   const [errorMsg, setErrorMsg] = useState<string>('');
@@ -48,10 +50,15 @@ export const RegisterPage: React.FC = () => {
       setErrorMsg('Por favor selecciona tu rol (Cliente o Tatuador).');
       return;
     }
+    if (!termsAccepted || !privacyAccepted) {
+      setErrorMsg('Debes leer y aceptar los Términos y Condiciones y la Política de Privacidad.');
+      return;
+    }
 
     setLoading(true);
 
     try {
+      const legalTimestamp = new Date().toISOString();
       // 1. POST /register
       const registerRes = await api.register({
         email,
@@ -60,6 +67,8 @@ export const RegisterPage: React.FC = () => {
         apellido,
         edad,
         tipo,
+        legal_accepted: true,
+        legal_accepted_at: legalTimestamp,
       });
 
       if (!registerRes.success || !registerRes.data) {
@@ -257,14 +266,65 @@ export const RegisterPage: React.FC = () => {
                     <option value="Tatuador">Tatuador 😎</option>
                   </select>
                 </div>
+
+                {/* Legal Acceptance Checkboxes (R2) */}
+                <div className="pt-2 space-y-3">
+                  <label className="flex items-start gap-3 cursor-pointer text-sm text-gray-700 dark:text-gray-300">
+                    <input
+                      type="checkbox"
+                      id="termsCheckbox"
+                      name="termsAccepted"
+                      required
+                      checked={termsAccepted}
+                      onChange={(e) => setTermsAccepted(e.target.checked)}
+                      className="mt-1 h-4 w-4 rounded border-gray-300 text-primary focus:ring-primary"
+                    />
+                    <span>
+                      Acepto los{' '}
+                      <Link
+                        to="/legal/terms"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="font-medium text-primary hover:underline"
+                      >
+                        Términos y Condiciones
+                      </Link>{' '}
+                      del servicio.
+                    </span>
+                  </label>
+
+                  <label className="flex items-start gap-3 cursor-pointer text-sm text-gray-700 dark:text-gray-300">
+                    <input
+                      type="checkbox"
+                      id="privacyCheckbox"
+                      name="privacyAccepted"
+                      required
+                      checked={privacyAccepted}
+                      onChange={(e) => setPrivacyAccepted(e.target.checked)}
+                      className="mt-1 h-4 w-4 rounded border-gray-300 text-primary focus:ring-primary"
+                    />
+                    <span>
+                      Acepto la{' '}
+                      <Link
+                        to="/legal/privacy"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="font-medium text-primary hover:underline"
+                      >
+                        Política de Privacidad
+                      </Link>{' '}
+                      y el tratamiento de mis datos personales.
+                    </span>
+                  </label>
+                </div>
               </div>
 
               <br />
               <button
                 type="submit"
-                className="submit w-full py-3 bg-primary hover:bg-primary-hover text-white font-bold rounded-lg transition duration-200 shadow-lg cursor-pointer"
+                className="submit w-full py-3 bg-primary hover:bg-primary-hover disabled:opacity-50 text-white font-bold rounded-lg transition duration-200 shadow-lg cursor-pointer"
                 id="btn-submit"
-                disabled={loading}
+                disabled={loading || !termsAccepted || !privacyAccepted}
               >
                 {loading ? 'Registrando...' : 'Registrar'}
               </button>
