@@ -114,11 +114,12 @@ export const RegisterPage: React.FC = () => {
 
   const finishRegistration = (data: any) => {
     login(data);
-    if (tipo === 'Tatuador') {
-      // Optional: trigger PayPal initialization if needed
-      navigate('/subscription/creditcard');
+    const userRole = tipo || data?.user?.user_metadata?.tipo || data?.user?.user_metadata?.role;
+    if (userRole === 'Tatuador') {
+      // 90-day trial is automatically active upon registration
+      navigate('/artist-dashboard');
     } else {
-      navigate('/user');
+      navigate('/client-dashboard');
     }
   };
 

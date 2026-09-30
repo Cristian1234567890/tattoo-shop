@@ -39,6 +39,24 @@ export class SubscriptionService {
     if (error) {
       return { success: false, error };
     }
+    
+    // Also update the user_profiles table and user_metadata
+    await supabaseAdmin
+      .from('user_profiles')
+      .update({
+        has_active_subscription: true,
+        paypal_subscription_id: subscription_id,
+        updated_at: new Date().toISOString(),
+      })
+      .eq('id', id);
+
+    try {
+      await supabaseAdmin.auth.admin.updateUserById(id, {
+        user_metadata: {
+          has_active_subscription: true,
+        },
+      });
+    } catch {}
 
     return { success: true, data: data || [] };
   }

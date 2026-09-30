@@ -1,7 +1,10 @@
 import React, { useState, useRef } from 'react';
 import { Link } from 'react-router-dom';
+import { useAuth } from '../../context/AuthContext';
+import { api } from '../../api/client';
 
 export const InteractiveCard: React.FC = () => {
+  const { user, updateUserMetadata, refreshProfile } = useAuth();
   const [num0, setNum0] = useState<string>('');
   const [num1, setNum1] = useState<string>('');
   const [num2, setNum2] = useState<string>('');
@@ -12,6 +15,7 @@ export const InteractiveCard: React.FC = () => {
   const [ccv, setCcv] = useState<string>('');
   const [isFlipped, setIsFlipped] = useState<boolean>(false);
   const [submitted, setSubmitted] = useState<boolean>(false);
+  const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
 
   const input1Ref = useRef<HTMLInputElement>(null);
   const input2Ref = useRef<HTMLInputElement>(null);
@@ -37,8 +41,29 @@ export const InteractiveCard: React.FC = () => {
     }
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setIsSubmitting(true);
+
+    if (user?.id) {
+      try {
+        await api.insertUserSubscription({
+          id: user.id,
+          product_id: 'PROD-MONTHLY',
+          subscription_id: `SUB-CARD-${Date.now()}`,
+        });
+        updateUserMetadata({
+          has_active_subscription: true,
+        });
+        if (refreshProfile) {
+          await refreshProfile().catch(() => {});
+        }
+      } catch (err) {
+        console.error('Error activating subscription on backend:', err);
+      }
+    }
+
+    setIsSubmitting(false);
     setSubmitted(true);
   };
 
@@ -213,14 +238,31 @@ export const InteractiveCard: React.FC = () => {
             />
           </fieldset>
 
-          <button type="submit" className="btn cursor-pointer">
-            <i className="fa fa-lock mr-2"></i>Listo
+          <button type="submit" disabled={isSubmitting} className="btn cursor-pointer">
+            <i className="fa fa-lock mr-2"></i>{isSubmitting ? 'Procesando...' : 'Listo'}
           </button>
         </form>
 
         {submitted && (
-          <div className="mt-4 p-3 bg-green-500/10 border border-green-500 rounded text-center text-green-700 dark:text-green-300 font-semibold text-sm">
-            ¡Tarjeta simulada validada exitosamente!
+          <div className="mt-4 p-4 bg-green-500/15 border border-green-500 rounded-xl text-center text-green-700 dark:text-green-300 font-semibold text-sm">
+            <p className="mb-2">¡Tarjeta simulada validada exitosamente y suscripción activada!</p>
+            {user ? (
+              <Link
+                to={((user.user_metadata?.tipo || user.user_metadata?.role || '').toLowerCase() === 'tatuador') ? '/artist-dashboard' : '/client-dashboard'}
+                className="inline-block mt-1 px-4 py-2 bg-primary hover:bg-primary-hover text-white text-xs font-bold rounded-lg transition"
+              >
+                {((user.user_metadata?.tipo || user.user_metadata?.role || '').toLowerCase() === 'tatuador')
+                  ? 'Ir a mi Panel de Artista'
+                  : 'Ir a mi Panel VIP'}
+              </Link>
+            ) : (
+              <Link
+                to="/login"
+                className="inline-block mt-1 px-4 py-2 bg-primary hover:bg-primary-hover text-white text-xs font-bold rounded-lg transition"
+              >
+                Iniciar Sesión
+              </Link>
+            )}
           </div>
         )}
       </div>

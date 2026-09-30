@@ -13,7 +13,10 @@ export const OffCanvasMenu: React.FC = () => {
     ? `${metadata.nombre} ${metadata.apellido || ''}`
     : user?.email || 'Prueba Usuario';
   const profilePic = metadata?.profile || '/assets/Tattoo Machine Rotary.png';
-  const profileUrl = metadata?.tipo === 'Tatuador' ? '/tattoo' : '/profile';
+  const isArtist = metadata?.tipo === 'Tatuador' || metadata?.role === 'Tatuador';
+  const profileUrl = isArtist ? '/tattoo' : '/profile';
+  const dashboardUrl = isArtist ? '/artist-dashboard' : '/client-dashboard';
+  const dashboardLabel = isArtist ? '🎨 Panel de Artista' : '📊 Mi Panel (Cliente)';
 
   const handleLogout = async (e: React.MouseEvent) => {
     e.preventDefault();
@@ -81,12 +84,30 @@ export const OffCanvasMenu: React.FC = () => {
           <ul className="space-y-3">
             <li>
               <Link
+                to={dashboardUrl}
+                className="list flex items-center gap-3 text-base font-medium text-gray-800 dark:text-gray-200 hover:text-primary dark:hover:text-primary transition p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800"
+                onClick={() => setIsOpen(false)}
+              >
+                {dashboardLabel}
+              </Link>
+            </li>
+            <li>
+              <Link
                 to={profileUrl}
                 className="list flex items-center gap-3 text-base font-medium text-gray-800 dark:text-gray-200 hover:text-primary dark:hover:text-primary transition p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800"
                 id="profile-link"
                 onClick={() => setIsOpen(false)}
               >
                 👤 Perfil
+              </Link>
+            </li>
+            <li>
+              <Link
+                to="/hub"
+                className="flex items-center gap-3 text-base font-medium text-gray-800 dark:text-gray-200 hover:text-primary dark:hover:text-primary transition p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800"
+                onClick={() => setIsOpen(false)}
+              >
+                🗺️ Mapa de Artistas
               </Link>
             </li>
             <li>

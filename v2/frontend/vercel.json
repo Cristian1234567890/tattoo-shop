@@ -1,4 +1,5 @@
 {
+  "name": "tattoo-hub",
   "framework": "vite",
   "rewrites": [{ "source": "/(.*)", "destination": "/index.html" }]
 }

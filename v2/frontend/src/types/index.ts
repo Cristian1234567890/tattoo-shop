@@ -11,6 +11,22 @@ export type TattooStyle =
   | 'tribal'
   | 'acuarela';
 
+export interface NotificationPreferences {
+  email_appointments: boolean;
+  email_chat: boolean;
+  email_care_reminders: boolean;
+  email_promotions: boolean;
+  inapp_sounds: boolean;
+  inapp_browser_push: boolean;
+  inapp_upcoming_alerts: boolean;
+}
+
+export interface PrivacySettings {
+  profile_public: boolean;
+  share_progress_with_artists: boolean;
+  allow_marketing_analytics: boolean;
+}
+
 export interface UserMetadata {
   nombre?: string;
   apellido?: string;
@@ -21,6 +37,10 @@ export interface UserMetadata {
   provincia?: string;
   ciudad?: string;
   direccion?: string;
+  country?: string;
+  city?: string;
+  phone_prefix?: string;
+  whatsapp_number?: string;
   profile?: string;
   work_type?: string;
   facebook?: string;
@@ -35,6 +55,14 @@ export interface UserMetadata {
   phone_number?: string;
   name?: string;
   picture?: string;
+  has_active_subscription?: boolean;
+  is_trial_active?: boolean;
+  trial_days_remaining?: number;
+  trial_expired?: boolean;
+  days_active?: number;
+  notification_preferences?: NotificationPreferences;
+  preferred_language?: 'es' | 'en';
+  privacy_settings?: PrivacySettings;
   [key: string]: any;
 }
 
@@ -86,6 +114,9 @@ export interface ArtistProfileData {
   apellido: string;
   work_type: string;
   telefono?: string;
+  phone_prefix?: string;
+  whatsapp_number?: string;
+  country?: string;
   provincia: string;
   ciudad: string;
   direccion?: string;
@@ -97,6 +128,8 @@ export interface ArtistProfileData {
   followersCount?: number;
   followingCount?: number;
   worksCount?: number;
+  lat?: number;
+  lng?: number;
 }
 
 export interface TattooArtistCard {
@@ -133,8 +166,20 @@ export interface UserProfile {
   full_name?: string | null;
   avatar_url?: string | null;
   phone_number?: string | null;
+  country?: string | null;
+  city?: string | null;
+  phone_prefix?: string | null;
+  whatsapp_number?: string | null;
   is_verified?: boolean;
   onboarding_completed: boolean;
+  has_active_subscription?: boolean;
+  trial_days_remaining?: number;
+  is_trial_active?: boolean;
+  trial_expired?: boolean;
+  days_active?: number;
+  notification_preferences?: NotificationPreferences | null;
+  preferred_language?: 'es' | 'en' | null;
+  privacy_settings?: PrivacySettings | null;
   created_at?: string;
   updated_at?: string;
 }

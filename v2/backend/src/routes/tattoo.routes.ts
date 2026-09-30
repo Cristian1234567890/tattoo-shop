@@ -8,4 +8,8 @@ router.get('/gettatto', optionalAuth, (req, res, next) => {
   tattooController.getTatto(req, res).catch(next);
 });
 
+router.get('/gettatto/:id', optionalAuth, (req, res, next) => {
+  tattooController.getTattoById(req, res).catch(next);
+});
+
 export default router;

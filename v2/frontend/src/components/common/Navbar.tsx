@@ -1,93 +1,210 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
+import { Logo } from './Logo';
+import { Menu, X, Sparkles, DollarSign, Compass, Info, User, LogOut, LogIn, UserPlus } from 'lucide-react';
 
 export const Navbar: React.FC = () => {
   const { isAuthenticated, user, logout } = useAuth();
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+
+  const closeMenu = () => setMobileMenuOpen(false);
+
+  const isArtist =
+    user?.user_metadata?.tipo === 'Tatuador' || user?.user_metadata?.role === 'Tatuador';
 
   return (
-    <nav className="menu flex justify-between items-center bg-white dark:bg-gray-900 font-sans text-xl py-2 px-4 md:px-8 shadow-md transition-colors z-50">
-      <div className="start flex items-center">
-        <Link to="/" id="logo" className="flex items-center gap-3 no-underline">
-          <img
-            src="/assets/Tattoo Machine Rotary.png"
-            alt="TooTienda Logo"
-            className="w-10 h-10 object-contain"
-          />
-          <h1 id="title" className="text-xl md:text-2xl font-bold italic text-black dark:text-white">
-            TooTienda
-          </h1>
-        </Link>
-      </div>
+    <nav className="bg-gray-950/40 backdrop-blur-xl border-b border-white/10 sticky top-0 z-50 transition-all font-sans text-white">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="flex items-center justify-between h-16">
+          {/* Brand Logo */}
+          <div className="flex items-center">
+            <Link to="/" id="logo" onClick={closeMenu} className="flex items-center gap-2 no-underline">
+              <Logo size="md" />
+            </Link>
+          </div>
 
-      <div className="center hidden md:flex items-center gap-6">
-        <a
-          id="presentacion"
-          href="/#beneficios"
-          className="text-black dark:text-gray-200 hover:text-primary dark:hover:text-primary transition-colors text-base font-medium px-3 py-1 rounded"
-        >
-          Beneficios
-        </a>
-        <a
-          id="presentacion"
-          href="/#precios"
-          className="text-black dark:text-gray-200 hover:text-primary dark:hover:text-primary transition-colors text-base font-medium px-3 py-1 rounded"
-        >
-          Precios
-        </a>
-        <a
-          id="presentacion"
-          href="/#sobre-nosotros"
-          className="text-black dark:text-gray-200 hover:text-primary dark:hover:text-primary transition-colors text-base font-medium px-3 py-1 rounded"
-        >
-          Sobre Nosotros
-        </a>
-      </div>
-
-      <div className="end flex items-center gap-4">
-        {isAuthenticated ? (
-          <div className="flex items-center gap-3">
-            <Link
-              to="/user"
-              className="text-sm font-semibold text-primary dark:text-indigo-400 hover:underline"
+          {/* Desktop Navigation Links */}
+          <div className="hidden md:flex items-center gap-1 lg:gap-2">
+            <a
+              id="presentacion"
+              href="/#beneficios"
+              className="px-3.5 py-1.5 rounded-full text-sm font-medium text-gray-300 hover:text-white hover:bg-white/10 transition-colors"
             >
-              Feed / Artistas
+              Beneficios
+            </a>
+            <a
+              id="presentacion"
+              href="/#precios"
+              className="px-3.5 py-1.5 rounded-full text-sm font-medium text-gray-300 hover:text-white hover:bg-white/10 transition-colors"
+            >
+              Precios
+            </a>
+            <Link
+              to="/hub"
+              className="px-3.5 py-1.5 rounded-full text-sm font-medium text-gray-300 hover:text-white hover:bg-white/10 transition-colors"
+            >
+              Explorar Mapa
             </Link>
             <Link
-              to={user?.user_metadata?.tipo === 'Tatuador' ? '/tattoo' : '/profile'}
-              className="text-sm font-semibold text-gray-700 dark:text-gray-200 hover:underline"
+              to="/about"
+              className="px-3.5 py-1.5 rounded-full text-sm font-medium text-gray-300 hover:text-white hover:bg-white/10 transition-colors"
             >
-              Mi Perfil
+              Sobre Nosotros
             </Link>
+          </div>
+
+          {/* Desktop Auth / User Action Buttons */}
+          <div className="hidden md:flex items-center gap-3">
+            {isAuthenticated ? (
+              <div className="flex items-center gap-3">
+                <Link
+                  to={isArtist ? '/artist-dashboard' : '/client-dashboard'}
+                  className="px-4 py-1.5 rounded-full text-sm font-semibold text-indigo-300 bg-indigo-500/10 hover:bg-indigo-500/20 border border-indigo-500/30 transition-all"
+                >
+                  {isArtist ? 'Panel Artista' : 'Mi Panel'}
+                </Link>
+                <Link
+                  to={isArtist ? '/tattoo' : '/profile'}
+                  className="px-3.5 py-1.5 rounded-full text-sm font-medium text-gray-300 hover:text-white hover:bg-white/10 transition-colors"
+                >
+                  Mi Perfil
+                </Link>
+                <button
+                  onClick={() => logout()}
+                  id="log-out"
+                  className="px-4 py-1.5 rounded-full text-sm font-semibold bg-white/5 hover:bg-red-500/20 text-gray-300 hover:text-red-300 border border-white/10 hover:border-red-500/30 transition-all cursor-pointer"
+                >
+                  Salir
+                </button>
+              </div>
+            ) : (
+              <div className="flex items-center gap-3">
+                <Link to="/login">
+                  <button
+                    id="log-in"
+                    className="px-5 py-2 rounded-full text-sm font-medium text-gray-200 hover:text-white bg-white/5 hover:bg-white/10 border border-white/10 hover:border-white/20 backdrop-blur-md transition-all cursor-pointer shadow-sm hover:shadow-lg"
+                  >
+                    Iniciar Sesión
+                  </button>
+                </Link>
+                <Link to="/register">
+                  <button
+                    id="log-out"
+                    className="px-5 py-2 rounded-full text-sm font-semibold text-white bg-gradient-to-r from-violet-600 to-indigo-600 hover:from-violet-500 hover:to-indigo-500 shadow-lg shadow-violet-500/25 hover:shadow-violet-500/40 border border-violet-400/30 transition-all cursor-pointer"
+                  >
+                    Registrarse
+                  </button>
+                </Link>
+              </div>
+            )}
+          </div>
+
+          {/* Mobile Hamburger Button */}
+          <div className="flex md:hidden items-center">
             <button
-              onClick={() => logout()}
-              id="log-out"
-              className="text-sm font-semibold bg-black text-white hover:bg-white hover:text-black border-2 border-black dark:border-white py-1.5 px-4 rounded-md transition-all cursor-pointer"
+              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+              aria-label="Abrir menú"
+              className="p-2 rounded-lg text-gray-300 hover:text-white hover:bg-white/10 focus:outline-none transition-colors"
             >
-              Salir
+              {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
             </button>
           </div>
-        ) : (
-          <div className="flex items-center gap-3">
-            <Link to="/login">
-              <button
-                id="log-in"
-                className="text-sm md:text-base font-medium text-black dark:text-white bg-white dark:bg-transparent border-2 border-black dark:border-white hover:bg-black hover:text-white dark:hover:bg-white dark:hover:text-black py-2 px-4 rounded-lg transition-all cursor-pointer"
-              >
-                Iniciar Sesión
-              </button>
+        </div>
+      </div>
+
+      {/* Mobile Drawer / Overlay */}
+      {mobileMenuOpen && (
+        <div className="md:hidden bg-gray-950/95 backdrop-blur-2xl border-b border-white/10 px-4 pt-3 pb-6 space-y-3 animate-in fade-in slide-in-from-top-2 duration-200">
+          <div className="space-y-1">
+            <a
+              id="presentacion"
+              href="/#beneficios"
+              onClick={closeMenu}
+              className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-base font-medium text-gray-200 hover:text-white hover:bg-white/10 transition-colors"
+            >
+              <Sparkles className="w-5 h-5 text-violet-400" />
+              Beneficios
+            </a>
+            <a
+              id="presentacion"
+              href="/#precios"
+              onClick={closeMenu}
+              className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-base font-medium text-gray-200 hover:text-white hover:bg-white/10 transition-colors"
+            >
+              <DollarSign className="w-5 h-5 text-indigo-400" />
+              Precios
+            </a>
+            <Link
+              to="/hub"
+              onClick={closeMenu}
+              className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-base font-medium text-gray-200 hover:text-white hover:bg-white/10 transition-colors"
+            >
+              <Compass className="w-5 h-5 text-emerald-400" />
+              Explorar Mapa
             </Link>
-            <Link to="/register">
-              <button
-                id="log-out"
-                className="text-sm md:text-base font-medium text-white bg-black hover:bg-white hover:text-black border-2 border-black dark:border-gray-300 py-2 px-4 rounded-lg transition-all cursor-pointer shadow"
-              >
-                Registrarse
-              </button>
+            <Link
+              to="/about"
+              onClick={closeMenu}
+              className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-base font-medium text-gray-200 hover:text-white hover:bg-white/10 transition-colors"
+            >
+              <Info className="w-5 h-5 text-sky-400" />
+              Sobre Nosotros
             </Link>
           </div>
-        )}
-      </div>
+
+          <div className="pt-3 border-t border-white/10">
+            {isAuthenticated ? (
+              <div className="space-y-2">
+                <Link
+                  to={isArtist ? '/artist-dashboard' : '/client-dashboard'}
+                  onClick={closeMenu}
+                  className="flex items-center justify-center gap-2 w-full py-2.5 px-4 rounded-full text-sm font-semibold text-indigo-300 bg-indigo-500/20 border border-indigo-500/30"
+                >
+                  <User className="w-4 h-4" />
+                  {isArtist ? 'Panel Artista' : 'Mi Panel'}
+                </Link>
+                <Link
+                  to={isArtist ? '/tattoo' : '/profile'}
+                  onClick={closeMenu}
+                  className="flex items-center justify-center gap-2 w-full py-2.5 px-4 rounded-full text-sm font-medium text-gray-300 hover:text-white hover:bg-white/10"
+                >
+                  Mi Perfil
+                </Link>
+                <button
+                  onClick={() => {
+                    logout();
+                    closeMenu();
+                  }}
+                  className="flex items-center justify-center gap-2 w-full py-2.5 px-4 rounded-full text-sm font-medium text-red-400 hover:text-red-300 hover:bg-red-500/10 border border-red-500/20"
+                >
+                  <LogOut className="w-4 h-4" />
+                  Salir
+                </button>
+              </div>
+            ) : (
+              <div className="grid grid-cols-2 gap-3 pt-1">
+                <Link to="/login" onClick={closeMenu} className="w-full">
+                  <button
+                    className="w-full py-2.5 px-4 rounded-full text-sm font-medium text-gray-200 bg-white/5 hover:bg-white/10 border border-white/10 flex items-center justify-center gap-2"
+                  >
+                    <LogIn className="w-4 h-4" />
+                    Iniciar Sesión
+                  </button>
+                </Link>
+                <Link to="/register" onClick={closeMenu} className="w-full">
+                  <button
+                    className="w-full py-2.5 px-4 rounded-full text-sm font-semibold text-white bg-gradient-to-r from-violet-600 to-indigo-600 hover:from-violet-500 hover:to-indigo-500 shadow-md shadow-violet-500/20 flex items-center justify-center gap-2"
+                  >
+                    <UserPlus className="w-4 h-4" />
+                    Registrarse
+                  </button>
+                </Link>
+              </div>
+            )}
+          </div>
+        </div>
+      )}
     </nav>
   );
 };

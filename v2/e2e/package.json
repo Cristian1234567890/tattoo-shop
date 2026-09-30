@@ -5,16 +5,18 @@
   "type": "module",
   "main": "run_tests.ts",
   "scripts": {
-    "test": "node --experimental-strip-types --no-warnings run_tests.ts",
+    "test": "npx tsx run_tests.ts",
     "test:tsx": "npx tsx run_tests.ts",
-    "test:tier1": "node --experimental-strip-types --no-warnings run_tests.ts --tier 1",
-    "test:tier2": "node --experimental-strip-types --no-warnings run_tests.ts --tier 2",
-    "test:tier3": "node --experimental-strip-types --no-warnings run_tests.ts --tier 3",
-    "test:tier4": "node --experimental-strip-types --no-warnings run_tests.ts --tier 4",
-    "test:dom": "node --experimental-strip-types --no-warnings run_tests.ts --dom-only",
-    "test:build": "node --experimental-strip-types --no-warnings run_tests.ts --build-only",
-    "test:json": "node --experimental-strip-types --no-warnings run_tests.ts --json",
-    "test:list": "node --experimental-strip-types --no-warnings run_tests.ts --list",
+    "test:tier1": "npx tsx run_tests.ts --tier 1",
+    "test:tier2": "npx tsx run_tests.ts --tier 2",
+    "test:tier3": "npx tsx run_tests.ts --tier 3",
+    "test:tier4": "npx tsx run_tests.ts --tier 4",
+    "test:dom": "npx tsx run_tests.ts --dom-only",
+    "test:build": "npx tsx run_tests.ts --build-only",
+    "test:json": "npx tsx run_tests.ts --json",
+    "test:list": "npx tsx run_tests.ts --list",
+    "test:playwright": "npx playwright test",
+    "test:playwright:ci": "npx playwright test --reporter=list",
     "typecheck": "tsc --noEmit"
   },
   "keywords": [
@@ -27,6 +29,7 @@
   "author": "testwriter_e2e",
   "license": "ISC",
   "devDependencies": {
+    "@playwright/test": "^1.49.0",
     "@types/node": "^22.10.2",
     "tsx": "^4.19.2",
     "typescript": "^5.7.2"

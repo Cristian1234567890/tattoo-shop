@@ -23,6 +23,28 @@ export const LoginPage: React.FC = () => {
   const { login } = useAuth();
   const navigate = useNavigate();
 
+  const getDashboardRoute = (userOrRole?: any): string => {
+    let role = '';
+    if (typeof userOrRole === 'string') {
+      role = userOrRole;
+    } else if (userOrRole?.user_metadata) {
+      role = userOrRole.user_metadata.tipo || userOrRole.user_metadata.role || '';
+    }
+    const normalized = role.toLowerCase();
+    if (normalized === 'tatuador') return '/artist-dashboard';
+    if (normalized === 'cliente') return '/client-dashboard';
+    return '/user';
+  };
+
+  const navigateToDashboard = (userOrRole?: any) => {
+    const dest = getDashboardRoute(userOrRole);
+    if (dest === '/user') {
+      navigate('/user');
+    } else {
+      navigate(dest);
+    }
+  };
+
   // Listen to Supabase Auth state changes (useful for Google OAuth callback)
   useEffect(() => {
     const { data: authListener } = supabase.auth.onAuthStateChange(async (event, session) => {
@@ -38,7 +60,7 @@ export const LoginPage: React.FC = () => {
           // Fully verified
           // We need to sync with our custom node backend if necessary, or just use the session
           login({ user: session.user as any, session: session as any });
-          navigate('/user');
+          navigateToDashboard(session.user);
         } else {
           // Requires MFA
           const { data: factorsData } = await supabase.auth.mfa.listFactors();
@@ -87,7 +109,7 @@ export const LoginPage: React.FC = () => {
         if (fallbackRes.success && fallbackRes.data) {
           setLoading(false);
           login({ user: fallbackRes.data.user as any, session: fallbackRes.data.session as any });
-          navigate('/user');
+          navigateToDashboard(fallbackRes.data.user);
           return;
         }
       } catch {
@@ -101,7 +123,7 @@ export const LoginPage: React.FC = () => {
     setLoading(false);
     if (signInData?.session && signInData?.user) {
       login({ user: signInData.user as any, session: signInData.session as any });
-      navigate('/user');
+      navigateToDashboard(signInData.user);
     }
     // onAuthStateChange hook will also catch this and trigger MFA checks if required
   };
@@ -134,7 +156,7 @@ export const LoginPage: React.FC = () => {
     const sessionRes = await supabase.auth.getSession();
     if (sessionRes.data.session) {
       login({ user: sessionRes.data.session.user as any, session: sessionRes.data.session as any });
-      navigate('/user');
+      navigateToDashboard(sessionRes.data.session.user);
     }
   };
 

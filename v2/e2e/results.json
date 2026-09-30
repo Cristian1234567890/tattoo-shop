@@ -1,14 +1,14 @@
 {
-  "timestamp": "2026-09-23T23:44:40.666Z",
-  "totalSuites": 3,
-  "totalTests": 15,
-  "passed": 15,
+  "timestamp": "2026-09-27T18:18:34.624Z",
+  "totalSuites": 7,
+  "totalTests": 35,
+  "passed": 35,
   "failed": 0,
-  "durationMs": 79,
+  "durationMs": 6548,
   "tiers": {
     "Tier 1 - Feature Coverage": {
-      "total": 6,
-      "passed": 6,
+      "total": 26,
+      "passed": 26,
       "failed": 0
     },
     "Frontend Build & DOM Assertions": {
@@ -24,7 +24,7 @@
       "passed": 6,
       "failed": 0,
       "total": 6,
-      "durationMs": 36,
+      "durationMs": 32,
       "tests": [
         {
           "suiteName": "Feature: Frontend Key User Interactions & Component States",
@@ -45,21 +45,21 @@
           "testName": "TC-FE-03: Dashboard filter checkboxes cover all 8 legacy tattoo styles",
           "tier": "Tier 1 - Feature Coverage",
           "passed": true,
-          "durationMs": 7
+          "durationMs": 6
         },
         {
           "suiteName": "Feature: Frontend Key User Interactions & Component States",
           "testName": "TC-FE-04: 3D Credit Card simulator contains flip transform and interactive inputs",
           "tier": "Tier 1 - Feature Coverage",
           "passed": true,
-          "durationMs": 7
+          "durationMs": 5
         },
         {
           "suiteName": "Feature: Frontend Key User Interactions & Component States",
           "testName": "TC-FE-05: Artist inquiry drawer contains message textarea, drag-and-drop zone, and file attachment preview",
           "tier": "Tier 1 - Feature Coverage",
           "passed": true,
-          "durationMs": 6
+          "durationMs": 5
         },
         {
           "suiteName": "Feature: Frontend Key User Interactions & Component States",
@@ -76,28 +76,28 @@
       "passed": 8,
       "failed": 0,
       "total": 8,
-      "durationMs": 41,
+      "durationMs": 46,
       "tests": [
         {
           "suiteName": "Frontend Verification: DOM Hierarchy & Structural Compliance",
           "testName": "TC-DOM-NAVBAR: Navbar contains TooTienda brand, navigation links, guest buttons, and off-canvas menu elements",
           "tier": "Frontend Build & DOM Assertions",
           "passed": true,
-          "durationMs": 5
+          "durationMs": 6
         },
         {
           "suiteName": "Frontend Verification: DOM Hierarchy & Structural Compliance",
           "testName": "TC-DOM-HOME: Landing view contains hero heading and attribution footer",
           "tier": "Frontend Build & DOM Assertions",
           "passed": true,
-          "durationMs": 6
+          "durationMs": 5
         },
         {
           "suiteName": "Frontend Verification: DOM Hierarchy & Structural Compliance",
           "testName": "TC-DOM-LOGIN: Login view contains email, password inputs, submit button, and 2FA modal (#mensajeEmergente)",
           "tier": "Frontend Build & DOM Assertions",
           "passed": true,
-          "durationMs": 6
+          "durationMs": 5
         },
         {
           "suiteName": "Frontend Verification: DOM Hierarchy & Structural Compliance",
@@ -111,7 +111,7 @@
           "testName": "TC-DOM-DASHBOARD: Dashboard view contains 8 style filters, search input, and card container",
           "tier": "Frontend Build & DOM Assertions",
           "passed": true,
-          "durationMs": 5
+          "durationMs": 6
         },
         {
           "suiteName": "Frontend Verification: DOM Hierarchy & Structural Compliance",
@@ -125,14 +125,14 @@
           "testName": "TC-DOM-PROFILE: Profile management views contain Panamanian province select and credentials inputs",
           "tier": "Frontend Build & DOM Assertions",
           "passed": true,
-          "durationMs": 5
+          "durationMs": 7
         },
         {
           "suiteName": "Frontend Verification: DOM Hierarchy & Structural Compliance",
           "testName": "TC-DOM-CREDITCARD: Credit Card view contains 3D card layout and payment form inputs",
           "tier": "Frontend Build & DOM Assertions",
           "passed": true,
-          "durationMs": 4
+          "durationMs": 7
         }
       ]
     },
@@ -142,12 +142,192 @@
       "passed": 1,
       "failed": 0,
       "total": 1,
-      "durationMs": 0,
+      "durationMs": 6464,
       "tests": [
         {
           "suiteName": "Frontend Verification: Production Build Compilation",
           "testName": "TC-DOM-BUILD-01: Verifies frontend workspace setup and build artifacts",
           "tier": "Frontend Build & DOM Assertions",
+          "passed": true,
+          "durationMs": 6464
+        }
+      ]
+    },
+    {
+      "name": "Feature: Post-login Redirections, Legal Acceptance & Onboarding (R1-R4)",
+      "tier": "Tier 1 - Feature Coverage",
+      "passed": 6,
+      "failed": 0,
+      "total": 6,
+      "durationMs": 3,
+      "tests": [
+        {
+          "suiteName": "Feature: Post-login Redirections, Legal Acceptance & Onboarding (R1-R4)",
+          "testName": "TC-R1-REDIRECTION: Google OAuth and manual login redirect to role dashboard (/client-dashboard, /artist-dashboard) or /user using dynamic window.location.origin",
+          "tier": "Tier 1 - Feature Coverage",
+          "passed": true,
+          "durationMs": 1
+        },
+        {
+          "suiteName": "Feature: Post-login Redirections, Legal Acceptance & Onboarding (R1-R4)",
+          "testName": "TC-R2-LEGAL-REGISTRATION: RegisterPage contains mandatory Terms & Privacy checkboxes and passes acceptance data",
+          "tier": "Tier 1 - Feature Coverage",
+          "passed": true,
+          "durationMs": 0
+        },
+        {
+          "suiteName": "Feature: Post-login Redirections, Legal Acceptance & Onboarding (R1-R4)",
+          "testName": "TC-R3-INTERCEPTED-ONBOARDING: OnboardingModal requires role selection and mandatory legal acceptance",
+          "tier": "Tier 1 - Feature Coverage",
+          "passed": true,
+          "durationMs": 1
+        },
+        {
+          "suiteName": "Feature: Post-login Redirections, Legal Acceptance & Onboarding (R1-R4)",
+          "testName": "TC-R3-GLOBAL-ONBOARDING-GATE: App routes are guarded by OnboardingGate preventing bypass via direct URL manipulation",
+          "tier": "Tier 1 - Feature Coverage",
+          "passed": true,
+          "durationMs": 0
+        },
+        {
+          "suiteName": "Feature: Post-login Redirections, Legal Acceptance & Onboarding (R1-R4)",
+          "testName": "TC-R4-DB-MIGRATION-SCHEMA: Supabase migration defines public.user_profiles with all required audit and role columns",
+          "tier": "Tier 1 - Feature Coverage",
+          "passed": true,
+          "durationMs": 0
+        },
+        {
+          "suiteName": "Feature: Post-login Redirections, Legal Acceptance & Onboarding (R1-R4)",
+          "testName": "TC-R4-BACKEND-PERSISTENCE: Backend auth and user services persist legal audit fields and role",
+          "tier": "Tier 1 - Feature Coverage",
+          "passed": true,
+          "durationMs": 1
+        }
+      ]
+    },
+    {
+      "name": "Feature: Role Redirection post-login and post-register (AC 1)",
+      "tier": "Tier 1 - Feature Coverage",
+      "passed": 5,
+      "failed": 0,
+      "total": 5,
+      "durationMs": 1,
+      "tests": [
+        {
+          "suiteName": "Feature: Role Redirection post-login and post-register (AC 1)",
+          "testName": "TC-REDIR-01: Role destination resolver maps Cliente -> /client-dashboard and Tatuador -> /artist-dashboard",
+          "tier": "Tier 1 - Feature Coverage",
+          "passed": true,
+          "durationMs": 0
+        },
+        {
+          "suiteName": "Feature: Role Redirection post-login and post-register (AC 1)",
+          "testName": "TC-REDIR-02: RegisterPage routes Cliente to /client-dashboard and Tatuador to /artist-dashboard upon completion",
+          "tier": "Tier 1 - Feature Coverage",
+          "passed": true,
+          "durationMs": 0
+        },
+        {
+          "suiteName": "Feature: Role Redirection post-login and post-register (AC 1)",
+          "testName": "TC-REDIR-03: LoginPage dynamic navigation evaluates role and routes to /client-dashboard or /artist-dashboard",
+          "tier": "Tier 1 - Feature Coverage",
+          "passed": true,
+          "durationMs": 0
+        },
+        {
+          "suiteName": "Feature: Role Redirection post-login and post-register (AC 1)",
+          "testName": "TC-REDIR-04: App.tsx router declares /client-dashboard and /artist-dashboard with respective page components",
+          "tier": "Tier 1 - Feature Coverage",
+          "passed": true,
+          "durationMs": 0
+        },
+        {
+          "suiteName": "Feature: Role Redirection post-login and post-register (AC 1)",
+          "testName": "TC-REDIR-05: App.tsx OnboardingGate provides smart role redirection from /user to role dashboards",
+          "tier": "Tier 1 - Feature Coverage",
+          "passed": true,
+          "durationMs": 1
+        }
+      ]
+    },
+    {
+      "name": "Feature: Artist 90-Day Trial Lockout (AC 2)",
+      "tier": "Tier 1 - Feature Coverage",
+      "passed": 5,
+      "failed": 0,
+      "total": 5,
+      "durationMs": 1,
+      "tests": [
+        {
+          "suiteName": "Feature: Artist 90-Day Trial Lockout (AC 2)",
+          "testName": "TC-LOCKOUT-01: Mathematical contract: Artist within 90 days has active trial and is NOT locked out",
+          "tier": "Tier 1 - Feature Coverage",
+          "passed": true,
+          "durationMs": 0
+        },
+        {
+          "suiteName": "Feature: Artist 90-Day Trial Lockout (AC 2)",
+          "testName": "TC-LOCKOUT-02: Mathematical contract: Artist with created_at >90 days and has_active_subscription=false is LOCKED OUT (HTTP 403)",
+          "tier": "Tier 1 - Feature Coverage",
+          "passed": true,
+          "durationMs": 1
+        },
+        {
+          "suiteName": "Feature: Artist 90-Day Trial Lockout (AC 2)",
+          "testName": "TC-LOCKOUT-03: Mathematical contract: Artist with created_at >90 days BUT has_active_subscription=true is UNLOCKED (HTTP 200)",
+          "tier": "Tier 1 - Feature Coverage",
+          "passed": true,
+          "durationMs": 0
+        },
+        {
+          "suiteName": "Feature: Artist 90-Day Trial Lockout (AC 2)",
+          "testName": "TC-LOCKOUT-04: Backend subscription.middleware.ts defines trial lockout with HTTP 403 and code SUBSCRIPTION_REQUIRED",
+          "tier": "Tier 1 - Feature Coverage",
+          "passed": true,
+          "durationMs": 0
+        },
+        {
+          "suiteName": "Feature: Artist 90-Day Trial Lockout (AC 2)",
+          "testName": "TC-LOCKOUT-05: ArtistDashboardPage.tsx checks subscription status and warns or redirects expired artists",
+          "tier": "Tier 1 - Feature Coverage",
+          "passed": true,
+          "durationMs": 0
+        }
+      ]
+    },
+    {
+      "name": "Feature: Client Premium Gating (AC 3)",
+      "tier": "Tier 1 - Feature Coverage",
+      "passed": 4,
+      "failed": 0,
+      "total": 4,
+      "durationMs": 1,
+      "tests": [
+        {
+          "suiteName": "Feature: Client Premium Gating (AC 3)",
+          "testName": "TC-CLIENT-PREM-01: Standard Client accesses /client-dashboard freely without paywall blocking the entire view",
+          "tier": "Tier 1 - Feature Coverage",
+          "passed": true,
+          "durationMs": 0
+        },
+        {
+          "suiteName": "Feature: Client Premium Gating (AC 3)",
+          "testName": "TC-CLIENT-PREM-02: Client premium access logic contract rejects unpaying clients with HTTP 403 CLIENT_PREMIUM_REQUIRED",
+          "tier": "Tier 1 - Feature Coverage",
+          "passed": true,
+          "durationMs": 0
+        },
+        {
+          "suiteName": "Feature: Client Premium Gating (AC 3)",
+          "testName": "TC-CLIENT-PREM-03: ClientDashboardPage.tsx presents premium features and triggers upgrade / paywall prompt",
+          "tier": "Tier 1 - Feature Coverage",
+          "passed": true,
+          "durationMs": 1
+        },
+        {
+          "suiteName": "Feature: Client Premium Gating (AC 3)",
+          "testName": "TC-CLIENT-PREM-04: HomePage.tsx provides clear plans for both Clientes ($4.99) and Tatuadores (90 days trial)",
+          "tier": "Tier 1 - Feature Coverage",
           "passed": true,
           "durationMs": 0
         }

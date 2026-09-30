@@ -11,10 +11,36 @@ export class UserService {
     token: string,
     refresh?: string
   ): Promise<ApiResponse> {
+    const sanitizedUserData = { ...userData };
+    delete (sanitizedUserData as any).password;
+
     const updatedMetadata = {
       ...(user.user_metadata || {}),
-      ...userData,
+      ...sanitizedUserData,
     };
+    delete (updatedMetadata as any).password;
+
+    if (userData.country !== undefined) updatedMetadata.country = userData.country;
+    if (userData.city !== undefined || userData.ciudad !== undefined) {
+      updatedMetadata.city = userData.city || userData.ciudad;
+      updatedMetadata.ciudad = userData.city || userData.ciudad;
+    }
+    if (userData.phone_prefix !== undefined) updatedMetadata.phone_prefix = userData.phone_prefix;
+    if (userData.whatsapp_number !== undefined) updatedMetadata.whatsapp_number = userData.whatsapp_number;
+    if (userData.notification_preferences !== undefined) updatedMetadata.notification_preferences = userData.notification_preferences;
+    if (userData.privacy_settings !== undefined) updatedMetadata.privacy_settings = userData.privacy_settings;
+    if (userData.preferred_language !== undefined) updatedMetadata.preferred_language = userData.preferred_language;
+
+    // If password update requested, update via Supabase admin
+    if (userData.password) {
+      try {
+        await supabaseAdmin.auth.admin.updateUserById(user.id, {
+          password: userData.password,
+        });
+      } catch (pwErr: any) {
+        console.warn('Note: admin password update in updateUser:', pwErr?.message || pwErr);
+      }
+    }
 
     // Try updating via scoped client
     let updatedUser: User | null = null;
@@ -26,7 +52,7 @@ export class UserService {
           .catch(() => {});
       }
       const { data, error } = await client.auth.updateUser({
-        data: userData,
+        data: sanitizedUserData,
       });
       if (!error && data?.user) {
         updatedUser = data.user;
@@ -49,6 +75,9 @@ export class UserService {
       ...user,
       user_metadata: updatedMetadata,
     };
+    if (finalUser.user_metadata) {
+      delete (finalUser.user_metadata as any).password;
+    }
 
     // If user is a tattoo artist, synchronize with public.tatuadores_data
     const isArtist =
@@ -67,6 +96,13 @@ export class UserService {
         ...(existingArtist?.data || {}),
         ...userData,
       };
+      if (userData.country !== undefined) merged.country = userData.country;
+      if (userData.city !== undefined || userData.ciudad !== undefined) {
+        merged.city = userData.city || userData.ciudad;
+        merged.ciudad = userData.city || userData.ciudad;
+      }
+      if (userData.phone_prefix !== undefined) merged.phone_prefix = userData.phone_prefix;
+      if (userData.whatsapp_number !== undefined) merged.whatsapp_number = userData.whatsapp_number;
 
       const { error: error_update } = await supabaseAdmin
         .from('tatuadores_data')
@@ -93,6 +129,15 @@ export class UserService {
     }
     if (userData.profile || userData.avatar_url) profileUpdates.avatar_url = userData.profile || userData.avatar_url;
     if (userData.telefono || userData.phone_number) profileUpdates.phone_number = userData.telefono || userData.phone_number;
+    if (userData.country !== undefined) profileUpdates.country = userData.country;
+    if (userData.city !== undefined || userData.ciudad !== undefined) {
+      profileUpdates.city = userData.city || userData.ciudad;
+    }
+    if (userData.phone_prefix !== undefined) profileUpdates.phone_prefix = userData.phone_prefix;
+    if (userData.whatsapp_number !== undefined) profileUpdates.whatsapp_number = userData.whatsapp_number;
+    if (userData.notification_preferences !== undefined) profileUpdates.notification_preferences = userData.notification_preferences;
+    if (userData.privacy_settings !== undefined) profileUpdates.privacy_settings = userData.privacy_settings;
+    if (userData.preferred_language !== undefined) profileUpdates.preferred_language = userData.preferred_language;
     if (userData.onboarding_completed !== undefined) profileUpdates.onboarding_completed = userData.onboarding_completed;
     if (userData.is_verified !== undefined) profileUpdates.is_verified = userData.is_verified;
 
@@ -275,6 +320,10 @@ export class UserService {
     const fullName = dto.full_name?.trim() || user.user_metadata?.full_name || user.user_metadata?.name || user.email?.split('@')[0] || '';
     const avatarUrl = dto.avatar_url || user.user_metadata?.avatar_url || user.user_metadata?.picture || user.user_metadata?.profile || '';
     const phoneNumber = dto.phone_number || user.user_metadata?.telefono || user.user_metadata?.phone_number || null;
+    const country = dto.country || user.user_metadata?.country || 'Panamá';
+    const city = dto.city || user.user_metadata?.city || user.user_metadata?.ciudad || null;
+    const phonePrefix = dto.phone_prefix || user.user_metadata?.phone_prefix || '+507';
+    const whatsappNumber = dto.whatsapp_number || user.user_metadata?.whatsapp_number || null;
 
     const profileData = {
       id: user.id,
@@ -284,6 +333,10 @@ export class UserService {
       full_name: fullName,
       avatar_url: avatarUrl,
       phone_number: phoneNumber,
+      country,
+      city,
+      phone_prefix: phonePrefix,
+      whatsapp_number: whatsappNumber,
       is_verified: false,
       onboarding_completed: true,
       updated_at: new Date().toISOString(),
@@ -305,6 +358,11 @@ export class UserService {
       full_name: fullName,
       avatar_url: avatarUrl,
       telefono: phoneNumber,
+      country,
+      city,
+      ciudad: city,
+      phone_prefix: phonePrefix,
+      whatsapp_number: whatsappNumber,
       onboarding_completed: true,
     };
 
@@ -324,8 +382,12 @@ export class UserService {
         apellido: fullName.split(' ').slice(1).join(' ') || '',
         work_type: '',
         telefono: phoneNumber || '',
+        phone_prefix: phonePrefix,
+        whatsapp_number: whatsappNumber || '',
+        country: country,
+        city: city || '',
         provincia: '',
-        ciudad: '',
+        ciudad: city || '',
         direccion: '',
         facebook: '',
         twitter: '',
@@ -379,6 +441,13 @@ export class UserService {
       full_name: user.user_metadata?.full_name || `${user.user_metadata?.nombre || ''} ${user.user_metadata?.apellido || ''}`.trim() || user.email?.split('@')[0],
       avatar_url: user.user_metadata?.avatar_url || user.user_metadata?.picture || user.user_metadata?.profile || null,
       phone_number: user.user_metadata?.telefono || user.user_metadata?.phone_number || null,
+      country: user.user_metadata?.country || 'Panamá',
+      city: user.user_metadata?.city || user.user_metadata?.ciudad || null,
+      phone_prefix: user.user_metadata?.phone_prefix || '+507',
+      whatsapp_number: user.user_metadata?.whatsapp_number || null,
+      notification_preferences: user.user_metadata?.notification_preferences || null,
+      privacy_settings: user.user_metadata?.privacy_settings || null,
+      preferred_language: user.user_metadata?.preferred_language || 'es',
       is_verified: false,
       onboarding_completed: !!user.user_metadata?.onboarding_completed,
     };

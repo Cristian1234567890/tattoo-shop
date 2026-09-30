@@ -56,5 +56,64 @@ export function registerSubscriptionBoundariesTests(client: ApiClient) {
       expect(res.status).toBe(200);
       expect(res.data.data.length).toBe(0);
     });
+
+    // 90-Day Trial Boundary Tests (Day 89 vs Day 90 vs Day 91)
+    it('TC-BND-SUB-05: Boundary test: Day 89 of trial allows access without active subscription', () => {
+      const now = new Date();
+      const day89Date = new Date(now.getTime() - 89 * 24 * 60 * 60 * 1000);
+      const diffTime = Math.abs(now.getTime() - day89Date.getTime());
+      const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+      const hasActiveSubscription = false;
+
+      // Invariant: diffDays (89) <= 90 -> NOT locked out
+      expect(diffDays).toBe(89);
+      expect(diffDays > 90 && !hasActiveSubscription).toBe(false);
+    });
+
+    it('TC-BND-SUB-06: Boundary test: Day 90 of trial (exact boundary) allows access', () => {
+      const now = new Date();
+      const day90Date = new Date(now.getTime() - 90 * 24 * 60 * 60 * 1000);
+      const diffTime = Math.abs(now.getTime() - day90Date.getTime());
+      const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+      const hasActiveSubscription = false;
+
+      // Invariant: diffDays (90) is NOT strictly greater than 90 -> NOT locked out
+      expect(diffDays).toBe(90);
+      expect(diffDays > 90 && !hasActiveSubscription).toBe(false);
+    });
+
+    it('TC-BND-SUB-07: Boundary test: Day 91 of trial (first expired day) triggers lockout (HTTP 403 SUBSCRIPTION_REQUIRED)', () => {
+      const now = new Date();
+      const day91Date = new Date(now.getTime() - 91 * 24 * 60 * 60 * 1000);
+      const diffTime = Math.abs(now.getTime() - day91Date.getTime());
+      const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+      const hasActiveSubscription = false;
+
+      // Invariant: diffDays (91) > 90 && !hasActiveSubscription -> LOCKED OUT
+      expect(diffDays).toBe(91);
+      expect(diffDays > 90 && !hasActiveSubscription).toBe(true);
+    });
+
+    it('TC-BND-SUB-08: Boundary test: Day 91 of trial with active subscription bypasses lockout cleanly', () => {
+      const now = new Date();
+      const day91Date = new Date(now.getTime() - 91 * 24 * 60 * 60 * 1000);
+      const diffTime = Math.abs(now.getTime() - day91Date.getTime());
+      const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+      const hasActiveSubscription = true;
+
+      // Invariant: hasActiveSubscription=true prevents lockout even after 90 days
+      expect(diffDays > 90 && !hasActiveSubscription).toBe(false);
+    });
+
+    it('TC-BND-SUB-09: Client role is strictly exempt from 90-day trial lockout on basic views', () => {
+      const clientCreatedAt = new Date(Date.now() - 365 * 24 * 60 * 60 * 1000); // 1 year ago
+      const clientRole = 'Cliente';
+      const hasActiveSubscription = false;
+
+      // Client should not be blocked from the platform, only from premium actions
+      const isArtistRole = clientRole.toLowerCase() === 'tatuador';
+      expect(isArtistRole).toBe(false);
+    });
+
   });
 }

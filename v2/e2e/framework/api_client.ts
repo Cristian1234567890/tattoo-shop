@@ -184,6 +184,49 @@ export class ApiClient {
   async sendMail(body: any, authHeaders?: Record<string, string>) {
     return this.request('/mail', { method: 'POST', body, headers: authHeaders });
   }
+
+  // Client Premium Features
+  async postClientTattooProgress(body: any, authHeaders?: Record<string, string>) {
+    return this.request('/api/client/tattoo-progress', { method: 'POST', body, headers: authHeaders });
+  }
+
+  // Database Fixture Manipulation (Admin Service Role for Trial Simulation)
+  async backdateUserProfile(userId: string, daysAgo: number): Promise<boolean> {
+    const targetDate = new Date(Date.now() - daysAgo * 24 * 60 * 60 * 1000).toISOString();
+    try {
+      const res = await fetch(`${CONFIG.supabaseUrl}/rest/v1/user_profiles?id=eq.${userId}`, {
+        method: 'PATCH',
+        headers: {
+          apikey: CONFIG.supabaseServiceRoleKey,
+          Authorization: `Bearer ${CONFIG.supabaseServiceRoleKey}`,
+          'Content-Type': 'application/json',
+          Prefer: 'return=representation',
+        },
+        body: JSON.stringify({ created_at: targetDate }),
+      });
+      return res.status >= 200 && res.status < 300;
+    } catch {
+      return false;
+    }
+  }
+
+  async setUserSubscriptionActive(userId: string, hasActive: boolean): Promise<boolean> {
+    try {
+      const res = await fetch(`${CONFIG.supabaseUrl}/rest/v1/user_profiles?id=eq.${userId}`, {
+        method: 'PATCH',
+        headers: {
+          apikey: CONFIG.supabaseServiceRoleKey,
+          Authorization: `Bearer ${CONFIG.supabaseServiceRoleKey}`,
+          'Content-Type': 'application/json',
+          Prefer: 'return=representation',
+        },
+        body: JSON.stringify({ has_active_subscription: hasActive }),
+      });
+      return res.status >= 200 && res.status < 300;
+    } catch {
+      return false;
+    }
+  }
 }
 
 export const defaultApiClient = new ApiClient();

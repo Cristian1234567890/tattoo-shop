@@ -20,6 +20,7 @@ import { registerSubscriptionEndpointsTests } from './tier1_feature_coverage/tes
 import { registerMailEndpointsTests } from './tier1_feature_coverage/test_mail_endpoints.ts';
 import { registerFrontendInteractionsTests } from './tier1_feature_coverage/test_frontend_interactions.ts';
 import { registerAuthOnboardingLegalTests } from './tier1_feature_coverage/test_auth_onboarding_legal.ts';
+import { registerRoleRoutingAndSubscriptionGuardsTests } from './tier1_feature_coverage/test_role_routing_and_subscription_guards.ts';
 
 import { registerMissingHeadersTests } from './tier2_boundary_corner/test_missing_headers.ts';
 import { registerInvalidTypesTests } from './tier2_boundary_corner/test_invalid_types_malformed.ts';
@@ -30,14 +31,24 @@ import { registerSubscriptionBoundariesTests } from './tier2_boundary_corner/tes
 import { registerClientLifecycleTests } from './tier3_cross_feature/test_client_lifecycle.ts';
 import { registerArtistLifecycleTests } from './tier3_cross_feature/test_artist_lifecycle.ts';
 import { registerDualInteractionTests } from './tier3_cross_feature/test_dual_interaction.ts';
+import { registerSubscriptionLifecycleTests } from './tier3_cross_feature/test_subscription_lifecycle.ts';
 
 import { registerCustomerQuoteScenarioTests } from './tier4_real_world/test_customer_quote_scenario.ts';
 import { registerArtistOnboardingScenarioTests } from './tier4_real_world/test_artist_onboarding_scenario.ts';
 import { registerSecurityInvalidationScenarioTests } from './tier4_real_world/test_security_invalidation_scenario.ts';
 import { registerCatalogFilteringScenarioTests } from './tier4_real_world/test_catalog_filtering_scenario.ts';
+import { registerRoleAccessScenarioTests } from './tier4_real_world/test_role_access_scenario.ts';
 
 import { registerFrontendBuildTests } from './frontend_assertions/test_frontend_build.ts';
 import { registerDomStructureTests } from './frontend_assertions/test_dom_structure.ts';
+
+// Milestone 4: Comprehensive 20-Feature Test Suites
+import { registerM4BrandingUiI18nTests } from './tier1_feature_coverage/test_m4_branding_ui_i18n.ts';
+import { registerM4ContactWhatsAppTests } from './tier1_feature_coverage/test_m4_contact_whatsapp.ts';
+import { registerM4HubGeolocationMapTests } from './tier1_feature_coverage/test_m4_hub_geolocation_map.ts';
+import { registerM4BoundaryCasesTests } from './tier2_boundary_corner/test_m4_boundary_cases.ts';
+import { registerM4CrossFeatureFlowsTests } from './tier3_cross_feature/test_m4_cross_feature_flows.ts';
+import { registerM4RealWorldScenariosTests } from './tier4_real_world/test_m4_real_world_scenarios.ts';
 
 function registerAllSuites(client: ApiClient, validator: DomValidator) {
   // Tier 1
@@ -49,6 +60,10 @@ function registerAllSuites(client: ApiClient, validator: DomValidator) {
   registerMailEndpointsTests(client);
   registerFrontendInteractionsTests(validator);
   registerAuthOnboardingLegalTests(validator, client);
+  registerRoleRoutingAndSubscriptionGuardsTests(validator, client);
+  registerM4BrandingUiI18nTests(validator);
+  registerM4ContactWhatsAppTests(validator);
+  registerM4HubGeolocationMapTests(validator);
 
   // Tier 2
   registerMissingHeadersTests(client);
@@ -56,17 +71,22 @@ function registerAllSuites(client: ApiClient, validator: DomValidator) {
   registerOversizedPayloadsTests(client);
   registerAuthBoundariesTests(client);
   registerSubscriptionBoundariesTests(client);
+  registerM4BoundaryCasesTests();
 
   // Tier 3
   registerClientLifecycleTests(client);
   registerArtistLifecycleTests(client);
   registerDualInteractionTests(client);
+  registerSubscriptionLifecycleTests(client);
+  registerM4CrossFeatureFlowsTests(validator);
 
   // Tier 4
   registerCustomerQuoteScenarioTests(client);
   registerArtistOnboardingScenarioTests(client);
   registerSecurityInvalidationScenarioTests(client);
   registerCatalogFilteringScenarioTests(client);
+  registerRoleAccessScenarioTests(client);
+  registerM4RealWorldScenariosTests(validator);
 
   // Frontend Build & DOM
   registerFrontendBuildTests(validator);
@@ -136,12 +156,21 @@ async function main() {
     registerDomStructureTests(validator);
     registerFrontendInteractionsTests(validator);
     registerAuthOnboardingLegalTests(validator);
+    registerRoleRoutingAndSubscriptionGuardsTests(validator);
   } else if (!isOnline && !forceAll) {
     // When offline, execute frontend and DOM tests and structural validation
     registerFrontendInteractionsTests(validator);
     registerDomStructureTests(validator);
     registerFrontendBuildTests(validator);
     registerAuthOnboardingLegalTests(validator);
+    registerRoleRoutingAndSubscriptionGuardsTests(validator);
+    // Milestone 4: Comprehensive 20-Feature Suites (Tiers 1-4)
+    registerM4BrandingUiI18nTests(validator);
+    registerM4ContactWhatsAppTests(validator);
+    registerM4HubGeolocationMapTests(validator);
+    registerM4BoundaryCasesTests();
+    registerM4CrossFeatureFlowsTests(validator);
+    registerM4RealWorldScenariosTests(validator);
   } else {
     // When online (or forceAll), register full 4-tier E2E suite
     registerAllSuites(client, validator);

@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { StyleFilter } from '../components/dashboard/StyleFilter';
 import { ArtistCard } from '../components/dashboard/ArtistCard';
 import { OffCanvasMenu } from '../components/dashboard/OffCanvasMenu';
@@ -8,6 +9,7 @@ import { api } from '../api/client';
 import { useAuth } from '../context/AuthContext';
 import { OnboardingModal } from '../components/auth/OnboardingModal';
 import { SubscriptionNoticeModal } from '../components/auth/SubscriptionNoticeModal';
+import { PageTransition } from '../components/common/PageTransition';
 
 export const DashboardPage: React.FC = () => {
   const [artists, setArtists] = useState<TattooArtistCard[]>([]);
@@ -17,6 +19,7 @@ export const DashboardPage: React.FC = () => {
   const [error, setError] = useState<string>('');
 
   const { user, isLoading: authLoading } = useAuth();
+  const navigate = useNavigate();
   const [showOnboarding, setShowOnboarding] = useState<boolean>(false);
   const [showArtistNotice, setShowArtistNotice] = useState<boolean>(false);
 
@@ -34,18 +37,26 @@ export const DashboardPage: React.FC = () => {
         setShowOnboarding(true);
       } else {
         setShowOnboarding(false);
+        // Smart role redirector
+        if (normalizedRole === 'tatuador') {
+          navigate('/artist-dashboard', { replace: true });
+        } else if (normalizedRole === 'cliente') {
+          navigate('/client-dashboard', { replace: true });
+        }
       }
     } else {
       setShowOnboarding(false);
     }
-  }, [user, authLoading]);
+  }, [user, authLoading, navigate]);
 
   const handleOnboardingCompleted = (selectedRole?: string) => {
     setShowOnboarding(false);
     const meta = user?.user_metadata || {};
-    const finalRole = selectedRole || meta.tipo || meta.role;
-    if (finalRole === 'Tatuador') {
-      setShowArtistNotice(true);
+    const finalRole = (selectedRole || meta.tipo || meta.role || '').toLowerCase();
+    if (finalRole === 'tatuador') {
+      navigate('/artist-dashboard', { replace: true });
+    } else {
+      navigate('/client-dashboard', { replace: true });
     }
   };
 
@@ -105,7 +116,8 @@ export const DashboardPage: React.FC = () => {
   });
 
   return (
-    <div className="min-h-screen relative p-4 md:p-8">
+    <PageTransition>
+      <div className="min-h-screen relative p-4 md:p-8">
       <SvgIcons />
       <OffCanvasMenu />
 
@@ -173,7 +185,8 @@ export const DashboardPage: React.FC = () => {
         onContinue={() => setShowArtistNotice(false)}
         onCancel={() => setShowArtistNotice(false)}
       />
-    </div>
+      </div>
+    </PageTransition>
   );
 };
 

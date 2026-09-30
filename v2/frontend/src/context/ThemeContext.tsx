@@ -1,9 +1,7 @@
-import React, { createContext, useContext, useState, useEffect } from 'react';
-
-type Theme = 'light' | 'dark';
+import React, { createContext, useContext, useEffect } from 'react';
 
 interface ThemeContextType {
-  theme: Theme;
+  theme: 'dark';
   toggleTheme: () => void;
   isDark: boolean;
 }
@@ -11,34 +9,19 @@ interface ThemeContextType {
 const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
 
 export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [theme, setTheme] = useState<Theme>(() => {
-    const saved = localStorage.getItem('theme');
-    if (saved === 'dark' || saved === 'light') return saved;
-    return 'dark'; // Tattoo shop default aesthetic is dark/night
-  });
-
   useEffect(() => {
     const root = document.documentElement;
-    if (theme === 'dark') {
-      root.classList.add('dark');
-      root.classList.remove('light');
-    } else {
-      root.classList.remove('dark');
-      root.classList.add('light');
-    }
-    localStorage.setItem('theme', theme);
-  }, [theme]);
-
-  const toggleTheme = () => {
-    setTheme((prev) => (prev === 'dark' ? 'light' : 'dark'));
-  };
+    root.classList.add('dark');
+    root.classList.remove('light');
+    localStorage.setItem('theme', 'dark');
+  }, []);
 
   return (
     <ThemeContext.Provider
       value={{
-        theme,
-        toggleTheme,
-        isDark: theme === 'dark',
+        theme: 'dark',
+        toggleTheme: () => {}, // No-op as we only support dark mode
+        isDark: true,
       }}
     >
       {children}

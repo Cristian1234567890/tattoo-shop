@@ -31,8 +31,8 @@ export const env: Environment = {
   ANON_KEY: process.env.ANON_KEY || process.env.SUPABASEKEY || defaultAnonKey,
   SERVICE_ROLE_KEY:
     process.env.SERVICE_ROLE_KEY || process.env.SUPABASE_SERVICE_ROLE_KEY || defaultServiceRoleKey,
-  PAYPAL_KEY: process.env.PAYPAL_KEY || process.env.PAYPALKEY || 'pendiente',
-  PAYPAL_ID: process.env.PAYPAL_ID || process.env.PAYPALID || 'pendiente',
+  PAYPAL_KEY: process.env.PAYPAL_SECRET || process.env.PAYPAL_KEY || process.env.PAYPALKEY || 'pendiente',
+  PAYPAL_ID: process.env.PAYPAL_CLIENT_ID || process.env.PAYPAL_ID || process.env.PAYPALID || 'pendiente',
   EMAIL: process.env.EMAIL || 'dummy@gmail.com',
   PASSW: process.env.PASSW || 'dummy_pass',
 };

@@ -3,6 +3,7 @@ import { User, Session } from '@supabase/supabase-js';
 
 export interface ApiResponse<T = any> {
   success: boolean;
+  message?: string;
   data?: T;
   error?: any;
   error_insert?: any;

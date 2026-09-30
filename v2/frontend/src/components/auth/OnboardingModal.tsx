@@ -174,7 +174,7 @@ export const OnboardingModal: React.FC<OnboardingModalProps> = ({
             ¡Completa tu Perfil!
           </h2>
           <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">
-            Para brindarte la mejor experiencia, selecciona cómo usarás TooTienda y acepta nuestros términos legales.
+            Para brindarte la mejor experiencia, selecciona cómo usarás Tattoo Hub y acepta nuestros términos legales.
           </p>
         </div>
 
@@ -209,7 +209,7 @@ export const OnboardingModal: React.FC<OnboardingModalProps> = ({
               type="tel"
               value={phone}
               onChange={(e) => setPhone(e.target.value)}
-              placeholder="+507 6000-0000"
+              placeholder="+1 555-0100"
               className="w-full px-4 py-2.5 rounded-lg border border-gray-300 dark:border-gray-700 dark:bg-gray-800 dark:text-white focus:ring-2 focus:ring-primary focus:outline-none transition"
             />
           </div>
@@ -281,7 +281,7 @@ export const OnboardingModal: React.FC<OnboardingModalProps> = ({
                 >
                   Términos y Condiciones
                 </Link>{' '}
-                de TooTienda.
+                de Tattoo Hub.
               </span>
             </label>
 

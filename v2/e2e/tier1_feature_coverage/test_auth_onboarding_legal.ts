@@ -20,7 +20,7 @@ export function registerAuthOnboardingLegalTests(validator: DomValidator, client
     const backendSrcDir = path.resolve(frontendDir, '../backend/src');
 
     // R1: Dynamic Origin Redirection
-    it('TC-R1-REDIRECTION: Google OAuth and manual login redirect to /user using dynamic window.location.origin', () => {
+    it('TC-R1-REDIRECTION: Google OAuth and manual login redirect to role dashboard (/client-dashboard, /artist-dashboard) or /user using dynamic window.location.origin', () => {
       const loginPagePath = path.join(frontendDir, 'src/pages/LoginPage.tsx');
       expect(fs.existsSync(loginPagePath)).toBe(true);
 
@@ -28,14 +28,24 @@ export function registerAuthOnboardingLegalTests(validator: DomValidator, client
 
       // Must use window.location.origin dynamically for redirectTo
       expect(loginContent.includes('window.location.origin')).toBe(true);
-      expect(loginContent.includes('/user')).toBe(true);
+      
+      // Accepts role dashboards (/client-dashboard, /artist-dashboard) or legacy /user
+      const hasValidDestination =
+        loginContent.includes('/client-dashboard') ||
+        loginContent.includes('/artist-dashboard') ||
+        loginContent.includes('/user');
+      expect(hasValidDestination).toBe(true);
 
       // Must not redirect to /hub or have hardcoded localhost in OAuth redirect
       expect(loginContent.includes("redirectTo: window.location.origin + '/hub'")).toBe(false);
       expect(loginContent.includes("navigate('/hub')")).toBe(false);
 
-      // Manual login OTP verification must also route to /user
-      expect(loginContent).toMatch(/navigate\(['"]\/user['"]\)/);
+      // Manual login OTP verification must route to a valid dashboard
+      const hasValidNavigation =
+        /navigate\(['"](\/user|\/client-dashboard|\/artist-dashboard)['"]\)/.test(loginContent) ||
+        loginContent.includes('getRoleDashboard') ||
+        loginContent.includes('navigate(dashboard');
+      expect(hasValidNavigation).toBe(true);
     });
 
     // R2: Legal Acceptance in Manual Registration

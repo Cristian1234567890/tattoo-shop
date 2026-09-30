@@ -14,6 +14,10 @@ export interface SignUpDTO {
   provincia?: string;
   ciudad?: string;
   direccion?: string;
+  country?: string;
+  city?: string;
+  phone_prefix?: string;
+  whatsapp_number?: string;
   legal_accepted?: boolean;
   legal_accepted_at?: string;
 }
@@ -32,6 +36,10 @@ export interface UpdateUserDTO {
   provincia?: string;
   ciudad?: string;
   direccion?: string;
+  country?: string;
+  city?: string;
+  phone_prefix?: string;
+  whatsapp_number?: string;
   work_type?: string;
   facebook?: string;
   twitter?: string;
@@ -61,6 +69,10 @@ export interface CompleteOnboardingDTO {
   full_name?: string;
   phone_number?: string;
   avatar_url?: string;
+  country?: string;
+  city?: string;
+  phone_prefix?: string;
+  whatsapp_number?: string;
 }
 
 export interface UserProfile {
@@ -71,6 +83,10 @@ export interface UserProfile {
   full_name?: string | null;
   avatar_url?: string | null;
   phone_number?: string | null;
+  country?: string | null;
+  city?: string | null;
+  phone_prefix?: string | null;
+  whatsapp_number?: string | null;
   is_verified?: boolean;
   onboarding_completed: boolean;
   created_at?: string;

@@ -5,6 +5,10 @@ export interface TatuadorData {
   edad?: string | number;
   work_type?: string;
   telefono?: string;
+  phone_prefix?: string;
+  whatsapp_number?: string;
+  country?: string;
+  city?: string;
   provincia?: string;
   ciudad?: string;
   direccion?: string;

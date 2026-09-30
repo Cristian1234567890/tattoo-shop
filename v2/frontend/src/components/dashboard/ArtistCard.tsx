@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { TattooArtistCard } from '../../types';
 import { api } from '../../api/client';
+import { formatWhatsAppUrl } from '../../utils/whatsapp';
 
 interface ArtistCardProps {
   artist: TattooArtistCard;
@@ -15,7 +16,10 @@ export const ArtistCard: React.FC<ArtistCardProps> = ({ artist, onMessageSent })
   const [sending, setSending] = useState<boolean>(false);
   const [statusText, setStatusText] = useState<string>('');
 
-  const cardData = artist.data;
+  const cardData = artist.data as TattooArtistCard['data'] & {
+    whatsapp_number?: string;
+    phone_prefix?: string;
+  };
   const avatarSrc = cardData.profile || '/assets/GB Tattoo.jpg';
 
   const handleOpenMessage = (e: React.MouseEvent) => {
@@ -209,6 +213,22 @@ export const ArtistCard: React.FC<ArtistCardProps> = ({ artist, onMessageSent })
             >
               Mensaje
             </button>
+            {(() => {
+              const phone = cardData.telefono || cardData.whatsapp_number;
+              const prefix = cardData.phone_prefix || '507';
+              return phone ? (
+                <a
+                  href={formatWhatsAppUrl(phone, prefix) || formatWhatsAppUrl(cardData.telefono)}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="profile-card__button button--whatsapp flex items-center justify-center gap-1 bg-emerald-600 hover:bg-emerald-500 text-white font-medium transition cursor-pointer"
+                  id="whatsapp-btn"
+                  title="Contactar por WhatsApp"
+                >
+                  WhatsApp
+                </a>
+              ) : null;
+            })()}
             <button
               className="profile-card__button button--orange"
               onClick={() => alert(`Siguiendo a ${cardData.nombre}`)}

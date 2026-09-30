@@ -192,6 +192,70 @@ class ApiClient {
     });
     return res.data;
   }
+
+  // 15. POST /api/client/tattoo-progress (Client Premium)
+  async saveTattooProgress(payload: {
+    tattooId?: string;
+    client_id?: string;
+    artist_id?: string | null;
+    title?: string;
+    stage?: string;
+    notes?: string;
+    image_url?: string;
+    photo_url?: string;
+    session_number?: number;
+    date?: string;
+    metadata?: Record<string, any>;
+  }): Promise<{ success: boolean; data?: any; error?: any; code?: string; message?: string }> {
+    try {
+      const res = await this.axiosInstance.post('/api/client/tattoo-progress', payload);
+      return res.data;
+    } catch (err: any) {
+      if (err.response?.data) {
+        return err.response.data;
+      }
+      return { success: false, error: err.message || 'Error registrando progreso' };
+    }
+  }
+
+  // 16. GET /api/client/tattoo-progress (Client Premium)
+  async getClientProgress(): Promise<{ success: boolean; data?: any[]; error?: any; code?: string; message?: string }> {
+    try {
+      const res = await this.axiosInstance.get('/api/client/tattoo-progress');
+      return res.data;
+    } catch (err: any) {
+      if (err.response?.data) {
+        return err.response.data;
+      }
+      return { success: false, error: err.message || 'Error consultando avances' };
+    }
+  }
+
+  // 17. DELETE /api/client/tattoo-progress/:id (Client Premium)
+  async deleteProgress(id: string): Promise<{ success: boolean; error?: any; message?: string }> {
+    try {
+      const res = await this.axiosInstance.delete(`/api/client/tattoo-progress/${id}`);
+      return res.data;
+    } catch (err: any) {
+      if (err.response?.data) {
+        return err.response.data;
+      }
+      return { success: false, error: err.message || 'Error eliminando progreso' };
+    }
+  }
+
+  // 18. GET /api/artist/tattoo-progress
+  async getArtistClientProgress(): Promise<{ success: boolean; data?: any[]; error?: any }> {
+    try {
+      const res = await this.axiosInstance.get('/api/artist/tattoo-progress');
+      return res.data;
+    } catch (err: any) {
+      if (err.response?.data) {
+        return err.response.data;
+      }
+      return { success: false, error: err.message || 'Error consultando avances de clientes' };
+    }
+  }
 }
 
 export const api = new ApiClient();

@@ -11,6 +11,7 @@ interface AuthContextType {
   login: (data: { user: User; session: Session }) => void;
   logout: () => Promise<void>;
   updateUserMetadata: (metadata: Partial<UserMetadata>) => void;
+  refreshProfile: () => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -20,49 +21,70 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [session, setSession] = useState<Session | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(true);
 
+  const syncUserProfile = async (currentUser: User) => {
+    try {
+      const res = await api.getUserProfile();
+      if (res.success && res.data) {
+        updateUserMetadata({
+          tipo: (res.data.role as any) || undefined,
+          role: (res.data.role as any) || undefined,
+          legal_accepted: res.data.legal_accepted,
+          legal_accepted_at: res.data.legal_accepted_at || undefined,
+          onboarding_completed: res.data.onboarding_completed,
+          full_name: res.data.full_name || undefined,
+          avatar_url: res.data.avatar_url || undefined,
+          phone_number: res.data.phone_number || undefined,
+          telefono: res.data.phone_number || undefined,
+          has_active_subscription: Boolean(res.data.has_active_subscription),
+          trial_days_remaining: res.data.trial_days_remaining,
+          is_trial_active: res.data.is_trial_active,
+          trial_expired: res.data.trial_expired,
+          days_active: res.data.days_active,
+        });
+        return;
+      }
+    } catch {}
+
+    // Fallback: direct Supabase query
+    try {
+      const { data: dbProfile } = await supabase
+        .from('user_profiles')
+        .select('*')
+        .eq('id', currentUser.id)
+        .maybeSingle();
+      if (dbProfile) {
+        const createdAt = new Date(dbProfile.created_at || (currentUser as any).created_at || Date.now());
+        const diffDays = Math.ceil(Math.abs(Date.now() - createdAt.getTime()) / (1000 * 60 * 60 * 24));
+        const hasSub = Boolean(dbProfile.has_active_subscription);
+        const isArtist = (dbProfile.role || '').toLowerCase() === 'tatuador';
+
+        updateUserMetadata({
+          tipo: dbProfile.role || undefined,
+          role: dbProfile.role || undefined,
+          legal_accepted: dbProfile.legal_accepted,
+          legal_accepted_at: dbProfile.legal_accepted_at || undefined,
+          onboarding_completed: dbProfile.onboarding_completed,
+          full_name: dbProfile.full_name || undefined,
+          avatar_url: dbProfile.avatar_url || undefined,
+          phone_number: dbProfile.phone_number || undefined,
+          telefono: dbProfile.phone_number || undefined,
+          has_active_subscription: hasSub,
+          trial_days_remaining: isArtist ? Math.max(0, 90 - diffDays) : undefined,
+          is_trial_active: isArtist ? diffDays <= 90 : undefined,
+          trial_expired: isArtist ? diffDays > 90 && !hasSub : undefined,
+          days_active: diffDays,
+        });
+      }
+    } catch {}
+  };
+
+  const refreshProfile = async () => {
+    if (user) {
+      await syncUserProfile(user);
+    }
+  };
+
   useEffect(() => {
-    const syncUserProfile = async (currentUser: User) => {
-      try {
-        const res = await api.getUserProfile();
-        if (res.success && res.data) {
-          updateUserMetadata({
-            tipo: (res.data.role as any) || undefined,
-            role: (res.data.role as any) || undefined,
-            legal_accepted: res.data.legal_accepted,
-            legal_accepted_at: res.data.legal_accepted_at || undefined,
-            onboarding_completed: res.data.onboarding_completed,
-            full_name: res.data.full_name || undefined,
-            avatar_url: res.data.avatar_url || undefined,
-            phone_number: res.data.phone_number || undefined,
-            telefono: res.data.phone_number || undefined,
-          });
-          return;
-        }
-      } catch {}
-
-      // Fallback: direct Supabase query
-      try {
-        const { data: dbProfile } = await supabase
-          .from('user_profiles')
-          .select('*')
-          .eq('id', currentUser.id)
-          .maybeSingle();
-        if (dbProfile) {
-          updateUserMetadata({
-            tipo: dbProfile.role || undefined,
-            role: dbProfile.role || undefined,
-            legal_accepted: dbProfile.legal_accepted,
-            legal_accepted_at: dbProfile.legal_accepted_at || undefined,
-            onboarding_completed: dbProfile.onboarding_completed,
-            full_name: dbProfile.full_name || undefined,
-            avatar_url: dbProfile.avatar_url || undefined,
-            phone_number: dbProfile.phone_number || undefined,
-            telefono: dbProfile.phone_number || undefined,
-          });
-        }
-      } catch {}
-    };
-
     // 1. Initialize session and sync profile before marking loading false
     const initSession = async () => {
       const stored = api.getStoredSession();
@@ -161,6 +183,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         login,
         logout,
         updateUserMetadata,
+        refreshProfile,
       }}
     >
       {children}

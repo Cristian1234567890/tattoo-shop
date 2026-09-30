@@ -1,5 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import { Logo } from '../common/Logo';
 
 interface StyleFilterProps {
   selectedStyles: string[];
@@ -22,14 +23,7 @@ export const StyleFilter: React.FC<StyleFilterProps> = ({ selectedStyles, onTogg
     <div className="column1 w-full md:w-64 bg-white/90 dark:bg-gray-800/95 p-6 rounded-xl shadow-lg backdrop-blur-sm">
       <div className="start flex items-center gap-3 mb-4">
         <Link to="/" id="logo" className="flex items-center gap-2 no-underline">
-          <img
-            src="/assets/Tattoo Machine Rotary.png"
-            alt="Logo"
-            className="w-8 h-8 object-contain"
-          />
-          <h1 id="title" className="text-xl font-bold italic text-black dark:text-white">
-            TooTienda
-          </h1>
+          <Logo size="sm" />
         </Link>
       </div>
 
