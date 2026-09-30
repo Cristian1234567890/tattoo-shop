@@ -13,6 +13,8 @@ export const Navbar: React.FC = () => {
   const isArtist =
     user?.user_metadata?.tipo === 'Tatuador' || user?.user_metadata?.role === 'Tatuador';
 
+  const hasVip = Boolean(user?.user_metadata?.has_active_subscription);
+
   return (
     <nav className="bg-gray-950/40 backdrop-blur-xl border-b border-white/10 sticky top-0 z-50 transition-all font-sans text-white">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -26,20 +28,25 @@ export const Navbar: React.FC = () => {
 
           {/* Desktop Navigation Links */}
           <div className="hidden md:flex items-center gap-1 lg:gap-2">
-            <a
-              id="presentacion"
-              href="/#beneficios"
-              className="px-3.5 py-1.5 rounded-full text-sm font-medium text-gray-300 hover:text-white hover:bg-white/10 transition-colors"
-            >
-              Beneficios
-            </a>
-            <a
-              id="presentacion"
-              href="/#precios"
-              className="px-3.5 py-1.5 rounded-full text-sm font-medium text-gray-300 hover:text-white hover:bg-white/10 transition-colors"
-            >
-              Precios
-            </a>
+            {/* Only show Beneficios & Precios if NOT authenticated with VIP */}
+            {(!isAuthenticated || !hasVip) && (
+              <>
+                <a
+                  id="presentacion"
+                  href="/#beneficios"
+                  className="px-3.5 py-1.5 rounded-full text-sm font-medium text-gray-300 hover:text-white hover:bg-white/10 transition-colors"
+                >
+                  Beneficios
+                </a>
+                <a
+                  id="presentacion"
+                  href="/#precios"
+                  className="px-3.5 py-1.5 rounded-full text-sm font-medium text-gray-300 hover:text-white hover:bg-white/10 transition-colors"
+                >
+                  Precios
+                </a>
+              </>
+            )}
             <Link
               to="/hub"
               className="px-3.5 py-1.5 rounded-full text-sm font-medium text-gray-300 hover:text-white hover:bg-white/10 transition-colors"
@@ -63,12 +70,6 @@ export const Navbar: React.FC = () => {
                   className="px-4 py-1.5 rounded-full text-sm font-semibold text-indigo-300 bg-indigo-500/10 hover:bg-indigo-500/20 border border-indigo-500/30 transition-all"
                 >
                   {isArtist ? 'Panel Artista' : 'Mi Panel'}
-                </Link>
-                <Link
-                  to={isArtist ? '/tattoo' : '/profile'}
-                  className="px-3.5 py-1.5 rounded-full text-sm font-medium text-gray-300 hover:text-white hover:bg-white/10 transition-colors"
-                >
-                  Mi Perfil
                 </Link>
                 <button
                   onClick={() => logout()}
@@ -117,24 +118,29 @@ export const Navbar: React.FC = () => {
       {mobileMenuOpen && (
         <div className="md:hidden bg-gray-950/95 backdrop-blur-2xl border-b border-white/10 px-4 pt-3 pb-6 space-y-3 animate-in fade-in slide-in-from-top-2 duration-200">
           <div className="space-y-1">
-            <a
-              id="presentacion"
-              href="/#beneficios"
-              onClick={closeMenu}
-              className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-base font-medium text-gray-200 hover:text-white hover:bg-white/10 transition-colors"
-            >
-              <Sparkles className="w-5 h-5 text-violet-400" />
-              Beneficios
-            </a>
-            <a
-              id="presentacion"
-              href="/#precios"
-              onClick={closeMenu}
-              className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-base font-medium text-gray-200 hover:text-white hover:bg-white/10 transition-colors"
-            >
-              <DollarSign className="w-5 h-5 text-indigo-400" />
-              Precios
-            </a>
+            {/* Only show Beneficios & Precios if NOT authenticated with VIP */}
+            {(!isAuthenticated || !hasVip) && (
+              <>
+                <a
+                  id="presentacion"
+                  href="/#beneficios"
+                  onClick={closeMenu}
+                  className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-base font-medium text-gray-200 hover:text-white hover:bg-white/10 transition-colors"
+                >
+                  <Sparkles className="w-5 h-5 text-violet-400" />
+                  Beneficios
+                </a>
+                <a
+                  id="presentacion"
+                  href="/#precios"
+                  onClick={closeMenu}
+                  className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-base font-medium text-gray-200 hover:text-white hover:bg-white/10 transition-colors"
+                >
+                  <DollarSign className="w-5 h-5 text-indigo-400" />
+                  Precios
+                </a>
+              </>
+            )}
             <Link
               to="/hub"
               onClick={closeMenu}
@@ -163,13 +169,6 @@ export const Navbar: React.FC = () => {
                 >
                   <User className="w-4 h-4" />
                   {isArtist ? 'Panel Artista' : 'Mi Panel'}
-                </Link>
-                <Link
-                  to={isArtist ? '/tattoo' : '/profile'}
-                  onClick={closeMenu}
-                  className="flex items-center justify-center gap-2 w-full py-2.5 px-4 rounded-full text-sm font-medium text-gray-300 hover:text-white hover:bg-white/10"
-                >
-                  Mi Perfil
                 </Link>
                 <button
                   onClick={() => {

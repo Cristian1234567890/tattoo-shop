@@ -1,6 +1,6 @@
 import { useEffect, useState, useMemo, useCallback } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { MapContainer, TileLayer, Marker, Popup, useMap } from 'react-leaflet';
+import { MapContainer, TileLayer, Marker, Popup, useMap, ZoomControl } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
 import L from 'leaflet';
 import {
@@ -156,12 +156,30 @@ export default function ArtistsHubPage() {
       if (filter === 'All') return true;
       const s = (artist.style || '').toLowerCase();
       const f = filter.toLowerCase();
-      if (f === 'realismo') return s.includes('realis');
-      if (f === 'tradicional') return s.includes('tradicional');
-      if (f === 'blackwork') return s.includes('black');
-      if (f === 'minimalista') return s.includes('minimal') || s.includes('line');
-      if (f === 'neotradicional') return s.includes('neotrad');
-      return s.includes(f);
+      // Flexible keyword matching for all 20 styles
+      const styleMap: Record<string, string[]> = {
+        'realismo': ['realis', 'portrait', 'retrat'],
+        'tradicional': ['tradicional', 'traditional', 'old school'],
+        'neo-tradicional': ['neotrad', 'neo-trad', 'neo trad'],
+        'blackwork': ['black', 'blackout'],
+        'black & grey': ['grey', 'gray', 'b&g', 'black and grey'],
+        'japonés': ['japon', 'irezumi', 'japanese'],
+        'minimalista': ['minimal', 'line'],
+        'fine line': ['fine line', 'fineline', 'thin line'],
+        'acuarela': ['acuarela', 'watercolor', 'water'],
+        'geométrico': ['geometr', 'geometric'],
+        'dotwork': ['dotwork', 'dot work', 'puntill'],
+        'tribal': ['tribal'],
+        'new school': ['new school', 'newschool', 'cartoon'],
+        'lettering': ['lettering', 'letter', 'script', 'tipograf', 'caligraf'],
+        'sketch': ['sketch', 'boceto'],
+        'biomecánico': ['biomec', 'biomech', 'mech'],
+        'surrealista': ['surreal', 'surrealis'],
+        'ornamental': ['ornament', 'mandala', 'filigran'],
+        'cybersigilism': ['cyber', 'sigil'],
+      };
+      const keywords = styleMap[f] || [f];
+      return keywords.some((kw) => s.includes(kw));
     });
   }, [normalizedArtists, filter]);
 
@@ -196,7 +214,12 @@ export default function ArtistsHubPage() {
             data-testid="style-filter-bar"
             className="flex items-center gap-1.5 sm:gap-2 overflow-x-auto no-scrollbar pointer-events-auto py-1 px-2 bg-gray-900/80 backdrop-blur-md rounded-full border border-white/10 shadow-2xl"
           >
-            {['All', 'Realismo', 'Tradicional', 'Blackwork', 'Minimalista', 'Neotradicional'].map(
+            {[
+              'All', 'Realismo', 'Tradicional', 'Neo-Tradicional', 'Blackwork',
+              'Black & Grey', 'Japonés', 'Minimalista', 'Fine Line', 'Acuarela',
+              'Geométrico', 'Dotwork', 'Tribal', 'New School', 'Lettering',
+              'Sketch', 'Biomecánico', 'Surrealista', 'Ornamental', 'Cybersigilism',
+            ].map(
               (style) => (
                 <button
                   key={style}
@@ -432,16 +455,20 @@ export default function ArtistsHubPage() {
             <MapContainer
               center={mapCenter}
               zoom={mapZoom}
-              className="w-full h-full z-0"
+              zoomControl={false}
+              className="w-full h-full z-0 dark-map-tiles"
               style={{ height: 'calc(100vh - 64px)', minHeight: '400px', width: '100%' }}
             >
+              {/* Zoom Controls — Bottom Right */}
+              <ZoomControl position="bottomright" />
+
               {/* Dynamic Re-centering controller */}
               <MapRecenter center={mapCenter} zoom={mapZoom} />
 
-              {/* Dark Map Tiles */}
+              {/* Free OpenStreetMap Tiles (dark via CSS filter) */}
               <TileLayer
-                attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>'
-                url="https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png"
+                attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+                url="https://tile.openstreetmap.org/{z}/{x}/{y}.png"
               />
 
               {/* Pulsing User GPS Marker */}
@@ -536,6 +563,38 @@ export default function ArtistsHubPage() {
       </main>
 
       <style>{`
+        /* Dark Mode Map Tiles — free OSM tiles inverted to dark palette */
+        .dark-map-tiles .leaflet-tile-pane {
+          filter: invert(1) hue-rotate(180deg) brightness(0.85) contrast(1.1) saturate(0.3);
+        }
+        /* Keep markers/popups un-inverted so they look normal */
+        .dark-map-tiles .leaflet-marker-pane,
+        .dark-map-tiles .leaflet-popup-pane,
+        .dark-map-tiles .leaflet-shadow-pane,
+        .dark-map-tiles .leaflet-overlay-pane {
+          filter: none;
+        }
+        /* Zoom Controls — dark glass aesthetic, bottom-right */
+        .leaflet-control-zoom {
+          border: 1px solid rgba(255, 255, 255, 0.15) !important;
+          border-radius: 12px !important;
+          overflow: hidden;
+          box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5) !important;
+        }
+        .leaflet-control-zoom a {
+          background: rgba(9, 13, 22, 0.9) !important;
+          color: #e5e7eb !important;
+          border-color: rgba(255, 255, 255, 0.1) !important;
+          width: 36px !important;
+          height: 36px !important;
+          line-height: 36px !important;
+          font-size: 18px !important;
+          backdrop-filter: blur(12px);
+        }
+        .leaflet-control-zoom a:hover {
+          background: rgba(105, 68, 255, 0.3) !important;
+          color: #fff !important;
+        }
         .leaflet-popup-content-wrapper {
           background: transparent !important;
           box-shadow: none !important;
@@ -570,6 +629,13 @@ export default function ArtistsHubPage() {
         }
         .custom-scrollbar::-webkit-scrollbar-thumb:hover {
           background: rgba(255, 255, 255, 0.3);
+        }
+        .no-scrollbar::-webkit-scrollbar {
+          display: none;
+        }
+        .no-scrollbar {
+          -ms-overflow-style: none;
+          scrollbar-width: none;
         }
       `}</style>
       </div>
