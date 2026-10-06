@@ -1,0 +1,91 @@
+/* ==========================================================================
+   Tattoo Hub Luxury Dark Atelier Styles & Utility Classes (Milestone 13)
+   ========================================================================== */
+
+/* Glassmorphic Dark Atelier Container */
+.atelier-card {
+  background-color: rgba(19, 19, 26, 0.7);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 1rem;
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.5), 0 8px 10px -6px rgba(0, 0, 0, 0.5);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.atelier-card-hover {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.atelier-card-hover:hover {
+  border-color: rgba(139, 92, 246, 0.4);
+  background-color: rgba(26, 26, 36, 0.85);
+  box-shadow: 0 0 30px rgba(124, 58, 237, 0.25), 0 20px 25px -5px rgba(0, 0, 0, 0.5);
+  transform: translateY(-0.25rem);
+}
+
+/* Form Elements: Dark studio surface with signature violet glow focus */
+.input-atelier {
+  background-color: rgba(11, 11, 14, 0.9);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  color: #ffffff;
+  border-radius: 0.75rem;
+  padding: 0.625rem 1rem;
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.input-atelier::placeholder {
+  color: #71717a;
+}
+
+.input-atelier:focus {
+  outline: none;
+  border-color: #8b5cf6;
+  box-shadow: 0 0 0 2px rgba(139, 92, 246, 0.4), 0 0 15px rgba(139, 92, 246, 0.3);
+}
+
+/* Interactive Luxury Button */
+.btn-atelier-primary {
+  background: linear-gradient(135deg, #7c3aed 0%, #4f46e5 100%);
+  color: #ffffff;
+  font-weight: 600;
+  border-radius: 0.75rem;
+  padding: 0.625rem 1.25rem;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 0 20px rgba(124, 58, 237, 0.35);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  cursor: pointer;
+}
+
+.btn-atelier-primary:hover {
+  background: linear-gradient(135deg, #8b5cf6 0%, #6366f1 100%);
+  box-shadow: 0 0 30px rgba(124, 58, 237, 0.55);
+  transform: translateY(-1px);
+}
+
+.btn-atelier-primary:active {
+  transform: scale(0.97);
+}
+
+/* Dark Luxury Glow Accents */
+.glow-violet {
+  box-shadow: 0 0 25px rgba(124, 58, 237, 0.35);
+}
+
+.glow-violet-lg {
+  box-shadow: 0 0 45px rgba(124, 58, 237, 0.5);
+}
+
+.glow-emerald {
+  box-shadow: 0 0 25px rgba(16, 185, 129, 0.35);
+}
+
+/* Concentric Violet Ring for Studio Residents */
+.ring-concentric-violet {
+  box-shadow: 0 0 0 2px #0b0b0e, 0 0 0 4px rgba(139, 92, 246, 0.8), 0 0 15px rgba(139, 92, 246, 0.5);
+}

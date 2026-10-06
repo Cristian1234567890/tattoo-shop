@@ -1,6 +1,7 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Sparkles } from 'lucide-react';
+import { useCurrency } from '../../context/CurrencyContext';
 
 interface SubscriptionNoticeModalProps {
   isOpen: boolean;
@@ -14,6 +15,7 @@ export const SubscriptionNoticeModal: React.FC<SubscriptionNoticeModalProps> = (
   onCancel,
 }) => {
   const navigate = useNavigate();
+  const { formatPrice } = useCurrency();
 
   if (!isOpen) return null;
 
@@ -41,10 +43,10 @@ export const SubscriptionNoticeModal: React.FC<SubscriptionNoticeModalProps> = (
           </p>
           <div className="bg-primary/10 border border-primary/30 rounded-xl p-3 my-3">
             <p className="font-bold text-primary text-lg">
-              $4.99 / mes
+              {formatPrice(4.99)} / mes
             </p>
             <p className="text-xs text-gray-400">
-              o $49.90 / año (ahorra 17%)
+              o {formatPrice(49.90)} / año (ahorra 17%)
             </p>
           </div>
           <p className="font-medium text-gray-400 mt-2">¿Deseas continuar al proceso de pago?</p>

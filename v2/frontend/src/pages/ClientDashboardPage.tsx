@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { Navbar } from '../components/common/Navbar';
-import { Footer } from '../components/common/Footer';
 import { api } from '../api/client';
 import {
   Sparkles,
@@ -21,15 +20,19 @@ import { ClientTabsNav, ClientTabId } from '../components/client/ClientTabsNav';
 import { TattoosOverviewTab } from '../components/client/tabs/TattoosOverviewTab';
 import { ClientSettingsTab } from '../components/client/tabs/ClientSettingsTab';
 import { ClientSecurityTab } from '../components/client/tabs/ClientSecurityTab';
+import { AgendaTracking } from '../components/hub/AgendaTracking';
+import { PaymentTracking } from '../components/hub/PaymentTracking';
+import { useCurrency } from '../context/CurrencyContext';
 
 export const ClientDashboardPage: React.FC = () => {
   const { user, isAuthenticated, isLoading } = useAuth();
+  const { formatPrice } = useCurrency();
   const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
 
-  // Tab synchronization via URL Query Param (?tab=overview|configuracion|seguridad)
+  // Tab synchronization via URL Query Param (?tab=overview|citas|pagos|configuracion|seguridad)
   const tabParam = (searchParams.get('tab') || 'overview').toLowerCase();
-  const validTabs: ClientTabId[] = ['overview', 'configuracion', 'seguridad'];
+  const validTabs: ClientTabId[] = ['overview', 'citas', 'pagos', 'configuracion', 'seguridad'];
   const activeTab: ClientTabId = validTabs.includes(tabParam as ClientTabId)
     ? (tabParam as ClientTabId)
     : 'overview';
@@ -162,7 +165,6 @@ export const ClientDashboardPage: React.FC = () => {
             </div>
           </div>
         </main>
-        <Footer />
       </div>
     );
   }
@@ -281,7 +283,7 @@ export const ClientDashboardPage: React.FC = () => {
                 Función Exclusiva VIP
               </span>
               <h3 className="text-xl md:text-2xl font-black text-white mt-3 mb-2">
-                Desbloquea el Seguimiento de Tatuajes con Cliente VIP por $4.99/mes
+                Desbloquea el Seguimiento de Tatuajes con Cliente VIP por {formatPrice(4.99)}/mes
               </h3>
               <p className="text-gray-300 text-sm leading-relaxed mb-6">
                 Registra cada fase de cicatrización de tus tatuajes, sube fotografías de evolución y accede al historial avanzado con soporte prioritario.
@@ -291,7 +293,7 @@ export const ClientDashboardPage: React.FC = () => {
                   to="/subscription/creditcard"
                   className="w-full inline-flex items-center justify-center gap-2 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-gray-950 font-bold py-3.5 px-6 rounded-xl shadow-lg transition transform hover:scale-105 text-sm"
                 >
-                  <Sparkles size={18} /> Desbloquear Cliente VIP ($4.99/mes)
+                  <Sparkles size={18} /> Desbloquear Cliente VIP ({formatPrice(4.99)}/mes)
                 </Link>
                 <button
                   onClick={() => setShowPaywallModal(false)}
@@ -425,6 +427,14 @@ export const ClientDashboardPage: React.FC = () => {
                 />
               )}
 
+              {activeTab === 'citas' && (
+                <AgendaTracking />
+              )}
+
+              {activeTab === 'pagos' && (
+                <PaymentTracking />
+              )}
+
               {activeTab === 'configuracion' && (
                 <ClientSettingsTab
                   user={user}
@@ -444,8 +454,6 @@ export const ClientDashboardPage: React.FC = () => {
             </motion.div>
           </AnimatePresence>
         </main>
-
-        <Footer />
       </div>
     </PageTransition>
   );

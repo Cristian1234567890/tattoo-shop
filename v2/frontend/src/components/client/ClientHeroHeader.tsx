@@ -11,6 +11,7 @@ import {
   Crown,
   Lock,
 } from 'lucide-react';
+import { useCurrency } from '../../context/CurrencyContext';
 
 interface ClientHeroHeaderProps {
   user: User | null;
@@ -29,6 +30,7 @@ export const ClientHeroHeader: React.FC<ClientHeroHeaderProps> = ({
   lang = 'es',
   onUpgradeVip,
 }) => {
+  const { formatPrice } = useCurrency();
   const meta = user?.user_metadata || {};
   const clientName =
     meta.full_name ||
@@ -53,7 +55,10 @@ export const ClientHeroHeader: React.FC<ClientHeroHeaderProps> = ({
     roleClient: lang === 'en' ? 'Client' : 'Cliente',
     vipClient: lang === 'en' ? 'VIP Member' : 'Cliente VIP',
     standardClient: lang === 'en' ? 'Standard Account' : 'Cliente Estándar',
-    unlockVip: lang === 'en' ? 'Unlock VIP ($4.99/mo)' : 'Desbloquear VIP ($4.99/mes)',
+    unlockVip:
+      lang === 'en'
+        ? `Unlock VIP (${formatPrice(4.99)}/mo)`
+        : `Desbloquear VIP (${formatPrice(4.99)}/mes)`,
     statTattoos: lang === 'en' ? 'Tracked Tattoos' : 'Tatuajes en seguimiento',
     statAppointments: lang === 'en' ? 'Active Appointments' : 'Citas activas',
     statSecurity: lang === 'en' ? 'Secure Session' : 'Sesión segura',

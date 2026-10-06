@@ -2,7 +2,6 @@ import React from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { Navbar } from '../components/common/Navbar';
-import { Footer } from '../components/common/Footer';
 import { PageTransition } from '../components/common/PageTransition';
 import {
   Palette,
@@ -18,9 +17,11 @@ import {
   CreditCard,
   Lock,
 } from 'lucide-react';
+import { useCurrency } from '../context/CurrencyContext';
 
 export const ArtistDashboardPage: React.FC = () => {
   const { user, isAuthenticated, isLoading, logout } = useAuth();
+  const { formatPrice } = useCurrency();
   const navigate = useNavigate();
 
   React.useEffect(() => {
@@ -81,14 +82,14 @@ export const ArtistDashboardPage: React.FC = () => {
               Tu Período de Prueba de 90 Días ha Expirado
             </h2>
             <p className="text-gray-300 text-sm leading-relaxed mb-6">
-              Han transcurrido {trialDay} días desde tu registro. Para continuar publicando en tu catálogo, recibiendo cotizaciones y apareciendo en el mapa de artistas, adquiere tu membresía comercial por $4.99/mes.
+              Han transcurrido {trialDay} días desde tu registro. Para continuar publicando en tu catálogo, recibiendo cotizaciones y apareciendo en el mapa de artistas, adquiere tu membresía comercial por {formatPrice(4.99)}/mes.
             </p>
             <div className="space-y-3">
               <Link
                 to="/subscription/creditcard"
                 className="w-full inline-flex items-center justify-center gap-2 bg-gradient-to-r from-red-600 to-primary hover:opacity-90 text-white font-bold py-3.5 px-6 rounded-xl shadow-lg transition transform hover:scale-105"
               >
-                <CreditCard size={18} /> Adquirir Membresía ($4.99/mes)
+                <CreditCard size={18} /> Adquirir Membresía ({formatPrice(4.99)}/mes)
               </Link>
               <button
                 onClick={() => logout()}
@@ -136,7 +137,7 @@ export const ArtistDashboardPage: React.FC = () => {
                     Suscripción Activa
                   </div>
                   <p className="text-xs text-gray-400 mt-1">
-                    Plan Artista Pro ($4.99/mes)
+                    Plan Artista Pro ({formatPrice(4.99)}/mes)
                   </p>
                 </>
               ) : (
@@ -151,7 +152,7 @@ export const ArtistDashboardPage: React.FC = () => {
                     to="/subscription/creditcard"
                     className="mt-3 inline-flex items-center gap-1.5 text-xs font-semibold text-primary hover:text-primary-hover hover:underline"
                   >
-                    <CreditCard size={14} /> Planes de Membresía ($4.99/mes)
+                    <CreditCard size={14} /> Planes de Membresía ({formatPrice(4.99)}/mes)
                   </Link>
                 </>
               )}
@@ -284,7 +285,6 @@ export const ArtistDashboardPage: React.FC = () => {
         </section>
       </main>
 
-      <Footer />
       </div>
     </PageTransition>
   );

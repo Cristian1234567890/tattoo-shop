@@ -18,6 +18,7 @@ import { ProgressDetailModal } from '../../tattoo/ProgressDetailModal';
 import { UploadProgressModal } from '../../tattoo/UploadProgressModal';
 import { api } from '../../../api/client';
 import { supabase } from '../../../api/supabase';
+import { useCurrency } from '../../../context/CurrencyContext';
 
 interface TattoosOverviewTabProps {
   isVip: boolean;
@@ -36,6 +37,7 @@ export const TattoosOverviewTab: React.FC<TattoosOverviewTabProps> = ({
   savedEntries,
   user,
 }) => {
+  const { formatPrice } = useCurrency();
   const t = {
     quickActions: lang === 'en' ? 'Quick Actions' : 'Acciones Rápidas',
     exploreArtists: lang === 'en' ? 'Explore Artists' : 'Explorar Artistas',
@@ -63,9 +65,9 @@ export const TattoosOverviewTab: React.FC<TattoosOverviewTabProps> = ({
         ? 'Keep a photographic healing diary of your body art with clinical aftercare reminders.'
         : 'Lleva un diario fotográfico de la cicatrización de tu arte corporal con recordatorios de cuidado.',
     vipActive: lang === 'en' ? 'VIP Active' : 'VIP Activo',
-    vipPremium: lang === 'en' ? 'VIP Premium ($4.99/mo)' : 'VIP Premium ($4.99/mes)',
+    vipPremium: lang === 'en' ? `VIP Premium (${formatPrice(4.99)}/mo)` : `VIP Premium (${formatPrice(4.99)}/mes)`,
     addProgress: lang === 'en' ? 'Record Progress' : 'Registrar Avance',
-    unlockVip: lang === 'en' ? 'Unlock VIP ($4.99)' : 'Desbloquear VIP ($4.99)',
+    unlockVip: lang === 'en' ? `Unlock VIP (${formatPrice(4.99)})` : `Desbloquear VIP (${formatPrice(4.99)})`,
     phase1: lang === 'en' ? 'Phase 1: Cleansing & Wrap' : 'Fase 1: Limpieza & Primer Vendaje',
     phase1Days: lang === 'en' ? 'Days 1 - 3' : 'Días 1 - 3',
     phase1Desc:

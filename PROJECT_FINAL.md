@@ -171,3 +171,22 @@ PORT=3000
 ---
 
 *Generated: 2026-09-30 | Tattoo Hub v1.0.0 — Premium Studio Release*
+
+---
+## Fase 4 - Expansiones del Hub y Flujo Financiero Crítico
+
+### Flujo de Pagos Post-Sesión y Reclamos (Protección del Artista)
+Se adoptó un modelo pragmático para las transacciones mediante la skill `product-reality-check`:
+1. **Cobros Post-Sesión:** El sistema permite registrar cobros *después* de finalizada la sesión. 
+2. **Señas (Deposits):** El cliente debe depositar una seña inicial para asegurar la agenda. Política de reembolso estricta para evitar *chargebacks*.
+3. **Módulo Premium de Inventario:** Checklists inteligentes de preparación (notificados un día antes de la cita según la configuración en `itinerary_config`).
+
+### Sandboxing (Aislamiento de Cuentas de Prueba)
+Implementado vía RLS (Row Level Security) directamente en Supabase (Migración 09).
+- **Flag:** `is_test_account BOOLEAN`
+- **Tatuador Bypass:** `tatuadortest2@tattooshop.com`
+- **Cliente Bypass:** `clientetest@tattooshop.com`
+Cualquier petición a los catálogos/mapas bloquea el cruce de datos entre usuarios reales y usuarios de prueba a nivel de motor SQL.
+
+### Interfaz del Dashboard Extendida
+Se agregaron las pestañas de **Citas** (`AgendaTracking`) y **Pagos** (`PaymentTracking`) en los paneles principales para ofrecer una vista financiera y de itinerario consolidada para ambas partes de la negociación.

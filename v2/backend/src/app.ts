@@ -6,6 +6,7 @@ import tattooRoutes from './routes/tattoo.routes';
 import subscriptionRoutes from './routes/subscription.routes';
 import mailRoutes from './routes/mail.routes';
 import progressRoutes from './routes/progress.routes';
+import hubRoutes from './routes/hub.routes';
 import { errorHandler } from './middlewares/error.middleware';
 
 export function createApp(): Application {
@@ -33,6 +34,7 @@ export function createApp(): Application {
   app.use(subscriptionRoutes);
   app.use(mailRoutes);
   app.use(progressRoutes);
+  app.use(hubRoutes);
 
   // 404 Handler for unmatched routes
   app.use((_req: Request, res: Response) => {

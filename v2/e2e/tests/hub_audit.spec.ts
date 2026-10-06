@@ -1,133 +1,161 @@
 import { test, expect } from '@playwright/test';
 
-test.describe('Artists Hub (/hub) Headless CI Audit', () => {
-  test.beforeEach(async ({ context }) => {
-    // Ensure geolocation permissions and coordinates for Panama City are active
-    await context.grantPermissions(['geolocation']);
-    await context.setGeolocation({ latitude: 8.9824, longitude: -79.5199 });
-  });
-
-  test('Test 1: Navigation to /hub, HTTP 200, Leaflet map container attaches', async ({ page }) => {
+test.describe('Artists Hub (/hub) Stitch Studio Hierarchy & Map Audit', () => {
+  test('Test 1: Navigation to /hub, HTTP 200, Map container attaches and studio pins render', async ({ page }) => {
     const response = await page.goto('/hub', { waitUntil: 'domcontentloaded' });
     expect(response?.status()).toBeLessThan(400);
 
     // Verify URL
     await expect(page).toHaveURL(/\/hub/);
 
-    // Verify map container attaches and renders Leaflet
+    // Verify map container attaches and renders dark luxury background
     const mapWrapper = page.locator('[data-testid="hub-map-container"]');
     await expect(mapWrapper).toBeVisible({ timeout: 15000 });
 
-    const leafletContainer = page.locator('.leaflet-container');
-    await expect(leafletContainer).toBeVisible({ timeout: 15000 });
+    // Verify studio pins are rendered on map
+    const pins = page.locator('[data-testid="studio-pin"]');
+    await expect(pins.first()).toBeVisible({ timeout: 10000 });
+    const pinCount = await pins.count();
+    expect(pinCount).toBeGreaterThanOrEqual(3);
 
-    // Verify essential UI controls are present
-    await expect(page.locator('[data-testid="style-filter-bar"]')).toBeVisible();
-    await expect(page.locator('[data-testid="nearest-drawer"]')).toBeVisible();
+    // Verify studio drawer is present
+    await expect(page.locator('[data-testid="studio-drawer"]')).toBeVisible();
+    await expect(page.locator('[data-testid="search-input"]')).toBeVisible();
   });
 
-  test('Test 2: Geolocation permission and user location indicator / centering', async ({ page }) => {
+  test('Test 2: Studio Pins display multi-artist badge and selecting pin activates studio', async ({ page }) => {
     await page.goto('/hub', { waitUntil: 'domcontentloaded' });
 
-    // Wait for the map to attach
-    await expect(page.locator('.leaflet-container')).toBeVisible({ timeout: 15000 });
+    // Verify multi-artist badge on Obsidian Atelier (3 Artistas)
+    const obsidianPin = page.locator('[data-testid="studio-pin"][data-studio-id="obsidian"]');
+    await expect(obsidianPin).toBeVisible({ timeout: 10000 });
+    await expect(obsidianPin).toContainText('3');
+    await expect(obsidianPin).toContainText('Artistas');
 
-    // The page automatically triggers requestUserLocation on mount.
-    // Also, clicking the GPS button triggers re-centering.
-    const gpsBtn = page.locator('[data-testid="gps-locate-btn"]');
-    await expect(gpsBtn).toBeVisible();
-    await gpsBtn.click();
+    // Click on another studio pin (e.g. Neon Ink Studio)
+    const neonPin = page.locator('[data-testid="studio-pin"][data-studio-id="neon-ink"]');
+    await expect(neonPin).toBeVisible();
+    await neonPin.click();
 
-    // Verify the pulsing user GPS marker is rendered on the Leaflet map
-    const userMarker = page.locator('.user-gps-marker');
-    await expect(userMarker).toBeVisible({ timeout: 10000 });
-
-    // Verify GPS button reflects active location state
-    await expect(gpsBtn).toHaveClass(/bg-blue-600/);
+    // Verify Drawer updates active studio title to Neon Ink Studio
+    const drawer = page.locator('[data-testid="studio-drawer"]');
+    await expect(drawer.getByText(/Neon Ink Studio/i).first()).toBeVisible({ timeout: 8000 });
+    await expect(drawer.getByText(/2 Artistas Residentes/i).first()).toBeVisible();
   });
 
-  test('Test 3: Style filter buttons dynamically filter displayed artists and update visual state', async ({ page }) => {
+  test('Test 3: Search input and type filters dynamically filter studios', async ({ page }) => {
     await page.goto('/hub', { waitUntil: 'domcontentloaded' });
 
-    // Wait for drawer and initial artist cards to populate
-    await expect(page.locator('[data-testid="nearest-drawer"]')).toBeVisible({ timeout: 15000 });
-    const cards = page.locator('[data-testid="artist-card"]');
-    await expect(cards.first()).toBeVisible({ timeout: 10000 });
-    const initialCount = await cards.count();
-    expect(initialCount).toBeGreaterThan(0);
+    // 1. Filter by "Estudios"
+    const studioFilterBtn = page.locator('[data-testid="filter-type-studio"]');
+    await expect(studioFilterBtn).toBeVisible();
+    await studioFilterBtn.click();
 
-    const stylesToTest = [
-      { name: 'Realismo', slug: 'realismo', pattern: /realis/i },
-      { name: 'Tradicional', slug: 'tradicional', pattern: /tradicional/i },
-      { name: 'Blackwork', slug: 'blackwork', pattern: /black/i },
-      { name: 'Minimalista', slug: 'minimalista', pattern: /minimal|line/i },
-      { name: 'Neotradicional', slug: 'neotradicional', pattern: /neotrad/i },
-    ];
+    // Studio pins should be visible
+    const pins = page.locator('[data-testid="studio-pin"]');
+    const studioCount = await pins.count();
+    expect(studioCount).toBeGreaterThan(0);
 
-    for (const style of stylesToTest) {
-      const pill = page.locator(`[data-testid="filter-pill-${style.slug}"]`);
-      await expect(pill).toBeVisible();
-      await pill.click();
+    // 2. Filter by "Independientes"
+    const indepFilterBtn = page.locator('[data-testid="filter-type-independent"]');
+    await indepFilterBtn.click();
+    await expect(page.locator('[data-testid="studio-pin"][data-studio-id="ana-valdes"]')).toBeVisible();
 
-      // Verify active visual state (bg-primary class)
-      await expect(pill).toHaveClass(/bg-primary/);
+    // 3. Reset to "Todos"
+    const allFilterBtn = page.locator('[data-testid="filter-type-all"]');
+    await allFilterBtn.click();
 
-      // Verify drawer cards reflect the filtered style (or empty notice if none match)
-      const currentCards = page.locator('[data-testid="artist-card"]');
-      const count = await currentCards.count();
-      if (count > 0) {
-        const firstStyleText = await currentCards.first().locator('[data-testid="artist-style"]').innerText();
-        expect(firstStyleText).toMatch(style.pattern);
-      }
-    }
+    // 4. Test Search input
+    const searchInput = page.locator('[data-testid="search-input"]');
+    await searchInput.fill('Chiriquí');
+    await expect(page.locator('[data-testid="studio-pin"][data-studio-id="neon-ink"]')).toBeVisible();
+    await expect(page.locator('[data-testid="studio-pin"][data-studio-id="obsidian"]')).not.toBeVisible();
 
-    // Reset back to "All" and verify list returns to full count
-    const allPill = page.locator('[data-testid="filter-pill-all"]');
-    await allPill.click();
-    await expect(allPill).toHaveClass(/bg-primary/);
-    await expect(cards).toHaveCount(initialCount);
+    // Clear search
+    await searchInput.fill('');
+    await expect(page.locator('[data-testid="studio-pin"][data-studio-id="obsidian"]')).toBeVisible();
   });
 
-  test('Test 4: Nearest artists drawer renders artist cards with distance badge, artist styles, and WhatsApp link', async ({ page }) => {
+  test('Test 4: Studio -> Resident Artists Hierarchy (Multi-artist selector, specialties, and dynamic rates)', async ({ page }) => {
     await page.goto('/hub', { waitUntil: 'domcontentloaded' });
 
-    // Ensure drawer is open
-    const drawer = page.locator('[data-testid="nearest-drawer"]');
+    const drawer = page.locator('[data-testid="studio-drawer"]');
     await expect(drawer).toBeVisible({ timeout: 15000 });
 
-    // Locate artist cards
-    const cards = drawer.locator('[data-testid="artist-card"]');
-    await expect(cards.first()).toBeVisible({ timeout: 10000 });
+    // Verify Obsidian studio has 3 resident artists
+    await expect(drawer.getByText(/3 Artistas Residentes/i).first()).toBeVisible();
 
-    const count = await cards.count();
-    expect(count).toBeGreaterThanOrEqual(1);
+    // Verify resident avatar buttons
+    const residentPills = drawer.locator('[data-testid="resident-artist-pill"]');
+    const residentCount = await residentPills.count();
+    expect(residentCount).toBeGreaterThanOrEqual(3);
 
-    // Verify card content
-    const firstCard = cards.first();
-    const artistName = firstCard.locator('[data-testid="artist-name"]');
-    await expect(artistName).toBeVisible();
-    const nameText = await artistName.innerText();
-    expect(nameText.trim().length).toBeGreaterThan(0);
+    // Initial resident should be Kaelen
+    await expect(drawer.getByText(/Kaelen Silva/i).first()).toBeVisible();
+    await expect(drawer.getByText(/Void/i).first()).toBeVisible();
+    await expect(drawer.getByText(/Tarifa Base/i).first()).toBeVisible();
 
-    const artistStyle = firstCard.locator('[data-testid="artist-style"]');
-    await expect(artistStyle).toBeVisible();
-    const styleText = await artistStyle.innerText();
-    expect(styleText.trim().length).toBeGreaterThan(0);
+    // Switch to Maya Lin (Thorne)
+    const mayaPill = drawer.locator('[data-testid="resident-artist-pill"][data-resident-id="artist-maya"]');
+    await expect(mayaPill).toBeVisible();
+    await mayaPill.click();
 
-    // Verify distance badge exists with "km" unit
-    const distanceBadge = firstCard.locator('[data-testid="distance-badge"]');
-    await expect(distanceBadge).toBeVisible();
-    await expect(distanceBadge).toContainText('km');
+    // Active details should update to Maya Lin
+    await expect(drawer.getByText(/Maya Lin/i).first()).toBeVisible();
+    await expect(drawer.getByText(/Thorne/i).first()).toBeVisible();
+    await expect(drawer.getByText(/Ornamental|Dotwork|Botánico/i).first()).toBeVisible();
 
-    // Verify "Centrar" button exists and is clickable
-    const centerBtn = firstCard.locator('[data-testid="btn-center-artist"]');
-    await expect(centerBtn).toBeVisible();
-    await centerBtn.click();
+    // Verify flash designs render with dynamic formatted prices
+    const flashItems = drawer.locator('[data-testid="flash-card-item"]');
+    await expect(flashItems.first()).toBeVisible({ timeout: 8000 });
+    const flashCount = await flashItems.count();
+    expect(flashCount).toBeGreaterThan(0);
+  });
 
-    // Verify WhatsApp button is formatted with https://wa.me/
-    const whatsappBtn = firstCard.locator('[data-testid="btn-whatsapp-artist"]');
+  test('Test 5: Guest Gate intercepts unauthenticated actions (WhatsApp, Send Sketch, Flash Reserve)', async ({ page }) => {
+    await page.goto('/hub', { waitUntil: 'domcontentloaded' });
+
+    const drawer = page.locator('[data-testid="studio-drawer"]');
+    await expect(drawer).toBeVisible({ timeout: 15000 });
+
+    // 1. Intercept Reserve Flash / Cupo
+    const reserveBtn = drawer.locator('[data-testid="btn-reservar-flash"]');
+    await expect(reserveBtn).toBeVisible();
+    await reserveBtn.click();
+
+    const guestGateModal = page.locator('#guest-gate-modal');
+    await expect(guestGateModal).toBeVisible({ timeout: 8000 });
+    await expect(page.locator('#guest-gate-register-btn')).toBeVisible();
+    await expect(page.locator('#guest-gate-login-btn')).toBeVisible();
+
+    // Dismiss guest gate modal
+    const closeBtn = page.locator('button[aria-label="Cerrar modal de invitados"]');
+    await expect(closeBtn).toBeVisible();
+    await closeBtn.click();
+    await expect(guestGateModal).not.toBeVisible();
+
+    // 2. Intercept Send Sketch
+    const sketchBtn = drawer.locator('[data-testid="btn-enviar-boceto"]');
+    await expect(sketchBtn).toBeVisible();
+    await sketchBtn.click();
+    await expect(guestGateModal).toBeVisible({ timeout: 8000 });
+    await closeBtn.click();
+    await expect(guestGateModal).not.toBeVisible();
+
+    // 3. Intercept WhatsApp Direct
+    const whatsappBtn = drawer.locator('[data-testid="btn-whatsapp-direct"]');
     await expect(whatsappBtn).toBeVisible();
-    const href = await whatsappBtn.getAttribute('href');
-    expect(href).toMatch(/^https:\/\/wa\.me\/\d+/);
+    await whatsappBtn.click();
+    await expect(guestGateModal).toBeVisible({ timeout: 8000 });
+    await closeBtn.click();
+    await expect(guestGateModal).not.toBeVisible();
+  });
+
+  test('Test 6: Fullscreen layout verification - global Footer is HIDDEN on /hub per R4', async ({ page }) => {
+    await page.goto('/hub', { waitUntil: 'domcontentloaded' });
+
+    // Verify footer is absent
+    const footer = page.locator('#footer');
+    await expect(footer).not.toBeVisible();
   });
 });

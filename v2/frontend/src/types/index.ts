@@ -183,3 +183,80 @@ export interface UserProfile {
   created_at?: string;
   updated_at?: string;
 }
+
+/**
+ * Sub-entidad: Artista que reside o colabora en un estudio físico o estudio privado
+ */
+export interface ResidentArtist {
+  id: string;
+  name: string;
+  alias?: string;
+  avatar: string;
+  bio?: string;
+  specialties: string[];
+  hourlyRate?: number;
+  hourly_rate?: number;
+  currency?: string;
+  experience_years?: number;
+  rating?: number;
+  availableToday?: boolean;
+  available_today?: boolean;
+  instagram?: string;
+  phone?: string;
+  whatsapp: {
+    number: string;
+    prefix: string;
+    default_message?: string;
+  };
+  portfolio?: Array<{
+    id: string;
+    image_url: string;
+    title?: string;
+    style?: string;
+    price?: number;
+  }>;
+  flashes?: Array<{
+    id: string;
+    img: string;
+    title: string;
+    price?: number;
+    amount?: number;
+  }>;
+}
+
+/**
+ * Entidad Raíz: Local/Estudio Físico o Tatuador Independiente
+ */
+export interface StudioLocation {
+  id: string;
+  type: 'studio' | 'independent';
+  name: string;
+  tagline?: string;
+  description?: string;
+  banner_url?: string;
+  banner?: string;
+  logo_url?: string;
+  rating: number;
+  review_count?: number;
+  reviewCount?: number;
+  verified: boolean;
+  address: string;
+  city?: string;
+  province?: string;
+  country?: string;
+  lat?: number;
+  lng?: number;
+  distance?: string;
+  distanceKm?: number;
+  mapPin?: { x: string; y: string };
+  map_pin?: { x: string; y: string };
+  artistsCount?: number;
+  artists_count?: number;
+  residents?: ResidentArtist[];
+  resident_artists?: ResidentArtist[];
+  studio_whatsapp?: {
+    number: string;
+    prefix: string;
+  };
+  amenities?: string[];
+}

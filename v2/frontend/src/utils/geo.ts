@@ -5,6 +5,7 @@
  */
 
 import { formatWhatsAppUrl } from './whatsapp';
+import { formatPrice } from './currency';
 
 /**
  * Calculates the great-circle distance between two geographic coordinates
@@ -328,7 +329,11 @@ export function normalizeHubArtist(
     distanceKm,
     worksCount: data.worksCount ?? rawArtist.worksCount ?? 45,
     followersCount: data.followersCount ?? rawArtist.followersCount ?? 1200,
-    price: data.price || rawArtist.price || 'Consultar',
+    price: (data.price || rawArtist.price)
+      ? (typeof (data.price || rawArtist.price) === 'string' && (data.price || rawArtist.price).toLowerCase() === 'consultar'
+          ? 'Consultar'
+          : formatPrice(data.price || rawArtist.price))
+      : 'Consultar',
     email: data.email || rawArtist.email || '',
     instagram: data.instagram || rawArtist.instagram || '',
     raw: rawArtist,
@@ -360,7 +365,9 @@ export const SAMPLE_HUB_ARTISTS: any[] = [
       worksCount: 85,
       lat: 8.9824,
       lng: -79.5199,
-      price: '$80/h',
+      get price() {
+        return formatPrice(80) + '/h';
+      },
     },
   },
   {
@@ -383,7 +390,9 @@ export const SAMPLE_HUB_ARTISTS: any[] = [
       worksCount: 142,
       lat: 8.4273,
       lng: -82.4312,
-      price: '$70/h',
+      get price() {
+        return formatPrice(70) + '/h';
+      },
     },
   },
   {
@@ -406,7 +415,9 @@ export const SAMPLE_HUB_ARTISTS: any[] = [
       worksCount: 97,
       lat: 8.8803,
       lng: -79.7833,
-      price: '$65/h',
+      get price() {
+        return formatPrice(65) + '/h';
+      },
     },
   },
   {
@@ -429,7 +440,9 @@ export const SAMPLE_HUB_ARTISTS: any[] = [
       worksCount: 63,
       lat: 9.3598,
       lng: -79.9013,
-      price: '$75/h',
+      get price() {
+        return formatPrice(75) + '/h';
+      },
     },
   },
   {
@@ -452,7 +465,9 @@ export const SAMPLE_HUB_ARTISTS: any[] = [
       worksCount: 178,
       lat: 8.9880,
       lng: -79.4980,
-      price: '$60/h',
+      get price() {
+        return formatPrice(60) + '/h';
+      },
     },
   },
   {
@@ -475,7 +490,9 @@ export const SAMPLE_HUB_ARTISTS: any[] = [
       worksCount: 112,
       lat: 4.7110,
       lng: -74.0721,
-      price: '$60/h',
+      get price() {
+        return formatPrice(60) + '/h';
+      },
     },
   },
   {
@@ -498,7 +515,9 @@ export const SAMPLE_HUB_ARTISTS: any[] = [
       worksCount: 89,
       lat: 6.2442,
       lng: -75.5812,
-      price: '$55/h',
+      get price() {
+        return formatPrice(55) + '/h';
+      },
     },
   },
   {
@@ -521,7 +540,9 @@ export const SAMPLE_HUB_ARTISTS: any[] = [
       worksCount: 210,
       lat: 40.4168,
       lng: -3.7038,
-      price: '€90/h',
+      get price() {
+        return formatPrice(90, 'EUR') + '/h';
+      },
     },
   },
 ];

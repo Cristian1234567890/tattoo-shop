@@ -1,353 +1,458 @@
-import React, { useState } from 'react';
-import { Navbar } from '../components/common/Navbar';
-import { Footer } from '../components/common/Footer';
+import React from 'react';
 import { Link } from 'react-router-dom';
-import { motion, Variants } from 'framer-motion';
-import { PageTransition } from '../components/common/PageTransition';
+import { motion } from 'framer-motion';
 import {
   Palette,
   ShieldCheck,
-  MessageSquare,
   Sparkles,
-  MapPin,
-  Check,
-  ArrowRight
+  Navigation,
+  Layers,
+  ChevronRight,
+  CheckCircle2,
+  Users,
 } from 'lucide-react';
+import { useCurrency } from '../context/CurrencyContext';
+import { useGuestGate } from '../context/GuestGateContext';
 
 export const HomePage: React.FC = () => {
-  const [billingCycle, setBillingCycle] = useState<'monthly' | 'annual'>('monthly');
-
-  const containerVariants: Variants = {
-    hidden: { opacity: 0 },
-    visible: {
-      opacity: 1,
-      transition: {
-        staggerChildren: 0.15,
-        delayChildren: 0.1,
-      },
-    },
-  };
-
-  const itemVariants: Variants = {
-    hidden: { opacity: 0, y: 25 },
-    visible: {
-      opacity: 1,
-      y: 0,
-      transition: { duration: 0.6, ease: 'easeOut' },
-    },
-  };
+  const { formatPrice } = useCurrency();
+  const { requireAuth } = useGuestGate();
 
   return (
-    <PageTransition>
-      <div className="flex flex-col min-h-screen bg-gray-950 text-white selection:bg-primary selection:text-white font-sans">
-        <Navbar />
+    <div className="bg-[#0B0B0E] min-h-screen text-zinc-300 font-sans selection:bg-violet-500/30 flex flex-col">
+      {/* 1. Hero Section */}
+      <section className="relative px-6 py-24 md:py-32 flex flex-col items-center text-center overflow-hidden">
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-violet-900/25 via-[#0B0B0E] to-[#0B0B0E] -z-10" />
+        <motion.h1
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="text-5xl md:text-7xl font-extrabold text-white tracking-tight max-w-4xl leading-[1.1]"
+        >
+          El punto de encuentro entre{' '}
+          <span className="text-transparent bg-clip-text bg-gradient-to-r from-violet-400 via-fuchsia-400 to-indigo-300 drop-shadow-[0_0_20px_rgba(168,85,247,0.35)]">
+            artistas del tatuaje y piel de verdad
+          </span>
+        </motion.h1>
 
-      <main className="flex-grow flex flex-col items-center">
-        {/* Hero Section */}
-        <section className="relative w-full overflow-hidden min-h-[90vh] flex items-center justify-center">
-          {/* Glassmorphism Background Elements */}
-          <div className="absolute top-0 left-0 w-full h-full overflow-hidden z-0 pointer-events-none">
-            <div className="absolute -top-40 -left-40 w-96 h-96 bg-primary/20 rounded-full blur-[120px]"></div>
-            <div className="absolute top-1/3 -right-20 w-80 h-80 bg-purple-600/20 rounded-full blur-[100px]"></div>
-            <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-full max-w-4xl h-64 bg-primary/10 rounded-full blur-[150px]"></div>
-          </div>
-          
-          <motion.div
-            variants={containerVariants}
-            initial="hidden"
-            animate="visible"
-            className="z-10 text-center px-4 max-w-5xl mx-auto flex flex-col items-center mt-12 md:mt-0"
-          >
-            {/* Internationalized Badge */}
-            <motion.div
-              variants={itemVariants}
-              className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/5 border border-white/10 backdrop-blur-md mb-8 shadow-sm"
-            >
-              <span className="flex h-2 w-2 rounded-full bg-primary animate-pulse"></span>
-              <span className="text-sm font-medium text-gray-300">La plataforma global para el arte corporal</span>
-            </motion.div>
-            
-            <motion.h1
-              variants={itemVariants}
-              className="text-5xl md:text-7xl font-extrabold tracking-tight text-transparent bg-clip-text bg-gradient-to-br from-white via-gray-200 to-gray-400 mb-6 drop-shadow-sm leading-tight"
-            >
-              Encuentra al Artista <br className="hidden md:block" />
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary via-violet-500 to-purple-500">
-                Perfecto para tu Piel
-              </span>
-            </motion.h1>
-            
-            <motion.p
-              variants={itemVariants}
-              className="text-lg md:text-xl text-gray-400 mb-10 max-w-2xl leading-relaxed"
-            >
-              Explora portafolios verificados, cotiza sin compromisos y gestiona tus citas en la comunidad más exclusiva de tatuadores y coleccionistas.
-            </motion.p>
-            
-            <motion.div
-              variants={itemVariants}
-              className="flex flex-col sm:flex-row items-center gap-4 w-full justify-center"
-            >
-              <Link to="/hub" className="w-full sm:w-auto">
-                <button className="w-full py-4 px-8 bg-primary hover:bg-primary-hover text-white font-bold rounded-2xl transition-all shadow-[0_0_40px_rgba(239,68,68,0.3)] hover:shadow-[0_0_60px_rgba(239,68,68,0.5)] flex items-center justify-center gap-2 hover:-translate-y-1 cursor-pointer">
-                  <MapPin className="w-5 h-5" />
-                  <span>Explorar el Mapa</span>
-                </button>
-              </Link>
-              <Link to="/register" className="w-full sm:w-auto">
-                <button className="w-full py-4 px-8 bg-white/5 hover:bg-white/10 text-white font-bold rounded-2xl transition-all border border-white/10 backdrop-blur-md flex items-center justify-center gap-2 hover:-translate-y-1 cursor-pointer">
-                  <span>Registrarme Gratis</span>
-                  <ArrowRight className="w-5 h-5" />
-                </button>
-              </Link>
-            </motion.div>
-          </motion.div>
-        </section>
+        <motion.p
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.1 }}
+          className="mt-8 text-lg md:text-xl text-zinc-400 max-w-2xl leading-relaxed"
+        >
+          Conecta directamente con tatuadores y estudios independientes. Explora flash books, consulta
+          disponibilidad y agenda tu próxima sesión sin comisiones corporativas.
+        </motion.p>
 
-        {/* Benefits Section with id="beneficios" */}
-        <section id="beneficios" className="w-full max-w-7xl mx-auto px-4 py-24 relative z-10 scroll-mt-20">
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.6 }}
-            className="text-center mb-16"
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.2 }}
+          className="mt-10 flex flex-col sm:flex-row gap-4"
+        >
+          <Link
+            to="/register?role=Cliente"
+            className="btn-atelier-primary px-8 py-3.5 text-base font-medium shadow-[0_0_20px_rgba(124,58,237,0.4)] hover:shadow-[0_0_30px_rgba(124,58,237,0.6)]"
           >
-            <h2 className="text-3xl md:text-5xl font-bold text-white mb-4">Por qué elegir Tattoo Hub</h2>
-            <p className="text-gray-400 text-lg max-w-2xl mx-auto">
-              Diseñado específicamente para elevar los estándares de seguridad, calidad y profesionalismo en la industria del tatuaje.
-            </p>
-          </motion.div>
-          
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            <motion.div
-              initial={{ opacity: 0, y: 40 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.5, delay: 0.1 }}
-              whileHover={{ y: -8 }}
-              className="bg-gray-900/40 border border-white/5 p-8 rounded-3xl backdrop-blur-sm hover:bg-gray-900/60 transition-all shadow-lg hover:shadow-primary/10"
-            >
-              <div className="w-14 h-14 bg-primary/20 rounded-2xl flex items-center justify-center mb-6">
-                <ShieldCheck className="w-7 h-7 text-primary" />
-              </div>
-              <h3 className="text-xl font-bold text-white mb-3">Estudios Verificados</h3>
-              <p className="text-gray-400 leading-relaxed">
-                Todos los artistas en nuestro Hub pasan por un proceso de verificación de identidad y estándares de higiene para tu total tranquilidad.
-              </p>
-            </motion.div>
-            
-            <motion.div
-              initial={{ opacity: 0, y: 40 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.5, delay: 0.2 }}
-              whileHover={{ y: -8 }}
-              className="bg-gray-900/40 border border-white/5 p-8 rounded-3xl backdrop-blur-sm hover:bg-gray-900/60 transition-all shadow-lg hover:shadow-purple-500/10"
-            >
-              <div className="w-14 h-14 bg-purple-500/20 rounded-2xl flex items-center justify-center mb-6">
-                <MessageSquare className="w-7 h-7 text-purple-400" />
-              </div>
-              <h3 className="text-xl font-bold text-white mb-3">Chat Directo & Cotización</h3>
-              <p className="text-gray-400 leading-relaxed">
-                Olvídate de intermediarios. Chatea en tiempo real, envía referencias y acuerda precios directamente desde nuestra plataforma segura.
-              </p>
-            </motion.div>
-            
-            <motion.div
-              initial={{ opacity: 0, y: 40 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.5, delay: 0.3 }}
-              whileHover={{ y: -8 }}
-              className="bg-gray-900/40 border border-white/5 p-8 rounded-3xl backdrop-blur-sm hover:bg-gray-900/60 transition-all shadow-lg hover:shadow-blue-500/10"
-            >
-              <div className="w-14 h-14 bg-blue-500/20 rounded-2xl flex items-center justify-center mb-6">
-                <Palette className="w-7 h-7 text-blue-400" />
-              </div>
-              <h3 className="text-xl font-bold text-white mb-3">Portafolios Interactivos</h3>
-              <p className="text-gray-400 leading-relaxed">
-                Descubre artistas a través de un mapa geolocalizado o filtra por estilos específicos (Realismo, Blackwork, Tradicional, etc).
-              </p>
-            </motion.div>
-          </div>
-        </section>
+            Empezar mi colección de tinta
+          </Link>
+          <Link
+            to="/register?role=Tatuador"
+            className="flex items-center justify-center gap-2 bg-zinc-900/80 hover:bg-zinc-800 text-white border border-zinc-800 hover:border-zinc-700 px-8 py-3.5 rounded-xl font-medium transition-all backdrop-blur-md"
+          >
+            Formar un Estudio o Perfil <ChevronRight className="w-4 h-4" />
+          </Link>
+        </motion.div>
+      </section>
 
-        {/* Pricing Section with id="precios" */}
-        <section id="precios" className="w-full max-w-7xl mx-auto px-4 py-24 relative z-10 border-t border-white/5 scroll-mt-20">
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.6 }}
-            className="text-center mb-12"
-          >
-            <h2 className="text-3xl md:text-5xl font-bold text-white mb-4">Planes y Membresías</h2>
-            <p className="text-gray-400 text-lg max-w-2xl mx-auto">
-              Una plataforma transparente. Elige el plan que más se adapte a tu rol.
-            </p>
-            
-            {/* Billing Toggle */}
-            <div className="inline-flex items-center gap-1 p-1 bg-gray-900 border border-white/10 rounded-full mt-8">
-              <button
-                onClick={() => setBillingCycle('monthly')}
-                className={`px-6 py-2.5 rounded-full text-sm font-bold transition-all cursor-pointer ${
-                  billingCycle === 'monthly' ? 'bg-primary text-white shadow-lg' : 'text-gray-400 hover:text-white'
-                }`}
-              >
-                Mensual
-              </button>
-              <button
-                onClick={() => setBillingCycle('annual')}
-                className={`px-6 py-2.5 rounded-full text-sm font-bold transition-all flex items-center gap-2 cursor-pointer ${
-                  billingCycle === 'annual' ? 'bg-primary text-white shadow-lg' : 'text-gray-400 hover:text-white'
-                }`}
-              >
-                Anual
-                <span className="px-2 py-0.5 bg-green-500/20 text-green-400 text-xs rounded-full">
-                  -17%
-                </span>
-              </button>
+      {/* 2. Hoja de Ruta (Normalized id="beneficios") */}
+      <section
+        id="beneficios"
+        className="scroll-mt-20 px-8 py-20 max-w-7xl mx-auto border-t border-zinc-900 w-full"
+      >
+        <div className="flex flex-col md:flex-row gap-12 items-start">
+          <div className="md:w-1/3">
+            <div className="inline-flex items-center gap-2 text-xs font-bold tracking-widest uppercase text-violet-400 mb-4 bg-violet-600/10 px-3 py-1 rounded-full border border-violet-500/20">
+              <ShieldCheck className="w-4 h-4" /> TRABAJANDO CON ESTILO
             </div>
-          </motion.div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-5xl mx-auto">
-            {/* Clientes Card */}
-            <motion.div
-              initial={{ opacity: 0, x: -30 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.6 }}
-              whileHover={{ y: -6 }}
-              className="bg-gray-900/60 border border-white/10 rounded-3xl p-8 flex flex-col relative overflow-hidden backdrop-blur-md transition-all shadow-xl"
+            <h2 className="text-3xl font-bold text-white mb-4">Nuestra Hoja de Ruta & Estándares</h2>
+            <p className="text-zinc-400 text-sm leading-relaxed mb-6">
+              Construimos este ecosistema de forma transparente para nuestra comunidad. Sin filtros confusos,
+              solo características que estamos desarrollando, probando y escalando.
+            </p>
+            <Link
+              to="/beneficios"
+              className="text-sm font-semibold text-violet-400 hover:text-violet-300 inline-flex items-center gap-1.5"
             >
-              <div className="mb-8">
-                <span className="text-primary font-bold tracking-wider uppercase text-sm mb-2 block">Para Clientes</span>
-                <h3 className="text-3xl font-bold text-white mb-2">Coleccionista VIP</h3>
-                <div className="flex items-baseline gap-1 mt-4">
-                  <span className="text-4xl font-black text-white">{billingCycle === 'monthly' ? '$4.99' : '$49.90'}</span>
-                  <span className="text-gray-500 font-medium">/{billingCycle === 'monthly' ? 'mes' : 'año'}</span>
-                </div>
-                <p className="text-sm text-gray-400 mt-2">
-                  Uso básico gratuito (explorar y chatear). La membresía VIP desbloquea funciones premium exclusivas.
-                </p>
-              </div>
-
-              <div className="flex-grow">
-                <ul className="space-y-4 text-gray-300">
-                  <li className="flex items-start gap-3">
-                    <Check className="w-5 h-5 text-green-400 shrink-0 mt-0.5" />
-                    <span>Explorar mapa y contactar artistas (Gratis)</span>
-                  </li>
-                  <li className="flex items-start gap-3">
-                    <Check className="w-5 h-5 text-primary shrink-0 mt-0.5" />
-                    <span className="font-semibold text-white">Seguimiento fotográfico de curación</span>
-                  </li>
-                  <li className="flex items-start gap-3">
-                    <Check className="w-5 h-5 text-primary shrink-0 mt-0.5" />
-                    <span>Historial avanzado de sesiones y cuidados</span>
-                  </li>
-                  <li className="flex items-start gap-3">
-                    <Check className="w-5 h-5 text-primary shrink-0 mt-0.5" />
-                    <span>Insignia de Coleccionista VIP en tu perfil</span>
-                  </li>
-                </ul>
-              </div>
-
-              <div className="mt-10">
-                <Link to="/register?role=Cliente">
-                  <button className="w-full py-4 bg-white/5 hover:bg-white/10 border border-white/10 text-white font-bold rounded-xl transition-all cursor-pointer">
-                    Registrarme como Cliente
-                  </button>
-                </Link>
-              </div>
-            </motion.div>
-
-            {/* Artistas Card */}
-            <motion.div
-              initial={{ opacity: 0, x: 30 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.6 }}
-              whileHover={{ y: -6 }}
-              className="bg-gradient-to-b from-primary/20 to-gray-900/80 border border-primary/40 rounded-3xl p-8 flex flex-col relative overflow-hidden backdrop-blur-md shadow-[0_0_50px_rgba(239,68,68,0.15)] transition-all"
-            >
-              <div className="absolute top-0 right-0 bg-primary text-white text-xs font-bold px-4 py-1.5 rounded-bl-xl uppercase tracking-wider">
-                Más Popular
-              </div>
-              
-              <div className="mb-8">
-                <span className="text-primary font-bold tracking-wider uppercase text-sm mb-2 block">Para Tatuadores</span>
-                <h3 className="text-3xl font-bold text-white mb-2">Estudio Profesional</h3>
-                <div className="flex items-baseline gap-1 mt-4">
-                  <span className="text-4xl font-black text-white">{billingCycle === 'monthly' ? '$4.99' : '$49.90'}</span>
-                  <span className="text-gray-500 font-medium">/{billingCycle === 'monthly' ? 'mes' : 'año'}</span>
-                </div>
-                <div className="mt-3 inline-flex items-center gap-2 px-3 py-1.5 bg-green-500/10 border border-green-500/30 rounded-lg">
-                  <Sparkles className="w-4 h-4 text-green-400" />
-                  <span className="text-sm font-bold text-green-400">90 días de prueba gratis</span>
-                </div>
-                <p className="text-sm text-gray-400 mt-3">
-                  Suscripción obligatoria tras el período de prueba para mantener presencia comercial en la app.
-                </p>
-              </div>
-
-              <div className="flex-grow">
-                <ul className="space-y-4 text-gray-300">
-                  <li className="flex items-start gap-3">
-                    <Check className="w-5 h-5 text-primary shrink-0 mt-0.5" />
-                    <span className="font-semibold text-white">Presencia geolocalizada en el Hub</span>
-                  </li>
-                  <li className="flex items-start gap-3">
-                    <Check className="w-5 h-5 text-primary shrink-0 mt-0.5" />
-                    <span>Recepción de chats y cotizaciones ilimitadas</span>
-                  </li>
-                  <li className="flex items-start gap-3">
-                    <Check className="w-5 h-5 text-primary shrink-0 mt-0.5" />
-                    <span>Gestión de portafolio y precios base</span>
-                  </li>
-                  <li className="flex items-start gap-3">
-                    <Check className="w-5 h-5 text-primary shrink-0 mt-0.5" />
-                    <span>Insignia de Artista Verificado</span>
-                  </li>
-                </ul>
-              </div>
-
-              <div className="mt-10">
-                <Link to="/register?role=Tatuador">
-                  <button className="w-full py-4 bg-primary hover:bg-primary-hover text-white font-bold rounded-xl transition-all shadow-lg shadow-primary/30 cursor-pointer">
-                    Iniciar mi Prueba de 90 Días
-                  </button>
-                </Link>
-              </div>
-            </motion.div>
-          </div>
-        </section>
-
-        {/* Final CTA */}
-        <section className="w-full max-w-5xl mx-auto px-4 py-24 mb-10">
-          <motion.div
-            initial={{ opacity: 0, scale: 0.95 }}
-            whileInView={{ opacity: 1, scale: 1 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.6 }}
-            className="p-12 rounded-[2.5rem] bg-gradient-to-r from-gray-900 via-primary/10 to-gray-900 border border-white/10 text-center relative overflow-hidden shadow-2xl"
-          >
-            <h2 className="text-3xl md:text-5xl font-black text-white mb-6">
-              El arte es eterno. <br className="hidden md:block"/> Tu plataforma también debería serlo.
-            </h2>
-            <Link to="/register">
-              <button className="py-4 px-10 bg-white text-gray-950 hover:bg-gray-200 font-extrabold rounded-full transition-all hover:scale-105 cursor-pointer shadow-lg">
-                Únete a Tattoo Hub
-              </button>
+              Conoce nuestro manifiesto completo <ChevronRight className="w-4 h-4" />
             </Link>
-          </motion.div>
-        </section>
-      </main>
+          </div>
 
-      <Footer />
-      </div>
-    </PageTransition>
+          <div className="md:w-2/3 grid grid-cols-1 sm:grid-cols-2 gap-4">
+            {[
+              {
+                status: 'FASE 1 • EN CURSO',
+                title: 'Directorio de Estudios Independientes',
+                desc: 'Espacio a estudios locales con perfil multi-artista y contacto directo por WhatsApp sin comisiones.',
+                active: true,
+              },
+              {
+                status: 'FASE 2 • EN BREVE',
+                title: 'Protocolo Sanitario y de Higiene',
+                desc: 'Auditoría rigurosa de autoclave, material descartable y normativas internacionales visibles en cada perfil.',
+                active: false,
+              },
+              {
+                status: 'FASE 3 • PRÓXIMO',
+                title: 'Verificación Manual de Portafolios',
+                desc: 'Premios a piezas curadas sin filtros extremos ni alteraciones engañosas sobre piel real.',
+                active: false,
+              },
+              {
+                status: 'FASE 4 • A FUTURO',
+                title: 'Guías Exclusivas & Calendario Taller',
+                desc: 'Hub de cuidados post-tatuaje, seguimiento fotográfico y alertas de flash drops.',
+                active: false,
+              },
+            ].map((item, i) => (
+              <div
+                key={i}
+                className={`p-6 rounded-2xl border transition-all ${
+                  item.active
+                    ? 'atelier-card border-violet-500/40 shadow-[0_0_20px_rgba(124,58,237,0.15)]'
+                    : 'bg-zinc-900/40 border-zinc-800/60'
+                } flex flex-col`}
+              >
+                <span
+                  className={`text-[10px] font-bold tracking-wider px-2.5 py-1 rounded-full w-max mb-4 ${
+                    item.active
+                      ? 'bg-violet-600/20 text-violet-300 border border-violet-500/30'
+                      : 'bg-zinc-800 text-zinc-500'
+                  }`}
+                >
+                  {item.status}
+                </span>
+                <h3 className="text-lg font-semibold text-white mb-2">{item.title}</h3>
+                <p className="text-zinc-400 text-sm flex-1 leading-relaxed">{item.desc}</p>
+                {item.active && (
+                  <div className="mt-4 text-xs font-medium text-violet-400 flex items-center gap-1">
+                    <CheckCircle2 className="w-3.5 h-3.5" /> Activo en plataforma
+                  </div>
+                )}
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* 3. Herramientas Reales de Taller */}
+      <section className="px-8 py-20 max-w-7xl mx-auto border-t border-zinc-900 text-center w-full">
+        <div className="inline-flex items-center justify-center px-3 py-1 rounded-full bg-zinc-900 border border-zinc-800 text-xs font-bold tracking-widest uppercase text-zinc-400 mb-6">
+          HERRAMIENTAS REALES DE TALLER
+        </div>
+        <h2 className="text-4xl font-bold text-white mb-4">Hecho para el ritmo diario de un estudio</h2>
+        <p className="text-zinc-400 max-w-2xl mx-auto mb-16 text-base">
+          Menos tiempo gestionando mensajes caóticos en redes sociales y más tiempo con la máquina en mano.
+        </p>
+
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 text-left">
+          <div className="atelier-card atelier-card-hover p-8 rounded-2xl">
+            <div className="w-12 h-12 bg-violet-500/10 border border-violet-500/20 rounded-xl flex items-center justify-center mb-6 text-violet-400">
+              <Layers className="w-6 h-6" />
+            </div>
+            <h3 className="text-xl font-bold text-white mb-3">Flash Books & Grandes Piezas</h3>
+            <p className="text-zinc-400 text-sm leading-relaxed mb-6">
+              Publica stencils listos con medidas recomendadas, tarifas cerradas y reserva directa por WhatsApp sin rodeos.
+            </p>
+            <span className="text-xs font-bold tracking-widest text-zinc-500 uppercase">
+              01 • CATÁLOGO ORDENADO
+            </span>
+          </div>
+
+          <div className="atelier-card atelier-card-hover p-8 rounded-2xl">
+            <div className="w-12 h-12 bg-indigo-500/10 border border-indigo-500/20 rounded-xl flex items-center justify-center mb-6 text-indigo-400">
+              <Palette className="w-6 h-6" />
+            </div>
+            <h3 className="text-xl font-bold text-white mb-3">Cotizaciones con Medidas y Zona</h3>
+            <p className="text-zinc-400 text-sm leading-relaxed mb-6">
+              El cliente envía solicitudes estructuradas: referencia visual, zona anatómica del cuerpo, centímetros y fechas tentativas.
+            </p>
+            <span className="text-xs font-bold tracking-widest text-zinc-500 uppercase">
+              02 • FIN DE MENSAJES VAGOS
+            </span>
+          </div>
+
+          <div className="atelier-card atelier-card-hover p-8 rounded-2xl">
+            <div className="w-12 h-12 bg-emerald-500/10 border border-emerald-500/20 rounded-xl flex items-center justify-center mb-6 text-emerald-400">
+              <Navigation className="w-6 h-6" />
+            </div>
+            <h3 className="text-xl font-bold text-white mb-3">Mapa de Estudios y Residentes</h3>
+            <p className="text-zinc-400 text-sm leading-relaxed mb-6">
+              Localiza talleres por ciudad y explora los artistas que residen en cada local. Contacta directamente a quien prefieras.
+            </p>
+            <span className="text-xs font-bold tracking-widest text-zinc-500 uppercase">
+              03 • GEOLOCALIZACIÓN DIRECTA
+            </span>
+          </div>
+        </div>
+      </section>
+
+      {/* 4. Flash Gallery Preview */}
+      <section className="px-8 py-20 max-w-7xl mx-auto border-t border-zinc-900 w-full">
+        <div className="flex justify-between items-end mb-10">
+          <div>
+            <div className="text-xs font-bold tracking-widest uppercase text-violet-400 mb-2">
+              GALERÍA FLASH DISPONIBLE
+            </div>
+            <h2 className="text-3xl font-bold text-white">Piezas Listas para Tinta</h2>
+          </div>
+          <Link
+            to="/hub"
+            className="text-sm font-semibold text-violet-400 hover:text-violet-300 flex items-center gap-1"
+          >
+            Ver catálogo interactivo <ChevronRight className="w-4 h-4" />
+          </Link>
+        </div>
+
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+          {[
+            {
+              title: 'Sigil Core 01',
+              artist: 'Kaelen Silva (Obsidian)',
+              price: 120,
+              img: 'https://images.unsplash.com/photo-1611501275019-9b5cda994e8d?auto=format&fit=crop&w=400&q=80',
+            },
+            {
+              title: 'Neo-Tribal Spine',
+              artist: 'Kaelen Silva (Obsidian)',
+              price: 150,
+              img: 'https://images.unsplash.com/photo-1562962230-16e4623d36e6?auto=format&fit=crop&w=400&q=80',
+            },
+            {
+              title: 'Ojo Hiperrealista',
+              artist: 'Cristian Castillo (Neon Ink)',
+              price: 160,
+              img: 'https://images.unsplash.com/photo-1621847468516-1ed15271c480?auto=format&fit=crop&w=400&q=80',
+            },
+            {
+              title: 'Colibrí Acuarela',
+              artist: 'Elena Vega (Neon Ink)',
+              price: 95,
+              img: 'https://images.unsplash.com/photo-1598371839696-5c5bb00bdc28?auto=format&fit=crop&w=400&q=80',
+            },
+          ].map((item, idx) => (
+            <div
+              key={idx}
+              onClick={() =>
+                requireAuth(
+                  () => {
+                    alert(`Diseño "${item.title}" reservado. Notificando a ${item.artist}.`);
+                  },
+                  {
+                    title: 'Reserva de Flash Design',
+                    message: `Para apartar "${item.title}" con ${item.artist}, crea tu cuenta gratis en Tattoo Hub.`,
+                    redirectUrl: '/#beneficios',
+                  }
+                )
+              }
+              className="atelier-card rounded-2xl overflow-hidden group cursor-pointer border border-zinc-800 hover:border-violet-500/60 transition-all"
+            >
+              <div className="relative h-48 w-full overflow-hidden">
+                <img
+                  src={item.img}
+                  alt={item.title}
+                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                />
+                <div className="absolute top-2 right-2 px-2.5 py-1 rounded-md bg-zinc-950/80 backdrop-blur-md border border-zinc-800 text-xs font-bold text-violet-300">
+                  {formatPrice(item.price)}
+                </div>
+              </div>
+              <div className="p-4">
+                <h4 className="text-sm font-bold text-white truncate">{item.title}</h4>
+                <p className="text-xs text-zinc-400 mt-1 truncate">{item.artist}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* 5. Sección de Artistas & Estudios (Normalized id="artistas") */}
+      <section
+        id="artistas"
+        className="scroll-mt-20 px-8 py-20 max-w-7xl mx-auto border-t border-zinc-900 w-full"
+      >
+        <div className="flex flex-col md:flex-row items-center justify-between gap-8 atelier-card p-10 md:p-14 rounded-3xl border-violet-500/30">
+          <div className="max-w-xl">
+            <span className="text-xs font-bold tracking-widest uppercase text-violet-400 bg-violet-600/10 px-3 py-1 rounded-full border border-violet-500/20 mb-4 inline-block">
+              DIRECTORIO Y LOCALES
+            </span>
+            <h2 className="text-3xl md:text-4xl font-extrabold text-white mb-4">
+              Estudios con Residentes Verificados
+            </h2>
+            <p className="text-zinc-400 text-base leading-relaxed mb-6">
+              Conoce los estudios de tu ciudad, cuántos artistas residen en cada local y contacta directamente al especialista en tu estilo favorito.
+            </p>
+            <div className="flex flex-wrap gap-4">
+              <Link
+                to="/artistas"
+                className="btn-atelier-primary px-6 py-3 text-sm font-bold shadow-md"
+              >
+                Ver Directorio de Artistas <ChevronRight className="w-4 h-4" />
+              </Link>
+              <Link
+                to="/hub"
+                className="bg-zinc-900 hover:bg-zinc-800 text-white border border-zinc-700 px-6 py-3 rounded-xl text-sm font-semibold transition-colors"
+              >
+                Abrir Mapa de Estudios
+              </Link>
+            </div>
+          </div>
+          <div className="grid grid-cols-2 gap-4 w-full md:w-auto">
+            <div className="bg-zinc-950/80 p-5 rounded-2xl border border-zinc-800 text-center">
+              <Users className="w-6 h-6 text-violet-400 mx-auto mb-2" />
+              <div className="text-2xl font-extrabold text-white">100%</div>
+              <div className="text-xs text-zinc-400 mt-1">Contacto Directo</div>
+            </div>
+            <div className="bg-zinc-950/80 p-5 rounded-2xl border border-zinc-800 text-center">
+              <ShieldCheck className="w-6 h-6 text-emerald-400 mx-auto mb-2" />
+              <div className="text-2xl font-extrabold text-white">0%</div>
+              <div className="text-xs text-zinc-400 mt-1">Comisiones</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* 6. Pricing Section (Normalized id="precios") */}
+      <section
+        id="precios"
+        className="scroll-mt-20 px-8 py-20 max-w-5xl mx-auto border-t border-zinc-900 text-center w-full"
+      >
+        <div className="inline-flex items-center justify-center px-3 py-1 rounded-full bg-zinc-900 border border-zinc-800 text-xs font-bold tracking-widest uppercase text-zinc-400 mb-6">
+          PASES AL CLUB
+        </div>
+        <h2 className="text-4xl font-bold text-white mb-4">Planes y Membresías</h2>
+        <p className="text-zinc-400 mb-12 text-base">
+          Suscripción simple y directa. Sin comisiones sobre lo que cobras en el estudio.
+        </p>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-3xl mx-auto text-left">
+          {/* Plan 1: Coleccionista VIP */}
+          <div className="atelier-card p-8 rounded-3xl flex flex-col justify-between">
+            <div>
+              <span className="text-xs font-bold tracking-widest text-zinc-400 uppercase mb-2 block">
+                PARA CLIENTES Y COLECCIONISTAS
+              </span>
+              <h3 className="text-2xl font-bold text-white mb-2">Coleccionista VIP</h3>
+              <div className="flex items-baseline gap-1 mb-6">
+                <span className="text-4xl font-extrabold text-white">{formatPrice(4.99)}</span>
+                <span className="text-zinc-500 text-sm">/mes</span>
+              </div>
+              <p className="text-sm text-zinc-400 mb-8 pb-8 border-b border-zinc-800 leading-relaxed">
+                Explora el mapa y contacta estudios sin límites. Herramientas de control de tu agenda y alertas de flash drops.
+              </p>
+              <ul className="space-y-4 mb-8">
+                <li className="flex gap-3 text-sm text-zinc-300">
+                  <CheckCircle2 className="w-5 h-5 text-emerald-500 shrink-0" />
+                  <span>Buscar estudios, filtrar estilos y contactar artistas (Gratis)</span>
+                </li>
+                <li className="flex gap-3 text-sm text-zinc-300">
+                  <CheckCircle2 className="w-5 h-5 text-emerald-500 shrink-0" />
+                  <span>Diario de cicatrización para documentar tus piezas con foto y fecha</span>
+                </li>
+                <li className="flex gap-3 text-sm text-zinc-300">
+                  <CheckCircle2 className="w-5 h-5 text-emerald-500 shrink-0" />
+                  <span>Alertas tempranas de flash drops de tus artistas favoritos</span>
+                </li>
+              </ul>
+            </div>
+            <Link
+              to="/register?role=Cliente"
+              className="block w-full text-center bg-zinc-800 hover:bg-zinc-700 text-white py-3 rounded-xl font-medium transition-colors"
+            >
+              Crear Perfil de Coleccionista
+            </Link>
+          </div>
+
+          {/* Plan 2: Estudio Profesional */}
+          <div className="atelier-card border-2 border-violet-600 p-8 rounded-3xl relative shadow-[0_0_40px_rgba(124,58,237,0.2)] flex flex-col justify-between">
+            <div className="absolute -top-3.5 right-8 bg-violet-600 text-white text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider">
+              PLAN ESTUDIOS
+            </div>
+            <div>
+              <span className="text-xs font-bold tracking-widest text-violet-400 uppercase mb-2 block">
+                MEMBRESÍA DESDE {formatPrice(3.99)}/MES
+              </span>
+              <h3 className="text-2xl font-bold text-white mb-2">Estudio Profesional</h3>
+              <div className="flex items-baseline gap-1 mb-2">
+                <span className="text-4xl font-extrabold text-white">{formatPrice(4.99)}</span>
+                <span className="text-zinc-500 text-sm">/mes</span>
+              </div>
+              <div className="inline-flex items-center gap-1 bg-emerald-500/10 text-emerald-400 text-xs font-bold px-2.5 py-1 rounded-full mb-6 border border-emerald-500/30">
+                <Sparkles className="w-3 h-3" /> Prueba de 30 días completamente gratis
+              </div>
+              <p className="text-sm text-zinc-400 mb-8 pb-8 border-b border-zinc-800 leading-relaxed">
+                Todo lo que un estudio de tatuajes necesita. Sin comisiones extra por generar cotizaciones o agendar citas.
+              </p>
+              <ul className="space-y-4 mb-8">
+                <li className="flex gap-3 text-sm text-zinc-300">
+                  <CheckCircle2 className="w-5 h-5 text-violet-400 shrink-0" />
+                  <span>Pin y presencia geolocalizada en el mapa de estudios</span>
+                </li>
+                <li className="flex gap-3 text-sm text-zinc-300">
+                  <CheckCircle2 className="w-5 h-5 text-violet-400 shrink-0" />
+                  <span>Gestión de artistas residentes y recepciones del estudio</span>
+                </li>
+                <li className="flex gap-3 text-sm text-zinc-300">
+                  <CheckCircle2 className="w-5 h-5 text-violet-400 shrink-0" />
+                  <span>Catálogo ilimitado de flash designs y control de stock</span>
+                </li>
+                <li className="flex gap-3 text-sm text-zinc-300">
+                  <CheckCircle2 className="w-5 h-5 text-violet-400 shrink-0" />
+                  <span>Recepción estructurada con zona y centímetros aproximados</span>
+                </li>
+              </ul>
+            </div>
+            <Link
+              to="/register?role=Tatuador"
+              className="btn-atelier-primary w-full text-center py-3 rounded-xl font-bold shadow-lg"
+            >
+              Comenzar Prueba de 30 Días
+            </Link>
+          </div>
+        </div>
+      </section>
+
+      {/* 7. Cultura de Taller Pre-Footer CTA Banner */}
+      <section className="border-t border-zinc-900 bg-gradient-to-b from-[#0B0B0E] to-zinc-950 py-24 px-6 text-center">
+        <div className="max-w-4xl mx-auto">
+          <div className="inline-flex items-center justify-center px-3 py-1 rounded-full bg-zinc-900 border border-zinc-800 text-xs font-bold tracking-widest uppercase text-zinc-400 mb-6">
+            CULTURA DE TALLER
+          </div>
+          <h2 className="text-4xl md:text-5xl font-bold text-white mb-6 leading-tight">
+            El arte queda en la piel.
+            <br />
+            Tu estudio merece visibilidad real.
+          </h2>
+          <p className="text-zinc-400 mb-10 max-w-xl mx-auto text-base leading-relaxed">
+            Súmate hoy a la plataforma independiente de arte corporal. Sin algoritmos engañosos ni comisiones ocultas.
+          </p>
+          <div className="flex flex-col sm:flex-row justify-center gap-4">
+            <Link
+              to="/register?role=Cliente"
+              className="bg-white hover:bg-zinc-200 text-black px-8 py-3.5 rounded-xl font-bold transition-colors cursor-pointer"
+            >
+              Crear Cuenta Gratis
+            </Link>
+            <Link
+              to="/hub"
+              className="bg-zinc-900 hover:bg-zinc-800 text-white border border-zinc-800 px-8 py-3.5 rounded-xl font-bold transition-colors cursor-pointer"
+            >
+              Explorar Mapa de Estudios
+            </Link>
+          </div>
+        </div>
+      </section>
+    </div>
   );
 };
 

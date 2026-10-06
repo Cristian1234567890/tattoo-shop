@@ -1,7 +1,7 @@
 import React from 'react';
-import { Sparkles, Settings, ShieldCheck } from 'lucide-react';
+import { Sparkles, Settings, ShieldCheck, CalendarDays, CreditCard } from 'lucide-react';
 
-export type ClientTabId = 'overview' | 'configuracion' | 'seguridad';
+export type ClientTabId = 'overview' | 'citas' | 'pagos' | 'configuracion' | 'seguridad';
 
 interface ClientTabsNavProps {
   activeTab: ClientTabId;
@@ -24,6 +24,16 @@ export const ClientTabsNav: React.FC<ClientTabsNavProps> = ({
       id: 'overview',
       label: lang === 'en' ? 'Tattoos & Gallery' : 'Tatuajes & Galería',
       icon: <Sparkles size={18} />,
+    },
+    {
+      id: 'citas',
+      label: lang === 'en' ? 'Appointments' : 'Citas',
+      icon: <CalendarDays size={18} />,
+    },
+    {
+      id: 'pagos',
+      label: lang === 'en' ? 'Payments' : 'Pagos',
+      icon: <CreditCard size={18} />,
     },
     {
       id: 'configuracion',

@@ -21,4 +21,6 @@ process.on('SIGINT', () => {
   });
 });
 
+export { app };
+export { default as currencyRoutes } from './routes/currency.routes';
 export default server;

@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { Navbar } from '../components/common/Navbar';
-import { Footer } from '../components/common/Footer';
 import { supabase } from '../api/supabase';
 import { api } from '../api/client';
 import { useAuth } from '../context/AuthContext';
@@ -22,6 +21,7 @@ export const LoginPage: React.FC = () => {
 
   const { login } = useAuth();
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
 
   const getDashboardRoute = (userOrRole?: any): string => {
     let role = '';
@@ -36,7 +36,12 @@ export const LoginPage: React.FC = () => {
     return '/user';
   };
 
-  const navigateToDashboard = (userOrRole?: any) => {
+  const navigateToDestination = (userOrRole?: any) => {
+    const rawRedirect = searchParams.get('redirect');
+    if (rawRedirect && rawRedirect.startsWith('/') && !rawRedirect.startsWith('//')) {
+      navigate(rawRedirect);
+      return;
+    }
     const dest = getDashboardRoute(userOrRole);
     if (dest === '/user') {
       navigate('/user');
@@ -44,6 +49,11 @@ export const LoginPage: React.FC = () => {
       navigate(dest);
     }
   };
+
+  const rawRedirect = searchParams.get('redirect');
+  const registerLink = (rawRedirect && rawRedirect.startsWith('/') && !rawRedirect.startsWith('//'))
+    ? `/register?redirect=${encodeURIComponent(rawRedirect)}`
+    : '/register';
 
   // Listen to Supabase Auth state changes (useful for Google OAuth callback)
   useEffect(() => {
@@ -60,7 +70,7 @@ export const LoginPage: React.FC = () => {
           // Fully verified
           // We need to sync with our custom node backend if necessary, or just use the session
           login({ user: session.user as any, session: session as any });
-          navigateToDashboard(session.user);
+          navigateToDestination(session.user);
         } else {
           // Requires MFA
           const { data: factorsData } = await supabase.auth.mfa.listFactors();
@@ -109,7 +119,7 @@ export const LoginPage: React.FC = () => {
         if (fallbackRes.success && fallbackRes.data) {
           setLoading(false);
           login({ user: fallbackRes.data.user as any, session: fallbackRes.data.session as any });
-          navigateToDashboard(fallbackRes.data.user);
+          navigateToDestination(fallbackRes.data.user);
           return;
         }
       } catch {
@@ -123,7 +133,7 @@ export const LoginPage: React.FC = () => {
     setLoading(false);
     if (signInData?.session && signInData?.user) {
       login({ user: signInData.user as any, session: signInData.session as any });
-      navigateToDashboard(signInData.user);
+      navigateToDestination(signInData.user);
     }
     // onAuthStateChange hook will also catch this and trigger MFA checks if required
   };
@@ -156,7 +166,7 @@ export const LoginPage: React.FC = () => {
     const sessionRes = await supabase.auth.getSession();
     if (sessionRes.data.session) {
       login({ user: sessionRes.data.session.user as any, session: sessionRes.data.session as any });
-      navigateToDashboard(sessionRes.data.session.user);
+      navigateToDestination(sessionRes.data.session.user);
     }
   };
 
@@ -224,7 +234,7 @@ export const LoginPage: React.FC = () => {
               </form>
               
               <div className="mt-6 text-center text-sm text-gray-600 dark:text-gray-400">
-                ¿No tienes cuenta? <Link to="/register" className="font-semibold text-primary hover:underline">Registrarse</Link>
+                ¿No tienes cuenta? <Link to={registerLink} className="font-semibold text-primary hover:underline">Registrarse</Link>
               </div>
             </>
           )}
@@ -278,7 +288,6 @@ export const LoginPage: React.FC = () => {
 
         </div>
       </div>
-      <Footer />
     </div>
   );
 };

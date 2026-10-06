@@ -256,6 +256,129 @@ class ApiClient {
       return { success: false, error: err.message || 'Error consultando avances de clientes' };
     }
   }
+
+  // 19. GET /agenda
+  async getAgenda(artistId?: string): Promise<{ success: boolean; data?: any[]; error?: any }> {
+    try {
+      const url = artistId ? `/artists/${artistId}/schedules` : '/agenda';
+      const res = await this.axiosInstance.get(url);
+      return res.data;
+    } catch (err: any) {
+      if (err.response?.data) return err.response.data;
+      return { success: false, error: err.message || 'Error consultando agenda' };
+    }
+  }
+
+  // 20. POST /agenda
+  async createAgenda(payload: any): Promise<{ success: boolean; data?: any; error?: any }> {
+    try {
+      const res = await this.axiosInstance.post('/agenda', payload);
+      return res.data;
+    } catch (err: any) {
+      if (err.response?.data) return err.response.data;
+      return { success: false, error: err.message || 'Error creando cita en agenda' };
+    }
+  }
+
+  // 21. PUT /agenda/:id
+  async updateAgenda(id: string | number, payload: any): Promise<{ success: boolean; data?: any; error?: any }> {
+    try {
+      const res = await this.axiosInstance.put(`/agenda/${id}`, payload);
+      return res.data;
+    } catch (err: any) {
+      if (err.response?.data) return err.response.data;
+      return { success: false, error: err.message || 'Error actualizando cita' };
+    }
+  }
+
+  // 22. GET /payments
+  async getPayments(clientId?: string): Promise<{ success: boolean; data?: any[]; error?: any }> {
+    try {
+      const url = clientId ? `/payments?client_id=${clientId}` : '/payments';
+      const res = await this.axiosInstance.get(url);
+      return res.data;
+    } catch (err: any) {
+      if (err.response?.data) return err.response.data;
+      return { success: false, error: err.message || 'Error consultando pagos' };
+    }
+  }
+
+  // 23. POST /payments
+  async createPayment(payload: any): Promise<{ success: boolean; data?: any; error?: any }> {
+    try {
+      const res = await this.axiosInstance.post('/payments', payload);
+      return res.data;
+    } catch (err: any) {
+      if (err.response?.data) return err.response.data;
+      return { success: false, error: err.message || 'Error creando pago' };
+    }
+  }
+
+  // 24. GET /products or /artists/:artistId/products
+  async getProducts(params?: { category?: string; artistId?: string }): Promise<{ success: boolean; data?: any[]; error?: any }> {
+    try {
+      let url = '/products';
+      if (params?.artistId) {
+        url = `/artists/${params.artistId}/products`;
+      }
+      const queryParams: string[] = [];
+      if (params?.category && params.category !== 'all') {
+        queryParams.push(`category=${encodeURIComponent(params.category)}`);
+      }
+      if (queryParams.length > 0) {
+        url += `?${queryParams.join('&')}`;
+      }
+      const res = await this.axiosInstance.get(url);
+      return res.data;
+    } catch (err: any) {
+      if (err.response?.data) return err.response.data;
+      return { success: false, error: err.message || 'Error consultando productos' };
+    }
+  }
+
+  // 25. POST /products
+  async createStoreProduct(payload: any): Promise<{ success: boolean; data?: any; error?: any }> {
+    try {
+      const res = await this.axiosInstance.post('/products', payload);
+      return res.data;
+    } catch (err: any) {
+      if (err.response?.data) return err.response.data;
+      return { success: false, error: err.message || 'Error creando producto' };
+    }
+  }
+
+  // 26. GET /orders
+  async getOrders(): Promise<{ success: boolean; data?: any[]; error?: any }> {
+    try {
+      const res = await this.axiosInstance.get('/orders');
+      return res.data;
+    } catch (err: any) {
+      if (err.response?.data) return err.response.data;
+      return { success: false, error: err.message || 'Error consultando pedidos' };
+    }
+  }
+
+  // 27. POST /orders
+  async createOrder(payload: any): Promise<{ success: boolean; data?: any; error?: any }> {
+    try {
+      const res = await this.axiosInstance.post('/orders', payload);
+      return res.data;
+    } catch (err: any) {
+      if (err.response?.data) return err.response.data;
+      return { success: false, error: err.message || 'Error creando pedido de retiro' };
+    }
+  }
+
+  // 28. POST /sketches
+  async createSketch(payload: any): Promise<{ success: boolean; data?: any; error?: any }> {
+    try {
+      const res = await this.axiosInstance.post('/sketches', payload);
+      return res.data;
+    } catch (err: any) {
+      if (err.response?.data) return err.response.data;
+      return { success: false, error: err.message || 'Error enviando boceto' };
+    }
+  }
 }
 
 export const api = new ApiClient();

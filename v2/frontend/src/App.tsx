@@ -3,10 +3,11 @@ import { BrowserRouter, Routes, Route, Navigate, useLocation, useNavigate } from
 import { AnimatePresence } from 'framer-motion';
 import { AuthProvider, useAuth } from './context/AuthContext';
 import { ThemeProvider } from './context/ThemeContext';
+import { CurrencyProvider } from './context/CurrencyContext';
+import { GuestGateProvider } from './context/GuestGateContext';
 import { HomePage } from './pages/HomePage';
 import { LoginPage } from './pages/LoginPage';
 import { RegisterPage } from './pages/RegisterPage';
-import { DashboardPage } from './pages/DashboardPage';
 import { ArtistProfilePage } from './pages/ArtistProfilePage';
 import { CreditCardPage } from './pages/CreditCardPage';
 import { ForgotPasswordPage } from './pages/ForgotPasswordPage';
@@ -18,6 +19,14 @@ import PrivacyPolicy from './pages/legal/PrivacyPolicy';
 import { ClientDashboardPage } from './pages/ClientDashboardPage';
 import { ArtistDashboardPage } from './pages/ArtistDashboardPage';
 import { AboutPage } from './pages/AboutPage';
+import { BenefitsPage } from './pages/BenefitsPage';
+import { PricingPage } from './pages/PricingPage';
+import { ArtistsDirectoryPage } from './pages/ArtistsDirectoryPage';
+import { ShopPage } from './pages/ShopPage';
+import { Navbar, NavbarContext } from './components/common/Navbar';
+import { Footer, FooterContext } from './components/common/Footer';
+import { PageTransition } from './components/common/PageTransition';
+import './index.css';
 
 export const OnboardingGate: React.FC = () => {
   const { user, isLoading } = useAuth();
@@ -28,7 +37,7 @@ export const OnboardingGate: React.FC = () => {
     if (isLoading || !user) return;
 
     // Public / Legal pages exempt from redirection
-    const exemptPaths = ['/about', '/legal/terms', '/legal/privacy', '/login', '/register', '/forget-password', '/change-password', '/chat'];
+    const exemptPaths = ['/about', '/beneficios', '/precios', '/artistas', '/tienda', '/shop', '/legal/terms', '/legal/privacy', '/login', '/register', '/forget-password', '/change-password', '/chat'];
     if (exemptPaths.some((p) => location.pathname.startsWith(p))) {
       return;
     }
@@ -60,49 +69,113 @@ export const OnboardingGate: React.FC = () => {
   return null;
 };
 
-export const AnimatedAppRoutes: React.FC = () => {
+const ChatAuthGate: React.FC = () => {
+  const { user, isLoading } = useAuth();
   const location = useLocation();
 
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-gray-900 flex items-center justify-center text-zinc-400">
+        Cargando...
+      </div>
+    );
+  }
+
+  if (!user) {
+    return (
+      <Navigate
+        to={`/register?redirect=${encodeURIComponent(location.pathname + location.search)}`}
+        replace
+      />
+    );
+  }
+
+  return <ChatPage />;
+};
+
+const HIDE_FOOTER_PREFIXES = [
+  '/hub',
+  '/login',
+  '/register',
+  '/user',
+  '/client-dashboard',
+  '/artist-dashboard',
+  '/chat',
+  '/tattoo',
+  '/artist-profile',
+  '/artist',
+];
+
+export const AnimatedAppRoutes: React.FC = () => {
+  const location = useLocation();
+  const shouldHideFooter = HIDE_FOOTER_PREFIXES.some(
+    (prefix) => location.pathname === prefix || location.pathname.startsWith(`${prefix}/`)
+  );
+
   return (
-    <AnimatePresence mode="wait">
-      <Routes location={location} key={location.pathname}>
-        <Route path="/" element={<HomePage />} />
-        <Route path="/about" element={<AboutPage />} />
-        <Route path="/hub" element={<ArtistsHubPage />} />
-        <Route path="/chat" element={<ChatPage />} />
-        <Route path="/legal/terms" element={<TermsAndConditions />} />
-        <Route path="/legal/privacy" element={<PrivacyPolicy />} />
-        <Route path="/login" element={<LoginPage />} />
-        <Route path="/register" element={<RegisterPage />} />
-        <Route path="/user" element={<DashboardPage />} />
-        <Route path="/client-dashboard" element={<ClientDashboardPage />} />
-        <Route path="/artist-dashboard" element={<ArtistDashboardPage />} />
-        {/* /profile cleanly redirects to /client-dashboard?tab=configuracion */}
-        <Route
-          path="/profile"
-          element={<Navigate to="/client-dashboard?tab=configuracion" replace />}
-        />
-        <Route path="/tattoo" element={<ArtistProfilePage />} />
-        <Route path="/artist-profile" element={<ArtistProfilePage />} />
-        <Route path="/artist/:id" element={<ArtistProfilePage />} />
-        <Route path="/subscription/creditcard" element={<CreditCardPage />} />
-        <Route path="/forget-password" element={<ForgotPasswordPage />} />
-        <Route path="/change-password" element={<ChangePasswordPage />} />
-        <Route path="*" element={<Navigate to="/" replace />} />
-      </Routes>
-    </AnimatePresence>
+    <NavbarContext.Provider value={{ isMounted: true }}>
+      <FooterContext.Provider value={{ isMounted: true }}>
+        <div className="min-h-screen bg-[#090d16] text-white flex flex-col font-sans selection:bg-violet-500/30">
+          {/* Persistent global Navbar: stays mounted across all routes without re-mounting flickering */}
+          <Navbar forceRender={true} />
+
+          {/* Animated Route Viewport */}
+          <div className="flex-1 flex flex-col w-full relative">
+            <AnimatePresence mode="wait">
+              <Routes location={location} key={location.pathname}>
+                <Route path="/" element={<PageTransition><HomePage /></PageTransition>} />
+                <Route path="/beneficios" element={<PageTransition><BenefitsPage /></PageTransition>} />
+                <Route path="/precios" element={<PageTransition><PricingPage /></PageTransition>} />
+                <Route path="/artistas" element={<PageTransition><ArtistsDirectoryPage /></PageTransition>} />
+                <Route path="/tienda" element={<PageTransition><ShopPage /></PageTransition>} />
+                <Route path="/shop" element={<Navigate to="/tienda" replace />} />
+                <Route path="/about" element={<PageTransition><AboutPage /></PageTransition>} />
+                <Route path="/hub" element={<PageTransition><ArtistsHubPage /></PageTransition>} />
+                <Route path="/chat" element={<PageTransition><ChatAuthGate /></PageTransition>} />
+                <Route path="/legal/terms" element={<PageTransition><TermsAndConditions /></PageTransition>} />
+                <Route path="/legal/privacy" element={<PageTransition><PrivacyPolicy /></PageTransition>} />
+                <Route path="/login" element={<PageTransition><LoginPage /></PageTransition>} />
+                <Route path="/register" element={<PageTransition><RegisterPage /></PageTransition>} />
+                <Route path="/user" element={<PageTransition><RegisterPage /></PageTransition>} />
+                <Route path="/client-dashboard" element={<PageTransition><ClientDashboardPage /></PageTransition>} />
+                <Route path="/artist-dashboard" element={<PageTransition><ArtistDashboardPage /></PageTransition>} />
+                {/* /profile cleanly redirects to /client-dashboard?tab=configuracion */}
+                <Route
+                  path="/profile"
+                  element={<Navigate to="/client-dashboard?tab=configuracion" replace />}
+                />
+                <Route path="/tattoo" element={<PageTransition><ArtistProfilePage /></PageTransition>} />
+                <Route path="/artist-profile" element={<PageTransition><ArtistProfilePage /></PageTransition>} />
+                <Route path="/artist/:id" element={<PageTransition><ArtistProfilePage /></PageTransition>} />
+                <Route path="/subscription/creditcard" element={<PageTransition><CreditCardPage /></PageTransition>} />
+                <Route path="/forget-password" element={<PageTransition><ForgotPasswordPage /></PageTransition>} />
+                <Route path="/change-password" element={<PageTransition><ChangePasswordPage /></PageTransition>} />
+                <Route path="*" element={<Navigate to="/" replace />} />
+              </Routes>
+            </AnimatePresence>
+          </div>
+
+          {/* Approved R4 Conditional Footer */}
+          {!shouldHideFooter && <Footer forceRender={true} />}
+        </div>
+      </FooterContext.Provider>
+    </NavbarContext.Provider>
   );
 };
 
 export const App: React.FC = () => {
   return (
     <ThemeProvider>
-      <AuthProvider>
-        <BrowserRouter>
-          <OnboardingGate />
-          <AnimatedAppRoutes />
-        </BrowserRouter>
-      </AuthProvider>
+      <CurrencyProvider>
+        <AuthProvider>
+          <BrowserRouter>
+            <GuestGateProvider>
+              <OnboardingGate />
+              <AnimatedAppRoutes />
+            </GuestGateProvider>
+          </BrowserRouter>
+        </AuthProvider>
+      </CurrencyProvider>
     </ThemeProvider>
   );
 };

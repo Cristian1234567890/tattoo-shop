@@ -1,10 +1,42 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { Logo } from './Logo';
 import { ThemeSwitch } from './ThemeSwitch';
 
-export const Footer: React.FC = () => {
+export const FooterContext = React.createContext<{ isMounted: boolean }>({ isMounted: false });
+
+const EXEMPT_FOOTER_ROUTES = [
+  '/hub',
+  '/login',
+  '/register',
+  '/user',
+  '/client-dashboard',
+  '/artist-dashboard',
+  '/chat',
+  '/tattoo',
+  '/artist-profile',
+  '/artist',
+];
+
+export interface FooterProps {
+  forceRender?: boolean;
+}
+
+export const Footer: React.FC<FooterProps> = ({ forceRender = false }) => {
+  const context = React.useContext(FooterContext);
+  const location = useLocation();
   const currentYear = new Date().getFullYear();
+
+  // If a top-level layout is managing the footer, skip nested duplicate footer calls
+  if (context.isMounted && !forceRender) {
+    return null;
+  }
+
+  // R4 Layout Exemption Check
+  const isExempt = EXEMPT_FOOTER_ROUTES.some(
+    (path) => location.pathname === path || location.pathname.startsWith(path + '/')
+  );
+  if (isExempt) return null;
 
   return (
     <footer className="mt-auto bg-gray-950 border-t border-white/10 text-gray-400 font-sans">
@@ -47,14 +79,24 @@ export const Footer: React.FC = () => {
                 </Link>
               </li>
               <li>
-                <a href="/#beneficios" className="hover:text-white transition-colors">
+                <Link to="/beneficios" className="hover:text-white transition-colors">
                   Beneficios
-                </a>
+                </Link>
               </li>
               <li>
-                <a href="/#precios" className="hover:text-white transition-colors">
+                <Link to="/precios" className="hover:text-white transition-colors">
                   Precios & Membresías
-                </a>
+                </Link>
+              </li>
+              <li>
+                <Link to="/artistas" className="hover:text-white transition-colors">
+                  Artistas & Estudios
+                </Link>
+              </li>
+              <li>
+                <Link to="/tienda" className="hover:text-white transition-colors">
+                  Tienda del Atelier
+                </Link>
               </li>
             </ul>
           </div>

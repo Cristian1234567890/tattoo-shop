@@ -1,644 +1,794 @@
-import { useEffect, useState, useMemo, useCallback } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
-import { MapContainer, TileLayer, Marker, Popup, useMap, ZoomControl } from 'react-leaflet';
-import 'leaflet/dist/leaflet.css';
-import L from 'leaflet';
+import { useState, useMemo } from 'react';
 import {
+  Search,
   MapPin,
-  Compass,
-  X,
-  Phone,
+  List,
+  Map as MapIcon,
+  Star,
+  ChevronRight,
   MessageCircle,
-  LocateFixed,
-  ExternalLink,
+  Building2,
+  User,
+  Users,
   Sparkles,
+  CheckCircle2,
+  Image as ImageIcon,
 } from 'lucide-react';
-import { Navbar } from '../components/common/Navbar';
-import { PageTransition } from '../components/common/PageTransition';
-import { HubSkeleton, HubDrawerSkeleton } from '../components/hub/HubSkeleton';
-import { api } from '../api/client';
-import {
-  DEFAULT_COORDINATES,
-  normalizeHubArtist,
-  SAMPLE_HUB_ARTISTS,
-  NormalizedHubArtist,
-} from '../utils/geo';
+import { useCurrency } from '../context/CurrencyContext';
+import { useGuestGate } from '../context/GuestGateContext';
+import { SendSketchModal } from '../components/hub/SendSketchModal';
+import { formatWhatsAppUrl } from '../utils/whatsapp';
+import { ResidentArtist, StudioLocation } from '../types';
 
-// Fix for leaflet default icons in Vite
-// @ts-ignore
-import markerIcon from 'leaflet/dist/images/marker-icon.png';
-// @ts-ignore
-import markerShadow from 'leaflet/dist/images/marker-shadow.png';
-// @ts-ignore
-import markerRetina from 'leaflet/dist/images/marker-icon-2x.png';
-
-const DefaultIcon = L.icon({
-  iconUrl: markerIcon,
-  iconRetinaUrl: markerRetina,
-  shadowUrl: markerShadow,
-  iconSize: [25, 41],
-  iconAnchor: [12, 41],
-  popupAnchor: [1, -34],
-  tooltipAnchor: [16, -28],
-  shadowSize: [41, 41],
-});
-L.Marker.prototype.options.icon = DefaultIcon;
-
-// Custom animated pulsing divIcon for user GPS location
-const UserGpsIcon = L.divIcon({
-  className: 'user-gps-marker',
-  html: `
-    <div style="position: relative; width: 28px; height: 28px; display: flex; align-items: center; justify-content: center;">
-      <div style="position: absolute; width: 100%; height: 100%; border-radius: 9999px; background: rgba(59, 130, 246, 0.4); animation: ping 1.5s cubic-bezier(0, 0, 0.2, 1) infinite;"></div>
-      <div style="width: 14px; height: 14px; border-radius: 9999px; background: #3b82f6; border: 2.5px solid #ffffff; box-shadow: 0 0 10px rgba(0,0,0,0.6);"></div>
-    </div>
-  `,
-  iconSize: [28, 28],
-  iconAnchor: [14, 14],
-  popupAnchor: [0, -14],
-});
-
-/**
- * Controller component to smoothly re-center and animate the map when coordinates change.
- */
-export function MapRecenter({
-  center,
-  zoom = 13,
-}: {
-  center: [number, number];
-  zoom?: number;
-}) {
-  const map = useMap();
-  useEffect(() => {
-    if (center && typeof center[0] === 'number' && typeof center[1] === 'number') {
-      map.flyTo(center, zoom, { duration: 1.5 });
-    }
-  }, [center[0], center[1], zoom, map]);
-  return null;
-}
+const STUDIOS_DATA: StudioLocation[] = [
+  {
+    id: 'obsidian',
+    type: 'studio',
+    name: 'Obsidian Atelier & Flash Lab',
+    tagline: 'Colectivo de Arte Oscuro & Cybersigilism',
+    description: 'Estudio profesional con artistas residentes de alto nivel en geometría oscura y blackwork.',
+    banner: 'https://images.unsplash.com/photo-1598371839696-5c5bb00bdc28?auto=format&fit=crop&w=800&q=80',
+    rating: 4.9,
+    reviewCount: 142,
+    verified: true,
+    address: 'Bella Vista, Calle 50, Ciudad de Panamá',
+    distance: '2.4 km',
+    mapPin: { x: '40%', y: '50%' },
+    artistsCount: 3,
+    residents: [
+      {
+        id: 'artist-kaelen',
+        name: 'Kaelen Silva',
+        alias: 'Void',
+        avatar: '/assets/GB Tattoo.jpg',
+        bio: 'Especialista en neo-tribal, cybersigilism, geometría oscura y blackwork biomecánico.',
+        specialties: ['Cybersigilism', 'Neo-Tribal', 'Geometría Oscura'],
+        hourlyRate: 80,
+        availableToday: true,
+        whatsapp: { number: '60012345', prefix: '507' },
+        flashes: [
+          { id: 'f1', title: 'Sigil Core 01', amount: 120, img: 'https://images.unsplash.com/photo-1611501275019-9b5cda994e8d?auto=format&fit=crop&w=300&q=80' },
+          { id: 'f2', title: 'Neo-Tribal Spine', amount: 150, img: 'https://images.unsplash.com/photo-1562962230-16e4623d36e6?auto=format&fit=crop&w=300&q=80' },
+          { id: 'f3', title: 'Dark Mandala', amount: 90, img: 'https://images.unsplash.com/photo-1621847468516-1ed15271c480?auto=format&fit=crop&w=300&q=80' },
+        ],
+      },
+      {
+        id: 'artist-maya',
+        name: 'Maya Lin',
+        alias: 'Thorne',
+        avatar: '/assets/GB.jpeg',
+        bio: 'Ornamental botánico de alta precisión, puntillismo sutil y micro-estructuras simétricas.',
+        specialties: ['Ornamental', 'Dotwork', 'Botánico'],
+        hourlyRate: 75,
+        availableToday: true,
+        whatsapp: { number: '61119988', prefix: '507' },
+        flashes: [
+          { id: 'f4', title: 'Flor de Loto Sagrada', amount: 110, img: 'https://images.unsplash.com/photo-1568515045052-f9a854d70bfd?auto=format&fit=crop&w=300&q=80' },
+          { id: 'f5', title: 'Enredadera de Espinas', amount: 85, img: 'https://images.unsplash.com/photo-1598371839696-5c5bb00bdc28?auto=format&fit=crop&w=300&q=80' },
+        ],
+      },
+      {
+        id: 'artist-carlos',
+        name: 'Carlos Ruiz',
+        alias: 'Neon',
+        avatar: '/assets/1571.jpg',
+        bio: 'Cyberpunk futurista, estética glitch y tatuajes con tintas reactivas UV.',
+        specialties: ['Cyberpunk', 'Glitch Art', 'UV Reactive'],
+        hourlyRate: 90,
+        availableToday: false,
+        whatsapp: { number: '62224455', prefix: '507' },
+        flashes: [
+          { id: 'f6', title: 'Circuit Cyber Run', amount: 140, img: 'https://images.unsplash.com/photo-1611591437281-460bfbe1220a?auto=format&fit=crop&w=300&q=80' },
+        ],
+      },
+    ],
+  },
+  {
+    id: 'neon-ink',
+    type: 'studio',
+    name: 'Neon Ink Studio',
+    tagline: 'Realismo a Color & Retratos de Alto Impacto',
+    description: 'Estudio líder en Chiriquí para piezas de realismo y micro-detalle.',
+    banner: 'https://images.unsplash.com/photo-1598371839696-5c5bb00bdc28?auto=format&fit=crop&w=800&q=80',
+    rating: 4.8,
+    reviewCount: 96,
+    verified: true,
+    address: 'Barrio Bolívar, Calle 3ra, David, Chiriquí',
+    distance: '3.1 km',
+    mapPin: { x: '60%', y: '30%' },
+    artistsCount: 2,
+    residents: [
+      {
+        id: 'artist-cristian',
+        name: 'Cristian Castillo',
+        alias: 'Castillo Ink',
+        avatar: '/assets/GB.jpeg',
+        bio: 'Maestro del realismo a color, contraste saturado y retratos realistas.',
+        specialties: ['Realismo Color', 'Retratos'],
+        hourlyRate: 70,
+        availableToday: true,
+        whatsapp: { number: '67894321', prefix: '507' },
+        flashes: [
+          { id: 'f7', title: 'Ojo Hiperrealista', amount: 160, img: 'https://images.unsplash.com/photo-1621847468516-1ed15271c480?auto=format&fit=crop&w=300&q=80' },
+        ],
+      },
+      {
+        id: 'artist-elena',
+        name: 'Elena Vega',
+        alias: 'Aquarelle',
+        avatar: '/assets/1251.jpg',
+        bio: 'Pintura en piel, efectos de acuarela líquida y micro-realismo botánico.',
+        specialties: ['Acuarela', 'Micro-realismo'],
+        hourlyRate: 65,
+        availableToday: true,
+        whatsapp: { number: '68991122', prefix: '507' },
+        flashes: [
+          { id: 'f8', title: 'Colibrí Acuarela', amount: 95, img: 'https://images.unsplash.com/photo-1611501275019-9b5cda994e8d?auto=format&fit=crop&w=300&q=80' },
+        ],
+      },
+    ],
+  },
+  {
+    id: 'ana-valdes',
+    type: 'independent',
+    name: 'Ana Valdés Tattoo',
+    tagline: 'Tatuadora Independiente • Tradicional Americano',
+    description: 'Atelier privado por cita previa especializado en tradicional americano de línea gruesa.',
+    banner: 'https://images.unsplash.com/photo-1568515045052-f9a854d70bfd?auto=format&fit=crop&w=800&q=80',
+    rating: 4.9,
+    reviewCount: 78,
+    verified: true,
+    address: 'Avenida Central, La Chorrera, Panamá Oeste',
+    distance: '5.0 km',
+    mapPin: { x: '25%', y: '70%' },
+    artistsCount: 1,
+    residents: [
+      {
+        id: 'artist-ana',
+        name: 'Ana Valdés',
+        alias: 'Valdés Trad',
+        avatar: '/assets/1571.jpg',
+        bio: 'Líneas sólidas, paleta primaria eterna y clásica tradición marítima y americana.',
+        specialties: ['Tradicional', 'Old School'],
+        hourlyRate: 65,
+        availableToday: true,
+        whatsapp: { number: '61112233', prefix: '507' },
+        flashes: [
+          { id: 'f9', title: 'Daga Tradicional', amount: 80, img: 'https://images.unsplash.com/photo-1562962230-16e4623d36e6?auto=format&fit=crop&w=300&q=80' },
+          { id: 'f10', title: 'Pantera Clásica', amount: 110, img: 'https://images.unsplash.com/photo-1621847468516-1ed15271c480?auto=format&fit=crop&w=300&q=80' },
+        ],
+      },
+    ],
+  },
+  {
+    id: 'chroma-gallery',
+    type: 'studio',
+    name: 'Chroma Gallery & Tattoo',
+    tagline: 'Estudio de Arte Contemporáneo & Gran Formato',
+    description: 'Espacio artístico multidisciplinario en San Francisco con bioseguridad visible.',
+    banner: 'https://images.unsplash.com/photo-1611501275019-9b5cda994e8d?auto=format&fit=crop&w=800&q=80',
+    rating: 4.7,
+    reviewCount: 52,
+    verified: true,
+    address: 'Calle 74 San Francisco, Ciudad de Panamá',
+    distance: '7.2 km',
+    mapPin: { x: '75%', y: '65%' },
+    artistsCount: 2,
+    residents: [
+      {
+        id: 'artist-valeria',
+        name: 'Valeria Ríos',
+        alias: 'Val FineLine',
+        avatar: '/assets/GB Tattoo.jpg',
+        bio: 'Fine line minimalista y tipografía cursiva anatómica.',
+        specialties: ['Minimalista', 'Fine Line'],
+        hourlyRate: 60,
+        availableToday: true,
+        whatsapp: { number: '62223344', prefix: '507' },
+        flashes: [
+          { id: 'f11', title: 'Trazo Continuo Floral', amount: 70, img: 'https://images.unsplash.com/photo-1598371839696-5c5bb00bdc28?auto=format&fit=crop&w=300&q=80' },
+        ],
+      },
+      {
+        id: 'artist-diego',
+        name: 'Diego López',
+        alias: 'Oriental Diego',
+        avatar: '/assets/1251.jpg',
+        bio: 'Irezumi japonés moderno, dragones y olas tradicionales.',
+        specialties: ['Japonés', 'Irezumi'],
+        hourlyRate: 85,
+        availableToday: false,
+        whatsapp: { number: '69001122', prefix: '507' },
+        flashes: [
+          { id: 'f12', title: 'Máscara Hannya', amount: 130, img: 'https://images.unsplash.com/photo-1568515045052-f9a854d70bfd?auto=format&fit=crop&w=300&q=80' },
+        ],
+      },
+    ],
+  },
+];
 
 export default function ArtistsHubPage() {
-  const [rawArtists, setRawArtists] = useState<any[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [filter, setFilter] = useState('All');
-  const [userCoords, setUserCoords] = useState<[number, number] | null>(null);
-  const [mapCenter, setMapCenter] = useState<[number, number]>(DEFAULT_COORDINATES);
-  const [mapZoom, setMapZoom] = useState<number>(13);
-  const [gpsStatus, setGpsStatus] = useState<
-    'idle' | 'requesting' | 'granted' | 'denied' | 'unsupported'
-  >('idle');
-  const [gpsNotification, setGpsNotification] = useState<string | null>(null);
-  const [isDrawerOpen, setIsDrawerOpen] = useState(true);
-  const navigate = useNavigate();
+  const { formatPrice } = useCurrency();
+  const { requireAuth } = useGuestGate();
 
-  // 1. Fetch live artists with high-fidelity sample fallback
-  useEffect(() => {
-    const fetchArtists = async () => {
-      try {
-        const response = await api.getTattooArtists();
-        if (response.success && response.data && response.data.length > 0) {
-          setRawArtists(response.data);
-        } else {
-          setRawArtists(SAMPLE_HUB_ARTISTS);
-        }
-      } catch (err) {
-        console.warn('Could not load live artists for hub, using sample dataset:', err);
-        setRawArtists(SAMPLE_HUB_ARTISTS);
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchArtists();
-  }, []);
+  const [viewMode, setViewMode] = useState<'map' | 'list'>('map');
+  const [typeFilter, setTypeFilter] = useState<'all' | 'studio' | 'independent'>('all');
+  const [searchQuery, setSearchQuery] = useState('');
 
-  // 2. Request browser GPS Geolocation
-  const requestUserLocation = useCallback(() => {
-    if (typeof window === 'undefined' || !navigator.geolocation) {
-      setGpsStatus('unsupported');
-      setGpsNotification('La geolocalización no está soportada por tu navegador.');
-      return;
-    }
+  // Selección de Local/Estudio Activo
+  const [activeStudioId, setActiveStudioId] = useState<string>('obsidian');
+  // Selección del Artista Residente Específico dentro del Estudio
+  const [selectedResidentId, setSelectedResidentId] = useState<string>('artist-kaelen');
 
-    setGpsStatus('requesting');
-    navigator.geolocation.getCurrentPosition(
-      (position) => {
-        const lat = position.coords.latitude;
-        const lng = position.coords.longitude;
-        setUserCoords([lat, lng]);
-        setMapCenter([lat, lng]);
-        setMapZoom(13);
-        setGpsStatus('granted');
-        setGpsNotification(null);
-      },
-      (error) => {
-        console.warn('Geolocation denied or unavailable:', error?.message);
-        setGpsStatus('denied');
-        setGpsNotification('📍 Ubicación no disponible. Mostrando artistas globales.');
-      },
-      { enableHighAccuracy: true, timeout: 8000, maximumAge: 300000 }
-    );
-  }, []);
+  // Estado para el modal de bocetos (SendSketchModal)
+  const [sketchModalOpen, setSketchModalOpen] = useState(false);
+  const [sketchTarget, setSketchTarget] = useState<{ id: string; name: string } | null>(null);
 
-  useEffect(() => {
-    requestUserLocation();
-  }, [requestUserLocation]);
-
-  // 3. Normalize artists with accurate coordinates & distance
-  const normalizedArtists: NormalizedHubArtist[] = useMemo(() => {
-    return rawArtists.map((artist, index) =>
-      normalizeHubArtist(artist, index, userCoords)
-    );
-  }, [rawArtists, userCoords]);
-
-  // 4. Style filter matching
-  const filteredArtists = useMemo(() => {
-    return normalizedArtists.filter((artist) => {
-      if (filter === 'All') return true;
-      const s = (artist.style || '').toLowerCase();
-      const f = filter.toLowerCase();
-      // Flexible keyword matching for all 20 styles
-      const styleMap: Record<string, string[]> = {
-        'realismo': ['realis', 'portrait', 'retrat'],
-        'tradicional': ['tradicional', 'traditional', 'old school'],
-        'neo-tradicional': ['neotrad', 'neo-trad', 'neo trad'],
-        'blackwork': ['black', 'blackout'],
-        'black & grey': ['grey', 'gray', 'b&g', 'black and grey'],
-        'japonés': ['japon', 'irezumi', 'japanese'],
-        'minimalista': ['minimal', 'line'],
-        'fine line': ['fine line', 'fineline', 'thin line'],
-        'acuarela': ['acuarela', 'watercolor', 'water'],
-        'geométrico': ['geometr', 'geometric'],
-        'dotwork': ['dotwork', 'dot work', 'puntill'],
-        'tribal': ['tribal'],
-        'new school': ['new school', 'newschool', 'cartoon'],
-        'lettering': ['lettering', 'letter', 'script', 'tipograf', 'caligraf'],
-        'sketch': ['sketch', 'boceto'],
-        'biomecánico': ['biomec', 'biomech', 'mech'],
-        'surrealista': ['surreal', 'surrealis'],
-        'ornamental': ['ornament', 'mandala', 'filigran'],
-        'cybersigilism': ['cyber', 'sigil'],
-      };
-      const keywords = styleMap[f] || [f];
-      return keywords.some((kw) => s.includes(kw));
+  // Filtrado de Locales
+  const filteredStudios = useMemo(() => {
+    return STUDIOS_DATA.filter((s) => {
+      const matchesType = typeFilter === 'all' ? true : s.type === typeFilter;
+      const query = searchQuery.toLowerCase().trim();
+      const matchesSearch =
+        !query ||
+        s.name.toLowerCase().includes(query) ||
+        s.address.toLowerCase().includes(query) ||
+        (s.residents &&
+          s.residents.some(
+            (r) =>
+              r.name.toLowerCase().includes(query) ||
+              (r.alias && r.alias.toLowerCase().includes(query)) ||
+              r.specialties.some((sp) => sp.toLowerCase().includes(query))
+          ));
+      return matchesType && matchesSearch;
     });
-  }, [normalizedArtists, filter]);
+  }, [typeFilter, searchQuery]);
 
-  // 5. Sort artists by proximity (if GPS granted) or portfolio works
-  const sortedArtists = useMemo(() => {
-    const list = [...filteredArtists];
-    if (userCoords) {
-      return list.sort((a, b) => (a.distanceKm ?? 99999) - (b.distanceKm ?? 99999));
+  // Estudio seleccionado actualmente
+  const activeStudio = useMemo(() => {
+    return STUDIOS_DATA.find((s) => s.id === activeStudioId) || STUDIOS_DATA[0];
+  }, [activeStudioId]);
+
+  // Artista Residente seleccionado dentro del Estudio
+  const activeResident = useMemo(() => {
+    if (!activeStudio.residents || activeStudio.residents.length === 0) {
+      return null;
     }
-    return list.sort((a, b) => b.worksCount - a.worksCount);
-  }, [filteredArtists, userCoords]);
+    return (
+      activeStudio.residents.find((r) => r.id === selectedResidentId) ||
+      activeStudio.residents[0]
+    );
+  }, [activeStudio, selectedResidentId]);
 
-  const handleChat = (artistId: string) => {
-    navigate(`/chat?artist=${artistId}`);
+  // Manejar cambio de Estudio (reajusta automáticamente al primer artista del estudio)
+  const handleSelectStudio = (studioId: string) => {
+    setActiveStudioId(studioId);
+    const targetStudio = STUDIOS_DATA.find((s) => s.id === studioId);
+    if (targetStudio && targetStudio.residents && targetStudio.residents.length > 0) {
+      setSelectedResidentId(targetStudio.residents[0].id);
+    }
   };
 
-  const handleCenterOnArtist = (artist: NormalizedHubArtist) => {
-    setMapCenter([artist.lat, artist.lng]);
-    setMapZoom(15);
+  // 1. Acción de Contacto por WhatsApp al Artista Específico
+  const handleContactWhatsApp = (resident: ResidentArtist, studio: StudioLocation) => {
+    requireAuth(
+      () => {
+        const text = `¡Hola ${resident.name}! Vi tu trabajo en ${studio.name} a través de Tattoo Hub y me gustaría cotizar un tatuaje estilo ${resident.specialties[0]}.`;
+        const url = formatWhatsAppUrl(resident.whatsapp.number, resident.whatsapp.prefix, text);
+        window.open(url, '_blank', 'noopener,noreferrer');
+      },
+      {
+        title: `Contactar a ${resident.alias || resident.name}`,
+        message: `Para iniciar chat directo por WhatsApp con ${resident.name} (${studio.name}), regístrate gratis en Tattoo Hub.`,
+        redirectUrl: `/hub?studio=${studio.id}&artist=${resident.id}`,
+      }
+    );
+  };
+
+  // 2. Acción de Envío de Boceto al Artista Específico
+  const handleSendSketch = (resident: ResidentArtist, studio: StudioLocation) => {
+    requireAuth(
+      () => {
+        setSketchTarget({ id: resident.id, name: `${resident.name} (${studio.name})` });
+        setSketchModalOpen(true);
+      },
+      {
+        title: `Enviar Boceto a ${resident.alias || resident.name}`,
+        message: `Para enviar tu boceto a ${resident.name} para su evaluación, crea tu cuenta en Tattoo Hub.`,
+        redirectUrl: `/hub?studio=${studio.id}&artist=${resident.id}`,
+      }
+    );
+  };
+
+  // 3. Acción de Reserva de Turno / Flash Book
+  const handleReserveFlash = (
+    flashTitle: string,
+    flashAmount: number,
+    resident: ResidentArtist
+  ) => {
+    requireAuth(
+      () => {
+        alert(`¡Cupo apartado para "${flashTitle}" (${formatPrice(flashAmount)}) con ${resident.name}! Se notificará al artista.`);
+      },
+      {
+        title: `Apartar Flash con ${resident.alias || resident.name}`,
+        message: `Para reservar este diseño flash con ${resident.name}, regístrate en Tattoo Hub.`,
+        redirectUrl: `/hub?studio=${activeStudio.id}&artist=${resident.id}`,
+      }
+    );
   };
 
   return (
-    <PageTransition>
-      <div className="min-h-screen bg-[#090d16] flex flex-col overflow-hidden">
-        <Navbar />
+    <div className="flex-1 relative flex flex-col h-[calc(100vh-4rem)] overflow-hidden bg-zinc-950 text-zinc-100">
+      {/* Modal de Envío de Bocetos */}
+      {sketchTarget && (
+        <SendSketchModal
+          isOpen={sketchModalOpen}
+          onClose={() => setSketchModalOpen(false)}
+          artistId={sketchTarget.id}
+          artistName={sketchTarget.name}
+        />
+      )}
 
-      <main className="flex-1 flex flex-col h-[calc(100vh-64px)] relative overflow-hidden">
-        {/* Top Floating Control Bar: Style Filters & GPS Status */}
-        <div className="absolute top-4 left-1/2 transform -translate-x-1/2 z-[1000] flex items-center justify-between gap-3 w-full max-w-6xl px-4 pointer-events-none">
-          {/* Style Filter Pills */}
-          <div
-            data-testid="style-filter-bar"
-            className="flex items-center gap-1.5 sm:gap-2 overflow-x-auto no-scrollbar pointer-events-auto py-1 px-2 bg-gray-900/80 backdrop-blur-md rounded-full border border-white/10 shadow-2xl"
-          >
-            {[
-              'All', 'Realismo', 'Tradicional', 'Neo-Tradicional', 'Blackwork',
-              'Black & Grey', 'Japonés', 'Minimalista', 'Fine Line', 'Acuarela',
-              'Geométrico', 'Dotwork', 'Tribal', 'New School', 'Lettering',
-              'Sketch', 'Biomecánico', 'Surrealista', 'Ornamental', 'Cybersigilism',
-            ].map(
-              (style) => (
-                <button
-                  key={style}
-                  data-testid={`filter-pill-${style.toLowerCase()}`}
-                  onClick={() => setFilter(style)}
-                  className={`px-3 sm:px-4 py-1.5 rounded-full text-xs font-bold transition-all duration-200 active:scale-95 whitespace-nowrap ${
-                    filter === style
-                      ? 'bg-primary text-white shadow-[0_0_20px_rgba(105,68,255,0.45)] ring-1 ring-primary/50'
-                      : 'text-gray-300 hover:text-white hover:bg-white/10'
+      <main className="flex-1 relative flex overflow-hidden w-full h-full">
+        {/* MAPA INTERACTIVO CON PINES DISTINGUIDOS */}
+        <div
+          data-testid="hub-map-container"
+          className="absolute inset-0 bg-zinc-950 bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:28px_28px]"
+        >
+          {filteredStudios.map((studio) => {
+            const isActive = activeStudio.id === studio.id;
+            const pinPosition = studio.mapPin || { x: '50%', y: '50%' };
+
+            return (
+              <div
+                key={studio.id}
+                data-testid="studio-pin"
+                data-studio-id={studio.id}
+                className="absolute flex flex-col items-center cursor-pointer transition-transform hover:scale-110 z-20"
+                style={{
+                  left: pinPosition.x,
+                  top: pinPosition.y,
+                  transform: 'translate(-50%, -50%)',
+                }}
+                onClick={() => handleSelectStudio(studio.id)}
+              >
+                {/* Pin Head */}
+                <div className="relative">
+                  {studio.type === 'studio' ? (
+                    // PIN DE ESTUDIO (Múltiples residentes)
+                    <div
+                      className={`px-3 py-1.5 rounded-full flex items-center gap-1.5 border transition-all ${
+                        isActive
+                          ? 'bg-violet-600 border-violet-300 text-white shadow-[0_0_25px_rgba(139,92,246,0.9)] scale-110'
+                          : 'bg-zinc-900/95 border-violet-500/50 text-violet-300 hover:border-violet-400 shadow-[0_0_12px_rgba(139,92,246,0.35)]'
+                      }`}
+                    >
+                      <Building2 className="w-3.5 h-3.5 text-violet-200" />
+                      <span className="text-xs font-black tracking-tight">{studio.artistsCount}</span>
+                      <span className="text-[10px] font-bold uppercase tracking-wider opacity-90 hidden sm:inline">
+                        Artistas
+                      </span>
+                    </div>
+                  ) : (
+                    // PIN DE ARTISTA INDEPENDIENTE
+                    <div
+                      className={`w-8 h-8 rounded-full flex items-center justify-center border transition-all ${
+                        isActive
+                          ? 'bg-violet-600 border-white text-white shadow-[0_0_20px_rgba(139,92,246,0.85)] scale-110'
+                          : 'bg-zinc-900 border-zinc-700 text-zinc-300 hover:border-zinc-500'
+                      }`}
+                    >
+                      <User className="w-4 h-4" />
+                    </div>
+                  )}
+
+                  {/* Triángulo inferior del Pin */}
+                  <div
+                    className={`w-2 h-2 mx-auto rotate-45 -mt-1 ${
+                      isActive ? 'bg-violet-600' : 'bg-zinc-900 border-r border-b border-violet-500/40'
+                    }`}
+                  />
+                </div>
+
+                {/* Etiqueta flotante del Pin */}
+                <div
+                  className={`mt-1.5 text-xs font-medium px-2.5 py-1 rounded-lg backdrop-blur-md transition-all ${
+                    isActive
+                      ? 'text-white bg-zinc-900/95 border border-violet-500/60 shadow-xl'
+                      : 'text-zinc-400 bg-zinc-950/80 border border-zinc-800'
                   }`}
                 >
-                  {style}
-                </button>
-              )
-            )}
-          </div>
-
-          {/* Action buttons: GPS & Drawer toggle */}
-          <div className="flex items-center gap-2 pointer-events-auto flex-shrink-0">
-            <button
-              data-testid="gps-locate-btn"
-              onClick={requestUserLocation}
-              title={userCoords ? 'GPS Activo (Centrar)' : '📍 Usar mi ubicación'}
-              className={`px-3 py-1.5 rounded-full text-xs font-bold shadow-lg backdrop-blur-md border flex items-center gap-1.5 transition-all duration-100 active:scale-95 ${
-                userCoords
-                  ? 'bg-blue-600/90 hover:bg-blue-500 text-white border-blue-400/40 shadow-blue-500/20'
-                  : 'bg-gray-900/90 hover:bg-gray-800 text-gray-200 border-white/10'
-              }`}
-            >
-              <LocateFixed
-                size={14}
-                className={gpsStatus === 'requesting' ? 'animate-spin' : ''}
-              />
-              <span className="hidden md:inline">
-                {gpsStatus === 'requesting'
-                  ? 'Localizando...'
-                  : userCoords
-                  ? 'Mi Ubicación'
-                  : '📍 Usar mi ubicación'}
-              </span>
-            </button>
-
-            <button
-              data-testid="drawer-toggle-btn"
-              onClick={() => setIsDrawerOpen(!isDrawerOpen)}
-              className="px-3 py-1.5 rounded-full text-xs font-bold shadow-lg backdrop-blur-md border bg-gray-900/90 hover:bg-gray-800 active:scale-95 text-gray-200 border-white/10 flex items-center gap-1.5 transition-all duration-100"
-              title="Mostrar lista de artistas cercanos"
-            >
-              <Compass size={14} className="text-primary" />
-              <span className="hidden sm:inline">Cercanos ({sortedArtists.length})</span>
-            </button>
-          </div>
-        </div>
-
-        {/* Friendly GPS Notification Banner */}
-        {gpsNotification && (
-          <div className="absolute top-16 left-1/2 transform -translate-x-1/2 z-[1000] max-w-md w-[92%] bg-gray-900/95 backdrop-blur-md border border-amber-500/30 text-amber-200 px-4 py-2.5 rounded-2xl shadow-2xl flex items-center justify-between gap-3 text-xs animate-fade-in">
-            <div className="flex items-center gap-2">
-              <MapPin size={15} className="text-amber-400 flex-shrink-0" />
-              <span>{gpsNotification}</span>
-            </div>
-            <div className="flex items-center gap-2 flex-shrink-0">
-              <button
-                onClick={requestUserLocation}
-                className="underline font-bold text-white hover:text-primary transition"
-              >
-                📍 Usar mi ubicación
-              </button>
-              <button
-                onClick={() => setGpsNotification(null)}
-                className="text-gray-400 hover:text-white transition p-0.5"
-                aria-label="Cerrar notificación"
-              >
-                <X size={14} />
-              </button>
-            </div>
-          </div>
-        )}
-
-        {/* Floating Collapsible Nearest Artists Drawer */}
-        <div
-          data-testid="nearest-drawer"
-          className={`absolute left-4 top-20 bottom-4 z-[1000] w-80 sm:w-96 max-w-[calc(100vw-32px)] bg-gray-900/95 backdrop-blur-xl border border-white/10 rounded-3xl shadow-2xl flex flex-col transition-all duration-300 transform ${
-            isDrawerOpen
-              ? 'translate-x-0 opacity-100 pointer-events-auto'
-              : '-translate-x-[115%] opacity-0 pointer-events-none'
-          }`}
-        >
-          {/* Drawer Header */}
-          <div className="p-4 border-b border-white/10 flex items-center justify-between">
-            <div className="flex items-center gap-2">
-              <div className="p-2 rounded-xl bg-primary/20 text-primary">
-                <Sparkles size={16} />
-              </div>
-              <div>
-                <h2 className="font-extrabold text-sm text-white">Artistas más cercanos</h2>
-                <p className="text-[11px] text-gray-400">
-                  {userCoords
-                    ? 'Ordenados por distancia exacta'
-                    : 'Activa tu GPS para calcular distancias'}
-                </p>
-              </div>
-            </div>
-            <button
-              onClick={() => setIsDrawerOpen(false)}
-              className="text-gray-400 hover:text-white p-1 rounded-lg hover:bg-white/10 transition"
-              aria-label="Cerrar panel"
-            >
-              <X size={18} />
-            </button>
-          </div>
-
-          {/* Drawer GPS Prompt if inactive */}
-          {!userCoords && (
-            <div className="m-3 p-3 bg-blue-950/40 border border-blue-500/20 rounded-2xl flex items-center justify-between text-xs text-blue-200">
-              <div className="flex items-center gap-2">
-                <LocateFixed size={16} className="text-blue-400 flex-shrink-0" />
-                <span>¿Deseas ver distancias exactas?</span>
-              </div>
-              <button
-                onClick={requestUserLocation}
-                className="bg-blue-600 hover:bg-blue-500 active:scale-95 text-white px-2.5 py-1 rounded-lg font-bold text-[11px] transition shadow"
-              >
-                📍 Usar mi ubicación
-              </button>
-            </div>
-          )}
-
-          {/* Drawer Artist List */}
-          <div className="flex-1 overflow-y-auto p-3 space-y-2.5 custom-scrollbar">
-            {loading ? (
-              <HubDrawerSkeleton />
-            ) : sortedArtists.length === 0 ? (
-              <div className="py-12 text-center text-gray-400 text-xs">
-                No hay artistas disponibles con el filtro seleccionado.
-              </div>
-            ) : (
-              sortedArtists.map((artist, idx) => (
-                <div
-                  key={artist.id}
-                  data-testid="artist-card"
-                  className="p-3 bg-white/5 hover:bg-white/10 border border-white/5 hover:border-violet-500/30 rounded-2xl transition-all duration-200 hover:-translate-y-0.5 hover:shadow-lg hover:shadow-violet-950/50 group flex flex-col gap-2"
-                >
-                  <div className="flex items-start gap-3">
-                    {/* Rank Badge */}
-                    <span className="text-[11px] font-extrabold text-gray-500 group-hover:text-primary transition pt-1">
-                      #{idx + 1}
-                    </span>
-
-                    {/* Artist Avatar */}
-                    <div className="relative w-12 h-12 rounded-xl overflow-hidden flex-shrink-0 border border-white/10">
-                      <img
-                        src={artist.photoUrl}
-                        alt={artist.name}
-                        className="w-full h-full object-cover"
-                        onError={(e) => {
-                          (e.target as HTMLImageElement).src = `https://ui-avatars.com/api/?name=${encodeURIComponent(
-                            artist.name
-                          )}&background=2a2a2a&color=fff`;
-                        }}
-                      />
-                    </div>
-
-                    {/* Artist Details */}
-                    <div className="flex-1 min-w-0">
-                      <div className="flex items-center justify-between gap-1">
-                        <h3 data-testid="artist-name" className="font-bold text-sm text-white truncate">{artist.name}</h3>
-                        {artist.distanceKm !== undefined && (
-                          <span
-                            data-testid="distance-badge"
-                            className="text-[10px] font-extrabold bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 px-2 py-0.5 rounded-full flex-shrink-0 flex items-center gap-1"
-                          >
-                            {userCoords && <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />}
-                            {artist.distanceKm} km
-                          </span>
-                        )}
-                      </div>
-
-                      <div className="flex items-center gap-2 text-[11px] text-gray-400 mt-0.5">
-                        <span data-testid="artist-style" className="capitalize text-primary font-medium">{artist.style}</span>
-                        <span>•</span>
-                        <span className="truncate">{artist.city}</span>
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Quick Action Buttons */}
-                  <div className="flex items-center gap-2 pt-1 border-t border-white/5">
-                    <button
-                      data-testid="btn-center-artist"
-                      onClick={() => handleCenterOnArtist(artist)}
-                      className="flex-1 flex items-center justify-center gap-1 bg-white/10 hover:bg-white/20 active:scale-95 text-white text-xs font-semibold py-1.5 px-2 rounded-xl transition duration-100"
-                    >
-                      <MapPin size={12} className="text-primary" />
-                      <span>Centrar</span>
-                    </button>
-
-                    {artist.whatsappUrl ? (
-                      <a
-                        data-testid="btn-whatsapp-artist"
-                        href={artist.whatsappUrl}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="flex-1 flex items-center justify-center gap-1 bg-[#25D366] hover:bg-[#20bd5a] active:scale-95 text-white text-xs font-bold py-1.5 px-2 rounded-xl transition shadow duration-100"
-                        title="Contactar vía WhatsApp"
-                      >
-                        <Phone size={12} />
-                        <span>WhatsApp</span>
-                      </a>
-                    ) : null}
-
-                    <Link
-                      to={`/artist/${artist.id}`}
-                      className="flex items-center justify-center p-1.5 bg-white/10 hover:bg-white/20 active:scale-95 text-white rounded-xl transition duration-100"
-                      title="Ver perfil completo"
-                    >
-                      <ExternalLink size={14} />
-                    </Link>
+                  <div className="flex items-center gap-1.5">
+                    <span className="font-semibold">{studio.name}</span>
+                    {studio.type === 'studio' && (
+                      <span className="text-[10px] px-1.5 py-0.5 rounded bg-violet-950 text-violet-300 font-bold border border-violet-800/60">
+                        {studio.artistsCount}
+                      </span>
+                    )}
                   </div>
                 </div>
-              ))
-            )}
-          </div>
+              </div>
+            );
+          })}
         </div>
 
-        {/* Map Container */}
-        {loading ? (
-          <div className="flex-1 w-full h-full min-h-[calc(100vh-64px)] relative" data-testid="hub-map-container">
-            <HubSkeleton />
-          </div>
-        ) : (
-          <div className="flex-1 w-full h-full min-h-[calc(100vh-64px)] relative" data-testid="hub-map-container">
-            <MapContainer
-              center={mapCenter}
-              zoom={mapZoom}
-              zoomControl={false}
-              className="w-full h-full z-0 dark-map-tiles"
-              style={{ height: 'calc(100vh - 64px)', minHeight: '400px', width: '100%' }}
-            >
-              {/* Zoom Controls — Bottom Right */}
-              <ZoomControl position="bottomright" />
+        {/* DRAWER LATERAL / PANEL FLOTANTE DE DETALLES */}
+        <div className="relative z-30 w-full md:w-[480px] h-full flex flex-col p-3 md:p-4 pointer-events-none">
+          <div
+            data-testid="studio-drawer"
+            className="flex-1 w-full bg-zinc-900/90 backdrop-blur-xl border border-zinc-800 rounded-2xl flex flex-col overflow-hidden pointer-events-auto shadow-2xl"
+          >
+            {/* Barra Superior de Búsqueda y Filtros */}
+            <div className="p-4 border-b border-zinc-800 space-y-3 bg-zinc-950/50">
+              <div className="relative">
+                <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 text-zinc-500 w-4 h-4" />
+                <input
+                  type="text"
+                  data-testid="search-input"
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  placeholder="Buscar estudio, artista o estilo..."
+                  className="w-full bg-zinc-950 border border-zinc-800 rounded-xl py-2 pl-10 pr-4 text-sm text-white placeholder-zinc-500 focus:outline-none focus:border-violet-500 transition-colors"
+                />
+              </div>
 
-              {/* Dynamic Re-centering controller */}
-              <MapRecenter center={mapCenter} zoom={mapZoom} />
+              <div className="flex items-center justify-between gap-2">
+                {/* Selector de Tipo: Todos / Estudios / Independientes */}
+                <div className="flex gap-1.5 p-1 bg-zinc-950 rounded-lg border border-zinc-800/80">
+                  <button
+                    data-testid="filter-type-all"
+                    onClick={() => setTypeFilter('all')}
+                    className={`px-2.5 py-1 rounded-md text-xs font-semibold transition-colors cursor-pointer ${
+                      typeFilter === 'all'
+                        ? 'bg-zinc-800 text-white'
+                        : 'text-zinc-400 hover:text-zinc-200'
+                    }`}
+                  >
+                    Todos
+                  </button>
+                  <button
+                    data-testid="filter-type-studio"
+                    onClick={() => setTypeFilter('studio')}
+                    className={`px-2.5 py-1 rounded-md text-xs font-semibold flex items-center gap-1 transition-colors cursor-pointer ${
+                      typeFilter === 'studio'
+                        ? 'bg-violet-600 text-white'
+                        : 'text-zinc-400 hover:text-zinc-200'
+                    }`}
+                  >
+                    <Building2 className="w-3 h-3" /> Estudios
+                  </button>
+                  <button
+                    data-testid="filter-type-independent"
+                    onClick={() => setTypeFilter('independent')}
+                    className={`px-2.5 py-1 rounded-md text-xs font-semibold flex items-center gap-1 transition-colors cursor-pointer ${
+                      typeFilter === 'independent'
+                        ? 'bg-zinc-800 text-white'
+                        : 'text-zinc-400 hover:text-zinc-200'
+                    }`}
+                  >
+                    <User className="w-3 h-3" /> Independientes
+                  </button>
+                </div>
 
-              {/* Free OpenStreetMap Tiles (dark via CSS filter) */}
-              <TileLayer
-                attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-                url="https://tile.openstreetmap.org/{z}/{x}/{y}.png"
-              />
+                {/* Toggle Vista Mapa / Lista */}
+                <div className="flex p-1 bg-zinc-950 rounded-lg border border-zinc-800/80">
+                  <button
+                    onClick={() => setViewMode('map')}
+                    className={`p-1.5 rounded-md transition-colors cursor-pointer ${
+                      viewMode === 'map' ? 'bg-zinc-800 text-white' : 'text-zinc-500'
+                    }`}
+                    aria-label="Ver Mapa"
+                  >
+                    <MapIcon className="w-4 h-4" />
+                  </button>
+                  <button
+                    onClick={() => setViewMode('list')}
+                    className={`p-1.5 rounded-md transition-colors cursor-pointer ${
+                      viewMode === 'list' ? 'bg-zinc-800 text-white' : 'text-zinc-500'
+                    }`}
+                    aria-label="Ver Lista"
+                  >
+                    <List className="w-4 h-4" />
+                  </button>
+                </div>
+              </div>
+            </div>
 
-              {/* Pulsing User GPS Marker */}
-              {userCoords && (
-                <Marker position={userCoords} icon={UserGpsIcon}>
-                  <Popup className="custom-popup">
-                    <div className="p-3 bg-gray-900 text-white rounded-xl text-xs font-bold border border-blue-500/30 flex items-center gap-2 shadow-2xl">
-                      <div className="w-2.5 h-2.5 rounded-full bg-blue-500 animate-ping"></div>
-                      <span>📍 Tu ubicación actual</span>
-                    </div>
-                  </Popup>
-                </Marker>
-              )}
+            {/* Contenido con Scroll: Tarjeta del Estudio & Artistas Residentes */}
+            <div className="flex-1 overflow-y-auto p-4 space-y-4 custom-scrollbar">
+              {/* TARJETA DEL ESTUDIO / LOCAL ACTIVO */}
+              <div className="bg-zinc-950 border border-zinc-800/90 rounded-2xl overflow-hidden shadow-xl">
+                {/* Banner & Identidad del Estudio */}
+                <div className="relative h-36 w-full">
+                  <img
+                    src={activeStudio.banner}
+                    alt={activeStudio.name}
+                    className="w-full h-full object-cover"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-zinc-950 via-zinc-950/60 to-transparent" />
 
-              {/* Filtered Artist Markers */}
-              {filteredArtists.map((artist) => (
-                <Marker key={artist.id} position={[artist.lat, artist.lng]}>
-                  <Popup className="custom-popup">
-                    <div className="w-72 bg-gray-900 text-white rounded-2xl overflow-hidden shadow-2xl p-0 m-0 border border-white/10">
-                      <div className="relative h-32 w-full overflow-hidden bg-gray-800">
-                        <img
-                          src={artist.photoUrl}
-                          alt={artist.name}
-                          className="w-full h-full object-cover"
-                          onError={(e) => {
-                            (e.target as HTMLImageElement).src = `https://ui-avatars.com/api/?name=${encodeURIComponent(
-                              artist.name
-                            )}&background=2a2a2a&color=fff`;
-                          }}
-                        />
-                        <div className="absolute inset-0 bg-gradient-to-t from-gray-900 via-transparent to-transparent" />
-                        <span className="absolute bottom-2 left-3 text-[11px] font-bold px-2 py-0.5 rounded-full bg-primary/90 text-white backdrop-blur-sm capitalize">
-                          {artist.style}
-                        </span>
-                        {artist.distanceKm !== undefined && (
-                          <span className="absolute bottom-2 right-3 text-[11px] font-bold px-2 py-0.5 rounded-full bg-emerald-600/90 text-white backdrop-blur-sm">
-                            📍 {artist.distanceKm} km
-                          </span>
+                  {/* Insignia de Estudio vs Independiente */}
+                  <div className="absolute top-3 left-3 flex gap-2">
+                    {activeStudio.type === 'studio' ? (
+                      <span className="px-2.5 py-1 rounded-full text-[11px] font-bold bg-violet-950/90 text-violet-300 border border-violet-500/50 flex items-center gap-1.5 shadow-lg backdrop-blur-sm">
+                        <Users className="w-3.5 h-3.5" /> {activeStudio.artistsCount} Artistas Residentes
+                      </span>
+                    ) : (
+                      <span className="px-2.5 py-1 rounded-full text-[11px] font-bold bg-zinc-900/90 text-zinc-300 border border-zinc-700 flex items-center gap-1.5 shadow-lg backdrop-blur-sm">
+                        <User className="w-3.5 h-3.5" /> Artista Independiente
+                      </span>
+                    )}
+                  </div>
+
+                  <div className="absolute bottom-3 left-3 right-3 flex justify-between items-end">
+                    <div>
+                      <div className="flex items-center gap-1.5">
+                        <h3 className="text-lg font-bold text-white leading-tight">
+                          {activeStudio.name}
+                        </h3>
+                        {activeStudio.verified && (
+                          <CheckCircle2 className="w-4 h-4 text-violet-400 fill-violet-400/20" />
                         )}
                       </div>
+                      <p className="text-xs text-zinc-400 mt-1 flex items-center gap-1">
+                        <MapPin className="w-3 h-3 text-violet-400" />
+                        {activeStudio.address} • {activeStudio.distance}
+                      </p>
+                    </div>
+                    <div className="flex items-center gap-1 bg-zinc-900/90 px-2 py-1 rounded-md text-xs font-semibold text-white border border-zinc-800">
+                      <Star className="w-3 h-3 text-violet-400 fill-violet-400" />
+                      {activeStudio.rating}
+                    </div>
+                  </div>
+                </div>
 
-                      <div className="p-4">
-                        <h3 className="font-extrabold text-base text-white truncate">
-                          {artist.name}
-                        </h3>
-                        <p className="text-xs text-gray-400 mb-2 flex items-center gap-1">
-                          <MapPin size={12} className="text-primary flex-shrink-0" />
-                          <span className="truncate">{artist.address}</span>
-                        </p>
-
-                        <div className="flex justify-between items-center mb-3 text-xs">
-                          <span className="text-gray-400">Tarifa estimada:</span>
-                          <span className="font-bold text-emerald-400">
-                            {artist.price ? `Desde ${artist.price}` : 'Consultar'}
+                <div className="p-4 space-y-4">
+                  {/* SELECTOR DE ARTISTAS RESIDENTES (Multi-artista Studio Hierarchy) */}
+                  {activeStudio.type === 'studio' &&
+                    activeStudio.residents &&
+                    activeStudio.residents.length > 0 && (
+                      <div className="p-3 bg-zinc-900/60 rounded-xl border border-zinc-800/80">
+                        <div className="flex items-center justify-between mb-2.5">
+                          <span className="text-xs font-bold text-zinc-400 uppercase tracking-wider flex items-center gap-1.5">
+                            <Sparkles className="w-3.5 h-3.5 text-violet-400" /> Artistas en este Local:
                           </span>
+                          <span className="text-[11px] text-zinc-500">Selecciona para contactar</span>
                         </div>
 
-                        <div className="flex gap-2">
-                          {artist.whatsappUrl ? (
-                            <a
-                              href={artist.whatsappUrl}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              className="flex-1 flex items-center justify-center gap-1.5 bg-[#25D366] hover:bg-[#20bd5a] text-white text-xs font-bold py-2 px-3 rounded-xl transition shadow"
-                            >
-                              <Phone size={14} /> WhatsApp
-                            </a>
-                          ) : (
-                            <button
-                              onClick={() => handleChat(artist.id)}
-                              className="flex-1 flex items-center justify-center gap-1 bg-primary hover:bg-primary-hover text-white text-xs font-bold py-2 rounded-xl transition"
-                            >
-                              <MessageCircle size={14} /> Chatear
-                            </button>
-                          )}
-
-                          <Link
-                            to={`/artist/${artist.id}`}
-                            className="flex-1 flex items-center justify-center gap-1 bg-white/10 hover:bg-white/20 text-white text-xs font-bold py-2 rounded-xl transition border border-white/10"
-                          >
-                            Perfil
-                          </Link>
+                        {/* Concentric Violet Avatar Rings */}
+                        <div className="flex gap-2.5 overflow-x-auto pb-1 no-scrollbar">
+                          {activeStudio.residents.map((resident) => {
+                            const isResidentSelected = activeResident?.id === resident.id;
+                            return (
+                              <button
+                                key={resident.id}
+                                data-testid="resident-artist-pill"
+                                data-resident-id={resident.id}
+                                onClick={() => setSelectedResidentId(resident.id)}
+                                className={`flex items-center gap-2 p-1.5 pr-3 rounded-full border transition-all shrink-0 text-left cursor-pointer ${
+                                  isResidentSelected
+                                    ? 'bg-violet-950/80 border-violet-500 shadow-[0_0_15px_rgba(139,92,246,0.4)] text-white'
+                                    : 'bg-zinc-950/60 border-zinc-800 text-zinc-400 hover:border-zinc-700 hover:text-zinc-200'
+                                }`}
+                              >
+                                <div
+                                  className={`relative w-8 h-8 rounded-full overflow-hidden p-0.5 ${
+                                    isResidentSelected
+                                      ? 'ring-2 ring-violet-500 ring-offset-1 ring-offset-zinc-950'
+                                      : ''
+                                  }`}
+                                >
+                                  <img
+                                    src={resident.avatar}
+                                    alt={resident.name}
+                                    className="w-full h-full object-cover rounded-full"
+                                  />
+                                </div>
+                                <div className="leading-tight">
+                                  <div className="text-xs font-bold text-white flex items-center gap-1">
+                                    {resident.alias || resident.name}
+                                  </div>
+                                  <div className="text-[10px] text-zinc-400 truncate max-w-[90px]">
+                                    {resident.specialties[0]}
+                                  </div>
+                                </div>
+                              </button>
+                            );
+                          })}
                         </div>
                       </div>
+                    )}
+
+                  {/* BIO Y DETALLES DEL ARTISTA RESIDENTE SELECCIONADO */}
+                  {activeResident && (
+                    <div className="space-y-2 border-b border-zinc-800/80 pb-3">
+                      <div className="flex items-center justify-between">
+                        <div>
+                          <span className="text-xs text-zinc-400 font-medium">Artista a contactar:</span>
+                          <h4 className="text-sm font-bold text-white flex items-center gap-1.5">
+                            {activeResident.name}
+                            {activeResident.alias && (
+                              <span className="text-xs font-semibold text-violet-400">
+                                "{activeResident.alias}"
+                              </span>
+                            )}
+                          </h4>
+                        </div>
+                        <div className="text-right">
+                          <span className="text-[10px] uppercase tracking-wider text-zinc-500 font-bold block">
+                            Tarifa Base
+                          </span>
+                          <span className="text-xs font-extrabold text-violet-300">
+                            {formatPrice(activeResident.hourlyRate || 70)}/h
+                          </span>
+                        </div>
+                      </div>
+
+                      <p className="text-xs text-zinc-300 leading-relaxed">{activeResident.bio}</p>
+
+                      {/* Chips de Especialidades */}
+                      <div className="flex flex-wrap gap-1.5 pt-1">
+                        {activeResident.specialties.map((spec, i) => (
+                          <span
+                            key={i}
+                            className="px-2 py-0.5 rounded-md text-[10px] font-semibold bg-zinc-900 text-zinc-300 border border-zinc-800"
+                          >
+                            {spec}
+                          </span>
+                        ))}
+                      </div>
                     </div>
-                  </Popup>
-                </Marker>
-              ))}
-            </MapContainer>
+                  )}
+
+                  {/* FLASHES DISPONIBLES DEL ARTISTA SELECCIONADO */}
+                  {activeResident && activeResident.flashes && activeResident.flashes.length > 0 && (
+                    <div>
+                      <div className="flex items-center justify-between mb-2">
+                        <h4 className="text-xs font-bold text-zinc-400 uppercase tracking-wider">
+                          Flashes de {activeResident.alias || activeResident.name}
+                        </h4>
+                        <span className="text-[11px] text-violet-400 hover:text-violet-300 cursor-pointer">
+                          Ver catálogo ({activeResident.flashes.length})
+                        </span>
+                      </div>
+
+                      <div className="flex gap-2.5 overflow-x-auto no-scrollbar pb-1">
+                        {activeResident.flashes.map((flash) => (
+                          <div
+                            key={flash.id}
+                            data-testid="flash-card-item"
+                            onClick={() =>
+                              handleReserveFlash(
+                                flash.title,
+                                flash.amount || flash.price || 90,
+                                activeResident
+                              )
+                            }
+                            className="relative w-20 h-20 rounded-xl overflow-hidden shrink-0 group cursor-pointer border border-zinc-800 hover:border-violet-500 transition-colors"
+                          >
+                            <img
+                              src={flash.img}
+                              alt={flash.title}
+                              className="w-full h-full object-cover transition-transform group-hover:scale-110"
+                            />
+                            <div className="absolute inset-x-0 bottom-0 bg-zinc-950/85 py-0.5 px-1 flex justify-center">
+                              <span className="text-[10px] font-black text-violet-300">
+                                {formatPrice(flash.amount || flash.price || 90)}
+                              </span>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+
+                  {/* BOTONES DE ACCIÓN: WHATSAPP, BOCETOS Y AGENDAMIENTO */}
+                  {activeResident && (
+                    <div className="space-y-2 pt-2">
+                      {/* 1. Botón Principal de Reserva / Flash Book */}
+                      <button
+                        id="btn-reservar-cupo"
+                        data-testid="btn-reservar-flash"
+                        onClick={() =>
+                          handleReserveFlash(
+                            'Reserva General',
+                            activeResident.hourlyRate || 70,
+                            activeResident
+                          )
+                        }
+                        className="w-full bg-violet-600 hover:bg-violet-500 text-white text-xs sm:text-sm font-bold py-2.5 rounded-xl transition-all shadow-[0_0_15px_rgba(124,58,237,0.35)] hover:shadow-[0_0_20px_rgba(124,58,237,0.5)] cursor-pointer flex items-center justify-center gap-2"
+                      >
+                        <Sparkles className="w-4 h-4" />
+                        Reservar con {activeResident.alias || activeResident.name}
+                      </button>
+
+                      {/* 2. Botón de Envío de Bocetos */}
+                      <button
+                        data-testid="btn-enviar-boceto"
+                        onClick={() => handleSendSketch(activeResident, activeStudio)}
+                        className="w-full bg-zinc-900 hover:bg-zinc-800 border border-violet-500/30 text-violet-300 hover:text-violet-200 text-xs font-semibold py-2 rounded-xl transition-colors flex items-center justify-center gap-2 cursor-pointer"
+                      >
+                        <ImageIcon className="w-4 h-4 text-violet-400" />
+                        Enviar Boceto a {activeResident.alias || activeResident.name}
+                      </button>
+
+                      {/* 3. Botón de Contacto por WhatsApp */}
+                      <div className="pt-1 flex items-center justify-between">
+                        <button
+                          data-testid="btn-whatsapp-direct"
+                          onClick={() => handleContactWhatsApp(activeResident, activeStudio)}
+                          className="w-full inline-flex items-center justify-center gap-1.5 py-2 rounded-xl bg-emerald-950/60 hover:bg-emerald-900/80 border border-emerald-500/40 text-emerald-400 text-xs font-bold transition-colors cursor-pointer"
+                        >
+                          <MessageCircle className="w-4 h-4 text-emerald-400" />
+                          Contactar por WhatsApp ({activeResident.alias || activeResident.name})
+                        </button>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              </div>
+
+              {/* OTROS ESTUDIOS Y LOCALES EN EL DIRECTORIO (Tarjetas Colapsadas) */}
+              <div className="space-y-2 pt-2">
+                <h3 className="text-xs font-bold text-zinc-500 uppercase tracking-wider">
+                  Otros Locales & Artistas Cercanos
+                </h3>
+
+                {filteredStudios
+                  .filter((s) => s.id !== activeStudio.id)
+                  .map((studio) => (
+                    <div
+                      key={studio.id}
+                      data-testid="other-studio-card"
+                      data-other-studio-id={studio.id}
+                      onClick={() => handleSelectStudio(studio.id)}
+                      className="flex items-center gap-3 p-3 bg-zinc-950/60 border border-zinc-800/70 rounded-xl hover:bg-zinc-900 hover:border-zinc-700 transition-all cursor-pointer group"
+                    >
+                      <div className="w-12 h-12 rounded-lg overflow-hidden shrink-0 relative">
+                        <img
+                          src={studio.banner}
+                          alt={studio.name}
+                          className="w-full h-full object-cover group-hover:scale-105 transition-transform"
+                        />
+                      </div>
+
+                      <div className="flex-1 min-w-0">
+                        <div className="flex items-center gap-2">
+                          <h4 className="text-sm font-semibold text-white truncate">{studio.name}</h4>
+                          {studio.type === 'studio' ? (
+                            <span className="text-[10px] px-1.5 py-0.5 rounded-full bg-violet-950 text-violet-300 font-bold border border-violet-800/40 shrink-0">
+                              {studio.artistsCount} Residentes
+                            </span>
+                          ) : (
+                            <span className="text-[10px] px-1.5 py-0.5 rounded-full bg-zinc-800 text-zinc-400 font-medium shrink-0">
+                              Indep.
+                            </span>
+                          )}
+                        </div>
+                        <p className="text-xs text-zinc-500 mt-0.5 truncate">
+                          {studio.residents?.map((r) => r.alias || r.name).join(', ')} •{' '}
+                          {studio.distance}
+                        </p>
+                      </div>
+
+                      <ChevronRight className="w-4 h-4 text-zinc-600 group-hover:text-violet-400 transition-colors" />
+                    </div>
+                  ))}
+              </div>
+            </div>
           </div>
-        )}
+        </div>
       </main>
 
       <style>{`
-        /* Dark Mode Map Tiles — free OSM tiles inverted to dark palette */
-        .dark-map-tiles .leaflet-tile-pane {
-          filter: invert(1) hue-rotate(180deg) brightness(0.85) contrast(1.1) saturate(0.3);
-        }
-        /* Keep markers/popups un-inverted so they look normal */
-        .dark-map-tiles .leaflet-marker-pane,
-        .dark-map-tiles .leaflet-popup-pane,
-        .dark-map-tiles .leaflet-shadow-pane,
-        .dark-map-tiles .leaflet-overlay-pane {
-          filter: none;
-        }
-        /* Zoom Controls — dark glass aesthetic, bottom-right */
-        .leaflet-control-zoom {
-          border: 1px solid rgba(255, 255, 255, 0.15) !important;
-          border-radius: 12px !important;
-          overflow: hidden;
-          box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5) !important;
-        }
-        .leaflet-control-zoom a {
-          background: rgba(9, 13, 22, 0.9) !important;
-          color: #e5e7eb !important;
-          border-color: rgba(255, 255, 255, 0.1) !important;
-          width: 36px !important;
-          height: 36px !important;
-          line-height: 36px !important;
-          font-size: 18px !important;
-          backdrop-filter: blur(12px);
-        }
-        .leaflet-control-zoom a:hover {
-          background: rgba(105, 68, 255, 0.3) !important;
-          color: #fff !important;
-        }
-        .leaflet-popup-content-wrapper {
-          background: transparent !important;
-          box-shadow: none !important;
-          padding: 0 !important;
-        }
-        .leaflet-popup-content {
-          margin: 0 !important;
-          width: auto !important;
-        }
-        .leaflet-popup-tip {
-          background: #111827 !important;
-        }
-        .user-gps-marker {
-          background: transparent;
-          border: none;
-        }
-        @keyframes ping {
-          75%, 100% {
-            transform: scale(2);
-            opacity: 0;
-          }
-        }
-        .custom-scrollbar::-webkit-scrollbar {
-          width: 5px;
-        }
-        .custom-scrollbar::-webkit-scrollbar-track {
-          background: transparent;
-        }
-        .custom-scrollbar::-webkit-scrollbar-thumb {
-          background: rgba(255, 255, 255, 0.15);
-          border-radius: 9999px;
-        }
-        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-          background: rgba(255, 255, 255, 0.3);
-        }
-        .no-scrollbar::-webkit-scrollbar {
-          display: none;
-        }
-        .no-scrollbar {
-          -ms-overflow-style: none;
-          scrollbar-width: none;
-        }
+        .custom-scrollbar::-webkit-scrollbar { width: 4px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: rgba(82, 82, 91, 0.4); border-radius: 9999px; }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: rgba(82, 82, 91, 0.7); }
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
       `}</style>
-      </div>
-    </PageTransition>
+    </div>
   );
 }
