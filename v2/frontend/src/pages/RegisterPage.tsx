@@ -65,7 +65,7 @@ export const RegisterPage: React.FC = () => {
       if (response.success && response.data) {
         await login({ user: response.data.user, session: response.data.session });
 
-        if (rawRedirect && rawRedirect.startsWith('/') && !rawRedirect.startsWith('//')) {
+        if (rawRedirect && rawRedirect.startsWith('/') && !rawRedirect.startsWith('//') && !rawRedirect.startsWith('/hub')) {
           navigate(rawRedirect);
           return;
         }

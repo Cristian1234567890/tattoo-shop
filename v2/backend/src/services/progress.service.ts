@@ -1,5 +1,6 @@
 import { supabaseAdmin } from '../config/supabase';
 import { ApiResponse } from '../types/api.types';
+import { optimizeImageToWebp, decodeBase64Image } from '../utils/image.util';
 
 export interface TattooProgressData {
   id?: string;
@@ -30,19 +31,52 @@ export class ProgressService {
           ? data.artist_id.trim()
           : null;
 
+      let imageUrl = data.image_url || data.photo_url || '';
+      const metadata: Record<string, any> = {
+        ...(data.metadata || {}),
+        ...(data.tattooId ? { tattooId: data.tattooId } : {}),
+      };
+
+      // Intercept base64 or raw image if sent directly to backend
+      const rawImageCandidate = (data as any).imageData || (imageUrl.startsWith('data:image/') ? imageUrl : null);
+      if (rawImageCandidate) {
+        try {
+          const rawBuffer = decodeBase64Image(rawImageCandidate);
+          const optimized = await optimizeImageToWebp(rawBuffer, { maxWidth: 800, quality: 80 });
+          const fileName = `${Date.now()}-${Math.random().toString(36).substring(2, 9)}.webp`;
+          const uploadPath = `${userId}/${fileName}`;
+
+          const { error: uploadError } = await supabaseAdmin.storage
+            .from('tattoo-progress')
+            .upload(uploadPath, optimized.buffer, {
+              contentType: 'image/webp',
+              upsert: true,
+            });
+
+          if (!uploadError) {
+            const { data: publicData } = supabaseAdmin.storage
+              .from('tattoo-progress')
+              .getPublicUrl(uploadPath);
+            if (publicData?.publicUrl) {
+              imageUrl = publicData.publicUrl;
+            }
+            metadata.storage_path = uploadPath;
+          }
+        } catch (imgErr) {
+          console.warn('Progress image optimization warning:', imgErr);
+        }
+      }
+
       const payload = {
         client_id: userId,
         artist_id: cleanArtistId,
         title: (data.title && data.title.trim()) || 'Progreso de Tatuaje',
         notes: data.notes || '',
-        image_url: data.image_url || data.photo_url || '',
+        image_url: imageUrl,
         stage: data.stage || 'Fase 1: Limpieza & Primer Vendaje',
         session_number: Number(data.session_number) || 1,
         date: (data.date && data.date.trim()) || new Date().toISOString().split('T')[0],
-        metadata: {
-          ...(data.metadata || {}),
-          ...(data.tattooId ? { tattooId: data.tattooId } : {}),
-        },
+        metadata,
       };
 
       const { data: record, error } = await supabaseAdmin

@@ -38,7 +38,7 @@ export const LoginPage: React.FC = () => {
 
   const navigateToDestination = (userOrRole?: any) => {
     const rawRedirect = searchParams.get('redirect');
-    if (rawRedirect && rawRedirect.startsWith('/') && !rawRedirect.startsWith('//')) {
+    if (rawRedirect && rawRedirect.startsWith('/') && !rawRedirect.startsWith('//') && !rawRedirect.startsWith('/hub')) {
       navigate(rawRedirect);
       return;
     }

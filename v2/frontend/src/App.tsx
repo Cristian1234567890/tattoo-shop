@@ -123,13 +123,16 @@ export const AnimatedAppRoutes: React.FC = () => {
           <div className="flex-1 flex flex-col w-full relative">
             <AnimatePresence mode="wait">
               <Routes location={location} key={location.pathname}>
+                {/* <Route path="/" element={<HomePage />} /> */}
                 <Route path="/" element={<PageTransition><HomePage /></PageTransition>} />
                 <Route path="/beneficios" element={<PageTransition><BenefitsPage /></PageTransition>} />
                 <Route path="/precios" element={<PageTransition><PricingPage /></PageTransition>} />
                 <Route path="/artistas" element={<PageTransition><ArtistsDirectoryPage /></PageTransition>} />
                 <Route path="/tienda" element={<PageTransition><ShopPage /></PageTransition>} />
                 <Route path="/shop" element={<Navigate to="/tienda" replace />} />
+                {/* <Route path="/about" element={<AboutPage />} /> */}
                 <Route path="/about" element={<PageTransition><AboutPage /></PageTransition>} />
+                {/* <Route path="/hub" element={<ArtistsHubPage />} /> */}
                 <Route path="/hub" element={<PageTransition><ArtistsHubPage /></PageTransition>} />
                 <Route path="/chat" element={<PageTransition><ChatAuthGate /></PageTransition>} />
                 <Route path="/legal/terms" element={<PageTransition><TermsAndConditions /></PageTransition>} />

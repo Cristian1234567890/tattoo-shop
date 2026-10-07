@@ -3,6 +3,7 @@ import { User } from '@supabase/supabase-js';
 import { supabaseAdmin, createScopedClient } from '../config/supabase';
 import { ApiResponse } from '../types/api.types';
 import { UpdateUserDTO, CompleteOnboardingDTO } from '../types/auth.types';
+import { optimizeImageToWebp, decodeBase64Image } from '../utils/image.util';
 
 export class UserService {
   async updateUser(
@@ -171,23 +172,9 @@ export class UserService {
       };
     }
 
-    let rawBase64 = imageData.trim();
-    if (rawBase64.startsWith('data:')) {
-      const commaIdx = rawBase64.indexOf(',');
-      if (commaIdx !== -1) {
-        rawBase64 = rawBase64.substring(commaIdx + 1).trim();
-      }
-    }
-
-    let buffer: ArrayBuffer;
+    let rawBuffer: Buffer;
     try {
-      buffer = decode(rawBase64);
-      if (!buffer || buffer.byteLength === 0) {
-        return {
-          success: false,
-          error: { message: 'Invalid or corrupt base64 image data' },
-        };
-      }
+      rawBuffer = decodeBase64Image(imageData);
     } catch {
       return {
         success: false,
@@ -195,13 +182,23 @@ export class UserService {
       };
     }
 
-    const filePath = `${user.id}/profile.png`;
+    let optimized;
+    try {
+      optimized = await optimizeImageToWebp(rawBuffer, { maxWidth: 800, quality: 80 });
+    } catch (optErr: any) {
+      return {
+        success: false,
+        error: { message: optErr?.message || 'Invalid or corrupt image data' },
+      };
+    }
 
-    // Upload / upsert into user_profile storage bucket
+    const filePath = `${user.id}/profile.webp`;
+
+    // Upload / upsert into user_profile storage bucket as image/webp
     const { error: uploadError } = await supabaseAdmin.storage
       .from('user_profile')
-      .upload(filePath, buffer, {
-        contentType: 'image/png',
+      .upload(filePath, optimized.buffer, {
+        contentType: 'image/webp',
         upsert: true,
       });
 
@@ -209,8 +206,8 @@ export class UserService {
       // Try update fallback if upload failed with duplicate
       const { error: updateError } = await supabaseAdmin.storage
         .from('user_profile')
-        .update(filePath, buffer, {
-          contentType: 'image/png',
+        .update(filePath, optimized.buffer, {
+          contentType: 'image/webp',
           upsert: true,
         });
 
@@ -218,6 +215,12 @@ export class UserService {
         return { success: false, error: updateError };
       }
     }
+
+    // Clean up legacy PNG avatar to save storage quota
+    supabaseAdmin.storage
+      .from('user_profile')
+      .remove([`${user.id}/profile.png`])
+      .catch(() => {});
 
     // Generate signed URL valid for ~1 year (3.154e7 seconds)
     const { data: urlData, error: urlError } = await supabaseAdmin.storage
