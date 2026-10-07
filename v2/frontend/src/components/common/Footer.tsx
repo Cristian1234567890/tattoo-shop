@@ -1,7 +1,6 @@
 import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { Logo } from './Logo';
-import { ThemeSwitch } from './ThemeSwitch';
 
 export const FooterContext = React.createContext<{ isMounted: boolean }>({ isMounted: false });
 
@@ -39,127 +38,107 @@ export const Footer: React.FC<FooterProps> = ({ forceRender = false }) => {
   if (isExempt) return null;
 
   return (
-    <footer className="mt-auto bg-gray-950 border-t border-white/10 text-gray-400 font-sans">
-      <div id="footer" className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-10 mb-12">
-          {/* Column 1: Brand & Mission */}
-          <div className="md:col-span-1 space-y-4">
-            <Link to="/" className="inline-block">
+    <footer className="mt-auto bg-[#07090e] border-t border-white/5 text-zinc-400 font-sans selection:bg-violet-500/30">
+      <div id="footer" className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-14">
+        {/* Main 4-column Grid matching Stitch Atelier reference */}
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-10 lg:gap-12 mb-14">
+          {/* Column 1: Brand & Independent Directory */}
+          <div className="space-y-4">
+            <Link to="/" className="inline-block no-underline">
               <Logo size="md" />
             </Link>
-            <p className="text-sm text-gray-400 leading-relaxed">
-              La plataforma global para conectar estudios, artistas del tatuaje y coleccionistas en un ecosistema transparente, seguro y profesional.
+            <p className="text-sm text-zinc-400 leading-relaxed font-normal">
+              Tattoo Hub es un espacio digital concebido para el arte del tatuaje independiente: facilitando el encuentro entre entusiastas, coleccionistas y artistas dedicados a la aguja y la tinta.
             </p>
-            <div id="github" className="flex items-center gap-3 pt-2">
-              <a
-                href="https://github.com/Cristian1234567890/tattoo-shop-react"
-                target="_blank"
-                rel="noopener noreferrer"
-                title="Repositorio de GitHub"
-                className="w-9 h-9 rounded-full bg-white/5 hover:bg-white/10 border border-white/10 flex items-center justify-center text-gray-300 hover:text-white transition-all"
-              >
-                <img
-                  src="/assets/GitHub White.png"
-                  alt="GitHub"
-                  className="w-5 h-5 hover:opacity-80 transition-opacity"
-                />
-              </a>
+            <div className="flex items-center gap-2 pt-2 text-[11px] font-bold uppercase tracking-wider text-zinc-400">
+              <span className="w-2 h-2 rounded-full bg-violet-500 shadow-[0_0_8px_rgba(139,92,246,0.8)]" />
+              <span>DIRECTORIO EN EXPANSIÓN CONSTANTE</span>
             </div>
           </div>
 
-          {/* Column 2: Explorar */}
+          {/* Column 2: Sobre Nosotros & Manifiesto */}
+          <div className="space-y-4">
+            <h4 className="text-white font-bold text-base tracking-tight">
+              Sobre Nosotros
+            </h4>
+            <p className="text-sm text-zinc-400 leading-relaxed font-normal">
+              Nacimos con la premisa de devolver el foco a los estudios locales y al valor artístico de cada pieza, creando una alternativa clara y profesional a las redes sociales saturadas de ruido publicitario.
+            </p>
+            <Link
+              to="/about"
+              className="inline-flex items-center gap-1.5 text-sm font-semibold text-violet-400 hover:text-violet-300 transition-colors pt-1 group"
+            >
+              <span>Manifiesto del Taller</span>
+              <span className="transition-transform group-hover:translate-x-1">→</span>
+            </Link>
+          </div>
+
+          {/* Column 3: Explorar */}
           <div>
-            <h4 className="text-white font-semibold text-sm uppercase tracking-wider mb-4">
+            <h4 className="text-white font-bold text-base tracking-tight mb-4">
               Explorar
             </h4>
-            <ul className="space-y-2.5 text-sm">
+            <ul className="space-y-3 text-sm">
               <li>
-                <Link to="/hub" className="hover:text-white transition-colors">
+                <Link to="/hub" className="text-zinc-400 hover:text-white transition-colors">
                   Explorar Mapa
                 </Link>
               </li>
               <li>
-                <Link to="/beneficios" className="hover:text-white transition-colors">
-                  Beneficios
+                <Link to="/artistas" className="text-zinc-400 hover:text-white transition-colors">
+                  Portafolios & Estilos
                 </Link>
               </li>
               <li>
-                <Link to="/precios" className="hover:text-white transition-colors">
-                  Precios & Membresías
+                <Link to="/beneficios" className="text-zinc-400 hover:text-white transition-colors">
+                  Herramientas de Estudio
                 </Link>
               </li>
               <li>
-                <Link to="/artistas" className="hover:text-white transition-colors">
-                  Artistas & Estudios
-                </Link>
-              </li>
-              <li>
-                <Link to="/tienda" className="hover:text-white transition-colors">
-                  Tienda del Atelier
+                <Link to="/precios" className="text-zinc-400 hover:text-white transition-colors">
+                  Planes y Membresías
                 </Link>
               </li>
             </ul>
           </div>
 
-          {/* Column 3: Empresa */}
+          {/* Column 4: Legal & Taller */}
           <div>
-            <h4 className="text-white font-semibold text-sm uppercase tracking-wider mb-4">
-              Compañía
+            <h4 className="text-white font-bold text-base tracking-tight mb-4">
+              Legal & Taller
             </h4>
-            <ul className="space-y-2.5 text-sm">
+            <ul className="space-y-3 text-sm">
               <li>
-                <Link to="/about" className="hover:text-white transition-colors">
-                  Sobre Nosotros
-                </Link>
-              </li>
-              <li>
-                <Link to="/register?role=Tatuador" className="hover:text-white transition-colors">
-                  Para Tatuadores
-                </Link>
-              </li>
-              <li>
-                <Link to="/register?role=Cliente" className="hover:text-white transition-colors">
-                  Para Clientes
-                </Link>
-              </li>
-            </ul>
-          </div>
-
-          {/* Column 4: Legal & Ajustes */}
-          <div>
-            <h4 className="text-white font-semibold text-sm uppercase tracking-wider mb-4">
-              Legal
-            </h4>
-            <ul className="space-y-2.5 text-sm mb-6">
-              <li>
-                <Link to="/legal/terms" className="hover:text-white transition-colors">
+                <Link to="/legal/terms" className="text-zinc-400 hover:text-white transition-colors">
                   Términos y Condiciones
                 </Link>
               </li>
               <li>
-                <Link to="/legal/privacy" className="hover:text-white transition-colors">
+                <Link to="/legal/privacy" className="text-zinc-400 hover:text-white transition-colors">
                   Política de Privacidad
                 </Link>
               </li>
+              <li>
+                <Link to="/about#cuidados" className="text-zinc-400 hover:text-white transition-colors">
+                  Guía de Higiene y Cuidados
+                </Link>
+              </li>
             </ul>
-            <div id="theme-switch-container" className="flex items-center gap-2 pt-2">
-              <ThemeSwitch />
-            </div>
           </div>
         </div>
 
-        {/* Bottom Bar: Copyright & Attribution */}
-        <div className="pt-8 border-t border-white/5 flex flex-col md:flex-row items-center justify-between text-xs text-gray-500 gap-4">
-          <div id="copyright" className="text-center md:text-left space-y-1">
-            <p className="font-medium text-gray-400">
-              Copyright © {currentYear} Tattoo Hub. Todos los derechos reservados.
-            </p>
-            <p className="text-gray-500">
-              Desarrollado por Giovanni Buglione, Cristian Castillo y Luis Lopez.
-            </p>
-          </div>
-          <div className="text-gray-500">
-            Plataforma internacional de arte corporal
+        {/* Bottom Bar: Copyright & Dark Atelier Edition Pill */}
+        <div className="pt-8 border-t border-white/5 flex flex-col sm:flex-row items-center justify-between text-xs text-zinc-500 gap-4">
+          <p className="font-medium text-zinc-400 text-center sm:text-left">
+            © {currentYear} Tattoo Hub. Todos los derechos reservados.
+          </p>
+
+          <div
+            id="dark-atelier-edition-badge"
+            className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full border border-zinc-800 bg-zinc-900/70 text-[11px] font-bold text-zinc-300 tracking-wider shadow-sm"
+          >
+            <span className="w-2 h-2 rounded-full border border-violet-400 inline-block" />
+            <span>DARK ATELIER EDITION</span>
           </div>
         </div>
       </div>
