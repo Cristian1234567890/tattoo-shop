@@ -1,9 +1,17 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { motion } from 'framer-motion';
+import {
+  Calendar,
+  AlertTriangle,
+  CheckCircle2,
+  LogOut,
+  UserCheck
+} from 'lucide-react';
 import { User, UserRole } from '../../types';
 import { api } from '../../api/client';
 import { supabase } from '../../api/supabase';
 import { useAuth } from '../../context/AuthContext';
+import { TermsModal } from './TermsModal';
 
 interface OnboardingModalProps {
   isOpen: boolean;
@@ -16,7 +24,7 @@ export const OnboardingModal: React.FC<OnboardingModalProps> = ({
   user,
   onCompleted,
 }) => {
-  const { updateUserMetadata } = useAuth();
+  const { updateUserMetadata, logout } = useAuth();
 
   const [role, setRole] = useState<UserRole | ''>(
     (user.user_metadata?.tipo as UserRole) || (user.user_metadata?.role as UserRole) || ''
@@ -31,8 +39,15 @@ export const OnboardingModal: React.FC<OnboardingModalProps> = ({
   const [phone, setPhone] = useState<string>(
     user.user_metadata?.telefono || user.user_metadata?.phone_number || ''
   );
+  const [birthdate, setBirthdate] = useState<string>(
+    user.user_metadata?.birthdate || user.user_metadata?.fecha_nacimiento || ''
+  );
+
+  const [swornStatement, setSwornStatement] = useState<boolean>(false);
   const [termsAccepted, setTermsAccepted] = useState<boolean>(false);
   const [privacyAccepted, setPrivacyAccepted] = useState<boolean>(false);
+  const [isTermsModalOpen, setIsTermsModalOpen] = useState<boolean>(false);
+
   const [loading, setLoading] = useState<boolean>(false);
   const [errorMsg, setErrorMsg] = useState<string>('');
 
@@ -53,6 +68,22 @@ export const OnboardingModal: React.FC<OnboardingModalProps> = ({
     }
   }, [isOpen]);
 
+  const calculateAge = (birthDateString: string): number | null => {
+    if (!birthDateString) return null;
+    const birth = new Date(birthDateString);
+    if (isNaN(birth.getTime())) return null;
+    const today = new Date();
+    let age = today.getFullYear() - birth.getFullYear();
+    const m = today.getMonth() - birth.getMonth();
+    if (m < 0 || (m === 0 && today.getDate() < birth.getDate())) {
+      age--;
+    }
+    return age;
+  };
+
+  const currentAge = calculateAge(birthdate);
+  const isUnderage = currentAge !== null && currentAge < 18;
+
   if (!isOpen) return null;
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -64,6 +95,23 @@ export const OnboardingModal: React.FC<OnboardingModalProps> = ({
       return;
     }
 
+    if (!birthdate) {
+      setErrorMsg('La fecha de nacimiento es obligatoria para verificar la mayoría de edad.');
+      return;
+    }
+
+    if (isUnderage) {
+      setErrorMsg(
+        'Acceso Restringido: Debes ser mayor de 18 años para utilizar Tattoo Hub conforme a las normativas sanitarias y legales aplicables.'
+      );
+      return;
+    }
+
+    if (!swornStatement) {
+      setErrorMsg('Debes confirmar la declaración jurada de mayoría de edad.');
+      return;
+    }
+
     if (!termsAccepted || !privacyAccepted) {
       setErrorMsg('Debes leer y aceptar los Términos y Condiciones y la Política de Privacidad.');
       return;
@@ -72,6 +120,7 @@ export const OnboardingModal: React.FC<OnboardingModalProps> = ({
     setLoading(true);
 
     const legalTimestamp = new Date().toISOString();
+    const authProvider = (user as any)?.app_metadata?.provider || 'oauth';
     const avatarUrl =
       user.user_metadata?.avatar_url ||
       user.user_metadata?.picture ||
@@ -82,7 +131,7 @@ export const OnboardingModal: React.FC<OnboardingModalProps> = ({
       let saved = false;
       let errorDetail = '';
 
-      // 1. Backend API call
+      // 1. Backend API Call
       try {
         const res = await api.completeOnboarding({
           role,
@@ -108,7 +157,7 @@ export const OnboardingModal: React.FC<OnboardingModalProps> = ({
           'Error de conexión con el servidor.';
       }
 
-      // 2. Client-side Supabase direct upsert fallback / reinforcement
+      // 2. Client-side Supabase direct upsert fallback / audit reinforcement
       if (!saved) {
         try {
           const { error: supaErr } = await supabase.from('user_profiles').upsert({
@@ -136,15 +185,19 @@ export const OnboardingModal: React.FC<OnboardingModalProps> = ({
         return;
       }
 
-      // 3. Update Auth context metadata
+      // 3. Update Auth Context Metadata
       updateUserMetadata({
         tipo: role,
         role,
         full_name: fullName,
         telefono: phone,
         phone_number: phone,
+        birthdate,
+        edad: currentAge ? String(currentAge) : '18',
         legal_accepted: true,
         legal_accepted_at: legalTimestamp,
+        legal_terms_version: 'v2.0-2026',
+        auth_provider: authProvider,
         onboarding_completed: true,
       });
 
@@ -160,34 +213,45 @@ export const OnboardingModal: React.FC<OnboardingModalProps> = ({
   return (
     <div
       id="onboardingModalOverlay"
-      className="fixed inset-0 z-50 flex items-center justify-center bg-black/75 backdrop-blur-sm p-4 overflow-y-auto"
+      className="fixed inset-0 z-50 flex items-center justify-center bg-black/85 backdrop-blur-md p-4 overflow-y-auto"
     >
-      <div
+      <motion.div
         id="onboardingModal"
-        className="bg-white dark:bg-gray-900 rounded-2xl shadow-2xl p-6 md:p-8 max-w-lg w-full border border-gray-200 dark:border-gray-800 animate-scale-in"
+        initial={{ opacity: 0, scale: 0.95, y: 15 }}
+        animate={{ opacity: 1, scale: 1, y: 0 }}
+        transition={{ duration: 0.3 }}
+        className="bg-[#0e0e14] rounded-3xl shadow-[0_25px_60px_rgba(0,0,0,0.9)] p-6 md:p-8 max-w-xl w-full border border-zinc-800 text-white my-8 relative overflow-hidden"
       >
-        <div className="text-center mb-6">
-          <div className="w-16 h-16 bg-primary/10 text-primary rounded-full flex items-center justify-center mx-auto mb-3 text-3xl font-extrabold">
-            🎨
+        {/* Glow de fondo */}
+        <div className="absolute top-0 right-0 w-64 h-64 bg-amber-500/10 rounded-full blur-3xl pointer-events-none -z-0" />
+        <div className="absolute bottom-0 left-0 w-64 h-64 bg-violet-600/10 rounded-full blur-3xl pointer-events-none -z-0" />
+
+        <div className="relative z-10 text-center mb-6">
+          <div className="w-14 h-14 bg-amber-500/10 border border-amber-500/20 text-amber-400 rounded-2xl flex items-center justify-center mx-auto mb-3 shadow-inner">
+            <UserCheck className="w-7 h-7" />
           </div>
-          <h2 className="text-2xl font-bold text-gray-900 dark:text-white">
-            ¡Completa tu Perfil!
+          <span className="text-[10px] font-bold tracking-widest uppercase bg-zinc-900 border border-zinc-800 px-3 py-1 rounded-full text-zinc-400">
+            COMPUERTA DE AUTENTICACIÓN RÁPIDA · POST-OAUTH GATE
+          </span>
+          <h2 className="text-2xl font-black text-white mt-3">
+            ¡Bienvenido a Tattoo Hub!
           </h2>
-          <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">
-            Para brindarte la mejor experiencia, selecciona cómo usarás Tattoo Hub y acepta nuestros términos legales.
+          <p className="text-xs text-zinc-400 mt-1 max-w-md mx-auto leading-relaxed">
+            Para garantizar el cumplimiento de las regulaciones sanitarias de arte corporal y la bioseguridad, completa tu fecha de nacimiento y acepta nuestros términos legales.
           </p>
         </div>
 
         {errorMsg && (
-          <div className="mb-4 p-3 bg-red-100 border border-red-300 text-red-700 text-sm rounded-lg text-center">
-            {errorMsg}
+          <div className="mb-4 p-3.5 bg-red-950/40 border border-red-500/40 text-red-300 text-xs rounded-xl flex items-start gap-2.5">
+            <AlertTriangle className="w-4 h-4 text-red-400 shrink-0 mt-0.5" />
+            <span>{errorMsg}</span>
           </div>
         )}
 
-        <form onSubmit={handleSubmit} className="space-y-5">
+        <form onSubmit={handleSubmit} className="space-y-5 relative z-10">
           {/* Nombre Completo */}
           <div>
-            <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1">
+            <label className="block text-xs font-semibold uppercase tracking-wider text-zinc-300 mb-1.5">
               Nombre Completo
             </label>
             <input
@@ -196,116 +260,178 @@ export const OnboardingModal: React.FC<OnboardingModalProps> = ({
               value={fullName}
               onChange={(e) => setFullName(e.target.value)}
               placeholder="Tu nombre y apellido"
-              className="w-full px-4 py-2.5 rounded-lg border border-gray-300 dark:border-gray-700 dark:bg-gray-800 dark:text-white focus:ring-2 focus:ring-primary focus:outline-none transition"
+              className="w-full px-4 py-2.5 rounded-xl border border-zinc-800 bg-zinc-950/60 text-white placeholder-zinc-500 focus:border-amber-500 focus:ring-1 focus:ring-amber-500 focus:outline-none transition text-sm"
             />
+          </div>
+
+          {/* Fecha de Nacimiento (Validación 18+ reactiva obligatoria) */}
+          <div>
+            <div className="flex items-center justify-between mb-1.5">
+              <label htmlFor="onboarding-birthdate" className="block text-xs font-semibold uppercase tracking-wider text-zinc-300">
+                Fecha de Nacimiento <span className="text-amber-500 font-bold">*</span>
+              </label>
+              {currentAge !== null && (
+                <span
+                  className={`text-[10px] font-bold px-2 py-0.5 rounded-md border ${
+                    isUnderage
+                      ? 'bg-red-950/60 border-red-500/50 text-red-400'
+                      : 'bg-emerald-950/60 border-emerald-500/50 text-emerald-300'
+                  }`}
+                >
+                  {currentAge} años {isUnderage ? '(Menor de 18)' : '(18+ Verificado ✓)'}
+                </span>
+              )}
+            </div>
+            <div className="relative">
+              <input
+                id="onboarding-birthdate"
+                type="date"
+                required
+                max={new Date().toISOString().split('T')[0]}
+                value={birthdate}
+                onChange={(e) => setBirthdate(e.target.value)}
+                className={`w-full px-4 py-2.5 rounded-xl border bg-zinc-950/60 text-white focus:outline-none transition text-sm ${
+                  isUnderage
+                    ? 'border-red-500 focus:border-red-400 focus:ring-1 focus:ring-red-400'
+                    : 'border-zinc-800 focus:border-amber-500 focus:ring-1 focus:ring-amber-500'
+                }`}
+              />
+              <Calendar className="w-4 h-4 text-zinc-500 absolute right-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
+            </div>
+
+            {isUnderage && (
+              <div className="mt-2 p-3 rounded-xl bg-red-950/40 border border-red-500/40 flex items-start gap-2.5 text-xs text-red-300 animate-in fade-in">
+                <AlertTriangle className="w-4 h-4 text-red-400 shrink-0 mt-0.5" />
+                <span>
+                  <strong>Acceso Restringido (18+):</strong> Debes ser mayor de 18 años para utilizar Tattoo Hub conforme a las normativas sanitarias y legales aplicables a intervenciones de arte corporal.
+                </span>
+              </div>
+            )}
           </div>
 
           {/* Teléfono */}
           <div>
-            <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1">
+            <label className="block text-xs font-semibold uppercase tracking-wider text-zinc-300 mb-1.5">
               Teléfono de Contacto (opcional)
             </label>
             <input
               type="tel"
               value={phone}
               onChange={(e) => setPhone(e.target.value)}
-              placeholder="+1 555-0100"
-              className="w-full px-4 py-2.5 rounded-lg border border-gray-300 dark:border-gray-700 dark:bg-gray-800 dark:text-white focus:ring-2 focus:ring-primary focus:outline-none transition"
+              placeholder="+34 600 000 000"
+              className="w-full px-4 py-2.5 rounded-xl border border-zinc-800 bg-zinc-950/60 text-white placeholder-zinc-500 focus:border-amber-500 focus:ring-1 focus:ring-amber-500 focus:outline-none transition text-sm"
             />
           </div>
 
           {/* Selector de Rol */}
           <div>
-            <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
-              ¿Cómo planeas usar la plataforma? <span className="text-red-500">*</span>
+            <label className="block text-xs font-semibold uppercase tracking-wider text-zinc-300 mb-2">
+              ¿Cómo usarás la plataforma? <span className="text-amber-500 font-bold">*</span>
             </label>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               <button
                 type="button"
+                id="role-btn-cliente"
                 onClick={() => setRole('Cliente')}
-                className={`p-4 rounded-xl border text-left transition flex flex-col justify-between ${
+                className={`p-4 rounded-2xl border text-left transition flex flex-col justify-between cursor-pointer ${
                   role === 'Cliente'
-                    ? 'border-primary bg-primary/10 dark:bg-primary/20 ring-2 ring-primary'
-                    : 'border-gray-200 dark:border-gray-700 hover:border-gray-300 dark:hover:border-gray-600'
+                    ? 'border-amber-500 bg-amber-500/10 shadow-[0_0_20px_rgba(245,158,11,0.15)] ring-1 ring-amber-500'
+                    : 'border-zinc-800 bg-zinc-950/40 hover:border-zinc-700'
                 }`}
               >
-                <div className="text-2xl mb-1">🤩</div>
-                <div className="font-bold text-gray-900 dark:text-white">Cliente</div>
-                <div className="text-xs text-gray-500 dark:text-gray-400 mt-1">
-                  Busco inspiración, cotizar tatuajes y contactar artistas.
+                <div className="flex items-center justify-between mb-2">
+                  <span className="text-2xl">✨</span>
+                  {role === 'Cliente' && <CheckCircle2 className="w-4 h-4 text-amber-400" />}
+                </div>
+                <div className="font-bold text-white text-sm">Cliente / Coleccionista</div>
+                <div className="text-[11px] text-zinc-400 mt-1 leading-relaxed">
+                  Busco inspiración, cotizaciones claras y contacto directo con artistas.
                 </div>
               </button>
 
               <button
                 type="button"
+                id="role-btn-tatuador"
                 onClick={() => setRole('Tatuador')}
-                className={`p-4 rounded-xl border text-left transition flex flex-col justify-between ${
+                className={`p-4 rounded-2xl border text-left transition flex flex-col justify-between cursor-pointer ${
                   role === 'Tatuador'
-                    ? 'border-primary bg-primary/10 dark:bg-primary/20 ring-2 ring-primary'
-                    : 'border-gray-200 dark:border-gray-700 hover:border-gray-300 dark:hover:border-gray-600'
+                    ? 'border-violet-500 bg-violet-600/10 shadow-[0_0_20px_rgba(124,58,237,0.15)] ring-1 ring-violet-500'
+                    : 'border-zinc-800 bg-zinc-950/40 hover:border-zinc-700'
                 }`}
               >
-                <div className="text-2xl mb-1">😎</div>
-                <div className="font-bold text-gray-900 dark:text-white">Tatuador</div>
-                <div className="text-xs text-gray-500 dark:text-gray-400 mt-1">
-                  Quiero publicar mis trabajos y recibir solicitudes de clientes.
+                <div className="flex items-center justify-between mb-2">
+                  <span className="text-2xl">⚡</span>
+                  {role === 'Tatuador' && <CheckCircle2 className="w-4 h-4 text-violet-400" />}
+                </div>
+                <div className="font-bold text-white text-sm">Tatuador / Estudio</div>
+                <div className="text-[11px] text-zinc-400 mt-1 leading-relaxed">
+                  Deseo publicar portafolio, flashes, gestionar agenda y recibir solicitudes.
                 </div>
               </button>
             </div>
-            {role === 'Tatuador' && (
-              <p className="mt-2 text-xs text-amber-600 dark:text-amber-400">
-                ⭐ Nota: El rol de Tatuador cuenta con un plan de suscripción opcional de 1.99$/mes para máxima visibilidad.
-              </p>
-            )}
           </div>
 
-          {/* Legal Acceptance Checkboxes (R3) */}
-          <div className="pt-2 border-t border-gray-200 dark:border-gray-700 space-y-3">
-            <label className="flex items-start gap-3 cursor-pointer text-sm text-gray-700 dark:text-gray-300">
+          {/* Declaración Jurada de Mayoría de Edad (Legal Attestation) */}
+          <div className="p-3.5 rounded-xl bg-zinc-950/80 border border-zinc-800/80 space-y-2.5">
+            <label className="flex items-start gap-2.5 cursor-pointer text-xs text-zinc-300">
               <input
                 type="checkbox"
-                id="onboardingTermsCheckbox"
-                name="termsAccepted"
+                id="swornStatementCheckbox"
                 required
-                checked={termsAccepted}
-                onChange={(e) => setTermsAccepted(e.target.checked)}
-                className="mt-1 h-4 w-4 rounded border-gray-300 text-primary focus:ring-primary"
+                disabled={isUnderage}
+                checked={swornStatement}
+                onChange={(e) => setSwornStatement(e.target.checked)}
+                className="mt-0.5 w-4 h-4 rounded border-zinc-700 bg-zinc-900 text-amber-500 focus:ring-amber-500 cursor-pointer disabled:opacity-40"
               />
               <span>
-                He leído y acepto los{' '}
-                <Link
-                  to="/legal/terms"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="font-medium text-primary hover:underline"
-                >
-                  Términos y Condiciones
-                </Link>{' '}
-                de Tattoo Hub.
+                <strong>Declaración Jurada:</strong> Declaro bajo fe de juramento que la fecha de nacimiento ingresada es verídica, que cuento con 18 años cumplidos o más y que no tengo impedimentos legales para contratar servicios sanitarios y de arte corporal.
               </span>
             </label>
 
-            <label className="flex items-start gap-3 cursor-pointer text-sm text-gray-700 dark:text-gray-300">
+            {/* Aceptación de Términos con Modal Forzado */}
+            <label className="flex items-start gap-2.5 cursor-pointer text-xs text-zinc-300 pt-2 border-t border-zinc-900">
+              <input
+                type="checkbox"
+                id="onboardingTermsCheckbox"
+                required
+                checked={termsAccepted}
+                onChange={() => {
+                  const hasRead = sessionStorage.getItem('terms_read_accepted') === 'true';
+                  if (!hasRead) {
+                    setIsTermsModalOpen(true);
+                  } else {
+                    setTermsAccepted(!termsAccepted);
+                  }
+                }}
+                className="mt-0.5 w-4 h-4 rounded border-zinc-700 bg-zinc-900 text-amber-500 focus:ring-amber-500 cursor-pointer"
+              />
+              <div>
+                <span onClick={() => setIsTermsModalOpen(true)}>
+                  He leído y acepto los{' '}
+                  <span className="text-amber-400 font-semibold underline underline-offset-2 hover:text-amber-300">
+                    Términos, Condiciones y Políticas de Privacidad
+                  </span>{' '}
+                  de Tattoo Hub (lectura obligatoria de consentimiento).
+                </span>
+                {!termsAccepted && (
+                  <p className="text-[10px] text-zinc-500 mt-0.5">
+                    * Abre la ventana emergente y desplázate al 100% para validar esta casilla.
+                  </p>
+                )}
+              </div>
+            </label>
+
+            <label className="flex items-start gap-2.5 cursor-pointer text-xs text-zinc-300 pt-2 border-t border-zinc-900">
               <input
                 type="checkbox"
                 id="onboardingPrivacyCheckbox"
-                name="privacyAccepted"
                 required
                 checked={privacyAccepted}
                 onChange={(e) => setPrivacyAccepted(e.target.checked)}
-                className="mt-1 h-4 w-4 rounded border-gray-300 text-primary focus:ring-primary"
+                className="mt-0.5 w-4 h-4 rounded border-zinc-700 bg-zinc-900 text-amber-500 focus:ring-amber-500 cursor-pointer"
               />
               <span>
-                He leído y acepto la{' '}
-                <Link
-                  to="/legal/privacy"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="font-medium text-primary hover:underline"
-                >
-                  Política de Privacidad
-                </Link>{' '}
-                y el tratamiento de datos.
+                Autorizo el tratamiento de mis datos de contacto conforme a la Política de Privacidad de Tattoo Hub y normativas sanitarias vigentes.
               </span>
             </label>
           </div>
@@ -313,13 +439,52 @@ export const OnboardingModal: React.FC<OnboardingModalProps> = ({
           <button
             type="submit"
             id="btn-complete-onboarding"
-            disabled={loading || !role || !termsAccepted || !privacyAccepted}
-            className="w-full py-3 bg-primary hover:bg-primary-hover disabled:opacity-50 text-white font-bold rounded-lg transition duration-200 shadow-lg cursor-pointer"
+            disabled={
+              loading ||
+              !role ||
+              !birthdate ||
+              isUnderage ||
+              !swornStatement ||
+              !termsAccepted ||
+              !privacyAccepted
+            }
+            className="w-full py-3.5 px-6 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-zinc-950 font-bold rounded-xl transition duration-200 shadow-lg shadow-amber-500/20 cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed text-sm flex items-center justify-center gap-2"
           >
-            {loading ? 'Guardando...' : 'Completar Registro y Continuar'}
+            {loading ? (
+              'Guardando verificación...'
+            ) : isUnderage ? (
+              '🔞 Registro Bloqueado: Menor de Edad'
+            ) : !role ? (
+              'Selecciona tu rol para continuar'
+            ) : !swornStatement ? (
+              'Declaración jurada 18+ requerida'
+            ) : !termsAccepted ? (
+              'Lectura de Términos Requerida'
+            ) : (
+              'Verificar y Acceder a la Plataforma'
+            )}
           </button>
+
+          <div className="pt-2 text-center">
+            <button
+              type="button"
+              onClick={() => logout()}
+              className="text-xs text-zinc-500 hover:text-zinc-300 inline-flex items-center gap-1.5 transition cursor-pointer"
+            >
+              <LogOut className="w-3 h-3" />
+              <span>Cerrar sesión e ingresar con otra cuenta</span>
+            </button>
+          </div>
         </form>
-      </div>
+
+        <TermsModal
+          isOpen={isTermsModalOpen}
+          onClose={() => setIsTermsModalOpen(false)}
+          onAccept={() => setTermsAccepted(true)}
+        />
+      </motion.div>
     </div>
   );
 };
+
+export default OnboardingModal;

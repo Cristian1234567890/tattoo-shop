@@ -17,6 +17,7 @@ export const OnboardingPage: React.FC = () => {
       const hasCompletedOnboarding = 
         meta.onboarding_completed === true &&
         meta.legal_accepted === true && 
+        Boolean(meta.birthdate || meta.edad) &&
         hasValidRole;
 
       // Smart redirect if they already completed onboarding

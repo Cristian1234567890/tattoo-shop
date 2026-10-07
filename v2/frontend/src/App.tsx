@@ -23,6 +23,7 @@ import { BenefitsPage } from './pages/BenefitsPage';
 import { PricingPage } from './pages/PricingPage';
 import { ArtistsDirectoryPage } from './pages/ArtistsDirectoryPage';
 import { ShopPage } from './pages/ShopPage';
+import { OnboardingPage } from './pages/OnboardingPage';
 import { Navbar, NavbarContext } from './components/common/Navbar';
 import { Footer, FooterContext } from './components/common/Footer';
 import { PageTransition } from './components/common/PageTransition';
@@ -37,7 +38,7 @@ export const OnboardingGate: React.FC = () => {
     if (isLoading || !user) return;
 
     // Public / Legal pages exempt from redirection
-    const exemptPaths = ['/about', '/beneficios', '/precios', '/artistas', '/tienda', '/shop', '/legal/terms', '/legal/privacy', '/login', '/register', '/forget-password', '/change-password', '/chat'];
+    const exemptPaths = ['/about', '/beneficios', '/precios', '/artistas', '/tienda', '/shop', '/legal/terms', '/legal/privacy', '/login', '/register', '/forget-password', '/change-password', '/chat', '/user', '/onboarding'];
     if (exemptPaths.some((p) => location.pathname.startsWith(p))) {
       return;
     }
@@ -48,16 +49,17 @@ export const OnboardingGate: React.FC = () => {
     const hasCompletedOnboarding =
       meta.onboarding_completed === true &&
       meta.legal_accepted === true &&
+      Boolean(meta.birthdate || meta.edad) &&
       hasValidRole;
 
     // If user has not completed onboarding and tries direct URL manipulation to access protected views, redirect to /user
-    if (!hasCompletedOnboarding && location.pathname !== '/user') {
+    if (!hasCompletedOnboarding && location.pathname !== '/user' && location.pathname !== '/onboarding') {
       navigate('/user', { replace: true });
       return;
     }
 
-    // Smart role redirector when arriving at /user with completed onboarding
-    if (hasCompletedOnboarding && location.pathname === '/user') {
+    // Smart role redirector when arriving at /user or /onboarding with completed onboarding
+    if (hasCompletedOnboarding && (location.pathname === '/user' || location.pathname === '/onboarding')) {
       if (normalizedRole === 'tatuador') {
         navigate('/artist-dashboard', { replace: true });
       } else if (normalizedRole === 'cliente') {
@@ -139,7 +141,8 @@ export const AnimatedAppRoutes: React.FC = () => {
                 <Route path="/legal/privacy" element={<PageTransition><PrivacyPolicy /></PageTransition>} />
                 <Route path="/login" element={<PageTransition><LoginPage /></PageTransition>} />
                 <Route path="/register" element={<PageTransition><RegisterPage /></PageTransition>} />
-                <Route path="/user" element={<PageTransition><RegisterPage /></PageTransition>} />
+                <Route path="/user" element={<PageTransition><OnboardingPage /></PageTransition>} />
+                <Route path="/onboarding" element={<PageTransition><OnboardingPage /></PageTransition>} />
                 <Route path="/client-dashboard" element={<PageTransition><ClientDashboardPage /></PageTransition>} />
                 <Route path="/artist-dashboard" element={<PageTransition><ArtistDashboardPage /></PageTransition>} />
                 {/* /profile cleanly redirects to /client-dashboard?tab=configuracion */}
