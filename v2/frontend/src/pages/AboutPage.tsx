@@ -2,22 +2,18 @@ import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { PageTransition } from '../components/common/PageTransition';
 import {
-  Globe,
-  ShieldCheck,
-  Sparkles,
-  HeartHandshake,
-  Award,
   Target,
   Eye,
-  CheckCircle2,
-  Clock,
+  TrendingUp,
   MessageSquare,
   Star,
   Send,
   Loader2,
-  Layers,
-  Flame,
-  Check
+  CheckCircle2,
+  Sparkles,
+  ShieldCheck,
+  Zap,
+  Globe2
 } from 'lucide-react';
 import { supabase } from '../api/supabase';
 
@@ -31,76 +27,38 @@ export const AboutPage: React.FC = () => {
   const [feedbackSubmitting, setFeedbackSubmitting] = useState<boolean>(false);
   const [feedbackSuccess, setFeedbackSuccess] = useState<boolean>(false);
 
-  const pillars = [
+  const marketStrategies = [
     {
-      icon: Sparkles,
-      title: 'Libertad Artística Sin Algoritmos',
-      desc: 'Ofrecemos a los artistas un lienzo digital ilimitado para exhibir su portafolio auténtico, técnicas distintivas y visión creativa sin censura injustificada ni supresión algorítmica.',
-      color: 'from-violet-500/10 to-purple-500/5',
-      borderColor: 'border-violet-500/20',
-      iconColor: 'text-violet-400',
+      icon: Zap,
+      title: 'Modelo 0% Comisión en Camilla',
+      desc: 'Eliminamos intermediarios abusivos. Los tatuadores conservan el 100% de los honorarios pactados por sus obras, sin retenciones ocultas sobre el servicio en el estudio.',
+      color: 'from-purple-500/10 to-indigo-500/5',
+      borderColor: 'border-purple-500/20',
+      iconColor: 'text-purple-400',
+    },
+    {
+      icon: Globe2,
+      title: 'Red de Estudios & Residencias (Guest Spots)',
+      desc: 'Infraestructura de geolocalización que permite a artistas residentes y viajeros coordinar cupos en estudios de distintas ciudades, expandiendo su mercado internacional.',
+      color: 'from-blue-500/10 to-cyan-500/5',
+      borderColor: 'border-blue-500/20',
+      iconColor: 'text-blue-400',
     },
     {
       icon: ShieldCheck,
-      title: 'Calidad & Bioseguridad Verificada',
-      desc: 'Promovemos los más rigurosos estándares sanitarios y profesionales en cada estudio registrado, garantizando higiene, asepsia y confianza a cada cliente en cada sesión.',
+      title: 'Ecosistema de Bioseguridad & Higiene Certificada',
+      desc: 'Fomento riguroso de normativas sanitarias oficiales, verificación de consentimiento informado mayor de edad (18+) y protocolos de asepsia homologados.',
       color: 'from-emerald-500/10 to-teal-500/5',
       borderColor: 'border-emerald-500/20',
       iconColor: 'text-emerald-400',
     },
     {
-      icon: Globe,
-      title: 'Comunidad Global Sin Fronteras',
-      desc: 'Conectamos amantes del arte corporal con los mejores talentos internacionales mediante geolocalización avanzada, filtros por técnica (Blackwork, Neotradicional, Realismo) y contacto directo.',
-      color: 'from-blue-500/10 to-indigo-500/5',
-      borderColor: 'border-blue-500/20',
-      iconColor: 'text-blue-400',
-    },
-    {
-      icon: HeartHandshake,
-      title: 'Trato Directo & Transparencia 0% Comisión',
-      desc: 'Eliminamos intermediarios abusivos. Clientes y artistas cotizan, conversan y coordinan directamente con total claridad sobre tarifas, cuidados previos y sesiones requeridas.',
+      icon: Sparkles,
+      title: 'Tecnología Atelier Especializada',
+      desc: 'Herramientas de software diseñadas exclusivamente para la dinámica real del tatuaje: cotizaciones por anatomía y medidas, protección de stencils y agenda inteligente.',
       color: 'from-amber-500/10 to-rose-500/5',
       borderColor: 'border-amber-500/20',
       iconColor: 'text-amber-400',
-    },
-  ];
-
-  const stats = [
-    { label: 'Artistas y Estudios Verificados', value: '+5,200' },
-    { label: 'Ciudades y Guest Spots', value: '140+' },
-    { label: 'Citas y Consultas Seguras', value: '+65,000' },
-    { label: 'Índice de Satisfacción Sanitaria', value: '99.8%' },
-  ];
-
-  const roadmapMilestones = [
-    {
-      quarter: 'Fase 1 · Q1 2026',
-      title: 'Lanzamiento de Red Atelier & Mapa Georreferenciado',
-      status: 'completed',
-      statusLabel: 'Completado',
-      desc: 'Infraestructura central de perfiles artísticos, catálogo de obras en alta resolución y mapa interactivo con geolocalización de estudios en tiempo real.',
-    },
-    {
-      quarter: 'Fase 2 · Q2 2026',
-      title: 'Seguridad Integral, Validación 18+ & Auth Supabase',
-      status: 'in-progress',
-      statusLabel: 'En Producción / Staging',
-      desc: 'Protección anti-bots Cloudflare Turnstile, flujo real de recuperación de credenciales, consentimientos legales con scroll forzado y 2FA TOTP.',
-    },
-    {
-      quarter: 'Fase 3 · Q3 2026',
-      title: 'Tienda Oficial de Suministros & Pasarela Stripe',
-      status: 'upcoming',
-      statusLabel: 'Próximamente',
-      desc: 'Marketplace de tintas veganas certificadas, agujas y equipos profesionales homologados por sanidad, con pagos divididos y depósitos garantizados.',
-    },
-    {
-      quarter: 'Fase 4 · Q4 2026',
-      title: 'Red Global de Residencias (Guest Spots) & Certificado On-Chain',
-      status: 'upcoming',
-      statusLabel: 'Planeado',
-      desc: 'Coordinación internacional de artistas invitados entre estudios y pasaporte sanitario digital para registro verificado de piezas de arte corporal.',
     },
   ];
 
@@ -110,7 +68,6 @@ export const AboutPage: React.FC = () => {
 
     setFeedbackSubmitting(true);
     try {
-      // Intentar guardar en Supabase si existe tabla o fallback resiliente a localStorage
       const feedbackPayload = {
         type: feedbackType,
         rating,
@@ -122,7 +79,7 @@ export const AboutPage: React.FC = () => {
       try {
         await supabase.from('customer_feedback').insert([feedbackPayload]);
       } catch {
-        // Fallback silencioso para persistencia local
+        // Fallback silencioso a localStorage
       }
 
       const existingFeedback = JSON.parse(localStorage.getItem('tattoo_hub_feedback') || '[]');
@@ -140,236 +97,119 @@ export const AboutPage: React.FC = () => {
 
   return (
     <PageTransition>
-      <div className="flex flex-col min-h-screen bg-[#090d16] text-white selection:bg-amber-500/30 selection:text-white font-sans">
+      <div className="flex flex-col min-h-screen bg-[#090b10] text-white selection:bg-purple-500/30 font-sans">
         <main className="flex-grow flex flex-col items-center">
-          {/* Hero Section */}
-          <section className="relative w-full overflow-hidden py-24 md:py-32 flex items-center justify-center border-b border-zinc-800/60">
-            {/* Ambient Glows */}
-            <div className="absolute top-0 left-0 w-full h-full overflow-hidden pointer-events-none">
-              <div className="absolute top-10 left-1/4 w-96 h-96 bg-amber-500/10 rounded-full blur-[140px]" />
-              <div className="absolute bottom-10 right-1/4 w-96 h-96 bg-violet-600/10 rounded-full blur-[140px]" />
-            </div>
+          {/* Header Institucional */}
+          <section className="relative w-full py-20 md:py-28 flex items-center justify-center border-b border-zinc-800/80 overflow-hidden">
+            <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[700px] h-[350px] bg-purple-600/15 rounded-full blur-[140px] pointer-events-none -z-10" />
 
             <div className="z-10 text-center px-4 max-w-4xl mx-auto">
+              <span className="inline-block text-[10px] font-bold tracking-widest uppercase bg-purple-950/60 border border-purple-500/30 text-purple-300 px-3.5 py-1 rounded-full mb-4">
+                TATTOO HUB ATELIER · IDENTIDAD INSTITUCIONAL
+              </span>
+
+              <h1 className="text-3xl md:text-5xl font-black text-white tracking-tight mb-4 leading-tight">
+                Sobre Nosotros
+              </h1>
+              <p className="text-zinc-400 text-sm md:text-base max-w-2xl mx-auto leading-relaxed">
+                Nuestra identidad, propósito fundacional y la estrategia que redefine la relación entre el arte corporal, los artistas independientes y los coleccionistas.
+              </p>
+            </div>
+          </section>
+
+          {/* Bloque 1: Misión y Visión */}
+          <section className="w-full max-w-5xl mx-auto px-4 py-16 border-b border-zinc-800/80">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+              {/* Misión */}
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5 }}
-                className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-zinc-900/80 border border-amber-500/30 backdrop-blur-md mb-6"
-              >
-                <Award className="w-4 h-4 text-amber-400" />
-                <span className="text-xs font-semibold uppercase tracking-wider text-amber-300">
-                  Institucional · Tattoo Hub Atelier
-                </span>
-              </motion.div>
-
-              <motion.h1
-                initial={{ opacity: 0, y: 25 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.6, delay: 0.1 }}
-                className="text-4xl md:text-6xl font-black tracking-tight text-white mb-6 leading-tight"
-              >
-                Elevando el Arte Corporal con{' '}
-                <span className="text-transparent bg-clip-text bg-gradient-to-r from-amber-400 via-orange-400 to-amber-500">
-                  Tecnología & Bioseguridad
-                </span>
-              </motion.h1>
-
-              <motion.p
-                initial={{ opacity: 0, y: 25 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.6, delay: 0.2 }}
-                className="text-base md:text-lg text-zinc-400 max-w-2xl mx-auto leading-relaxed"
-              >
-                Nacimos de la convicción de que cada tatuaje es un compromiso personal para toda la vida. 
-                Construimos el ecosistema tecnológico definitivo para conectar a los artistas más distinguidos con coleccionistas apasionados.
-              </motion.p>
-            </div>
-          </section>
-
-          {/* Stats Bar */}
-          <section className="w-full max-w-6xl mx-auto px-4 py-12 border-b border-zinc-800/80">
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-6 text-center">
-              {stats.map((stat, i) => (
-                <motion.div
-                  key={stat.label}
-                  initial={{ opacity: 0, y: 15 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ duration: 0.4, delay: i * 0.1 }}
-                  className="p-3"
-                >
-                  <div className="text-3xl md:text-4xl font-extrabold text-white mb-1 tracking-tight">
-                    {stat.value}
-                  </div>
-                  <div className="text-xs font-medium uppercase tracking-wider text-zinc-500">
-                    {stat.label}
-                  </div>
-                </motion.div>
-              ))}
-            </div>
-          </section>
-
-          {/* Misión, Visión y Valores Fundacionales */}
-          <section className="w-full max-w-6xl mx-auto px-4 py-20">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12">
-              <motion.div
-                initial={{ opacity: 0, x: -20 }}
-                whileInView={{ opacity: 1, x: 0 }}
+                whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.5 }}
-                className="p-8 md:p-10 rounded-3xl bg-zinc-900/60 border border-zinc-800 relative overflow-hidden shadow-xl"
+                className="p-8 rounded-3xl bg-zinc-900/50 border border-zinc-800/80 relative overflow-hidden shadow-xl"
               >
-                <div className="w-12 h-12 rounded-2xl bg-amber-500/10 border border-amber-500/20 flex items-center justify-center text-amber-400 mb-6">
+                <div className="w-12 h-12 rounded-2xl bg-purple-500/10 border border-purple-500/20 flex items-center justify-center text-purple-400 mb-6 shadow-inner">
                   <Target className="w-6 h-6" />
                 </div>
-                <h2 className="text-2xl font-bold text-white mb-4">Nuestra Misión</h2>
+                <h2 className="text-2xl font-bold text-white mb-3 tracking-tight">Misión</h2>
                 <p className="text-zinc-400 text-sm md:text-base leading-relaxed">
-                  Dignificar y profesionalizar la industria global del tatuaje, empoderando a los artistas con herramientas tecnológicas independientes de gestión y difusión, al tiempo que garantizamos a los clientes una experiencia segura, transparente y de máxima calidad higiénico-sanitaria.
+                  Dignificar, profesionalizar y empoderar a la comunidad mundial del arte corporal a través de infraestructura tecnológica moderna. Conectamos directamente a los mejores artistas independientes con coleccionistas y clientes que valoran la autenticidad, la precisión técnica y la máxima bioseguridad en cada pieza.
                 </p>
               </motion.div>
 
+              {/* Visión */}
               <motion.div
-                initial={{ opacity: 0, x: 20 }}
-                whileInView={{ opacity: 1, x: 0 }}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
-                transition={{ duration: 0.5 }}
-                className="p-8 md:p-10 rounded-3xl bg-zinc-900/60 border border-zinc-800 relative overflow-hidden shadow-xl"
+                transition={{ duration: 0.5, delay: 0.1 }}
+                className="p-8 rounded-3xl bg-zinc-900/50 border border-zinc-800/80 relative overflow-hidden shadow-xl"
               >
-                <div className="w-12 h-12 rounded-2xl bg-violet-500/10 border border-violet-500/20 flex items-center justify-center text-violet-400 mb-6">
+                <div className="w-12 h-12 rounded-2xl bg-indigo-500/10 border border-indigo-500/20 flex items-center justify-center text-indigo-400 mb-6 shadow-inner">
                   <Eye className="w-6 h-6" />
                 </div>
-                <h2 className="text-2xl font-bold text-white mb-4">Nuestra Visión</h2>
+                <h2 className="text-2xl font-bold text-white mb-3 tracking-tight">Visión</h2>
                 <p className="text-zinc-400 text-sm md:text-base leading-relaxed">
-                  Ser la red global descentralizada de referencia para el arte corporal, donde el talento de cualquier rincón del mundo pueda conectar con coleccionistas internacionales, coordinar residencias artísticas e impulsar una nueva era de respeto cultural y excelencia artística.
+                  Convertirnos en el estándar global de referencia para el arte sobre la piel, constituyendo una red descentralizada donde el talento creativo no esté limitado por fronteras geográficas ni penalizado por intermediarios abusivos, garantizando siempre el respeto por la cultura del tatuaje y la salud de las personas.
                 </p>
               </motion.div>
             </div>
+          </section>
 
-            {/* Pillars Grid */}
-            <div className="text-center mb-12 pt-8">
-              <h2 className="text-3xl font-extrabold text-white mb-3">Pilares de Excelencia</h2>
+          {/* Bloque 2: Estrategia de Mercado */}
+          <section className="w-full max-w-5xl mx-auto px-4 py-16 border-b border-zinc-800/80">
+            <div className="text-center mb-12">
+              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-zinc-900 border border-zinc-800 text-zinc-400 text-xs font-semibold mb-3">
+                <TrendingUp className="w-3.5 h-3.5 text-purple-400" />
+                <span>Propuesta de Valor & Posicionamiento</span>
+              </div>
+              <h2 className="text-3xl font-extrabold text-white mb-3 tracking-tight">
+                Estrategia de Mercado
+              </h2>
               <p className="text-zinc-400 text-sm max-w-xl mx-auto">
-                Principios inquebrantables que rigen cada funcionalidad de Tattoo Hub.
+                Los cuatro pilares competitivos con los que Tattoo Hub revoluciona la industria.
               </p>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              {pillars.map((pillar, index) => {
-                const IconComp = pillar.icon;
+              {marketStrategies.map((strat, idx) => {
+                const IconComp = strat.icon;
                 return (
                   <motion.div
-                    key={pillar.title}
+                    key={strat.title}
                     initial={{ opacity: 0, y: 20 }}
                     whileInView={{ opacity: 1, y: 0 }}
                     viewport={{ once: true }}
-                    transition={{ duration: 0.4, delay: index * 0.1 }}
-                    className={`p-6 md:p-8 rounded-2xl bg-gradient-to-br ${pillar.color} border ${pillar.borderColor} backdrop-blur-sm shadow-lg`}
+                    transition={{ duration: 0.4, delay: idx * 0.1 }}
+                    className={`p-7 rounded-2xl bg-gradient-to-br ${strat.color} border ${strat.borderColor} backdrop-blur-sm shadow-lg`}
                   >
                     <div className="w-12 h-12 rounded-xl bg-zinc-950/80 border border-zinc-800 flex items-center justify-center mb-5">
-                      <IconComp className={`w-6 h-6 ${pillar.iconColor}`} />
+                      <IconComp className={`w-6 h-6 ${strat.iconColor}`} />
                     </div>
-                    <h3 className="text-xl font-bold text-white mb-2">{pillar.title}</h3>
-                    <p className="text-zinc-400 text-sm leading-relaxed">{pillar.desc}</p>
+                    <h3 className="text-lg font-bold text-white mb-2">{strat.title}</h3>
+                    <p className="text-zinc-400 text-sm leading-relaxed">{strat.desc}</p>
                   </motion.div>
                 );
               })}
             </div>
           </section>
 
-          {/* Interactive Roadmap */}
-          <section className="w-full max-w-5xl mx-auto px-4 py-16 border-t border-zinc-800/80">
-            <div className="text-center mb-14">
-              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-zinc-900 border border-zinc-800 text-zinc-400 text-xs font-semibold mb-3">
-                <Layers className="w-3.5 h-3.5 text-amber-400" />
-                <span>Hoja de Ruta de Desarrollo</span>
-              </div>
-              <h2 className="text-3xl md:text-4xl font-extrabold text-white mb-3">
-                Roadmap de la Plataforma 2026
-              </h2>
-              <p className="text-zinc-400 text-sm max-w-xl mx-auto">
-                Transparencia total sobre los hitos completados y las próximas innovaciones que estamos construyendo.
-              </p>
-            </div>
-
-            <div className="space-y-6 relative">
-              <div className="hidden md:block absolute left-8 top-6 bottom-6 w-0.5 bg-zinc-800" />
-
-              {roadmapMilestones.map((m, index) => (
-                <motion.div
-                  key={m.quarter}
-                  initial={{ opacity: 0, y: 20 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ duration: 0.4, delay: index * 0.1 }}
-                  className="relative flex flex-col md:flex-row md:items-start gap-4 md:gap-8 p-6 rounded-2xl bg-zinc-900/40 border border-zinc-800 hover:border-zinc-700 transition"
-                >
-                  <div className="flex items-center gap-3 md:gap-0">
-                    <div
-                      className={`w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0 z-10 border ${
-                        m.status === 'completed'
-                          ? 'bg-emerald-500/20 border-emerald-500 text-emerald-400'
-                          : m.status === 'in-progress'
-                          ? 'bg-amber-500/20 border-amber-500 text-amber-400 animate-pulse'
-                          : 'bg-zinc-800 border-zinc-700 text-zinc-500'
-                      }`}
-                    >
-                      {m.status === 'completed' ? (
-                        <Check className="w-5 h-5" />
-                      ) : m.status === 'in-progress' ? (
-                        <Flame className="w-5 h-5" />
-                      ) : (
-                        <Clock className="w-5 h-5" />
-                      )}
-                    </div>
-                    <span className="md:hidden text-xs font-mono font-bold text-zinc-400">
-                      {m.quarter}
-                    </span>
-                  </div>
-
-                  <div className="flex-1">
-                    <div className="flex flex-wrap items-center justify-between gap-2 mb-2">
-                      <div className="flex items-center gap-3">
-                        <span className="hidden md:inline text-xs font-mono font-bold text-zinc-500">
-                          {m.quarter}
-                        </span>
-                        <h3 className="text-lg font-bold text-white">{m.title}</h3>
-                      </div>
-                      <span
-                        className={`text-[11px] font-semibold uppercase tracking-wider px-2.5 py-1 rounded-full border ${
-                          m.status === 'completed'
-                            ? 'bg-emerald-950/40 border-emerald-500/30 text-emerald-300'
-                            : m.status === 'in-progress'
-                            ? 'bg-amber-950/40 border-amber-500/30 text-amber-300'
-                            : 'bg-zinc-800 border-zinc-700 text-zinc-400'
-                        }`}
-                      >
-                        {m.statusLabel}
-                      </span>
-                    </div>
-                    <p className="text-zinc-400 text-sm leading-relaxed">{m.desc}</p>
-                  </div>
-                </motion.div>
-              ))}
-            </div>
-          </section>
-
-          {/* Interactive Customer Feedback Box */}
-          <section className="w-full max-w-4xl mx-auto px-4 py-16 mb-20 border-t border-zinc-800/80">
+          {/* Bloque 3: Buzón de Feedback */}
+          <section className="w-full max-w-4xl mx-auto px-4 py-16 mb-20">
             <motion.div
               initial={{ opacity: 0, scale: 0.98 }}
               whileInView={{ opacity: 1, scale: 1 }}
               viewport={{ once: true }}
-              className="p-8 md:p-12 rounded-3xl bg-zinc-900/80 border border-zinc-800 shadow-2xl relative overflow-hidden"
+              className="p-8 md:p-12 rounded-3xl bg-zinc-900/70 border border-zinc-800/80 shadow-2xl relative overflow-hidden"
             >
-              <div className="flex items-center gap-3 mb-4">
-                <div className="w-10 h-10 rounded-xl bg-amber-500/10 border border-amber-500/30 flex items-center justify-center text-amber-400">
-                  <MessageSquare className="w-5 h-5" />
+              <div className="flex items-center gap-3.5 mb-6">
+                <div className="w-12 h-12 rounded-2xl bg-purple-500/10 border border-purple-500/30 flex items-center justify-center text-purple-400 shadow-inner">
+                  <MessageSquare className="w-6 h-6" />
                 </div>
                 <div>
-                  <h2 className="text-2xl font-bold text-white">Buzón de Sugerencias & Feedback</h2>
-                  <p className="text-xs text-zinc-400">
-                    Tu opinión guía el desarrollo de Tattoo Hub. Leemos cada mensaje con el equipo técnico.
+                  <h2 className="text-2xl font-bold text-white">Buzón de Feedback & Sugerencias</h2>
+                  <p className="text-xs text-zinc-400 mt-0.5">
+                    Tu opinión técnica y artística guía directamente las prioridades de desarrollo en Tattoo Hub.
                   </p>
                 </div>
               </div>
@@ -378,12 +218,12 @@ export const AboutPage: React.FC = () => {
                 <motion.div
                   initial={{ opacity: 0, y: 10 }}
                   animate={{ opacity: 1, y: 0 }}
-                  className="p-6 bg-emerald-950/30 border border-emerald-500/30 rounded-2xl text-center space-y-3 mt-6"
+                  className="p-6 bg-emerald-950/30 border border-emerald-500/30 rounded-2xl text-center space-y-3 mt-4"
                 >
                   <CheckCircle2 className="w-10 h-10 text-emerald-400 mx-auto" />
-                  <p className="text-lg font-bold text-white">¡Gracias por tu aporte!</p>
+                  <p className="text-lg font-bold text-white">¡Aporte Registrado!</p>
                   <p className="text-sm text-emerald-200/90 max-w-md mx-auto">
-                    Hemos registrado tu feedback en el sistema. Los aportes constructivos nos ayudan a construir la mejor plataforma de arte corporal.
+                    Gracias por tu retroalimentación. Nuestro equipo de producto analiza cada sugerencia para las siguientes entregas.
                   </p>
                   <button
                     type="button"
@@ -394,17 +234,17 @@ export const AboutPage: React.FC = () => {
                   </button>
                 </motion.div>
               ) : (
-                <form id="feedback-form" onSubmit={handleFeedbackSubmit} className="space-y-6 mt-6">
-                  {/* Categoría */}
+                <form id="feedback-form" onSubmit={handleFeedbackSubmit} className="space-y-6">
+                  {/* Tipo de Feedback */}
                   <div>
                     <label className="block text-xs font-semibold uppercase tracking-wider text-zinc-400 mb-2">
-                      Tipo de Aporte
+                      Categoría
                     </label>
-                    <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
+                    <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
                       {[
                         { id: 'sugerencia', label: '💡 Sugerencia' },
                         { id: 'mejora', label: '🚀 Mejora' },
-                        { id: 'error', label: '🐛 Reporte Bug' },
+                        { id: 'error', label: '🐛 Bug / Error' },
                         { id: 'felicitacion', label: '⭐ Felicitación' },
                       ].map((item) => (
                         <button
@@ -413,7 +253,7 @@ export const AboutPage: React.FC = () => {
                           onClick={() => setFeedbackType(item.id as any)}
                           className={`py-2 px-3 rounded-xl text-xs font-medium border transition cursor-pointer ${
                             feedbackType === item.id
-                              ? 'bg-amber-500/10 border-amber-500 text-amber-300 font-semibold'
+                              ? 'bg-purple-600/20 border-purple-500 text-purple-300 font-semibold'
                               : 'bg-zinc-950/40 border-zinc-800 text-zinc-400 hover:border-zinc-700'
                           }`}
                         >
@@ -423,7 +263,7 @@ export const AboutPage: React.FC = () => {
                     </div>
                   </div>
 
-                  {/* Rating Estrellas */}
+                  {/* Rating */}
                   <div>
                     <label className="block text-xs font-semibold uppercase tracking-wider text-zinc-400 mb-2">
                       Valoración de la Experiencia
@@ -439,7 +279,7 @@ export const AboutPage: React.FC = () => {
                           className="p-1 cursor-pointer transition transform hover:scale-110"
                         >
                           <Star
-                            className={`w-7 h-7 ${
+                            className={`w-6 h-6 ${
                               star <= (hoverRating || rating)
                                 ? 'text-amber-400 fill-amber-400'
                                 : 'text-zinc-700'
@@ -448,7 +288,7 @@ export const AboutPage: React.FC = () => {
                         </button>
                       ))}
                       <span className="text-xs text-zinc-400 ml-2 font-mono">
-                        {rating} / 5 {rating === 5 ? '· Excelente' : rating >= 4 ? '· Muy bueno' : '· Aceptable'}
+                        {rating} / 5
                       </span>
                     </div>
                   </div>
@@ -456,7 +296,7 @@ export const AboutPage: React.FC = () => {
                   {/* Mensaje */}
                   <div>
                     <label htmlFor="feedback-message" className="block text-xs font-semibold uppercase tracking-wider text-zinc-400 mb-2">
-                      Tu Mensaje o Sugerencia
+                      Tu Mensaje
                     </label>
                     <textarea
                       id="feedback-message"
@@ -464,15 +304,15 @@ export const AboutPage: React.FC = () => {
                       required
                       value={feedbackMessage}
                       onChange={(e) => setFeedbackMessage(e.target.value)}
-                      placeholder="Cuéntanos qué función te gustaría ver o cómo ha sido tu experiencia en Tattoo Hub..."
-                      className="w-full px-4 py-3 rounded-xl border border-zinc-800 bg-zinc-950/60 text-white placeholder-zinc-500 focus:border-amber-500 focus:ring-1 focus:ring-amber-500 focus:outline-none transition text-sm resize-none"
+                      placeholder="Escribe aquí tu propuesta, feedback técnico o comentario sobre la plataforma..."
+                      className="w-full px-4 py-3 rounded-xl border border-zinc-800 bg-zinc-950/60 text-white placeholder-zinc-500 focus:border-purple-500 focus:ring-1 focus:ring-purple-500 focus:outline-none transition text-sm resize-none"
                     />
                   </div>
 
-                  {/* Email Opcional */}
+                  {/* Email */}
                   <div>
                     <label htmlFor="feedback-email" className="block text-xs font-semibold uppercase tracking-wider text-zinc-400 mb-2">
-                      Correo Electrónico (opcional para darte respuesta)
+                      Correo Electrónico (opcional para darte seguimiento)
                     </label>
                     <input
                       id="feedback-email"
@@ -480,14 +320,14 @@ export const AboutPage: React.FC = () => {
                       value={feedbackEmail}
                       onChange={(e) => setFeedbackEmail(e.target.value)}
                       placeholder="tu@correo.com"
-                      className="w-full px-4 py-2.5 rounded-xl border border-zinc-800 bg-zinc-950/60 text-white placeholder-zinc-500 focus:border-amber-500 focus:ring-1 focus:ring-amber-500 focus:outline-none transition text-sm"
+                      className="w-full px-4 py-2.5 rounded-xl border border-zinc-800 bg-zinc-950/60 text-white placeholder-zinc-500 focus:border-purple-500 focus:ring-1 focus:ring-purple-500 focus:outline-none transition text-sm"
                     />
                   </div>
 
                   <button
                     type="submit"
                     disabled={feedbackSubmitting || !feedbackMessage.trim()}
-                    className="w-full py-3.5 px-6 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-zinc-950 font-bold rounded-xl shadow-lg shadow-amber-500/20 hover:shadow-amber-500/30 transition duration-200 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 text-sm"
+                    className="w-full py-3.5 px-6 bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white font-bold rounded-xl shadow-lg shadow-purple-600/20 transition duration-200 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 text-sm"
                   >
                     {feedbackSubmitting ? (
                       <>

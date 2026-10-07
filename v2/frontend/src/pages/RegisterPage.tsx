@@ -19,18 +19,15 @@ import { api } from '../api/client';
 import { CustomSelect, SelectOption } from '../components/common/CustomSelect';
 import { TermsModal } from '../components/auth/TermsModal';
 import { TurnstileWidget } from '../components/auth/TurnstileWidget';
+import { VerificationModal } from '../components/auth/VerificationModal';
+import { COUNTRIES, getCountryByName } from '../utils/countries';
 
-const COUNTRY_OPTIONS: SelectOption[] = [
-  { value: 'España', label: 'España', flag: '🇪🇸', code: 'ES' },
-  { value: 'Mexico', label: 'México', flag: '🇲🇽', code: 'MX' },
-  { value: 'Colombia', label: 'Colombia', flag: '🇨🇴', code: 'CO' },
-  { value: 'Panama', label: 'Panamá', flag: '🇵🇦', code: 'PA' },
-  { value: 'Estados Unidos', label: 'Estados Unidos', flag: '🇺🇸', code: 'US' },
-  { value: 'Argentina', label: 'Argentina', flag: '🇦🇷', code: 'AR' },
-  { value: 'Chile', label: 'Chile', flag: '🇨🇱', code: 'CL' },
-  { value: 'Perú', label: 'Perú', flag: '🇵🇪', code: 'PE' },
-  { value: 'Costa Rica', label: 'Costa Rica', flag: '🇨🇷', code: 'CR' },
-];
+const COUNTRY_OPTIONS: SelectOption[] = COUNTRIES.map((c) => ({
+  value: c.value,
+  label: `${c.label} (${c.dialCode})`,
+  flag: c.flag,
+  code: c.code,
+}));
 
 export const RegisterPage: React.FC = () => {
   const [searchParams] = useSearchParams();
@@ -43,7 +40,7 @@ export const RegisterPage: React.FC = () => {
   const [email, setEmail] = useState('');
   const [country, setCountry] = useState('España');
   const [birthdate, setBirthdate] = useState('');
-  const [phone, setPhone] = useState('');
+  const [phoneLocal, setPhoneLocal] = useState('');
   const [address, setAddress] = useState('');
   const [city, setCity] = useState('');
   const [postalCode, setPostalCode] = useState('');
@@ -51,6 +48,7 @@ export const RegisterPage: React.FC = () => {
   const [confirmPassword, setConfirmPassword] = useState('');
   const [termsAccepted, setTermsAccepted] = useState(false);
   const [isTermsModalOpen, setIsTermsModalOpen] = useState(false);
+  const [isVerificationModalOpen, setIsVerificationModalOpen] = useState(false);
   const [turnstileToken, setTurnstileToken] = useState<string | null>(null);
   const [showPassword, setShowPassword] = useState(false);
 
@@ -58,6 +56,9 @@ export const RegisterPage: React.FC = () => {
   const [errorMsg, setErrorMsg] = useState('');
   const navigate = useNavigate();
   const { login } = useAuth();
+
+  const selectedCountryData = getCountryByName(country);
+  const fullPhoneNumber = `${selectedCountryData.dialCode} ${phoneLocal}`.trim();
 
   const rawRedirect = searchParams.get('redirect');
   const loginLink =
@@ -81,7 +82,8 @@ export const RegisterPage: React.FC = () => {
   const currentAge = calculateAge(birthdate);
   const isUnderage = currentAge !== null && currentAge < 18;
 
-  const handleRegister = async (e: React.FormEvent) => {
+  // Paso 1: Validación previa y apertura del modal de verificación
+  const handlePreRegister = (e: React.FormEvent) => {
     e.preventDefault();
     if (password !== confirmPassword) {
       setErrorMsg('Las contraseñas no coinciden.');
@@ -95,6 +97,10 @@ export const RegisterPage: React.FC = () => {
       setErrorMsg('Debes ser mayor de 18 años para registrarte en Tattoo Hub conforme a las normativas sanitarias y legales de arte corporal.');
       return;
     }
+    if (!phoneLocal.trim()) {
+      setErrorMsg('Por favor ingresa tu número de teléfono móvil.');
+      return;
+    }
     if (!termsAccepted) {
       setErrorMsg('Debes leer y aceptar los Términos y la Política de Privacidad.');
       return;
@@ -104,6 +110,13 @@ export const RegisterPage: React.FC = () => {
       return;
     }
 
+    setErrorMsg('');
+    setIsVerificationModalOpen(true);
+  };
+
+  // Paso 2: Creación de cuenta tras superar la doble verificación (Email OTP + Phone OTP)
+  const executeVerifiedRegistration = async () => {
+    setIsVerificationModalOpen(false);
     setLoading(true);
     setErrorMsg('');
     try {
@@ -114,7 +127,7 @@ export const RegisterPage: React.FC = () => {
         nombre,
         apellido,
         edad: currentAge ? String(currentAge) : '18',
-        telefono: phone,
+        telefono: fullPhoneNumber,
         provincia: country,
         ciudad: city,
         direccion: address,
@@ -256,7 +269,7 @@ export const RegisterPage: React.FC = () => {
             REGISTRO DE {tipo.toUpperCase()}
           </div>
 
-          <form onSubmit={handleRegister} className="space-y-6 mt-6">
+          <form onSubmit={handlePreRegister} className="space-y-6 mt-6">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
                 <label className="block text-sm font-medium text-white mb-2">Nombre(s)</label>
@@ -305,14 +318,23 @@ export const RegisterPage: React.FC = () => {
               </div>
               <div>
                 <label className="block text-sm font-medium text-white mb-2">Número de teléfono móvil</label>
-                <input
-                  type="tel"
-                  required
-                  value={phone}
-                  onChange={(e) => setPhone(e.target.value)}
-                  placeholder="+34 612 345 678"
-                  className="input-atelier w-full"
-                />
+                <div className="flex rounded-xl overflow-hidden border border-zinc-800 bg-[#121217] focus-within:border-violet-500 focus-within:ring-1 focus-within:ring-violet-500 transition-all">
+                  <div className="bg-zinc-900/90 px-3.5 py-3 border-r border-zinc-800 flex items-center gap-1.5 text-sm font-semibold text-violet-300 shrink-0 select-none">
+                    <span className="text-base">{selectedCountryData.flag}</span>
+                    <span className="font-mono">{selectedCountryData.dialCode}</span>
+                  </div>
+                  <input
+                    type="tel"
+                    required
+                    value={phoneLocal}
+                    onChange={(e) => setPhoneLocal(e.target.value)}
+                    placeholder={selectedCountryData.placeholder}
+                    className="bg-transparent px-4 py-3 text-white placeholder-zinc-600 text-sm focus:outline-none w-full"
+                  />
+                </div>
+                <p className="text-[11px] text-zinc-500 mt-1">
+                  Prefijo reactivo {selectedCountryData.dialCode} ({selectedCountryData.label}).
+                </p>
               </div>
             </div>
 
@@ -514,12 +536,6 @@ export const RegisterPage: React.FC = () => {
                 : 'Crear mi Cuenta - Empezar Ahora'}
             </button>
 
-            <TermsModal
-              isOpen={isTermsModalOpen}
-              onClose={() => setIsTermsModalOpen(false)}
-              onAccept={() => setTermsAccepted(true)}
-            />
-
             <p className="text-center text-sm text-zinc-500 mt-6">
               ¿Ya tienes cuenta en Tattoo Hub?{' '}
               <Link to={loginLink} className="text-white font-medium hover:underline">
@@ -527,6 +543,20 @@ export const RegisterPage: React.FC = () => {
               </Link>
             </p>
           </form>
+
+          <TermsModal
+            isOpen={isTermsModalOpen}
+            onClose={() => setIsTermsModalOpen(false)}
+            onAccept={() => setTermsAccepted(true)}
+          />
+
+          <VerificationModal
+            isOpen={isVerificationModalOpen}
+            email={email}
+            phone={fullPhoneNumber}
+            onVerified={executeVerifiedRegistration}
+            onClose={() => setIsVerificationModalOpen(false)}
+          />
         </div>
 
         {/* Trust Badges */}
