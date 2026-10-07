@@ -36,5 +36,7 @@ export const env: Environment = {
   PAYPAL_ID: process.env.PAYPAL_CLIENT_ID || process.env.PAYPAL_ID || process.env.PAYPALID || 'pendiente',
   EMAIL: process.env.EMAIL || 'dummy@gmail.com',
   PASSW: process.env.PASSW || 'dummy_pass',
-  SENTRY_DSN: process.env.SENTRY_DSN || 'https://placeholder@o0.ingest.sentry.io/0',
+  SENTRY_DSN:
+    process.env.SENTRY_DSN ||
+    'https://f5eb4214b0d467f8509c97e0ff090c28@o4512048240263168.ingest.us.sentry.io/4512216031690752',
 };

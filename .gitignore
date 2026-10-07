@@ -122,6 +122,7 @@ $RECYCLE.BIN/
 .agent/
 .agents/teamwork/
 .agents/mcp_config.json
+.agents/tools/
 .agents/scripts/*.json
 .gemini/
 scratch/
