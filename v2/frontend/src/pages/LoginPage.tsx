@@ -12,13 +12,15 @@ import {
   ShieldCheck,
   Check,
   AtSign,
-  AlertCircle
+  AlertCircle,
+  CheckCircle2
 } from 'lucide-react';
 import { supabase } from '../api/supabase';
 import { api } from '../api/client';
 import { useAuth } from '../context/AuthContext';
 import { QRCodeSVG } from 'qrcode.react';
 import { TurnstileWidget } from '../components/auth/TurnstileWidget';
+import { translateAuthError } from '../utils/authErrors';
 
 export const LoginPage: React.FC = () => {
   const [email, setEmail] = useState('');
@@ -141,7 +143,7 @@ export const LoginPage: React.FC = () => {
       } catch {
         // Fallback note
       }
-      setErrorMsg(error.message || 'Credenciales inválidas.');
+      setErrorMsg(translateAuthError(error.message));
       setLoading(false);
       return;
     }
@@ -208,14 +210,6 @@ export const LoginPage: React.FC = () => {
 
             {/* Atelier Header Section */}
             <div className="flex flex-col items-center text-center">
-              {/* Brand Needle Badge */}
-              <div className="flex items-center justify-center gap-2 px-3 py-1.5 rounded-full bg-white/5 border border-white/10 backdrop-blur-md mb-5">
-                <span className="text-sm">💉</span>
-                <span className="text-xs font-bold tracking-wider text-white uppercase font-mono">
-                  TattooHub <span className="text-purple-400 text-[10px] bg-purple-950/60 px-1.5 py-0.5 rounded border border-purple-500/30">STUDIOS</span>
-                </span>
-              </div>
-
               {/* Headings */}
               <h1 className="text-2xl sm:text-3xl font-extrabold text-white tracking-tight mb-2">
                 ¡Bienvenido de nuevo!
@@ -224,6 +218,17 @@ export const LoginPage: React.FC = () => {
                 Inicia sesión para gestionar tus citas, stencils confidenciales y agenda de sesiones.
               </p>
             </div>
+
+            {searchParams.get('reset') === 'success' && (
+              <motion.div
+                initial={{ opacity: 0, scale: 0.95 }}
+                animate={{ opacity: 1, scale: 1 }}
+                className="mb-5 p-3.5 bg-emerald-950/40 border border-emerald-500/40 text-emerald-300 text-xs rounded-xl flex items-start gap-2.5"
+              >
+                <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0 mt-0.5" />
+                <span>¡Tu contraseña ha sido restablecida con éxito! Ingresa con tu nueva clave.</span>
+              </motion.div>
+            )}
 
             {errorMsg && (
               <motion.div

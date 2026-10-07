@@ -3,6 +3,9 @@ import { useNavigate, Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { Lock, CheckCircle2, AlertCircle, Loader2, ArrowLeft, ShieldCheck, Eye, EyeOff } from 'lucide-react';
 import { supabase } from '../api/supabase';
+import { translateAuthError } from '../utils/authErrors';
+import { useAuth } from '../context/AuthContext';
+import { useLanguage } from '../context/LanguageContext';
 
 export const ChangePasswordPage: React.FC = () => {
   const [password, setPassword] = useState<string>('');
@@ -13,15 +16,31 @@ export const ChangePasswordPage: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   const [sessionChecked, setSessionChecked] = useState<boolean>(false);
   const [hasValidSession, setHasValidSession] = useState<boolean>(false);
+  const [targetDashboard, setTargetDashboard] = useState<string>('/client-dashboard');
 
   const navigate = useNavigate();
+  const { setIsPasswordRecovery } = useAuth();
+  const { language } = useLanguage();
 
   useEffect(() => {
     // Escuchar el evento de recuperación de contraseña de Supabase o validar la sesión actual
     const checkSession = async () => {
+      const isRecovery =
+        window.location.hash.includes('type=recovery') ||
+        window.location.search.includes('type=recovery') ||
+        sessionStorage.getItem('is_password_recovery') === 'true';
+
+      if (isRecovery) {
+        setIsPasswordRecovery(true);
+        sessionStorage.setItem('is_password_recovery', 'true');
+      }
+
       const { data: { session } } = await supabase.auth.getSession();
       if (session) {
         setHasValidSession(true);
+        const meta = session.user?.user_metadata || {};
+        const role = (meta.tipo || meta.role || '').toLowerCase();
+        setTargetDashboard(role === 'tatuador' ? '/artist-dashboard' : '/client-dashboard');
       }
       setSessionChecked(true);
     };
@@ -29,16 +48,24 @@ export const ChangePasswordPage: React.FC = () => {
     checkSession();
 
     const { data: authListener } = supabase.auth.onAuthStateChange((event, session) => {
-      if (event === 'PASSWORD_RECOVERY' || (event === 'SIGNED_IN' && session)) {
+      if (event === 'PASSWORD_RECOVERY') {
+        setIsPasswordRecovery(true);
+        sessionStorage.setItem('is_password_recovery', 'true');
         setHasValidSession(true);
         setSessionChecked(true);
+      } else if (event === 'SIGNED_IN' && session) {
+        setHasValidSession(true);
+        setSessionChecked(true);
+        const meta = session.user?.user_metadata || {};
+        const role = (meta.tipo || meta.role || '').toLowerCase();
+        setTargetDashboard(role === 'tatuador' ? '/artist-dashboard' : '/client-dashboard');
       }
     });
 
     return () => {
       authListener?.subscription.unsubscribe();
     };
-  }, []);
+  }, [setIsPasswordRecovery]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -65,14 +92,28 @@ export const ChangePasswordPage: React.FC = () => {
         throw updateError;
       }
 
+      // Desbloquear sesión de recuperación y marcar éxito
+      sessionStorage.removeItem('is_password_recovery');
+      setIsPasswordRecovery(false);
       setSubmitted(true);
+
+      const { data: { user } } = await supabase.auth.getUser();
+      const meta = user?.user_metadata || {};
+      const role = (meta.tipo || meta.role || '').toLowerCase();
+      const destination = role === 'tatuador' ? '/artist-dashboard' : '/client-dashboard';
+
       setTimeout(() => {
-        navigate('/login', { replace: true });
-      }, 3000);
+        if (user) {
+          navigate(destination, { replace: true });
+        } else {
+          navigate('/login?reset=success', { replace: true });
+        }
+      }, 2500);
     } catch (err: any) {
       console.error('[ChangePassword] Error:', err);
       setError(
-        err.message || 'No se pudo actualizar la contraseña. El enlace de recuperación puede haber expirado.'
+        translateAuthError(err.message, language) ||
+          'No se pudo actualizar la contraseña. El enlace de recuperación puede haber expirado.'
       );
     } finally {
       setLoading(false);
@@ -135,18 +176,31 @@ export const ChangePasswordPage: React.FC = () => {
           >
             <div className="p-5 bg-emerald-950/30 border border-emerald-500/30 text-emerald-300 rounded-xl space-y-2">
               <CheckCircle2 className="w-8 h-8 text-emerald-400 mx-auto" />
-              <p className="font-semibold text-white">¡Contraseña restablecida!</p>
+              <p className="font-semibold text-white">¡Contraseña restablecida con éxito!</p>
               <p className="text-xs text-emerald-200/90">
-                Tu clave ha sido actualizada con éxito. Serás redirigido al inicio de sesión en unos momentos.
+                Tu clave ha sido actualizada de forma segura. Redirigiendo a tu panel en unos instantes...
               </p>
             </div>
 
-            <Link
-              to="/login"
-              className="w-full py-3 px-4 rounded-xl bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-zinc-950 font-bold flex items-center justify-center gap-2 transition cursor-pointer text-sm shadow-lg shadow-amber-500/20"
-            >
-              Iniciar Sesión Ahora
-            </Link>
+            <div className="space-y-3">
+              <button
+                type="button"
+                onClick={() => navigate(targetDashboard, { replace: true })}
+                className="w-full py-3 px-4 rounded-xl bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-zinc-950 font-bold flex items-center justify-center gap-2 transition cursor-pointer text-sm shadow-lg shadow-amber-500/20"
+              >
+                Entrar a mi Panel Ahora
+              </button>
+              <button
+                type="button"
+                onClick={async () => {
+                  await supabase.auth.signOut().catch(() => {});
+                  navigate('/login?reset=success', { replace: true });
+                }}
+                className="text-xs text-zinc-400 hover:text-white transition cursor-pointer block mx-auto"
+              >
+                ¿Prefieres cerrar sesión e iniciar sesión manualmente?
+              </button>
+            </div>
           </motion.div>
         ) : (
           <form onSubmit={handleSubmit} className="space-y-4">

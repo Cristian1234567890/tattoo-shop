@@ -224,13 +224,22 @@ export const ArtistDashboardPage: React.FC = () => {
             {/* Card 2: Mensajes & Cotizaciones */}
             <div className="bg-gray-800/80 backdrop-blur border border-gray-700/60 rounded-xl p-6 hover:border-primary/50 transition-all hover:shadow-lg flex flex-col justify-between">
               <div>
-                <div className="w-12 h-12 rounded-xl bg-blue-500/10 border border-blue-500/30 flex items-center justify-center text-blue-400 mb-4">
-                  <MessageSquare size={24} />
+                <div className="flex items-center justify-between mb-4">
+                  <div className="w-12 h-12 rounded-xl bg-blue-500/10 border border-blue-500/30 flex items-center justify-center text-blue-400">
+                    <MessageSquare size={24} />
+                  </div>
+                  <span className="px-2.5 py-1 rounded-full text-[11px] font-bold bg-violet-500/20 border border-violet-500/40 text-violet-300">
+                    🌐 Multilenguaje
+                  </span>
                 </div>
                 <h3 className="text-lg font-bold text-white mb-2">Mensajes & Cotizaciones</h3>
-                <p className="text-gray-300 text-sm leading-relaxed mb-4">
-                  Revisa los mensajes enviados por clientes interesados, responde preguntas y coordina citas de trabajo.
+                <p className="text-gray-300 text-sm leading-relaxed mb-3">
+                  Revisa los mensajes enviados por clientes. Ahora puedes visualizar el <strong>idioma preferido del cliente (ES / EN)</strong> para comunicarte de forma clara.
                 </p>
+                <div className="p-2.5 rounded-lg bg-gray-900/70 border border-gray-700/50 text-xs text-zinc-300 flex items-center gap-2 mb-4">
+                  <span className="text-base">🗣️</span>
+                  <span>Insignia de idioma visible en chat y cotizaciones</span>
+                </div>
               </div>
               <Link
                 to="/chat"

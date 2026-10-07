@@ -7,6 +7,8 @@ interface AuthContextType {
   user: User | null;
   session: Session | null;
   isAuthenticated: boolean;
+  isPasswordRecovery: boolean;
+  setIsPasswordRecovery: (isRecovery: boolean) => void;
   isLoading: boolean;
   login: (data: { user: User; session: Session }) => void;
   logout: () => Promise<void>;
@@ -19,6 +21,13 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [user, setUser] = useState<User | null>(null);
   const [session, setSession] = useState<Session | null>(null);
+  const [isPasswordRecovery, setIsPasswordRecovery] = useState<boolean>(() => {
+    return (
+      window.location.hash.includes('type=recovery') ||
+      window.location.search.includes('type=recovery') ||
+      sessionStorage.getItem('is_password_recovery') === 'true'
+    );
+  });
   const [isLoading, setIsLoading] = useState<boolean>(true);
 
   const syncUserProfile = async (currentUser: User) => {
@@ -113,7 +122,25 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
     // 3. Listen to Supabase auth state changes
     const { data: authListener } = supabase.auth.onAuthStateChange((event, supaSession) => {
-      if (supaSession?.user && (event === 'SIGNED_IN' || event === 'TOKEN_REFRESHED' || event === 'USER_UPDATED')) {
+      if (event === 'PASSWORD_RECOVERY') {
+        setIsPasswordRecovery(true);
+        sessionStorage.setItem('is_password_recovery', 'true');
+        if (supaSession?.user) {
+          setUser(supaSession.user as any);
+          setSession(supaSession as any);
+        }
+      } else if (supaSession?.user && (event === 'SIGNED_IN' || event === 'TOKEN_REFRESHED' || event === 'USER_UPDATED')) {
+        // Si no está en medio de recuperación, marcar sesión normal
+        const isRec =
+          window.location.hash.includes('type=recovery') ||
+          sessionStorage.getItem('is_password_recovery') === 'true';
+        if (isRec) {
+          setIsPasswordRecovery(true);
+        } else {
+          setIsPasswordRecovery(false);
+          sessionStorage.removeItem('is_password_recovery');
+        }
+
         const authUser = supaSession.user as any;
         const authSession = supaSession as any;
         setUser(authUser);
@@ -123,6 +150,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       } else if (event === 'SIGNED_OUT') {
         setUser(null);
         setSession(null);
+        setIsPasswordRecovery(false);
+        sessionStorage.removeItem('is_password_recovery');
         api.clearStoredSession();
       }
     });
@@ -133,6 +162,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   }, []);
 
   const login = (data: { user: User; session: Session }) => {
+    setIsPasswordRecovery(false);
+    sessionStorage.removeItem('is_password_recovery');
     setUser(data.user);
     setSession(data.session);
     api.setStoredSession(data);
@@ -149,6 +180,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     } finally {
       setUser(null);
       setSession(null);
+      setIsPasswordRecovery(false);
+      sessionStorage.removeItem('is_password_recovery');
       api.clearStoredSession();
     }
   };
@@ -178,7 +211,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       value={{
         user,
         session,
-        isAuthenticated: !!user && !!session,
+        isAuthenticated: !!user && !!session && !isPasswordRecovery,
+        isPasswordRecovery,
+        setIsPasswordRecovery,
         isLoading,
         login,
         logout,

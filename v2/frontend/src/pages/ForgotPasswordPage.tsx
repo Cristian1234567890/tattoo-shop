@@ -3,12 +3,15 @@ import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { Mail, ArrowLeft, CheckCircle2, AlertCircle, Loader2, KeyRound } from 'lucide-react';
 import { supabase } from '../api/supabase';
+import { translateAuthError } from '../utils/authErrors';
+import { useLanguage } from '../context/LanguageContext';
 
 export const ForgotPasswordPage: React.FC = () => {
   const [email, setEmail] = useState<string>('');
   const [loading, setLoading] = useState<boolean>(false);
   const [submitted, setSubmitted] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
+  const { language } = useLanguage();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -30,7 +33,10 @@ export const ForgotPasswordPage: React.FC = () => {
     } catch (err: any) {
       console.error('[ForgotPassword] Error:', err);
       setError(
-        err.message || 'No se pudo enviar el correo de recuperación. Verifica la dirección ingresada.'
+        translateAuthError(err.message, language) ||
+        (language === 'es'
+          ? 'No se pudo enviar el correo de recuperación. Verifica la dirección ingresada.'
+          : 'Could not send recovery email. Please verify the entered address.')
       );
     } finally {
       setLoading(false);

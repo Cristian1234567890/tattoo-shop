@@ -4,6 +4,7 @@ import { AnimatePresence } from 'framer-motion';
 import { AuthProvider, useAuth } from './context/AuthContext';
 import { ThemeProvider } from './context/ThemeContext';
 import { CurrencyProvider } from './context/CurrencyContext';
+import { LanguageProvider } from './context/LanguageContext';
 import { GuestGateProvider } from './context/GuestGateContext';
 import { HomePage } from './pages/HomePage';
 import { LoginPage } from './pages/LoginPage';
@@ -95,6 +96,51 @@ const ChatAuthGate: React.FC = () => {
   return <ChatPage />;
 };
 
+export const ProtectedRoute: React.FC<{
+  children: React.ReactElement;
+  requiredRole?: string;
+}> = ({ children, requiredRole }) => {
+  const { user, isAuthenticated, isPasswordRecovery, isLoading } = useAuth();
+  const location = useLocation();
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-gray-900 flex items-center justify-center text-zinc-400">
+        Cargando...
+      </div>
+    );
+  }
+
+  // Security Hardening: If user arrives via recovery link, restrict access to dashboards!
+  if (isPasswordRecovery) {
+    return <Navigate to="/change-password" replace />;
+  }
+
+  if (!isAuthenticated || !user) {
+    return (
+      <Navigate
+        to={`/login?redirect=${encodeURIComponent(location.pathname + location.search)}`}
+        replace
+      />
+    );
+  }
+
+  if (requiredRole) {
+    const meta = user.user_metadata || {};
+    const role = (meta.tipo || meta.role || '').toLowerCase();
+    if (role && role !== requiredRole.toLowerCase()) {
+      return (
+        <Navigate
+          to={role === 'tatuador' ? '/artist-dashboard' : '/client-dashboard'}
+          replace
+        />
+      );
+    }
+  }
+
+  return children;
+};
+
 const HIDE_FOOTER_PREFIXES = [
   '/hub',
   '/login',
@@ -143,8 +189,26 @@ export const AnimatedAppRoutes: React.FC = () => {
                 <Route path="/register" element={<PageTransition><RegisterPage /></PageTransition>} />
                 <Route path="/user" element={<PageTransition><OnboardingPage /></PageTransition>} />
                 <Route path="/onboarding" element={<PageTransition><OnboardingPage /></PageTransition>} />
-                <Route path="/client-dashboard" element={<PageTransition><ClientDashboardPage /></PageTransition>} />
-                <Route path="/artist-dashboard" element={<PageTransition><ArtistDashboardPage /></PageTransition>} />
+                <Route
+                  path="/client-dashboard"
+                  element={
+                    <PageTransition>
+                      <ProtectedRoute requiredRole="cliente">
+                        <ClientDashboardPage />
+                      </ProtectedRoute>
+                    </PageTransition>
+                  }
+                />
+                <Route
+                  path="/artist-dashboard"
+                  element={
+                    <PageTransition>
+                      <ProtectedRoute requiredRole="tatuador">
+                        <ArtistDashboardPage />
+                      </ProtectedRoute>
+                    </PageTransition>
+                  }
+                />
                 {/* /profile cleanly redirects to /client-dashboard?tab=configuracion */}
                 <Route
                   path="/profile"
@@ -172,16 +236,18 @@ export const AnimatedAppRoutes: React.FC = () => {
 export const App: React.FC = () => {
   return (
     <ThemeProvider>
-      <CurrencyProvider>
-        <AuthProvider>
-          <BrowserRouter>
-            <GuestGateProvider>
-              <OnboardingGate />
-              <AnimatedAppRoutes />
-            </GuestGateProvider>
-          </BrowserRouter>
-        </AuthProvider>
-      </CurrencyProvider>
+      <LanguageProvider>
+        <CurrencyProvider>
+          <AuthProvider>
+            <BrowserRouter>
+              <GuestGateProvider>
+                <OnboardingGate />
+                <AnimatedAppRoutes />
+              </GuestGateProvider>
+            </BrowserRouter>
+          </AuthProvider>
+        </CurrencyProvider>
+      </LanguageProvider>
     </ThemeProvider>
   );
 };

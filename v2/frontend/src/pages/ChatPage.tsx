@@ -126,7 +126,14 @@ export const ChatPage: React.FC = () => {
           </div>
           <div>
             <h2 className="text-white font-bold">{chatPartner?.full_name || 'Cargando...'}</h2>
-            <p className="text-xs text-green-400">En línea</p>
+            <div className="flex items-center gap-2 text-xs">
+              <span className="text-green-400 font-medium">En línea</span>
+              <span className="text-zinc-500">•</span>
+              <span className="px-2 py-0.5 rounded-full bg-violet-500/20 border border-violet-500/30 text-violet-300 font-semibold text-[11px] flex items-center gap-1">
+                <span>🗣️ Idioma:</span>
+                <span>{chatPartner?.preferred_language === 'en' ? 'Inglés (EN)' : 'Español (ES)'}</span>
+              </span>
+            </div>
           </div>
         </div>
 
