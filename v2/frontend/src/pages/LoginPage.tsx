@@ -99,7 +99,11 @@ export const LoginPage: React.FC = () => {
 
   const handleGoogleLogin = async () => {
     setErrorMsg('');
-    const redirectUrl = `${window.location.origin}/user`;
+    const rawRedirect = searchParams.get('redirect');
+    const targetPath = (rawRedirect && rawRedirect.startsWith('/') && !rawRedirect.startsWith('//') && !rawRedirect.startsWith('/hub'))
+      ? rawRedirect
+      : '/user';
+    const redirectUrl = `${window.location.origin}${targetPath}`;
     const { error } = await supabase.auth.signInWithOAuth({
       provider: 'google',
       options: { redirectTo: redirectUrl }
