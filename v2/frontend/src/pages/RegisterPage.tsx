@@ -18,6 +18,7 @@ import { useAuth } from '../context/AuthContext';
 import { api } from '../api/client';
 import { CustomSelect, SelectOption } from '../components/common/CustomSelect';
 import { TermsModal } from '../components/auth/TermsModal';
+import { TurnstileWidget } from '../components/auth/TurnstileWidget';
 
 const COUNTRY_OPTIONS: SelectOption[] = [
   { value: 'España', label: 'España', flag: '🇪🇸', code: 'ES' },
@@ -50,6 +51,7 @@ export const RegisterPage: React.FC = () => {
   const [confirmPassword, setConfirmPassword] = useState('');
   const [termsAccepted, setTermsAccepted] = useState(false);
   const [isTermsModalOpen, setIsTermsModalOpen] = useState(false);
+  const [turnstileToken, setTurnstileToken] = useState<string | null>(null);
   const [showPassword, setShowPassword] = useState(false);
 
   const [loading, setLoading] = useState(false);
@@ -95,6 +97,10 @@ export const RegisterPage: React.FC = () => {
     }
     if (!termsAccepted) {
       setErrorMsg('Debes leer y aceptar los Términos y la Política de Privacidad.');
+      return;
+    }
+    if (!turnstileToken) {
+      setErrorMsg('Por favor completa la verificación de seguridad anti-bots.');
       return;
     }
 
@@ -481,8 +487,19 @@ export const RegisterPage: React.FC = () => {
               </div>
             </div>
 
+            {/* Cloudflare Turnstile Anti-Bot Verification */}
+            <div className="mt-4">
+              <TurnstileWidget
+                onSuccess={(token) => {
+                  setTurnstileToken(token);
+                  if (errorMsg.includes('anti-bots')) setErrorMsg('');
+                }}
+                onExpire={() => setTurnstileToken(null)}
+              />
+            </div>
+
             <button
-              disabled={loading || isUnderage || !termsAccepted || !birthdate}
+              disabled={loading || isUnderage || !termsAccepted || !birthdate || !turnstileToken}
               type="submit"
               className="btn-atelier-primary w-full mt-8 py-4 rounded-xl font-bold text-lg cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed shadow-[0_0_25px_rgba(124,58,237,0.3)]"
             >
@@ -492,6 +509,8 @@ export const RegisterPage: React.FC = () => {
                 ? '🔞 Registro Bloqueado: Menor de Edad'
                 : !termsAccepted
                 ? 'Lectura de Términos Requerida'
+                : !turnstileToken
+                ? '🛡️ Verificación Humana Requerida'
                 : 'Crear mi Cuenta - Empezar Ahora'}
             </button>
 

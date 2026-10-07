@@ -5,10 +5,12 @@ import { supabase } from '../api/supabase';
 import { api } from '../api/client';
 import { useAuth } from '../context/AuthContext';
 import { QRCodeSVG } from 'qrcode.react';
+import { TurnstileWidget } from '../components/auth/TurnstileWidget';
 
 export const LoginPage: React.FC = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [turnstileToken, setTurnstileToken] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const [errorMsg, setErrorMsg] = useState('');
 
@@ -114,6 +116,12 @@ export const LoginPage: React.FC = () => {
   const handleEmailLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setErrorMsg('');
+
+    if (!turnstileToken) {
+      setErrorMsg('Por favor completa la verificación de seguridad anti-bots.');
+      return;
+    }
+
     setLoading(true);
 
     const { data: signInData, error } = await supabase.auth.signInWithPassword({ email, password });
@@ -219,7 +227,12 @@ export const LoginPage: React.FC = () => {
                   />
                 </div>
                 <div>
-                  <p className="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1">Contraseña</p>
+                  <div className="flex items-center justify-between mb-1">
+                    <p className="text-sm font-semibold text-gray-700 dark:text-gray-300">Contraseña</p>
+                    <Link to="/forget-password" className="text-xs text-primary hover:underline font-medium">
+                      ¿Olvidaste tu contraseña?
+                    </Link>
+                  </div>
                   <input
                     type="password"
                     required
@@ -228,12 +241,27 @@ export const LoginPage: React.FC = () => {
                     className="w-full px-4 py-2.5 rounded-lg border border-gray-300 dark:bg-gray-800 dark:text-white"
                   />
                 </div>
+
+                <div className="pt-1">
+                  <TurnstileWidget
+                    onSuccess={(tok) => {
+                      setTurnstileToken(tok);
+                      if (errorMsg.includes('anti-bots')) setErrorMsg('');
+                    }}
+                    onExpire={() => setTurnstileToken(null)}
+                  />
+                </div>
+
                 <button
                   type="submit"
-                  disabled={loading}
-                  className="w-full py-3 bg-primary text-white font-bold rounded-lg transition"
+                  disabled={loading || !turnstileToken}
+                  className="w-full py-3 bg-primary text-white font-bold rounded-lg transition disabled:opacity-50 cursor-pointer"
                 >
-                  {loading ? 'Ingresando...' : 'Iniciar Sesión'}
+                  {loading
+                    ? 'Ingresando...'
+                    : !turnstileToken
+                    ? '🛡️ Verificación Humana Requerida'
+                    : 'Iniciar Sesión'}
                 </button>
               </form>
               
