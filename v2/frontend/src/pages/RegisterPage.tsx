@@ -1,9 +1,35 @@
 import React, { useState } from 'react';
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ArrowLeft, CheckCircle2, ShieldCheck, Heart, Circle, CheckCircle, Eye, EyeOff, Sparkles } from 'lucide-react';
+import {
+  ArrowLeft,
+  CheckCircle2,
+  ShieldCheck,
+  Heart,
+  Circle,
+  CheckCircle,
+  Eye,
+  EyeOff,
+  Sparkles,
+  AlertTriangle,
+  Calendar
+} from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { api } from '../api/client';
+import { CustomSelect, SelectOption } from '../components/common/CustomSelect';
+import { TermsModal } from '../components/auth/TermsModal';
+
+const COUNTRY_OPTIONS: SelectOption[] = [
+  { value: 'España', label: 'España', flag: '🇪🇸', code: 'ES' },
+  { value: 'Mexico', label: 'México', flag: '🇲🇽', code: 'MX' },
+  { value: 'Colombia', label: 'Colombia', flag: '🇨🇴', code: 'CO' },
+  { value: 'Panama', label: 'Panamá', flag: '🇵🇦', code: 'PA' },
+  { value: 'Estados Unidos', label: 'Estados Unidos', flag: '🇺🇸', code: 'US' },
+  { value: 'Argentina', label: 'Argentina', flag: '🇦🇷', code: 'AR' },
+  { value: 'Chile', label: 'Chile', flag: '🇨🇱', code: 'CL' },
+  { value: 'Perú', label: 'Perú', flag: '🇵🇪', code: 'PE' },
+  { value: 'Costa Rica', label: 'Costa Rica', flag: '🇨🇷', code: 'CR' },
+];
 
 export const RegisterPage: React.FC = () => {
   const [searchParams] = useSearchParams();
@@ -15,6 +41,7 @@ export const RegisterPage: React.FC = () => {
   const [apellido, setApellido] = useState('');
   const [email, setEmail] = useState('');
   const [country, setCountry] = useState('España');
+  const [birthdate, setBirthdate] = useState('');
   const [phone, setPhone] = useState('');
   const [address, setAddress] = useState('');
   const [city, setCity] = useState('');
@@ -22,6 +49,7 @@ export const RegisterPage: React.FC = () => {
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [termsAccepted, setTermsAccepted] = useState(false);
+  const [isTermsModalOpen, setIsTermsModalOpen] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
 
   const [loading, setLoading] = useState(false);
@@ -35,14 +63,38 @@ export const RegisterPage: React.FC = () => {
       ? `/login?redirect=${encodeURIComponent(rawRedirect)}`
       : '/login';
 
+  const calculateAge = (birthDateString: string): number | null => {
+    if (!birthDateString) return null;
+    const birth = new Date(birthDateString);
+    if (isNaN(birth.getTime())) return null;
+    const today = new Date();
+    let age = today.getFullYear() - birth.getFullYear();
+    const m = today.getMonth() - birth.getMonth();
+    if (m < 0 || (m === 0 && today.getDate() < birth.getDate())) {
+      age--;
+    }
+    return age;
+  };
+
+  const currentAge = calculateAge(birthdate);
+  const isUnderage = currentAge !== null && currentAge < 18;
+
   const handleRegister = async (e: React.FormEvent) => {
     e.preventDefault();
     if (password !== confirmPassword) {
       setErrorMsg('Las contraseñas no coinciden.');
       return;
     }
+    if (!birthdate) {
+      setErrorMsg('La fecha de nacimiento es obligatoria para verificar la mayoría de edad.');
+      return;
+    }
+    if (isUnderage) {
+      setErrorMsg('Debes ser mayor de 18 años para registrarte en Tattoo Hub conforme a las normativas sanitarias y legales de arte corporal.');
+      return;
+    }
     if (!termsAccepted) {
-      setErrorMsg('Debes aceptar los Términos y la Política de Privacidad.');
+      setErrorMsg('Debes leer y aceptar los Términos y la Política de Privacidad.');
       return;
     }
 
@@ -55,7 +107,7 @@ export const RegisterPage: React.FC = () => {
         tipo,
         nombre,
         apellido,
-        edad: '18',
+        edad: currentAge ? String(currentAge) : '18',
         telefono: phone,
         provincia: country,
         ciudad: city,
@@ -238,20 +290,12 @@ export const RegisterPage: React.FC = () => {
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
-                <label className="block text-sm font-medium text-white mb-2">País de residencia / operación</label>
-                <select
+                <CustomSelect
+                  label="País de residencia / operación"
+                  options={COUNTRY_OPTIONS}
                   value={country}
-                  onChange={(e) => setCountry(e.target.value)}
-                  className="input-atelier w-full cursor-pointer"
-                >
-                  <option value="España">🇪🇸 España</option>
-                  <option value="Mexico">🇲🇽 México</option>
-                  <option value="Colombia">🇨🇴 Colombia</option>
-                  <option value="Panama">🇵🇦 Panamá</option>
-                  <option value="Estados Unidos">🇺🇸 Estados Unidos</option>
-                  <option value="Argentina">🇦🇷 Argentina</option>
-                  <option value="Chile">🇨🇱 Chile</option>
-                </select>
+                  onChange={(val) => setCountry(val)}
+                />
               </div>
               <div>
                 <label className="block text-sm font-medium text-white mb-2">Número de teléfono móvil</label>
@@ -264,6 +308,44 @@ export const RegisterPage: React.FC = () => {
                   className="input-atelier w-full"
                 />
               </div>
+            </div>
+
+            {/* Fecha de Nacimiento con Validación 18+ */}
+            <div>
+              <div className="flex items-center justify-between mb-2">
+                <label className="flex items-center gap-2 text-sm font-medium text-white">
+                  <Calendar className="w-4 h-4 text-violet-400" /> Fecha de Nacimiento
+                </label>
+                {currentAge !== null && (
+                  <span
+                    className={`text-xs font-bold px-2.5 py-0.5 rounded-full border ${
+                      isUnderage
+                        ? 'bg-red-500/10 text-red-400 border-red-500/30'
+                        : 'bg-emerald-500/10 text-emerald-400 border-emerald-500/30'
+                    }`}
+                  >
+                    {isUnderage ? `Menor de edad (${currentAge} años)` : `Mayor de edad (${currentAge} años)`}
+                  </span>
+                )}
+              </div>
+              <input
+                type="date"
+                required
+                max={new Date().toISOString().split('T')[0]}
+                value={birthdate}
+                onChange={(e) => setBirthdate(e.target.value)}
+                className={`input-atelier w-full cursor-pointer ${
+                  isUnderage ? 'border-red-500/80 focus:border-red-500 ring-1 ring-red-500/50' : ''
+                }`}
+              />
+              {isUnderage && (
+                <div className="mt-2.5 p-3 rounded-xl bg-red-950/30 border border-red-500/40 flex items-start gap-2.5 text-xs text-red-300 animate-in fade-in duration-200">
+                  <AlertTriangle className="w-4 h-4 text-red-400 shrink-0 mt-0.5" />
+                  <span>
+                    <strong>Acceso Restringido (18+):</strong> Debes ser mayor de 18 años para registrarte en Tattoo Hub conforme a las normativas sanitarias y legales aplicables a intervenciones de arte corporal.
+                  </span>
+                </div>
+              )}
             </div>
 
             <AnimatePresence>
@@ -364,34 +446,60 @@ export const RegisterPage: React.FC = () => {
               </div>
             )}
 
-            <div className="flex items-start gap-3 mt-6">
+            {/* Terms and Privacy Agreement with Forced Scroll Modal */}
+            <div className="flex items-start gap-3 mt-6 p-4 rounded-2xl bg-[#121217] border border-zinc-800">
               <input
                 type="checkbox"
                 id="terms"
                 checked={termsAccepted}
-                onChange={(e) => setTermsAccepted(e.target.checked)}
+                onChange={() => {
+                  const hasRead = sessionStorage.getItem('terms_read_accepted') === 'true';
+                  if (!hasRead) {
+                    setIsTermsModalOpen(true);
+                  } else {
+                    setTermsAccepted(!termsAccepted);
+                  }
+                }}
                 className="mt-1 w-5 h-5 rounded border-zinc-700 bg-zinc-900 text-violet-600 focus:ring-violet-500 focus:ring-offset-zinc-900 cursor-pointer"
               />
-              <label htmlFor="terms" className="text-sm text-zinc-400 cursor-pointer">
-                Acepto las{' '}
-                <Link to="/legal/privacy" className="text-white hover:underline font-medium">
-                  Políticas de Privacidad
-                </Link>{' '}
-                y los{' '}
-                <Link to="/legal/terms" className="text-white hover:underline font-medium">
-                  Términos y Condiciones
-                </Link>{' '}
-                de Tattoo Hub.
-              </label>
+              <div className="text-sm text-zinc-400">
+                <span
+                  onClick={() => setIsTermsModalOpen(true)}
+                  className="cursor-pointer"
+                >
+                  He leído y acepto los{' '}
+                  <span className="text-violet-400 hover:text-violet-300 font-semibold underline underline-offset-4 cursor-pointer">
+                    Términos, Condiciones y Políticas de Privacidad
+                  </span>{' '}
+                  de Tattoo Hub (lectura obligatoria de consentimiento).
+                </span>
+                {!termsAccepted && (
+                  <p className="text-xs text-zinc-500 mt-1">
+                    * Debes abrir la ventana emergente y desplazarte hasta el final para habilitar esta casilla.
+                  </p>
+                )}
+              </div>
             </div>
 
             <button
-              disabled={loading}
+              disabled={loading || isUnderage || !termsAccepted || !birthdate}
               type="submit"
-              className="btn-atelier-primary w-full mt-8 py-4 rounded-xl font-bold text-lg cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+              className="btn-atelier-primary w-full mt-8 py-4 rounded-xl font-bold text-lg cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed shadow-[0_0_25px_rgba(124,58,237,0.3)]"
             >
-              {loading ? 'Creando cuenta...' : 'Crear mi Cuenta - Empezar Ahora'}
+              {loading
+                ? 'Creando cuenta...'
+                : isUnderage
+                ? '🔞 Registro Bloqueado: Menor de Edad'
+                : !termsAccepted
+                ? 'Lectura de Términos Requerida'
+                : 'Crear mi Cuenta - Empezar Ahora'}
             </button>
+
+            <TermsModal
+              isOpen={isTermsModalOpen}
+              onClose={() => setIsTermsModalOpen(false)}
+              onAccept={() => setTermsAccepted(true)}
+            />
 
             <p className="text-center text-sm text-zinc-500 mt-6">
               ¿Ya tienes cuenta en Tattoo Hub?{' '}

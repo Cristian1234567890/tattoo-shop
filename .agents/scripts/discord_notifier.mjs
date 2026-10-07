@@ -5,7 +5,8 @@ const WEBHOOKS = {
   taskStatus: "https://discord.com/api/webhooks/1557423228216148029/XsTbBNdocKsrnFGoMP1IY8xkxtEqduJM_1uSuZ2e3_DDg1nbQP7IR0s0VNcdF9LzoqMD",
   alertas_agentes: "https://discord.com/api/webhooks/1557427496411078757/PZEAT8aJH8L6rAYsi-rkGZCIIh9-qcHuf1UXj_BAthmDZMewJtiPPFSx4GGF8kATxMgL",
   despliegue_desarrollo: "https://discord.com/api/webhooks/1557427605173444740/s7OhHPD7bZY5SKgWXh1ZOCDGgwfO3vkYrcKxMtFeydH1ssRvxqSQI7gRAOMnev9CKdHa",
-  despliegue_productivo: "https://discord.com/api/webhooks/1557427848485015634/Y7BpjZQgyOQqNQiD5Nfw0Zf0BiY9NE-9ZjPketwZrDRvsgc2HqSDJADYGvlycQ1nCXEd"
+  despliegue_productivo: "https://discord.com/api/webhooks/1557427848485015634/Y7BpjZQgyOQqNQiD5Nfw0Zf0BiY9NE-9ZjPketwZrDRvsgc2HqSDJADYGvlycQ1nCXEd",
+  jira: "https://discord.com/api/webhooks/1557473405408907336/oSgTd2JZ6BAdSfk9JSObe1nsO3uO6Ni5G1YGOt23WaVU6k6UIwWSGDcN6YRVfTrTQVEf"
 };
 
 import fs from 'fs';
@@ -22,12 +23,15 @@ let payload = {};
 if (input.endsWith('.json') && fs.existsSync(input)) {
   try {
     payload = JSON.parse(fs.readFileSync(input, 'utf-8'));
+    if (!payload.content && payload.embeds) {
+      payload.content = "@everyone";
+    }
   } catch (e) {
     console.error("Error parsing JSON file:", e);
     process.exit(1);
   }
 } else {
-  payload = { content: input };
+  payload = { content: `@everyone\n${input}` };
 }
 
 fetch(WEBHOOKS[channel], {

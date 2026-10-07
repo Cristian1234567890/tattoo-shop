@@ -1,21 +1,33 @@
-# Checklist de Auditor韆 del Proyecto
+# MATRIZ DE REVISI脫N Y AUDITOR脥A UNIVERSAL
 
-## 1. Rendimiento y Optimizaci髇 (Performance)
-- [ ] Im醙enes optimizadas (compresi髇, WebP, Sharp).
-- [ ] Lazy loading implementado en rutas y componentes pesados.
-- [ ] Bundles Minificados y sin librer韆s fantasma.
+## 1. SEGURIDAD Y GESTI脫N DE IDENTIDAD
+- [ ] **Almacenamiento de Sesiones:** Prohibido guardar tokens (JWT, access/refresh tokens) en `localStorage` o `sessionStorage`. Obligatorio uso de Cookies `HttpOnly; Secure; SameSite=Lax/Strict`.
+- [ ] **Autorizaci贸n Server-Side:** La verificaci贸n de roles (RBAC) y propiedad de recursos se valida estrictamente en endpoints y middlewares del servidor. No confiar en flags del cliente (`isAdmin = true`).
+- [ ] **2FA y Verificaci贸n:** Obligatoriedad de verificaci贸n de correo electr贸nico v铆a proveedor transaccional antes de activar cuentas. Soporte para 2FA en cuentas con permisos elevados.
+- [ ] **Protecci贸n Anti-Abuso:** Rate limiting configurado por IP y por identificador en `/login`, `/register`, `/forgot-password` y endpoints que consuman APIs de LLMs.
 
-## 2. DevOps e Infraestructura
-- [ ] Estrategia de Ramas (Staging vs Producci髇).
-- [ ] Monitoreo de Errores (Sentry o similar).
-- [ ] Anal韙icas y Mapas de Calor (Hotjar/Clarity) cargados as韓cronamente.
-- [ ] Variables de entorno seguras.
+## 2. BASES DE DATOS, ORM Y ESCALABILIDAD
+- [ ] **ORM Tipado:** Esquemas definidos en c贸digo (Drizzle, Prisma) para garantizar tipado estricto y parametrizaci贸n autom谩tica contra SQL Injection.
+- [ ] **Prevenci贸n N+1:** Prohibido consultar entidades hijas dentro de bucles en backend. Uso de `JOIN`, `include` o agregaciones en una sola consulta.
+- [ ] **Paginaci贸n Obligatoria:** Ning煤n endpoint debe devolver tablas enteras. Implementar paginaci贸n cursor o `limit/offset` (m谩ximo predeterminado: 20-50 elementos).
+- [ ] **Indexaci贸n Relacional:** 脥ndices B-Tree creados en todas las columnas utilizadas para filtros (`WHERE`), ordenamiento (`ORDER BY`) y claves for谩neas.
+- [ ] **Migraciones Seguras:** Migraciones versionadas en c贸digo con script de vuelta atr谩s (`rollback`). Jam谩s ejecutar migraciones destructivas en producci贸n sin respaldo previo.
 
-## 3. Calidad y Testing (QA)
-- [ ] Suite de pruebas E2E (Playwright) completa.
-- [ ] Tests Unitarios de Backend pasando al 100%.
+## 3. CUMPLIMIENTO LEGAL Y NORMATIVO
+- [ ] **Protecci贸n de Menores (COPPA):** Formulario de registro con verificaci贸n de fecha de nacimiento / edad. Bloqueo o flujo parental estricto para menores de 13 a帽os.
+- [ ] **Session Replay & Privacidad (CIPA / GDPR):** Herramientas como PostHog, Hotjar o Clarity deben tener enmascaramiento estricto de inputs de texto (contrase帽as, datos bancarios) y exigir consentimiento expl铆cito previo antes de inicializar la grabaci贸n.
+- [ ] **Pol铆ticas Obligatorias:** P谩ginas accesibles en el footer para `/privacy-policy`, `/terms-and-conditions`, `/cookies` y pol铆tica de cancelaciones/reembolsos.
+- [ ] **Comunicaciones Comerciales (CAN-SPAM):** Todo email transaccional/marketing debe incluir direcci贸n f铆sica postal v谩lida de la empresa y enlace funcional de desuscripci贸n en un solo clic.
+- [ ] **Suscripciones y Checkout:** Exposici贸n transparente de t茅rminos de cobro recurrente, importe exacto y fecha de renovaci贸n inmediatamente al lado del bot贸n de confirmaci贸n de pago.
 
-## 4. UI/UX y Flujos
-- [ ] Homologaci髇 de mapas interactivos.
-- [ ] Flujos de usuario cerrados (no dead-ends post registro).
-- [ ] Feedback visual para cargas y errores.
+## 4. PIR脕MIDE DE TESTING Y AUTOMATIZACI脫N (CI/CD)
+- [ ] **Pruebas de Componentes / Unitarias:** Tests r谩pidos y aislados para validar renderizado, props y funciones l贸gicas puras.
+- [ ] **Pruebas de Integraci贸n:** Validaci贸n de interacci贸n entre m煤ltiples componentes (ej. pulsar bot贸n 'comprar' -> c谩lculo de total -> actualizaci贸n del carrito).
+- [ ] **Pruebas End-to-End (E2E):** Tests de flujo completo desde la perspectiva del usuario (Onboarding -> Registro -> Checkout -> Notificaci贸n/Recibo).
+- [ ] **Pruebas de Regresi贸n:** Ante cualquier bug reportado, escribir un test que reproduzca el fallo antes de aplicar la correcci贸n.
+- [ ] **Pipeline de CI/CD (GitHub Actions):** Bloqueo de PRs si fallan: Linting, Type-checking (`tsc --noEmit`), Suites de pruebas (Unit + E2E) y Build de producci贸n.
+
+## 5. OBSERVABILIDAD, COSTES Y CLOUD
+- [ ] **Trazabilidad de Errores:** SDK de monitoreo en tiempo real configurado (Sentry / Axiom) con contexto de usuario, versi贸n del release y stack trace.
+- [ ] **Hard Limits y Alertas:** L铆mites duros de facturaci贸n y alertas al 50%, 80% y 100% configurados en proveedores (Vercel, Supabase, Cloudflare, OpenAI, Anthropic).
+- [ ] **Optimizaci贸n de Egress:** Almacenamiento de archivos y assets pesados en servicios con cero coste de transferencia de salida (ej. Cloudflare R2 frente a AWS S3).
