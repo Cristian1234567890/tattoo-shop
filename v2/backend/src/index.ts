@@ -1,5 +1,20 @@
-import { app } from './app';
+import * as Sentry from '@sentry/node';
+import { nodeProfilingIntegration } from '@sentry/profiling-node';
 import { env } from './config/env';
+
+Sentry.init({
+  dsn: env.SENTRY_DSN || 'https://placeholder@o0.ingest.sentry.io/0',
+  environment: env.NODE_ENV || 'staging',
+  integrations: [
+    nodeProfilingIntegration(),
+  ],
+  tracesSampleRate: 1.0,
+  profileSessionSampleRate: 1.0,
+});
+
+import { app } from './app';
+
+Sentry.setupExpressErrorHandler(app);
 
 const server = app.listen(env.PORT, () => {
   console.log(`[Tattoo Shop V2 API] Server running on http://localhost:${env.PORT}`);

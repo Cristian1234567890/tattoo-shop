@@ -16,6 +16,7 @@ export interface Environment {
   PAYPAL_ID: string;
   EMAIL: string;
   PASSW: string;
+  SENTRY_DSN: string;
 }
 
 const defaultSupabaseUrl = 'https://mftthukphffirdcoqprz.supabase.co';
@@ -35,4 +36,5 @@ export const env: Environment = {
   PAYPAL_ID: process.env.PAYPAL_CLIENT_ID || process.env.PAYPAL_ID || process.env.PAYPALID || 'pendiente',
   EMAIL: process.env.EMAIL || 'dummy@gmail.com',
   PASSW: process.env.PASSW || 'dummy_pass',
+  SENTRY_DSN: process.env.SENTRY_DSN || 'https://placeholder@o0.ingest.sentry.io/0',
 };
