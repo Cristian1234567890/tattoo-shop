@@ -70,6 +70,8 @@ export interface User {
   id: string;
   email: string;
   user_metadata: UserMetadata;
+  app_metadata?: { provider?: string; providers?: string[]; [key: string]: any };
+  identities?: Array<{ id: string; provider: string; identity_data?: any; last_sign_in_at?: string }>;
   factors?: Array<{ id: string; factor_type?: string; status?: string }>;
 }
 

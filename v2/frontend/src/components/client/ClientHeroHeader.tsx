@@ -10,6 +10,7 @@ import {
   MessageCircle,
   Crown,
   Lock,
+  User as UserIcon,
 } from 'lucide-react';
 import { useCurrency } from '../../context/CurrencyContext';
 
@@ -30,11 +31,16 @@ export const ClientHeroHeader: React.FC<ClientHeroHeaderProps> = ({
   lang = 'es',
   onUpgradeVip,
 }) => {
+  const [imgError, setImgError] = React.useState(false);
   const { formatPrice } = useCurrency();
   const meta = user?.user_metadata || {};
+  // 1. Form name + last name takes highest precedence
+  const formFullName = `${meta.nombre || ''} ${meta.apellido || ''}`.trim();
+  // 2. Cleaned full_name (removes OAuth suffixes like "(Our Present)")
+  const cleanedFullName = meta.full_name?.replace(/\s*\([^)]*\)/g, '').trim();
   const clientName =
-    meta.full_name ||
-    `${meta.nombre || ''} ${meta.apellido || ''}`.trim() ||
+    formFullName ||
+    cleanedFullName ||
     meta.name ||
     user?.email?.split('@')[0] ||
     (lang === 'en' ? 'Client' : 'Cliente');
@@ -43,7 +49,7 @@ export const ClientHeroHeader: React.FC<ClientHeroHeaderProps> = ({
     meta.profile ||
     meta.avatar_url ||
     meta.picture ||
-    '/assets/Tattoo Machine Rotary.png';
+    '';
 
   const t = {
     panelBadge: lang === 'en' ? 'Client Studio' : 'Panel del Cliente',
@@ -82,20 +88,24 @@ export const ClientHeroHeader: React.FC<ClientHeroHeaderProps> = ({
           {/* Avatar with illuminated ring & online indicator */}
           <div className="relative shrink-0">
             <div
-              className={`w-20 h-20 md:w-24 md:h-24 rounded-full overflow-hidden p-0.5 bg-[#090d16] ${
+              className={`w-20 h-20 md:w-24 md:h-24 rounded-full overflow-hidden p-0.5 bg-[#090d16] flex items-center justify-center ${
                 isVip
                   ? 'ring-2 ring-amber-400/80 shadow-[0_0_25px_rgba(245,158,11,0.35)]'
                   : 'ring-2 ring-primary/80 shadow-[0_0_25px_rgba(230,81,0,0.35)]'
               }`}
             >
-              <img
-                src={avatarUrl}
-                alt={clientName}
-                className="w-full h-full object-cover rounded-full"
-                onError={(e) => {
-                  (e.target as HTMLImageElement).src = '/assets/Tattoo Machine Rotary.png';
-                }}
-              />
+              {avatarUrl && !imgError ? (
+                <img
+                  src={avatarUrl}
+                  alt={clientName}
+                  className="w-full h-full object-cover rounded-full"
+                  onError={() => setImgError(true)}
+                />
+              ) : (
+                <div className="w-full h-full rounded-full bg-gradient-to-br from-zinc-800 to-zinc-900 flex items-center justify-center text-primary/80">
+                  <UserIcon className="w-10 h-10 md:w-12 md:h-12" />
+                </div>
+              )}
             </div>
             {/* Pulsing online status badge */}
             <span

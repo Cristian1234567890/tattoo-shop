@@ -9,6 +9,38 @@ import { PageTransition } from '../components/common/PageTransition';
 import { TattooArtistCard, ArtistProfileData } from '../types';
 import { useGuestGate } from '../context/GuestGateContext';
 import { useCurrency } from '../context/CurrencyContext';
+import { CustomSelect, SelectOption } from '../components/common/CustomSelect';
+import { COUNTRIES } from '../utils/countries';
+
+const WORK_TYPE_OPTIONS: SelectOption[] = [
+  { value: 'realista', label: 'Realista' },
+  { value: 'tradicional', label: 'Tradicional' },
+  { value: 'neotradicional', label: 'Neotradicional' },
+  { value: 'blackwork', label: 'Blackwork' },
+  { value: 'japones', label: 'Japonés' },
+  { value: 'tribal', label: 'Tribal' },
+  { value: 'acuarela', label: 'Acuarela' },
+];
+
+const COUNTRY_OPTIONS: SelectOption[] = COUNTRIES.map((c) => ({
+  value: c.value,
+  label: `${c.label} (${c.dialCode})`,
+  flag: c.flag,
+  code: c.code,
+}));
+
+const PANAMA_PROVINCES: SelectOption[] = [
+  { value: 'Panamá', label: 'Panamá' },
+  { value: 'Panamá Oeste', label: 'Panamá Oeste' },
+  { value: 'Colón', label: 'Colón' },
+  { value: 'Chiriquí', label: 'Chiriquí' },
+  { value: 'Bocas del Toro', label: 'Bocas del Toro' },
+  { value: 'Coclé', label: 'Coclé' },
+  { value: 'Herrera', label: 'Herrera' },
+  { value: 'Los Santos', label: 'Los Santos' },
+  { value: 'Veraguas', label: 'Veraguas' },
+  { value: 'Darién', label: 'Darién' },
+];
 
 export interface PublicArtistData extends Partial<ArtistProfileData> {
   id?: string;
@@ -679,23 +711,12 @@ export const ArtistProfilePage: React.FC = () => {
                 <h3 className="text-lg font-bold text-gray-800 dark:text-gray-200">
                   Tipo de Trabajo
                 </h3>
-                <select
-                  id="work-type"
+                <CustomSelect
+                  options={WORK_TYPE_OPTIONS}
                   value={workType}
-                  onChange={(e) => setWorkType(e.target.value)}
-                  className="w-full px-4 py-2.5 rounded-lg border border-gray-300 dark:border-gray-700 dark:bg-gray-800 dark:text-white"
-                >
-                  <option value="" disabled>
-                    Seleccione un tipo de trabajo
-                  </option>
-                  <option value="realista">Realista</option>
-                  <option value="tradicional">Tradicional</option>
-                  <option value="neotradicional">Neotradicional</option>
-                  <option value="blackwork">Blackwork</option>
-                  <option value="japones">Japonés</option>
-                  <option value="tribal">Tribal</option>
-                  <option value="acuarela">Acuarela</option>
-                </select>
+                  onChange={(val) => setWorkType(val)}
+                  placeholder="Seleccione un tipo de trabajo"
+                />
 
                 <br />
                 <hr className="border-gray-200 dark:border-gray-800" />
@@ -780,65 +801,37 @@ export const ArtistProfilePage: React.FC = () => {
                 </h3>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-3">
                   <div>
-                    <label htmlFor="country" className="block text-xs font-semibold text-gray-600 dark:text-gray-400 mb-1">
-                      País
-                    </label>
-                    <select
-                      id="country"
+                    <CustomSelect
+                      label="País"
+                      options={COUNTRY_OPTIONS}
                       value={country}
-                      onChange={(e) => setCountry(e.target.value)}
-                      className="w-full px-4 py-2.5 rounded-lg border border-gray-300 dark:border-gray-700 dark:bg-gray-800 dark:text-white"
-                    >
-                      <option value="Panamá">Panamá</option>
-                      <option value="Colombia">Colombia</option>
-                      <option value="México">México</option>
-                      <option value="Estados Unidos">Estados Unidos</option>
-                      <option value="España">España</option>
-                      <option value="Costa Rica">Costa Rica</option>
-                      <option value="Argentina">Argentina</option>
-                      <option value="Chile">Chile</option>
-                      <option value="Perú">Perú</option>
-                      <option value="Venezuela">Venezuela</option>
-                      <option value="Otro">Otro país</option>
-                    </select>
+                      onChange={(val) => setCountry(val)}
+                    />
                   </div>
 
                   <div>
-                    <label htmlFor="province" className="block text-xs font-semibold text-gray-600 dark:text-gray-400 mb-1">
-                      Provincia / Estado / Región
-                    </label>
                     {country === 'Panamá' ? (
-                      <select
-                        id="province"
+                      <CustomSelect
+                        label="Provincia / Estado / Región"
+                        options={PANAMA_PROVINCES}
                         value={province}
-                        onChange={(e) => setProvince(e.target.value)}
-                        className="w-full px-4 py-2.5 rounded-lg border border-gray-300 dark:border-gray-700 dark:bg-gray-800 dark:text-white"
-                      >
-                        <option value="" disabled>
-                          Seleccione una Provincia
-                        </option>
-                        <option value="Panamá">Panamá</option>
-                        <option value="Bocas del Toro">Bocas del Toro</option>
-                        <option value="Colón">Colón</option>
-                        <option value="Chiriquí">Chiriquí</option>
-                        <option value="Darién">Darién</option>
-                        <option value="Herrera">Herrera</option>
-                        <option value="Los Santos">Los Santos</option>
-                        <option value="Panamá Oeste">Panamá Oeste</option>
-                        <option value="Veraguas">Veraguas</option>
-                        <option value="Emberá-Wounaan">Emberá-Wounaan</option>
-                        <option value="Guna Yala">Guna Yala</option>
-                        <option value="Ngöbe-Buglé">Ngöbe-Buglé</option>
-                      </select>
-                    ) : (
-                      <input
-                        type="text"
-                        id="province"
-                        placeholder="Provincia o Estado"
-                        value={province}
-                        onChange={(e) => setProvince(e.target.value)}
-                        className="w-full px-4 py-2.5 rounded-lg border border-gray-300 dark:border-gray-700 dark:bg-gray-800 dark:text-white"
+                        onChange={(val) => setProvince(val)}
+                        placeholder="Seleccione una Provincia"
                       />
+                    ) : (
+                      <div>
+                        <label htmlFor="province" className="block text-xs font-semibold text-gray-600 dark:text-gray-400 mb-2">
+                          Provincia / Estado / Región
+                        </label>
+                        <input
+                          type="text"
+                          id="province"
+                          placeholder="Provincia o Estado"
+                          value={province}
+                          onChange={(e) => setProvince(e.target.value)}
+                          className="w-full px-4 py-3 bg-[#121217] border border-zinc-800 rounded-xl text-white text-sm focus:outline-none focus:border-violet-500 transition"
+                        />
+                      </div>
                     )}
                   </div>
                 </div>

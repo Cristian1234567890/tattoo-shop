@@ -9,6 +9,24 @@ import {
 import { uploadTattooProgressPhoto } from '../../utils/storage';
 import { api } from '../../api/client';
 import { supabase } from '../../api/supabase';
+import { CustomSelect, SelectOption } from '../common/CustomSelect';
+
+const STAGE_OPTIONS: SelectOption[] = [
+  { value: 'Fase 1: Limpieza & Primer Vendaje', label: 'Fase 1: Limpieza & Primer Vendaje (Días 1 - 3)' },
+  { value: 'Fase 2: Descamación & Hidratación', label: 'Fase 2: Descamación & Hidratación (Días 4 - 14)' },
+  { value: 'Fase 3: Cicatrización Completa', label: 'Fase 3: Cicatrización Completa (Días 15 - 30)' },
+  { value: 'Sesión de Tinta: Delineado / Línea', label: 'Sesión de Tinta: Delineado / Línea' },
+  { value: 'Sesión de Tinta: Sombras & Color', label: 'Sesión de Tinta: Sombras & Color' },
+  { value: 'Sesión de Retoque Final', label: 'Sesión de Retoque Final' },
+];
+
+const HEALING_RATING_OPTIONS: SelectOption[] = [
+  { value: '1', label: '1 - Con irritación / dolor' },
+  { value: '2', label: '2 - Descamación activa' },
+  { value: '3', label: '3 - En proceso normal' },
+  { value: '4', label: '4 - Cicatrizando muy bien' },
+  { value: '5', label: '5 - Completamente curado' },
+];
 
 interface UploadProgressModalProps {
   isOpen: boolean;
@@ -259,21 +277,12 @@ export const UploadProgressModal: React.FC<UploadProgressModalProps> = ({
             </div>
 
             <div>
-              <label className="block text-xs font-semibold text-gray-300 uppercase tracking-wider mb-1">
-                Fase de Curación / Tipo de Sesión
-              </label>
-              <select
+              <CustomSelect
+                label="Fase de Curación / Tipo de Sesión"
+                options={STAGE_OPTIONS}
                 value={stage}
-                onChange={(e) => setStage(e.target.value)}
-                className="w-full bg-gray-950 border border-gray-700 rounded-xl px-4 py-2.5 text-white text-sm focus:outline-none focus:border-primary"
-              >
-                <option value="Fase 1: Limpieza & Primer Vendaje">Fase 1: Limpieza & Primer Vendaje (Días 1 - 3)</option>
-                <option value="Fase 2: Descamación & Hidratación">Fase 2: Descamación & Hidratación (Días 4 - 14)</option>
-                <option value="Fase 3: Cicatrización Completa">Fase 3: Cicatrización Completa (Días 15 - 30)</option>
-                <option value="Sesión de Tinta: Delineado / Línea">Sesión de Tinta: Delineado / Línea</option>
-                <option value="Sesión de Tinta: Sombras & Color">Sesión de Tinta: Sombras & Color</option>
-                <option value="Sesión de Retoque Final">Sesión de Retoque Final</option>
-              </select>
+                onChange={(val) => setStage(val)}
+              />
             </div>
           </div>
 
@@ -306,21 +315,15 @@ export const UploadProgressModal: React.FC<UploadProgressModalProps> = ({
             </div>
 
             <div>
-              <label className="block text-xs font-semibold text-gray-300 uppercase tracking-wider mb-1">
-                Tatuador Asociado (Opcional)
-              </label>
-              <select
+              <CustomSelect
+                label="Tatuador Asociado (Opcional)"
+                options={[
+                  { value: '', label: 'Sin asociar / Personal' },
+                  ...(availableArtists || []).map((a) => ({ value: a.id, label: a.name })),
+                ]}
                 value={artistId}
-                onChange={(e) => setArtistId(e.target.value)}
-                className="w-full bg-gray-950 border border-gray-700 rounded-xl px-4 py-2.5 text-white text-sm focus:outline-none focus:border-primary"
-              >
-                <option value="">Sin asociar / Personal</option>
-                {availableArtists.map((artist) => (
-                  <option key={artist.id} value={artist.id}>
-                    {artist.name}
-                  </option>
-                ))}
-              </select>
+                onChange={(val) => setArtistId(val)}
+              />
             </div>
           </div>
 
@@ -340,20 +343,12 @@ export const UploadProgressModal: React.FC<UploadProgressModalProps> = ({
             </div>
 
             <div>
-              <label className="block text-xs font-semibold text-gray-300 uppercase tracking-wider mb-1">
-                Nivel de Curación (1-5)
-              </label>
-              <select
-                value={healingRating}
-                onChange={(e) => setHealingRating(Number(e.target.value))}
-                className="w-full bg-gray-950 border border-gray-700 rounded-xl px-4 py-2.5 text-white text-sm focus:outline-none focus:border-primary"
-              >
-                <option value={1}>1 - Con irritación / dolor</option>
-                <option value={2}>2 - Descamación activa</option>
-                <option value={3}>3 - En proceso normal</option>
-                <option value={4}>4 - Cicatrizando muy bien</option>
-                <option value={5}>5 - Completamente curado</option>
-              </select>
+              <CustomSelect
+                label="Nivel de Curación (1-5)"
+                options={HEALING_RATING_OPTIONS}
+                value={String(healingRating)}
+                onChange={(val) => setHealingRating(Number(val))}
+              />
             </div>
           </div>
 

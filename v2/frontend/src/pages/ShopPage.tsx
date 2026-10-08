@@ -19,10 +19,18 @@ import {
   Minus
 } from 'lucide-react';
 import { PageTransition } from '../components/common/PageTransition';
+import { CustomSelect, SelectOption } from '../components/common/CustomSelect';
 import { useCurrency } from '../context/CurrencyContext';
 import { useGuestGate } from '../context/GuestGateContext';
 import { hubService } from '../services/hub.service';
 import { ProductItem, ProductCategory } from '../types/hub.types';
+
+const SORT_OPTIONS: SelectOption[] = [
+  { value: 'featured', label: 'Destacados' },
+  { value: 'price_asc', label: 'Menor precio' },
+  { value: 'price_desc', label: 'Mayor precio' },
+  { value: 'rating', label: 'Mejor valorados' },
+];
 
 const CATEGORIES: Array<{ key: ProductCategory; label: string }> = [
   { key: 'all', label: 'Todos' },
@@ -225,16 +233,13 @@ export const ShopPage: React.FC = () => {
                 <span className="text-xs text-zinc-500">
                   {filteredProducts.length} {filteredProducts.length === 1 ? 'producto' : 'productos'}
                 </span>
-                <select
-                  value={sortBy}
-                  onChange={(e) => setSortBy(e.target.value as any)}
-                  className="input-atelier text-xs sm:text-sm py-2 px-3 bg-[#13131A] text-zinc-300 border border-white/10 rounded-xl cursor-pointer"
-                >
-                  <option value="featured">Destacados</option>
-                  <option value="price_asc">Menor precio</option>
-                  <option value="price_desc">Mayor precio</option>
-                  <option value="rating">Mejor valorados</option>
-                </select>
+                <div className="w-44">
+                  <CustomSelect
+                    options={SORT_OPTIONS}
+                    value={sortBy}
+                    onChange={(val) => setSortBy(val as any)}
+                  />
+                </div>
               </div>
             </div>
           </div>

@@ -14,6 +14,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 
 import { Skeleton } from '../components/common/Skeleton';
 import { PageTransition } from '../components/common/PageTransition';
+import { CustomSelect, SelectOption } from '../components/common/CustomSelect';
 
 import { ClientHeroHeader } from '../components/client/ClientHeroHeader';
 import { ClientTabsNav, ClientTabId } from '../components/client/ClientTabsNav';
@@ -23,6 +24,12 @@ import { ClientSecurityTab } from '../components/client/tabs/ClientSecurityTab';
 import { AgendaTracking } from '../components/hub/AgendaTracking';
 import { PaymentTracking } from '../components/hub/PaymentTracking';
 import { useCurrency } from '../context/CurrencyContext';
+
+const HEALING_STAGES: SelectOption[] = [
+  { value: 'Fase 1: Limpieza & Primer Vendaje', label: 'Fase 1: Limpieza & Primer Vendaje (Días 1 - 3)' },
+  { value: 'Fase 2: Descamación & Hidratación', label: 'Fase 2: Descamación & Hidratación (Días 4 - 14)' },
+  { value: 'Fase 3: Cicatrización & Protección', label: 'Fase 3: Cicatrización & Protección (Días 15 - 30)' },
+];
 
 export const ClientDashboardPage: React.FC = () => {
   const { user, isAuthenticated, isLoading } = useAuth();
@@ -329,18 +336,12 @@ export const ClientDashboardPage: React.FC = () => {
 
               <form onSubmit={handleSaveProgress} className="space-y-4">
                 <div>
-                  <label className="block text-xs font-semibold text-gray-300 uppercase mb-1">
-                    Fase de Curación
-                  </label>
-                  <select
+                  <CustomSelect
+                    label="Fase de Curación"
+                    options={HEALING_STAGES}
                     value={selectedStage}
-                    onChange={(e) => setSelectedStage(e.target.value)}
-                    className="w-full bg-gray-800 border border-gray-700 rounded-xl px-4 py-2.5 text-white text-sm focus:outline-none focus:border-primary"
-                  >
-                    <option value="Fase 1: Limpieza & Primer Vendaje">Fase 1: Limpieza & Primer Vendaje (Días 1 - 3)</option>
-                    <option value="Fase 2: Descamación & Hidratación">Fase 2: Descamación & Hidratación (Días 4 - 14)</option>
-                    <option value="Fase 3: Cicatrización & Protección">Fase 3: Cicatrización & Protección (Días 15 - 30)</option>
-                  </select>
+                    onChange={(val) => setSelectedStage(val)}
+                  />
                 </div>
 
                 <div>

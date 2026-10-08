@@ -168,10 +168,10 @@ async function run() {
     await pageTerms.goto('http://localhost:4186/register', { waitUntil: 'domcontentloaded' });
     await pageTerms.waitForTimeout(800);
 
-    // Abrir modal de términos
-    const termsTrigger = pageTerms.locator('button:has-text("Términos")').first();
+    // Abrir modal de términos mediante el span interactivo
+    const termsTrigger = pageTerms.locator('span:has-text("Términos, Condiciones")').first();
     await termsTrigger.click();
-    await pageTerms.waitForTimeout(500);
+    await pageTerms.waitForTimeout(600);
 
     const pathTH28Open = path.join(artifactsDir, 'TH-28_terms_modal_open_body_locked.png');
     await pageTerms.screenshot({ path: pathTH28Open });

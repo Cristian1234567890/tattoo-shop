@@ -1,4 +1,5 @@
-import React from 'react';
+import React, { useState, useRef, useEffect } from 'react';
+import { ChevronDown, Check } from 'lucide-react';
 
 export interface CountryPrefixOption {
   code: string;
@@ -43,11 +44,25 @@ export const InternationalPhoneInput: React.FC<InternationalPhoneInputProps> = (
   placeholder = '6000-0000',
   className = '',
 }) => {
+  const [isOpen, setIsOpen] = useState(false);
+  const containerRef = useRef<HTMLDivElement>(null);
+
   // Normalize prefix to ensure leading '+'
   const normalizedPrefix = prefix.startsWith('+') ? prefix : `+${prefix}`;
+  const selectedCountry = COUNTRY_PREFIXES.find((c) => c.code === normalizedPrefix) || COUNTRY_PREFIXES[0];
 
-  const handlePrefixChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    const newPrefix = e.target.value;
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (containerRef.current && !containerRef.current.contains(event.target as Node)) {
+        setIsOpen(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
+
+  const handleSelectPrefix = (newPrefix: string) => {
+    setIsOpen(false);
     const cleanNumber = phoneNumber.trim();
     const full = cleanNumber ? `${newPrefix} ${cleanNumber}` : '';
     onChange(newPrefix, cleanNumber, full);
@@ -55,7 +70,6 @@ export const InternationalPhoneInput: React.FC<InternationalPhoneInputProps> = (
 
   const handleNumberChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const rawVal = e.target.value;
-    // Allow digits, spaces, hyphens, and parentheses
     const sanitized = rawVal.replace(/[^\d\s\-()]/g, '');
     const cleanNumber = sanitized.trim();
     const full = cleanNumber ? `${normalizedPrefix} ${cleanNumber}` : '';
@@ -63,32 +77,64 @@ export const InternationalPhoneInput: React.FC<InternationalPhoneInputProps> = (
   };
 
   return (
-    <div className={`flex items-center rounded-lg border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 focus-within:ring-2 focus-within:ring-primary focus-within:border-transparent transition overflow-hidden ${className}`}>
-      <div className="relative flex items-center bg-gray-50 dark:bg-gray-700/50 border-r border-gray-300 dark:border-gray-700">
-        <select
-          value={normalizedPrefix}
-          onChange={handlePrefixChange}
+    <div
+      ref={containerRef}
+      className={`relative flex items-center rounded-xl border border-zinc-800 bg-[#121217] focus-within:border-violet-500 focus-within:ring-1 focus-within:ring-violet-500 transition overflow-visible ${className}`}
+    >
+      {/* Custom Prefix Dropdown Trigger */}
+      <div className="relative">
+        <button
+          type="button"
           disabled={disabled}
-          aria-label="Código de país"
-          className="appearance-none bg-transparent pl-3 pr-7 py-2.5 text-sm font-medium text-gray-800 dark:text-gray-200 focus:outline-none cursor-pointer disabled:cursor-not-allowed"
+          onClick={() => setIsOpen(!isOpen)}
+          aria-haspopup="listbox"
+          aria-expanded={isOpen}
+          className="flex items-center gap-1.5 px-3 py-3 bg-zinc-900/90 border-r border-zinc-800 text-sm font-semibold text-violet-300 hover:text-white transition cursor-pointer select-none rounded-l-xl disabled:cursor-not-allowed"
         >
-          {COUNTRY_PREFIXES.map((country) => (
-            <option
-              key={country.code}
-              value={country.code}
-              className="bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100"
-            >
-              {country.flag} {country.code} ({country.name})
-            </option>
-          ))}
-        </select>
-        <div className="pointer-events-none absolute right-2 text-gray-400">
-          <svg className="w-3.5 h-3.5 fill-current" viewBox="0 0 20 20">
-            <path d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" />
-          </svg>
-        </div>
+          <span className="text-base shrink-0">{selectedCountry.flag}</span>
+          <span className="font-mono text-xs">{selectedCountry.code}</span>
+          <ChevronDown
+            className={`w-3.5 h-3.5 text-zinc-400 transition-transform duration-200 ${
+              isOpen ? 'rotate-180 text-violet-400' : ''
+            }`}
+          />
+        </button>
+
+        {/* Dropdown Menu */}
+        {isOpen && (
+          <div
+            role="listbox"
+            tabIndex={-1}
+            className="absolute top-full left-0 z-50 w-60 mt-1 bg-[#121217] border border-zinc-800/90 rounded-2xl shadow-[0_10px_35px_rgba(0,0,0,0.8)] backdrop-blur-xl overflow-hidden py-1 max-h-60 overflow-y-auto animate-in fade-in zoom-in-95 duration-150 scrollbar-thin scrollbar-thumb-zinc-700"
+          >
+            {COUNTRY_PREFIXES.map((country) => {
+              const isSelected = country.code === normalizedPrefix;
+              return (
+                <div
+                  key={country.code}
+                  role="option"
+                  aria-selected={isSelected}
+                  onClick={() => handleSelectPrefix(country.code)}
+                  className={`flex items-center justify-between px-3.5 py-2.5 text-xs cursor-pointer transition-colors ${
+                    isSelected
+                      ? 'bg-violet-600/20 text-violet-300 font-semibold'
+                      : 'text-zinc-300 hover:bg-zinc-800/80 hover:text-white'
+                  }`}
+                >
+                  <div className="flex items-center gap-2 truncate">
+                    <span className="text-base shrink-0">{country.flag}</span>
+                    <span className="truncate">{country.name}</span>
+                    <span className="font-mono text-zinc-500">({country.code})</span>
+                  </div>
+                  {isSelected && <Check className="w-3.5 h-3.5 text-violet-400 shrink-0 ml-2" />}
+                </div>
+              );
+            })}
+          </div>
+        )}
       </div>
 
+      {/* Phone Number Input */}
       <input
         type="tel"
         id={id}
@@ -98,7 +144,7 @@ export const InternationalPhoneInput: React.FC<InternationalPhoneInputProps> = (
         disabled={disabled}
         required={required}
         placeholder={placeholder}
-        className="w-full px-4 py-2.5 bg-transparent text-gray-900 dark:text-white placeholder-gray-400 focus:outline-none text-base"
+        className="w-full px-4 py-3 bg-transparent text-white placeholder-zinc-600 focus:outline-none text-sm"
       />
     </div>
   );

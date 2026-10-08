@@ -43,7 +43,7 @@ class ApiClient {
 
   public getStoredSession(): { user?: User; session?: Session } | null {
     try {
-      const raw = sessionStorage.getItem('user');
+      const raw = sessionStorage.getItem('user') || localStorage.getItem('user');
       if (!raw) return null;
       return JSON.parse(raw);
     } catch {
@@ -53,10 +53,12 @@ class ApiClient {
 
   public setStoredSession(data: { user: User; session: Session }): void {
     sessionStorage.setItem('user', JSON.stringify(data));
+    localStorage.setItem('user', JSON.stringify(data));
   }
 
   public clearStoredSession(): void {
     sessionStorage.removeItem('user');
+    localStorage.removeItem('user');
   }
 
   // 1. POST /login

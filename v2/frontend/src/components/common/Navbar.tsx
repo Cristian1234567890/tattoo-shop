@@ -64,29 +64,29 @@ export const Navbar: React.FC<NavbarProps> = ({ forceRender = false }) => {
     <nav className="bg-gray-950/40 backdrop-blur-xl border-b border-white/10 sticky top-0 z-50 transition-all font-sans text-white">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
-          {/* Brand Logo */}
-          <div className="flex items-center">
+          {/* Brand Logo (Left Section) */}
+          <div className="flex items-center shrink-0 min-w-max mr-4">
             <Link to="/" id="logo" onClick={closeMenu} className="flex items-center gap-2 no-underline">
               <Logo size="md" />
             </Link>
           </div>
 
-          {/* Desktop Navigation Links */}
-          <div className="hidden lg:flex items-center gap-1 xl:gap-2 shrink-0">
+          {/* Desktop Navigation Links (Center Section) */}
+          <div className="hidden lg:flex flex-1 items-center justify-center gap-1 xl:gap-2 px-2 overflow-hidden">
             {/* Only show Beneficios & Precios if NOT authenticated with VIP */}
             {(!isAuthenticated || !hasVip) && (
               <>
                 <Link
                   id="nav-beneficios"
                   to="/beneficios"
-                  className="px-2.5 xl:px-3.5 py-1.5 rounded-full text-xs xl:text-sm font-medium text-gray-300 hover:text-white hover:bg-white/10 transition-colors whitespace-nowrap shrink-0"
+                  className="px-2.5 xl:px-3 py-1.5 rounded-full text-xs xl:text-sm font-medium text-gray-300 hover:text-white hover:bg-white/10 transition-colors whitespace-nowrap shrink-0"
                 >
                   {t('nav.benefits')}
                 </Link>
                 <Link
                   id="nav-precios"
                   to="/precios"
-                  className="px-2.5 xl:px-3.5 py-1.5 rounded-full text-xs xl:text-sm font-medium text-gray-300 hover:text-white hover:bg-white/10 transition-colors whitespace-nowrap shrink-0"
+                  className="px-2.5 xl:px-3 py-1.5 rounded-full text-xs xl:text-sm font-medium text-gray-300 hover:text-white hover:bg-white/10 transition-colors whitespace-nowrap shrink-0"
                 >
                   {t('nav.pricing')}
                 </Link>
@@ -95,33 +95,33 @@ export const Navbar: React.FC<NavbarProps> = ({ forceRender = false }) => {
             <Link
               id="nav-artistas"
               to="/artistas"
-              className="px-2.5 xl:px-3.5 py-1.5 rounded-full text-xs xl:text-sm font-medium text-gray-300 hover:text-white hover:bg-white/10 transition-colors whitespace-nowrap shrink-0"
+              className="px-2.5 xl:px-3 py-1.5 rounded-full text-xs xl:text-sm font-medium text-gray-300 hover:text-white hover:bg-white/10 transition-colors whitespace-nowrap shrink-0"
             >
               {t('nav.artists')}
             </Link>
             <Link
               id="nav-tienda"
               to="/tienda"
-              className="px-2.5 xl:px-3.5 py-1.5 rounded-full text-xs xl:text-sm font-medium text-gray-300 hover:text-white hover:bg-white/10 transition-colors whitespace-nowrap shrink-0"
+              className="px-2.5 xl:px-3 py-1.5 rounded-full text-xs xl:text-sm font-medium text-gray-300 hover:text-white hover:bg-white/10 transition-colors whitespace-nowrap shrink-0"
             >
               {t('nav.shop')}
             </Link>
             <Link
               to="/hub"
-              className="px-2.5 xl:px-3.5 py-1.5 rounded-full text-xs xl:text-sm font-medium text-gray-300 hover:text-white hover:bg-white/10 transition-colors whitespace-nowrap shrink-0"
+              className="px-2.5 xl:px-3 py-1.5 rounded-full text-xs xl:text-sm font-medium text-gray-300 hover:text-white hover:bg-white/10 transition-colors whitespace-nowrap shrink-0"
             >
               {t('nav.explore_map')}
             </Link>
             <Link
               to="/about"
-              className="px-2.5 xl:px-3.5 py-1.5 rounded-full text-xs xl:text-sm font-medium text-gray-300 hover:text-white hover:bg-white/10 transition-colors whitespace-nowrap shrink-0"
+              className="px-2.5 xl:px-3 py-1.5 rounded-full text-xs xl:text-sm font-medium text-gray-300 hover:text-white hover:bg-white/10 transition-colors whitespace-nowrap shrink-0"
             >
               {t('nav.about')}
             </Link>
           </div>
 
-          {/* Desktop Right Actions: Country/Currency Selector + Auth */}
-          <div className="hidden lg:flex items-center gap-2 xl:gap-3 shrink-0">
+          {/* Desktop Right Actions: Country/Currency Selector + Auth (Right Section) */}
+          <div className="hidden lg:flex items-center gap-2 xl:gap-3 shrink-0 min-w-max ml-auto">
             {/* Country & Currency Selector Dropdown */}
             <div className="relative">
               <button
