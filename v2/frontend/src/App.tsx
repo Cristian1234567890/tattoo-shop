@@ -26,6 +26,7 @@ import { ArtistsDirectoryPage } from './pages/ArtistsDirectoryPage';
 import { ShopPage } from './pages/ShopPage';
 import { OnboardingPage } from './pages/OnboardingPage';
 import { Navbar, NavbarContext } from './components/common/Navbar';
+import { QaEnvironmentBanner } from './components/common/QaEnvironmentBanner';
 import { Footer, FooterContext } from './components/common/Footer';
 import { PageTransition } from './components/common/PageTransition';
 import './index.css';
@@ -164,6 +165,9 @@ export const AnimatedAppRoutes: React.FC = () => {
     <NavbarContext.Provider value={{ isMounted: true }}>
       <FooterContext.Provider value={{ isMounted: true }}>
         <div className="min-h-screen bg-[#090d16] text-white flex flex-col font-sans selection:bg-violet-500/30">
+          {/* Segregated QA Environment banner (only active on QA/Staging environments) */}
+          <QaEnvironmentBanner />
+
           {/* Persistent global Navbar: stays mounted across all routes without re-mounting flickering */}
           <Navbar forceRender={true} />
 

@@ -24,6 +24,7 @@ import {
   Languages,
   Lock,
 } from 'lucide-react';
+import { isQaEnvironment } from '../../api/supabase';
 
 export const NavbarContext = React.createContext<{ isMounted: boolean }>({ isMounted: false });
 
@@ -259,7 +260,17 @@ export const Navbar: React.FC<NavbarProps> = ({ forceRender = false }) => {
                 <span>{t('nav.recovering_password')}</span>
               </div>
             ) : isAuthenticated ? (
-              <div className="flex items-center gap-3">
+              <div className="flex items-center gap-2 xl:gap-3">
+                {isQaEnvironment() && (
+                  <span
+                    id="qa-user-sandbox-badge"
+                    className="hidden sm:inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-extrabold uppercase bg-amber-500/15 border border-amber-500/40 text-amber-300 tracking-wider shadow-sm"
+                    title="Usuario ejecutando en entorno de pruebas segregado"
+                  >
+                    <span className="w-1.5 h-1.5 rounded-full bg-amber-400"></span>
+                    SANDBOX QA
+                  </span>
+                )}
                 <Link
                   to={isArtist ? '/artist-dashboard' : '/client-dashboard'}
                   className="px-4 py-1.5 rounded-full text-sm font-semibold text-indigo-300 bg-indigo-500/10 hover:bg-indigo-500/20 border border-indigo-500/30 transition-all"

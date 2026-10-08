@@ -197,6 +197,9 @@ export class AuthService {
       : null;
     const onboarding_completed = legal_accepted;
 
+    const targetSchema = (dto as any).environment === 'qa' || env.NODE_ENV === 'staging' ? 'qa' : 'public';
+    const isQa = targetSchema === 'qa';
+
     const userMetadata = {
       nombre,
       apellido,
@@ -210,6 +213,8 @@ export class AuthService {
       legal_accepted,
       legal_accepted_at,
       onboarding_completed,
+      environment: targetSchema,
+      is_qa_sandbox: isQa,
     };
 
     // Use admin.createUser with email_confirm: true to avoid public email rate-limiting
@@ -238,7 +243,7 @@ export class AuthService {
 
     const user = createData.user;
 
-    // Persist into public.user_profiles
+    // Persist into user_profiles in target schema (qa vs public)
     if (user) {
       const profileData = {
         id: user.id,
@@ -253,13 +258,13 @@ export class AuthService {
       };
 
       try {
-        await supabaseAdmin.from('user_profiles').upsert(profileData);
+        await supabaseAdmin.schema(targetSchema).from('user_profiles').upsert(profileData);
       } catch (errProfile: any) {
         console.warn('Note: user_profiles upsert in signUp:', errProfile?.message || errProfile);
       }
     }
 
-    // Auto-create artist profile if role is Tatuador
+    // Auto-create artist profile if role is Tatuador in target schema
     if (tipo === 'Tatuador' && user) {
       const data_to_insert = {
         email,
@@ -278,6 +283,7 @@ export class AuthService {
       };
 
       const { error: error_insert } = await supabaseAdmin
+        .schema(targetSchema)
         .from('tatuadores_data')
         .upsert({ id: user.id, data: data_to_insert });
 

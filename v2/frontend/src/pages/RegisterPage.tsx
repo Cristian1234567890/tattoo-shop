@@ -12,8 +12,10 @@ import {
   EyeOff,
   Sparkles,
   AlertTriangle,
-  Calendar
+  Calendar,
+  ShieldAlert
 } from 'lucide-react';
+import { isQaEnvironment } from '../api/supabase';
 import { useAuth } from '../context/AuthContext';
 import { api } from '../api/client';
 import { CustomSelect, SelectOption } from '../components/common/CustomSelect';
@@ -131,7 +133,8 @@ export const RegisterPage: React.FC = () => {
         provincia: country,
         ciudad: city,
         direccion: address,
-      });
+        environment: isQaEnvironment() ? 'qa' : 'production',
+      } as any);
 
       if (response.success && response.data) {
         await login({ user: response.data.user, session: response.data.session });
@@ -175,6 +178,24 @@ export const RegisterPage: React.FC = () => {
             Ya sea que busques plasmar una nueva pieza o gestionar la agenda y flashes de tu estudio.
           </p>
         </div>
+
+        {/* QA Sandbox Notice */}
+        {isQaEnvironment() && (
+          <div
+            id="qa-register-sandbox-alert"
+            className="mb-8 p-4 rounded-2xl bg-amber-500/10 border border-amber-500/30 flex items-start gap-3 text-amber-200 text-xs shadow-lg backdrop-blur-sm"
+          >
+            <ShieldAlert className="w-5 h-5 text-amber-400 shrink-0 mt-0.5" />
+            <div>
+              <strong className="text-amber-300 block font-bold text-sm mb-0.5">
+                🧪 Registro en Entorno de QA / Sandbox
+              </strong>
+              <p className="text-zinc-300 leading-relaxed">
+                Esta cuenta se creará en el esquema aislado de pruebas <code className="text-amber-300 bg-amber-950/40 px-1 py-0.5 rounded font-mono">qa</code>. No otorga acceso al entorno productivo ni interactúa con clientes reales.
+              </p>
+            </div>
+          </div>
+        )}
 
         {/* Role Cards */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-12">

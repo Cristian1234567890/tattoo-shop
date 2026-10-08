@@ -2,6 +2,8 @@ import React, { useState, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import { api } from '../../api/client';
+import { isQaEnvironment } from '../../api/supabase';
+import { ShieldAlert } from 'lucide-react';
 
 export const InteractiveCard: React.FC = () => {
   const { user, updateUserMetadata, refreshProfile } = useAuth();
@@ -69,6 +71,23 @@ export const InteractiveCard: React.FC = () => {
 
   return (
     <div className="relative min-h-screen py-16 px-4 flex flex-col items-center justify-center">
+      {isQaEnvironment() && (
+        <div
+          id="qa-payment-sandbox-alert"
+          className="mb-6 max-w-md w-full bg-amber-500/10 border border-amber-500/30 rounded-2xl p-4 text-amber-200 text-xs shadow-lg backdrop-blur-md flex items-start gap-3"
+        >
+          <ShieldAlert className="w-5 h-5 text-amber-400 shrink-0 mt-0.5" />
+          <div>
+            <h4 className="font-bold text-amber-300 text-sm mb-1">
+              Modo Sandbox QA (Pasarela Simulada)
+            </h4>
+            <p className="text-zinc-300 text-xs leading-relaxed">
+              Este entorno de pruebas está completamente segregado. <strong>No introduzcas datos de tarjetas bancarias reales</strong>. Utiliza cualquier combinación numérica de 16 dígitos para simular la activación sin cobro monetario.
+            </p>
+          </div>
+        </div>
+      )}
+
       <div className="checkout">
         <div className={`credit-card-box ${isFlipped ? 'hover' : ''}`}>
           <div className="flip">
