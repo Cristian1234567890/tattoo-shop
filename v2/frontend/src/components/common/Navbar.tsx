@@ -71,21 +71,21 @@ export const Navbar: React.FC<NavbarProps> = ({ forceRender = false }) => {
           </div>
 
           {/* Desktop Navigation Links */}
-          <div className="hidden md:flex items-center gap-1 lg:gap-2">
+          <div className="hidden lg:flex items-center gap-1 xl:gap-2 shrink-0">
             {/* Only show Beneficios & Precios if NOT authenticated with VIP */}
             {(!isAuthenticated || !hasVip) && (
               <>
                 <Link
                   id="nav-beneficios"
                   to="/beneficios"
-                  className="px-3.5 py-1.5 rounded-full text-sm font-medium text-gray-300 hover:text-white hover:bg-white/10 transition-colors"
+                  className="px-2.5 xl:px-3.5 py-1.5 rounded-full text-xs xl:text-sm font-medium text-gray-300 hover:text-white hover:bg-white/10 transition-colors whitespace-nowrap shrink-0"
                 >
                   {t('nav.benefits')}
                 </Link>
                 <Link
                   id="nav-precios"
                   to="/precios"
-                  className="px-3.5 py-1.5 rounded-full text-sm font-medium text-gray-300 hover:text-white hover:bg-white/10 transition-colors"
+                  className="px-2.5 xl:px-3.5 py-1.5 rounded-full text-xs xl:text-sm font-medium text-gray-300 hover:text-white hover:bg-white/10 transition-colors whitespace-nowrap shrink-0"
                 >
                   {t('nav.pricing')}
                 </Link>
@@ -94,33 +94,33 @@ export const Navbar: React.FC<NavbarProps> = ({ forceRender = false }) => {
             <Link
               id="nav-artistas"
               to="/artistas"
-              className="px-3.5 py-1.5 rounded-full text-sm font-medium text-gray-300 hover:text-white hover:bg-white/10 transition-colors"
+              className="px-2.5 xl:px-3.5 py-1.5 rounded-full text-xs xl:text-sm font-medium text-gray-300 hover:text-white hover:bg-white/10 transition-colors whitespace-nowrap shrink-0"
             >
               {t('nav.artists')}
             </Link>
             <Link
               id="nav-tienda"
               to="/tienda"
-              className="px-3.5 py-1.5 rounded-full text-sm font-medium text-gray-300 hover:text-white hover:bg-white/10 transition-colors"
+              className="px-2.5 xl:px-3.5 py-1.5 rounded-full text-xs xl:text-sm font-medium text-gray-300 hover:text-white hover:bg-white/10 transition-colors whitespace-nowrap shrink-0"
             >
               {t('nav.shop')}
             </Link>
             <Link
               to="/hub"
-              className="px-3.5 py-1.5 rounded-full text-sm font-medium text-gray-300 hover:text-white hover:bg-white/10 transition-colors"
+              className="px-2.5 xl:px-3.5 py-1.5 rounded-full text-xs xl:text-sm font-medium text-gray-300 hover:text-white hover:bg-white/10 transition-colors whitespace-nowrap shrink-0"
             >
               {t('nav.explore_map')}
             </Link>
             <Link
               to="/about"
-              className="px-3.5 py-1.5 rounded-full text-sm font-medium text-gray-300 hover:text-white hover:bg-white/10 transition-colors"
+              className="px-2.5 xl:px-3.5 py-1.5 rounded-full text-xs xl:text-sm font-medium text-gray-300 hover:text-white hover:bg-white/10 transition-colors whitespace-nowrap shrink-0"
             >
               {t('nav.about')}
             </Link>
           </div>
 
           {/* Desktop Right Actions: Country/Currency Selector + Auth */}
-          <div className="hidden md:flex items-center gap-3">
+          <div className="hidden lg:flex items-center gap-2 xl:gap-3 shrink-0">
             {/* Country & Currency Selector Dropdown */}
             <div className="relative">
               <button
@@ -297,7 +297,7 @@ export const Navbar: React.FC<NavbarProps> = ({ forceRender = false }) => {
           </div>
 
           {/* Mobile Hamburger Button */}
-          <div className="flex md:hidden items-center">
+          <div className="flex lg:hidden items-center">
             <button
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
               aria-label="Abrir menú"
@@ -311,7 +311,7 @@ export const Navbar: React.FC<NavbarProps> = ({ forceRender = false }) => {
 
       {/* Mobile Drawer / Overlay */}
       {mobileMenuOpen && (
-        <div className="md:hidden bg-gray-950/95 backdrop-blur-2xl border-b border-white/10 px-4 pt-3 pb-6 space-y-4 animate-in fade-in slide-in-from-top-2 duration-200">
+        <div className="lg:hidden bg-gray-950/95 backdrop-blur-2xl border-b border-white/10 px-4 pt-3 pb-6 space-y-4 animate-in fade-in slide-in-from-top-2 duration-200">
           <div className="space-y-1">
             {(!isAuthenticated || !hasVip) && (
               <>

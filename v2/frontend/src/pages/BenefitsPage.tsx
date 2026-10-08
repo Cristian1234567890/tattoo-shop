@@ -9,7 +9,6 @@ import {
   HeartHandshake,
   FileCheck2,
   ChevronRight,
-  Star,
 } from 'lucide-react';
 import { PageTransition } from '../components/common/PageTransition';
 
@@ -149,79 +148,61 @@ export const BenefitsPage: React.FC = () => {
             </table>
           </div>
 
-          {/* 4. Testimonials of Studio Residents */}
+          {/* 4. Pillars of the Independent Atelier */}
           <div className="mb-24">
-            <div className="text-center max-w-xl mx-auto mb-12">
+            <div className="text-center max-w-2xl mx-auto mb-12">
               <span className="text-xs font-bold tracking-widest uppercase text-violet-400 mb-2 block">
-                VOCES DEL ATELIER
+                COMPROMISO DEL ECOSISTEMA
               </span>
-              <h2 className="text-3xl font-bold text-white">La Comunidad Opina</h2>
+              <h2 className="text-3xl font-bold text-white mb-3">La Filosofía Tattoo Hub</h2>
+              <p className="text-sm text-zinc-400 leading-relaxed">
+                Construimos una infraestructura basada en hechos, transparencia y respeto por el oficio del arte corporal.
+              </p>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               <div className="atelier-card p-6 rounded-2xl flex flex-col justify-between">
                 <div>
-                  <div className="flex gap-1 text-violet-400 mb-3">
-                    {[...Array(5)].map((_, i) => (
-                      <Star key={i} className="w-4 h-4 fill-violet-400" />
-                    ))}
+                  <div className="w-10 h-10 rounded-xl bg-violet-500/10 border border-violet-500/20 flex items-center justify-center text-violet-400 mb-4">
+                    <CheckCircle2 className="w-5 h-5" />
                   </div>
-                  <p className="text-sm text-zinc-300 italic mb-4 leading-relaxed">
-                    "Poder recibir cotizaciones con los centímetros exactos y la zona del cuerpo ahorra horas de ida y vuelta en mensajes sin sentido. Y saber que no hay comisión sobre mi aguja es fundamental."
+                  <h3 className="text-base font-bold text-white mb-2">Sin Tarifas Escondidas</h3>
+                  <p className="text-sm text-zinc-400 leading-relaxed">
+                    A diferencia de directorios que cobran por clic o porcentajes sobre citas, el contacto y las cotizaciones en Tattoo Hub son 100% directos entre cliente y artista.
                   </p>
                 </div>
-                <div className="flex items-center gap-3 pt-4 border-t border-zinc-800">
-                  <div className="w-10 h-10 rounded-full bg-violet-600/30 border border-violet-500/40 flex items-center justify-center font-bold text-violet-300">
-                    KS
-                  </div>
-                  <div>
-                    <h4 className="text-sm font-bold text-white">Kaelen Silva ("Void")</h4>
-                    <p className="text-xs text-zinc-500">Residente en Obsidian Atelier</p>
-                  </div>
+                <div className="mt-6 pt-4 border-t border-zinc-800 text-xs font-semibold text-violet-400">
+                  Transparencia económica total
                 </div>
               </div>
 
               <div className="atelier-card p-6 rounded-2xl flex flex-col justify-between">
                 <div>
-                  <div className="flex gap-1 text-violet-400 mb-3">
-                    {[...Array(5)].map((_, i) => (
-                      <Star key={i} className="w-4 h-4 fill-violet-400" />
-                    ))}
+                  <div className="w-10 h-10 rounded-xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-emerald-400 mb-4">
+                    <ShieldCheck className="w-5 h-5" />
                   </div>
-                  <p className="text-sm text-zinc-300 italic mb-4 leading-relaxed">
-                    "Como coleccionista, encontrar estudios que muestren claramente a sus residentes y sus medidas higiénicas me dio la confianza que ninguna red social me brindaba."
+                  <h3 className="text-base font-bold text-white mb-2">Higiene y Salud Auditada</h3>
+                  <p className="text-sm text-zinc-400 leading-relaxed">
+                    Facilitamos la verificación de licencias sanitarias y protocolos de bioseguridad para proteger tanto a los estudios responsables como a los clientes.
                   </p>
                 </div>
-                <div className="flex items-center gap-3 pt-4 border-t border-zinc-800">
-                  <div className="w-10 h-10 rounded-full bg-indigo-600/30 border border-indigo-500/40 flex items-center justify-center font-bold text-indigo-300">
-                    ML
-                  </div>
-                  <div>
-                    <h4 className="text-sm font-bold text-white">Maya Lin</h4>
-                    <p className="text-xs text-zinc-500">Coleccionista Verificada</p>
-                  </div>
+                <div className="mt-6 pt-4 border-t border-zinc-800 text-xs font-semibold text-emerald-400">
+                  Estándares hospitalarios visibles
                 </div>
               </div>
 
               <div className="atelier-card p-6 rounded-2xl flex flex-col justify-between">
                 <div>
-                  <div className="flex gap-1 text-violet-400 mb-3">
-                    {[...Array(5)].map((_, i) => (
-                      <Star key={i} className="w-4 h-4 fill-violet-400" />
-                    ))}
+                  <div className="w-10 h-10 rounded-xl bg-indigo-500/10 border border-indigo-500/20 flex items-center justify-center text-indigo-400 mb-4">
+                    <HeartHandshake className="w-5 h-5" />
                   </div>
-                  <p className="text-sm text-zinc-300 italic mb-4 leading-relaxed">
-                    "Subo mis flash designs y los clientes pueden reservarlos con un clic. El enlace directo a WhatsApp agiliza la cita y nos mantiene conectados de forma humana."
+                  <h3 className="text-base font-bold text-white mb-2">Construido con la Comunidad</h3>
+                  <p className="text-sm text-zinc-400 leading-relaxed">
+                    Nuestras funciones evolucionan con el aporte de artistas y coleccionistas reales. Tu feedback guía cada iteración de la plataforma.
                   </p>
                 </div>
-                <div className="flex items-center gap-3 pt-4 border-t border-zinc-800">
-                  <div className="w-10 h-10 rounded-full bg-emerald-600/30 border border-emerald-500/40 flex items-center justify-center font-bold text-emerald-300">
-                    CC
-                  </div>
-                  <div>
-                    <h4 className="text-sm font-bold text-white">Cristian Castillo</h4>
-                    <p className="text-xs text-zinc-500">Tatuador en Neon Ink Studio</p>
-                  </div>
+                <div className="mt-6 pt-4 border-t border-zinc-800 text-xs font-semibold text-indigo-400">
+                  Evolución colaborativa
                 </div>
               </div>
             </div>
@@ -234,7 +215,7 @@ export const BenefitsPage: React.FC = () => {
               ¿Listo para experimentar el tatuaje sin intermediarios?
             </h2>
             <p className="text-zinc-400 max-w-xl mx-auto mb-8 text-base">
-              Únete a miles de coleccionistas y estudios que ya operan en una plataforma limpia, moderna y enfocada exclusivamente en el arte en la piel.
+              Únete a la plataforma digital independiente diseñada exclusivamente para el arte en la piel, sin tarifas abusivas ni filtros opacos.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Link
