@@ -20,6 +20,7 @@ import L from 'leaflet';
 import { Link } from 'react-router-dom';
 import { useCurrency } from '../context/CurrencyContext';
 import { useGuestGate } from '../context/GuestGateContext';
+import { useGeolocation } from '../context/GeolocationContext';
 import { SendSketchModal } from '../components/hub/SendSketchModal';
 import { formatWhatsAppUrl } from '../utils/whatsapp';
 import { api } from '../api/client';
@@ -71,7 +72,7 @@ const STUDIOS_DATA: StudioLocation[] = [
     residents: [
       {
         id: 'artist-kaelen',
-        name: 'Kaelen Silva',
+        name: 'Artista Residente Void',
         alias: 'Void',
         avatar: '/assets/GB Tattoo.jpg',
         bio: 'Especialista en neo-tribal, cybersigilism, geometría oscura y blackwork biomecánico.',
@@ -87,7 +88,7 @@ const STUDIOS_DATA: StudioLocation[] = [
       },
       {
         id: 'artist-maya',
-        name: 'Maya Lin',
+        name: 'Artista Residente Thorne',
         alias: 'Thorne',
         avatar: '/assets/GB.jpeg',
         bio: 'Ornamental botánico de alta precisión, puntillismo sutil y micro-estructuras simétricas.',
@@ -102,7 +103,7 @@ const STUDIOS_DATA: StudioLocation[] = [
       },
       {
         id: 'artist-carlos',
-        name: 'Carlos Ruiz',
+        name: 'Artista Residente Neon',
         alias: 'Neon',
         avatar: '/assets/1571.jpg',
         bio: 'Cyberpunk futurista, estética glitch y tatuajes con tintas reactivas UV.',
@@ -311,6 +312,7 @@ function createStudioIcon(studio: StudioLocation, isActive: boolean) {
 export default function ArtistsHubPage() {
   const { formatPrice } = useCurrency();
   const { requireAuth } = useGuestGate();
+  const { coords: globalCoords, status: globalGeoStatus, requestLocation: requestGlobalLocation } = useGeolocation();
 
   const [viewMode, setViewMode] = useState<'map' | 'list'>('map');
   const [typeFilter, setTypeFilter] = useState<'all' | 'studio' | 'independent'>('all');
@@ -318,10 +320,12 @@ export default function ArtistsHubPage() {
   const [filter, setFilter] = useState<string>('All');
 
   // Mapa interactivo y posicionamiento GPS
-  const [mapCenter, setMapCenter] = useState<[number, number]>([8.9750, -79.5050]);
-  const [mapZoom, setMapZoom] = useState<number>(12);
-  const [userCoords, setUserCoords] = useState<[number, number] | null>(null);
-  const [gpsStatus, setGpsStatus] = useState<'prompt' | 'granted' | 'denied'>('prompt');
+  const [mapCenter, setMapCenter] = useState<[number, number]>(globalCoords || [8.9750, -79.5050]);
+  const [mapZoom, setMapZoom] = useState<number>(globalCoords ? 13 : 12);
+  const [userCoords, setUserCoords] = useState<[number, number] | null>(globalCoords);
+  const [gpsStatus, setGpsStatus] = useState<'prompt' | 'granted' | 'denied'>(
+    globalCoords ? 'granted' : (globalGeoStatus === 'denied' ? 'denied' : 'prompt')
+  );
   const [artists, setArtists] = useState<any[]>([]);
 
   // Selección de Local/Estudio Activo
@@ -333,35 +337,29 @@ export default function ArtistsHubPage() {
   const [sketchModalOpen, setSketchModalOpen] = useState(false);
   const [sketchTarget, setSketchTarget] = useState<{ id: string; name: string } | null>(null);
 
+  // Sincronizar coordenadas globales del usuario
+  useEffect(() => {
+    if (globalCoords) {
+      setUserCoords(globalCoords);
+      setMapCenter(globalCoords);
+      setGpsStatus('granted');
+      setMapZoom(13);
+    }
+  }, [globalCoords]);
+
   // 1. Geolocalización automática y manual
-  const requestUserLocation = () => {
-    if (typeof navigator !== 'undefined' && 'geolocation' in navigator) {
-      navigator.geolocation.getCurrentPosition(
-        (position) => {
-          const coords: [number, number] = [
-            position.coords.latitude,
-            position.coords.longitude,
-          ];
-          setUserCoords(coords);
-          setMapCenter(coords);
-          setGpsStatus('granted');
-        },
-        (error) => {
-          console.warn('GPS location request denied or unavailable:', error);
-          setGpsStatus('denied');
-          setMapCenter(DEFAULT_COORDINATES);
-        },
-        { enableHighAccuracy: true, timeout: 8000 }
-      );
+  const requestUserLocation = async () => {
+    const loc = await requestGlobalLocation();
+    if (loc) {
+      setUserCoords(loc);
+      setMapCenter(loc);
+      setGpsStatus('granted');
+      setMapZoom(13);
     } else {
       setGpsStatus('denied');
       setMapCenter(DEFAULT_COORDINATES);
     }
   };
-
-  useEffect(() => {
-    requestUserLocation();
-  }, []);
 
   // 2. Carga de artistas con fallback a SAMPLE_HUB_ARTISTS
   useEffect(() => {
@@ -699,13 +697,16 @@ export default function ArtistsHubPage() {
         </div>
 
         {/* DRAWER LATERAL / PANEL FLOTANTE DE DETALLES */}
-        <div className="relative z-30 w-full md:w-[480px] h-full flex flex-col p-3 md:p-4 pointer-events-none">
+        <div className="relative z-30 w-full md:w-[480px] h-full min-h-0 flex flex-col p-2 sm:p-3 md:p-4 pointer-events-none">
           <div
             data-testid="studio-drawer"
-            className="flex-1 w-full bg-zinc-900/90 backdrop-blur-xl border border-zinc-800 rounded-2xl flex flex-col overflow-hidden pointer-events-auto shadow-2xl"
+            onTouchStart={(e) => e.stopPropagation()}
+            onTouchMove={(e) => e.stopPropagation()}
+            onWheel={(e) => e.stopPropagation()}
+            className="flex-1 min-h-0 w-full bg-zinc-900/95 backdrop-blur-xl border border-zinc-800 rounded-2xl flex flex-col overflow-hidden pointer-events-auto shadow-2xl"
           >
             {/* Barra Superior de Búsqueda y Filtros */}
-            <div className="p-4 border-b border-zinc-800 space-y-3 bg-zinc-950/50">
+            <div className="p-3 sm:p-4 border-b border-zinc-800 space-y-2.5 sm:space-y-3 bg-zinc-950/70 shrink-0">
               <div className="relative">
                 <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 text-zinc-500 w-4 h-4" />
                 <input
@@ -779,16 +780,25 @@ export default function ArtistsHubPage() {
                 </div>
               </div>
 
-              {/* Filtros dinámicos de estilo y geolocalización */}
-              <div className="flex items-center gap-1.5 overflow-x-auto no-scrollbar pt-1">
+              {/* Filtros dinámicos de estilo y geolocalización con scroll táctil suave */}
+              <div
+                id="hub-style-filters-container"
+                className="flex items-center gap-2 overflow-x-auto py-1 scrollbar-none overscroll-x-contain touch-pan-x"
+                style={{
+                  WebkitOverflowScrolling: 'touch',
+                  touchAction: 'pan-x',
+                }}
+                onTouchStart={(e) => e.stopPropagation()}
+                onTouchMove={(e) => e.stopPropagation()}
+              >
                 {['All', 'Realismo', 'Tradicional', 'Blackwork', 'Minimalista', 'Neotradicional'].map(
                   (styleName) => (
                     <button
                       key={styleName}
                       onClick={() => setFilter(styleName)}
-                      className={`px-2.5 py-1 rounded-lg text-xs font-medium shrink-0 transition-colors cursor-pointer ${
+                      className={`px-3 py-1.5 rounded-xl text-xs font-semibold shrink-0 whitespace-nowrap transition-all cursor-pointer ${
                         filter === styleName
-                          ? 'bg-violet-600 text-white'
+                          ? 'bg-violet-600 text-white shadow-md shadow-violet-600/30'
                           : 'bg-zinc-900 text-zinc-400 hover:text-zinc-200 border border-zinc-800'
                       }`}
                     >
@@ -801,6 +811,7 @@ export default function ArtistsHubPage() {
               {/* Botón manual de GPS si no fue otorgado */}
               {gpsStatus !== 'granted' && (
                 <button
+                  id="hub-request-location-btn"
                   onClick={requestUserLocation}
                   className="w-full flex items-center justify-center gap-1.5 py-1.5 px-3 rounded-lg bg-zinc-900 hover:bg-zinc-800 border border-violet-500/30 text-violet-300 text-xs font-medium transition cursor-pointer"
                 >
@@ -811,7 +822,18 @@ export default function ArtistsHubPage() {
             </div>
 
             {/* Contenido con Scroll: Tarjeta del Estudio & Artistas Residentes */}
-            <div className="flex-1 overflow-y-auto p-4 space-y-4 custom-scrollbar">
+            <div
+              id="hub-drawer-scrollable-content"
+              style={{
+                overscrollBehavior: 'contain',
+                WebkitOverflowScrolling: 'touch',
+                touchAction: 'pan-y',
+              }}
+              onTouchStart={(e) => e.stopPropagation()}
+              onTouchMove={(e) => e.stopPropagation()}
+              onWheel={(e) => e.stopPropagation()}
+              className="flex-1 min-h-0 overflow-y-auto p-3 sm:p-4 space-y-4 custom-scrollbar"
+            >
               {/* TARJETA DEL ESTUDIO / LOCAL ACTIVO */}
               <div className="bg-zinc-950 border border-zinc-800/90 rounded-2xl overflow-hidden shadow-xl">
                 {/* Banner & Identidad del Estudio */}
@@ -872,7 +894,12 @@ export default function ArtistsHubPage() {
                         </div>
 
                         {/* Concentric Violet Avatar Rings */}
-                        <div className="flex gap-2.5 overflow-x-auto pb-1 no-scrollbar">
+                        <div
+                          className="flex gap-2.5 overflow-x-auto pb-1 no-scrollbar overscroll-x-contain touch-pan-x"
+                          style={{ WebkitOverflowScrolling: 'touch', touchAction: 'pan-x' }}
+                          onTouchStart={(e) => e.stopPropagation()}
+                          onTouchMove={(e) => e.stopPropagation()}
+                        >
                           {activeStudio.residents.map((resident) => {
                             const isResidentSelected = activeResident?.id === resident.id;
                             return (
@@ -968,7 +995,12 @@ export default function ArtistsHubPage() {
                         </span>
                       </div>
 
-                      <div className="flex gap-2.5 overflow-x-auto no-scrollbar pb-1">
+                      <div
+                        className="flex gap-2.5 overflow-x-auto no-scrollbar pb-1 overscroll-x-contain touch-pan-x"
+                        style={{ WebkitOverflowScrolling: 'touch', touchAction: 'pan-x' }}
+                        onTouchStart={(e) => e.stopPropagation()}
+                        onTouchMove={(e) => e.stopPropagation()}
+                      >
                         {activeResident.flashes.map((flash) => (
                           <div
                             key={flash.id}

@@ -5,6 +5,7 @@ import { AuthProvider, useAuth } from './context/AuthContext';
 import { ThemeProvider } from './context/ThemeContext';
 import { CurrencyProvider } from './context/CurrencyContext';
 import { LanguageProvider } from './context/LanguageContext';
+import { GeolocationProvider } from './context/GeolocationContext';
 import { GuestGateProvider } from './context/GuestGateContext';
 import { HomePage } from './pages/HomePage';
 import { LoginPage } from './pages/LoginPage';
@@ -243,12 +244,14 @@ export const App: React.FC = () => {
       <LanguageProvider>
         <CurrencyProvider>
           <AuthProvider>
-            <BrowserRouter>
-              <GuestGateProvider>
-                <OnboardingGate />
-                <AnimatedAppRoutes />
-              </GuestGateProvider>
-            </BrowserRouter>
+            <GeolocationProvider>
+              <BrowserRouter>
+                <GuestGateProvider>
+                  <OnboardingGate />
+                  <AnimatedAppRoutes />
+                </GuestGateProvider>
+              </BrowserRouter>
+            </GeolocationProvider>
           </AuthProvider>
         </CurrencyProvider>
       </LanguageProvider>
