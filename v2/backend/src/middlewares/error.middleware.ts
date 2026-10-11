@@ -1,8 +1,10 @@
 import { Request, Response, NextFunction } from 'express';
+import * as Sentry from '@sentry/node';
+import { reportSentryErrorToDiscord } from '../utils/sentry-notifier.util';
 
 export function errorHandler(
   err: any,
-  _req: Request,
+  req: Request,
   res: Response,
   _next: NextFunction
 ): void {
@@ -25,6 +27,19 @@ export function errorHandler(
   }
 
   const status = typeof err.status === 'number' ? err.status : 500;
+
+  // Report internal errors (500) to Sentry and Discord
+  if (status >= 500) {
+    Sentry.captureException(err);
+    reportSentryErrorToDiscord({
+      message: err.message || 'Internal Server Error',
+      stack: err.stack,
+      path: req.originalUrl || req.url,
+      method: req.method,
+      source: 'v2/backend'
+    }).catch(() => {});
+  }
+
   res.status(status).json({
     success: false,
     error: {
