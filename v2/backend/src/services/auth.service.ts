@@ -55,6 +55,19 @@ export function isTokenRevoked(token?: string): boolean {
   return revokedTokens.has(token.trim());
 }
 
+export function calculateAge(birthdateStr: string): number {
+  if (!birthdateStr || typeof birthdateStr !== 'string') return -1;
+  const birthdate = new Date(birthdateStr);
+  if (isNaN(birthdate.getTime())) return -1;
+  const today = new Date();
+  let age = today.getFullYear() - birthdate.getFullYear();
+  const monthDiff = today.getMonth() - birthdate.getMonth();
+  if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthdate.getDate())) {
+    age--;
+  }
+  return age;
+}
+
 export class AuthService {
   async signIn(dto: SignInDTO): Promise<ApiResponse> {
     const rawEmail = typeof dto?.email === 'string' ? dto.email.trim() : '';
@@ -174,6 +187,42 @@ export class AuthService {
       };
     }
 
+    // Strict 18+ COPPA and Legal Age Verification
+    const rawBirthdate = typeof dto.birthdate === 'string' ? dto.birthdate.trim() : '';
+    let validatedAge: number | null = null;
+
+    if (rawBirthdate) {
+      const calcAge = calculateAge(rawBirthdate);
+      if (calcAge < 0 || calcAge > 120) {
+        return {
+          success: false,
+          error: { message: 'Fecha de nacimiento inválida o formato incorrecto (YYYY-MM-DD)', status: 400 },
+        };
+      }
+      if (calcAge < 18) {
+        return {
+          success: false,
+          error: {
+            message: 'Debes tener al menos 18 años para registrarte en Tattoo Hub (Cumplimiento legal y COPPA)',
+            status: 400,
+          },
+        };
+      }
+      validatedAge = calcAge;
+    } else if (edad) {
+      const edadNum = parseInt(edad, 10);
+      if (isNaN(edadNum) || edadNum < 18 || edadNum > 120) {
+        return {
+          success: false,
+          error: {
+            message: 'Debes tener al menos 18 años para registrarte en Tattoo Hub (Cumplimiento legal y COPPA)',
+            status: 400,
+          },
+        };
+      }
+      validatedAge = edadNum;
+    }
+
     // Rejection if client explicitly rejects or provides falsy legal acceptance
     if (
       dto.legal_accepted === false ||
@@ -200,10 +249,10 @@ export class AuthService {
     const targetSchema = (dto as any).environment === 'qa' || env.NODE_ENV === 'staging' ? 'qa' : 'public';
     const isQa = targetSchema === 'qa';
 
-    const userMetadata = {
+    const userMetadata: Record<string, any> = {
       nombre,
       apellido,
-      edad,
+      edad: validatedAge !== null ? String(validatedAge) : edad,
       tipo,
       telefono,
       provincia,
@@ -216,6 +265,9 @@ export class AuthService {
       environment: targetSchema,
       is_qa_sandbox: isQa,
     };
+    if (rawBirthdate) {
+      userMetadata.birthdate = rawBirthdate;
+    }
 
     // Use admin.createUser with email_confirm: true to avoid public email rate-limiting
     const { data: createData, error: createError } = await supabaseAdmin.auth.admin.createUser({
@@ -255,6 +307,8 @@ export class AuthService {
         phone_number: telefono || null,
         is_verified: false,
         onboarding_completed,
+        birthdate: rawBirthdate || null,
+        edad: validatedAge !== null ? String(validatedAge) : (edad || null),
       };
 
       try {

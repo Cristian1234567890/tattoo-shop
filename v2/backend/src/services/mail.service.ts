@@ -44,9 +44,9 @@ export class MailService {
     }
 
     const mailOptions: nodemailer.SendMailOptions = {
-      from: env.EMAIL,
+      from: `"Tattoo Hub" <${env.EMAIL}>`,
       to: to.trim(),
-      subject: 'Contacto de cliente',
+      subject: '⚡ Nueva solicitud de consulta de cliente - Tattoo Hub',
       text: messageText,
       html: renderMailTemplate(messageText, imgSrc),
       attachments: rawBase64

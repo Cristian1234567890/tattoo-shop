@@ -9,6 +9,7 @@ export interface SignUpDTO {
   nombre?: string;
   apellido?: string;
   edad?: string | number;
+  birthdate?: string;
   tipo?: 'Cliente' | 'Tatuador' | string;
   telefono?: string;
   provincia?: string;
@@ -32,6 +33,7 @@ export interface UpdateUserDTO {
   nombre?: string;
   apellido?: string;
   edad?: string | number;
+  birthdate?: string;
   telefono?: string;
   provincia?: string;
   ciudad?: string;

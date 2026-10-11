@@ -8,12 +8,16 @@ import mailRoutes from './routes/mail.routes';
 import progressRoutes from './routes/progress.routes';
 import hubRoutes from './routes/hub.routes';
 import { errorHandler } from './middlewares/error.middleware';
+import { generalApiLimiter } from './middlewares/rateLimit.middleware';
 
 export function createApp(): Application {
   const app: Application = express();
 
   // Cross-Origin Resource Sharing
   app.use(cors());
+
+  // General API Rate Limiting to prevent scraping and DoS
+  app.use(generalApiLimiter);
 
   // 50MB body limit for base64 image uploads and email attachments
   app.use(express.json({ limit: '50mb' }));

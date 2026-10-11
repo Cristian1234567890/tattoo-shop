@@ -139,6 +139,8 @@ export class UserService {
     if (userData.notification_preferences !== undefined) profileUpdates.notification_preferences = userData.notification_preferences;
     if (userData.privacy_settings !== undefined) profileUpdates.privacy_settings = userData.privacy_settings;
     if (userData.preferred_language !== undefined) profileUpdates.preferred_language = userData.preferred_language;
+    if (userData.birthdate !== undefined) profileUpdates.birthdate = userData.birthdate;
+    if (userData.edad !== undefined) profileUpdates.edad = String(userData.edad);
     if (userData.onboarding_completed !== undefined) profileUpdates.onboarding_completed = userData.onboarding_completed;
     if (userData.is_verified !== undefined) profileUpdates.is_verified = userData.is_verified;
 
