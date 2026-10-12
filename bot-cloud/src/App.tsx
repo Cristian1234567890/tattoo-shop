@@ -13,8 +13,6 @@ import {
   Check, 
   Lock, 
   User, 
-  Server, 
-  Activity, 
   PlusCircle,
   Bell,
   Code,
@@ -24,8 +22,24 @@ import {
   MessageSquare,
   BookOpen,
   Download,
-  Smartphone
+  Smartphone,
+  Users,
+  UserPlus,
+  Trash2,
+  Eye,
+  EyeOff,
+  Edit3
 } from 'lucide-react';
+
+interface UserData {
+  username: string;
+  name?: string;
+  role: 'Admin' | 'Agent' | 'Operator' | 'Viewer';
+  apiKey?: string;
+  active?: boolean;
+  twoFactorEnabled?: boolean;
+  createdAt?: string;
+}
 
 interface SentryIncident {
   id: string;
@@ -49,41 +63,65 @@ interface BotCommand {
 interface TaskItem {
   id: string;
   title: string;
+  description?: string;
   source: string;
   status: string;
   priority: string;
   createdAt: string;
+  createdBy?: string;
 }
 
 export default function App() {
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
-  const [username, setUsername] = useState<string>('admin');
-  const [password, setPassword] = useState<string>('');
+  const [sessionToken, setSessionToken] = useState<string>('');
+  const [currentUser, setCurrentUser] = useState<UserData>({
+    username: 'admin',
+    role: 'Admin'
+  });
+
+  // Login form
+  const [loginUsername, setLoginUsername] = useState<string>('giovanni');
+  const [loginPassword, setLoginPassword] = useState<string>('');
   const [twoFactorCode, setTwoFactorCode] = useState<string>('');
   const [requires2FA, setRequires2FA] = useState<boolean>(false);
   const [authError, setAuthError] = useState<string>('');
-  const [activeTab, setActiveTab] = useState<'sentry' | 'commands' | 'discord-mgmt' | 'tasks' | 'security' | 'swagger' | 'webhooks'>('sentry');
+
+  // Tabs
+  const [activeTab, setActiveTab] = useState<'sentry' | 'discord-mgmt' | 'commands' | 'tasks' | 'users' | 'security' | 'swagger' | 'webhooks'>('sentry');
   const [copiedUrl, setCopiedUrl] = useState<string | null>(null);
 
-  // Estados del Dashboard
+  // Dashboard Data
   const [incidents, setIncidents] = useState<SentryIncident[]>([]);
   const [commands, setCommands] = useState<BotCommand[]>([]);
   const [tasks, setTasks] = useState<TaskItem[]>([]);
+  const [usersList, setUsersList] = useState<UserData[]>([]);
   const [twoFactorEnabled, setTwoFactorEnabled] = useState<boolean>(false);
 
-  // Estado de Gestión de Contraseña y 2FA
-  const [currentPass, setCurrentPass] = useState('');
-  const [newPass, setNewPass] = useState('');
-  const [confirmPass, setConfirmPass] = useState('');
-  const [passMsg, setPassMsg] = useState({ text: '', isError: false });
-  const [isChangingPass, setIsChangingPass] = useState(false);
+  // Perfil & Cambio de usuario/contraseña
+  const [showProfileModal, setShowProfileModal] = useState(false);
+  const [editUsername, setEditUsername] = useState('');
+  const [editName, setEditName] = useState('');
+  const [editCurrentPass, setEditCurrentPass] = useState('');
+  const [editNewPass, setEditNewPass] = useState('');
+  const [profileMsg, setProfileMsg] = useState({ text: '', isError: false });
+  const [isUpdatingProfile, setIsUpdatingProfile] = useState(false);
 
+  // Subusuarios (Admin Only)
+  const [showCreateUserModal, setShowCreateUserModal] = useState(false);
+  const [newSubUsername, setNewSubUsername] = useState('');
+  const [newSubName, setNewSubName] = useState('');
+  const [newSubPassword, setNewSubPassword] = useState('');
+  const [newSubRole, setNewSubRole] = useState<'Admin' | 'Agent' | 'Operator' | 'Viewer'>('Agent');
+  const [userActionMsg, setUserActionMsg] = useState({ text: '', isError: false });
+  const [visibleApiKeys, setVisibleApiKeys] = useState<{ [key: string]: boolean }>({});
+
+  // 2FA
   const [setup2FAData, setSetup2FAData] = useState<{ secret: string; qrCode: string } | null>(null);
   const [verify2FACode, setVerify2FACode] = useState('');
   const [twoFAMsg, setTwoFAMsg] = useState({ text: '', isError: false });
   const [disable2FAPass, setDisable2FAPass] = useState('');
 
-  // Estado de Gestión de Discord desde la Web
+  // Discord
   const [discordMsg, setDiscordMsg] = useState('');
   const [discordTitle, setDiscordTitle] = useState('');
   const [discordChannel, setDiscordChannel] = useState('alertas');
@@ -91,42 +129,83 @@ export default function App() {
   const [isSendingDiscord, setIsSendingDiscord] = useState(false);
   const [discordSendStatus, setDiscordSendStatus] = useState<string | null>(null);
 
-  // Estado de Ejecutor Remoto de Comandos
+  // Remote Slash
   const [remoteCommand, setRemoteCommand] = useState('/status');
   const [remotePayload, setRemotePayload] = useState('');
   const [remoteCommandResult, setRemoteCommandResult] = useState<string | null>(null);
 
+  // New Task
   const [newTaskTitle, setNewTaskTitle] = useState('');
+  const [newTaskDesc, setNewTaskDesc] = useState('');
   const [newTaskPriority, setNewTaskPriority] = useState('HIGH');
   const [isSubmittingTask, setIsSubmittingTask] = useState(false);
   const [isSimulatingSentry, setIsSimulatingSentry] = useState(false);
 
-  // Verificar si hay token previo en localStorage
+  // Headers helper
+  const getAuthHeaders = () => {
+    const token = sessionToken || localStorage.getItem('tattoo_ops_auth') || '';
+    const apiKey = currentUser.apiKey || localStorage.getItem('tattoo_ops_apikey') || '';
+    const username = currentUser.username || localStorage.getItem('tattoo_ops_username') || '';
+    return {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${token}`,
+      'X-API-Key': apiKey,
+      'X-Username': username
+    };
+  };
+
+  // Restaurar sesión al iniciar
   useEffect(() => {
     const savedToken = localStorage.getItem('tattoo_ops_auth');
+    const savedUser = localStorage.getItem('tattoo_ops_user');
     if (savedToken) {
+      setSessionToken(savedToken);
       setIsAuthenticated(true);
+      if (savedUser) {
+        try {
+          const parsed = JSON.parse(savedUser);
+          setCurrentUser(parsed);
+          setEditUsername(parsed.username || '');
+          setEditName(parsed.name || '');
+        } catch {}
+      }
     }
   }, []);
 
-  // Carga periódica de datos desde Firestore
+  // Carga periódica de datos
   useEffect(() => {
     if (!isAuthenticated) return;
 
     const fetchData = async () => {
       try {
-        const res = await fetch('/api/data');
+        const headers = getAuthHeaders();
+
+        // 1. Telemetría y estado
+        const res = await fetch('/api/data', { headers });
         if (res.ok) {
           const data = await res.json();
           if (data.incidents) setIncidents(data.incidents);
           if (data.commands) setCommands(data.commands);
           if (data.tasks) setTasks(data.tasks);
+        } else if (res.status === 401) {
+          handleLogout();
+          return;
         }
 
-        const res2FA = await fetch(`/api/auth/2fa?username=${username}`);
+        // 2. Estado de 2FA
+        const res2FA = await fetch('/api/auth/2fa', { headers });
         if (res2FA.ok) {
           const data2FA = await res2FA.json();
           setTwoFactorEnabled(!!data2FA.twoFactorEnabled);
+        }
+
+        // 3. Si es Admin, obtener listado de usuarios
+        if (currentUser.role === 'Admin') {
+          const usersRes = await fetch('/api/users', { headers });
+          if (usersRes.ok) {
+            const uData = await usersRes.json();
+            if (uData.users) setUsersList(uData.users);
+          }
         }
       } catch (err) {
         console.warn("Error fetching data:", err);
@@ -136,7 +215,7 @@ export default function App() {
     fetchData();
     const interval = setInterval(fetchData, 8000);
     return () => clearInterval(interval);
-  }, [isAuthenticated, username]);
+  }, [isAuthenticated, sessionToken, currentUser.role]);
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -147,8 +226,8 @@ export default function App() {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ 
-          username, 
-          password, 
+          username: loginUsername, 
+          password: loginPassword, 
           twoFactorCode: requires2FA ? twoFactorCode : undefined 
         })
       });
@@ -161,12 +240,23 @@ export default function App() {
           return;
         }
 
-        localStorage.setItem('tattoo_ops_auth', data.token || ('session_' + Date.now()));
+        const token = data.token;
+        const userObj: UserData = data.user || { username: loginUsername, role: 'Admin' };
+
+        localStorage.setItem('tattoo_ops_auth', token);
+        localStorage.setItem('tattoo_ops_user', JSON.stringify(userObj));
+        localStorage.setItem('tattoo_ops_username', userObj.username);
+        if (data.apiKey) localStorage.setItem('tattoo_ops_apikey', data.apiKey);
+
+        setSessionToken(token);
+        setCurrentUser(userObj);
+        setEditUsername(userObj.username);
+        setEditName(userObj.name || userObj.username);
         setIsAuthenticated(true);
         setRequires2FA(false);
         setTwoFactorCode('');
       } else {
-        setAuthError(data.error || 'Credenciales incorrectas.');
+        setAuthError(data.error || 'Credenciales inválidas.');
       }
     } catch {
       setAuthError('Error conectando al servidor de autenticación.');
@@ -175,8 +265,12 @@ export default function App() {
 
   const handleLogout = () => {
     localStorage.removeItem('tattoo_ops_auth');
+    localStorage.removeItem('tattoo_ops_user');
+    localStorage.removeItem('tattoo_ops_apikey');
+    localStorage.removeItem('tattoo_ops_username');
+    setSessionToken('');
     setIsAuthenticated(false);
-    setPassword('');
+    setLoginPassword('');
     setTwoFactorCode('');
     setRequires2FA(false);
   };
@@ -187,53 +281,138 @@ export default function App() {
     setTimeout(() => setCopiedUrl(null), 2000);
   };
 
-  // Cambio de Contraseña
-  const handleChangePassword = async (e: React.FormEvent) => {
+  // Actualizar Perfil (Cambiar usuario o contraseña propia)
+  const handleUpdateProfile = async (e: React.FormEvent) => {
     e.preventDefault();
-    setPassMsg({ text: '', isError: false });
+    setProfileMsg({ text: '', isError: false });
+    setIsUpdatingProfile(true);
 
-    if (newPass !== confirmPass) {
-      setPassMsg({ text: 'Las nuevas contraseñas no coinciden.', isError: true });
-      return;
-    }
-
-    if (newPass.length < 6) {
-      setPassMsg({ text: 'La contraseña debe tener mínimo 6 caracteres.', isError: true });
-      return;
-    }
-
-    setIsChangingPass(true);
     try {
-      const res = await fetch('/api/auth/change-password', {
+      const res = await fetch('/api/auth/profile', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ username, currentPassword: currentPass, newPassword: newPass })
+        headers: getAuthHeaders(),
+        body: JSON.stringify({
+          newUsername: editUsername !== currentUser.username ? editUsername : undefined,
+          name: editName,
+          currentPassword: editCurrentPass || undefined,
+          newPassword: editNewPass || undefined
+        })
       });
-      const data = await res.json();
 
+      const data = await res.json();
       if (res.ok) {
-        setPassMsg({ text: '¡Contraseña actualizada con éxito en Firestore!', isError: false });
-        setCurrentPass('');
-        setNewPass('');
-        setConfirmPass('');
+        if (data.token) {
+          setSessionToken(data.token);
+          localStorage.setItem('tattoo_ops_auth', data.token);
+        }
+        if (data.user) {
+          setCurrentUser(data.user);
+          localStorage.setItem('tattoo_ops_user', JSON.stringify(data.user));
+          localStorage.setItem('tattoo_ops_username', data.user.username);
+        }
+        setProfileMsg({ text: '¡Perfil actualizado exitosamente!', isError: false });
+        setEditCurrentPass('');
+        setEditNewPass('');
+        setTimeout(() => setShowProfileModal(false), 1200);
       } else {
-        setPassMsg({ text: data.error || 'Error al actualizar contraseña.', isError: true });
+        setProfileMsg({ text: data.error || 'Error al actualizar perfil.', isError: true });
       }
     } catch {
-      setPassMsg({ text: 'Fallo de conexión al actualizar contraseña.', isError: true });
+      setProfileMsg({ text: 'Error de red al actualizar perfil.', isError: true });
     } finally {
-      setIsChangingPass(false);
+      setIsUpdatingProfile(false);
     }
   };
 
-  // 2FA: Iniciar Configuración
+  // Crear Subusuario
+  const handleCreateSubUser = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setUserActionMsg({ text: '', isError: false });
+
+    try {
+      const res = await fetch('/api/users', {
+        method: 'POST',
+        headers: getAuthHeaders(),
+        body: JSON.stringify({
+          username: newSubUsername,
+          name: newSubName,
+          password: newSubPassword,
+          role: newSubRole
+        })
+      });
+
+      const data = await res.json();
+      if (res.ok) {
+        setUserActionMsg({ text: `¡Usuario ${newSubUsername} creado con éxito con rol ${newSubRole}!`, isError: false });
+        setNewSubUsername('');
+        setNewSubName('');
+        setNewSubPassword('');
+        setShowCreateUserModal(false);
+        // Recargar usuarios
+        const uRes = await fetch('/api/users', { headers: getAuthHeaders() });
+        if (uRes.ok) {
+          const uData = await uRes.json();
+          setUsersList(uData.users || []);
+        }
+      } else {
+        setUserActionMsg({ text: data.error || 'Error al crear usuario.', isError: true });
+      }
+    } catch {
+      setUserActionMsg({ text: 'Error de red al registrar usuario.', isError: true });
+    }
+  };
+
+  // Regenerar API Key de subusuario
+  const handleRegenerateKey = async (targetUsername: string) => {
+    try {
+      const res = await fetch('/api/users', {
+        method: 'PUT',
+        headers: getAuthHeaders(),
+        body: JSON.stringify({
+          username: targetUsername,
+          regenerateApiKey: true
+        })
+      });
+      if (res.ok) {
+        const uRes = await fetch('/api/users', { headers: getAuthHeaders() });
+        if (uRes.ok) {
+          const uData = await uRes.json();
+          setUsersList(uData.users || []);
+        }
+      }
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  // Eliminar subusuario
+  const handleDeleteUser = async (targetUsername: string) => {
+    if (!window.confirm(`¿Seguro que deseas eliminar el usuario @${targetUsername}?`)) return;
+
+    try {
+      const res = await fetch(`/api/users?username=${encodeURIComponent(targetUsername)}`, {
+        method: 'DELETE',
+        headers: getAuthHeaders()
+      });
+      const data = await res.json();
+      if (res.ok) {
+        setUsersList(prev => prev.filter(u => u.username !== targetUsername));
+      } else {
+        alert(data.error || 'Error al eliminar');
+      }
+    } catch (err) {
+      alert('Error de red al eliminar usuario');
+    }
+  };
+
+  // 2FA Handlers
   const handleStart2FA = async () => {
     setTwoFAMsg({ text: '', isError: false });
     try {
       const res = await fetch('/api/auth/2fa', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ action: 'setup', username })
+        headers: getAuthHeaders(),
+        body: JSON.stringify({ action: 'setup' })
       });
       const data = await res.json();
       if (res.ok) {
@@ -246,7 +425,6 @@ export default function App() {
     }
   };
 
-  // 2FA: Verificar y Habilitar
   const handleVerifyEnable2FA = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!setup2FAData || !verify2FACode) return;
@@ -254,10 +432,9 @@ export default function App() {
     try {
       const res = await fetch('/api/auth/2fa', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: getAuthHeaders(),
         body: JSON.stringify({
           action: 'verify_and_enable',
-          username,
           secret: setup2FAData.secret,
           code: verify2FACode
         })
@@ -277,7 +454,6 @@ export default function App() {
     }
   };
 
-  // 2FA: Desactivar
   const handleDisable2FA = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!disable2FAPass) return;
@@ -285,8 +461,8 @@ export default function App() {
     try {
       const res = await fetch('/api/auth/2fa', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ action: 'disable', username, password: disable2FAPass })
+        headers: getAuthHeaders(),
+        body: JSON.stringify({ action: 'disable', password: disable2FAPass })
       });
       const data = await res.json();
 
@@ -302,7 +478,7 @@ export default function App() {
     }
   };
 
-  // Enviar mensaje a Discord desde la Web
+  // Enviar mensaje a Discord
   const handleSendToDiscord = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!discordMsg.trim()) return;
@@ -313,7 +489,7 @@ export default function App() {
     try {
       const res = await fetch('/api/discord/send', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: getAuthHeaders(),
         body: JSON.stringify({
           channel: discordChannel,
           title: discordTitle || undefined,
@@ -335,6 +511,36 @@ export default function App() {
       setDiscordSendStatus('❌ Error de conexión al enviar mensaje.');
     } finally {
       setIsSendingDiscord(false);
+    }
+  };
+
+  // Encolar Tarea
+  const handleCreateTask = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!newTaskTitle.trim()) return;
+
+    setIsSubmittingTask(true);
+    try {
+      const res = await fetch('/api/tasks', {
+        method: 'POST',
+        headers: getAuthHeaders(),
+        body: JSON.stringify({
+          title: newTaskTitle,
+          description: newTaskDesc,
+          priority: newTaskPriority,
+          jiraProject: 'TH'
+        })
+      });
+      const data = await res.json();
+      if (res.ok && data.task) {
+        setTasks(prev => [data.task, ...prev]);
+        setNewTaskTitle('');
+        setNewTaskDesc('');
+      }
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setIsSubmittingTask(false);
     }
   };
 
@@ -360,10 +566,32 @@ export default function App() {
     setTimeout(() => setIsSimulatingSentry(false), 500);
   };
 
+  // Descargar openapi.json autenticado
+  const handleDownloadOpenAPI = async () => {
+    try {
+      const res = await fetch('/api/openapi', { headers: getAuthHeaders() });
+      if (res.ok) {
+        const spec = await res.json();
+        const blob = new Blob([JSON.stringify(spec, null, 2)], { type: 'application/json' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'tattoo-hub-ops-openapi.json';
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+      } else {
+        alert('Debe estar autenticado para descargar la especificación OpenAPI');
+      }
+    } catch {
+      alert('Error descargando openapi.json');
+    }
+  };
+
   const currentHost = typeof window !== 'undefined' ? window.location.origin : 'https://tattoo-hub-ops.vercel.app';
 
   // ========================================================
-  // VISTA: LOGIN (CON SOPORTE 2FA)
+  // VISTA: LOGIN (CON SOPORTE 2FA & SIN EXPOSICIÓN PÚBLICA DE SWAGGER)
   // ========================================================
   if (!isAuthenticated) {
     return (
@@ -380,14 +608,14 @@ export default function App() {
               Tattoo Hub <span className="text-amber-400">Ops Cloud</span>
             </h1>
             <p className="text-sm text-slate-400 mt-1">
-              Panel Administrativo Aislado • 2FA & Serverless Control
+              Panel Administrativo Aislado • RBAC & Serverless Control
             </p>
           </div>
 
           <div className="bg-[#12141c]/90 backdrop-blur-xl border border-[#1e2230] rounded-2xl p-7 shadow-2xl">
             <div className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-xs font-mono mb-6">
               <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
-              Entorno Aislado Vercel • Protección 2FA Activa
+              Acceso Restringido • Requiere Autenticación Segura
             </div>
 
             <form onSubmit={handleLogin} className="space-y-4">
@@ -395,31 +623,31 @@ export default function App() {
                 <>
                   <div>
                     <label className="block text-xs font-semibold uppercase tracking-wider text-slate-300 mb-1.5">
-                      Usuario Administrador
+                      Usuario (Admin / Agente / Operador)
                     </label>
                     <div className="relative">
                       <User className="w-4 h-4 text-slate-500 absolute left-3.5 top-1/2 -translate-y-1/2" />
                       <input
                         type="text"
-                        value={username}
-                        onChange={(e) => setUsername(e.target.value)}
+                        value={loginUsername}
+                        onChange={(e) => setLoginUsername(e.target.value)}
                         required
                         className="w-full pl-10 pr-4 py-2.5 bg-[#090a0f] border border-[#1e2230] rounded-xl text-sm text-white placeholder-slate-600 focus:outline-none focus:border-amber-500 transition-colors"
-                        placeholder="admin"
+                        placeholder="giovanni / antigravity_agent"
                       />
                     </div>
                   </div>
 
                   <div>
                     <label className="block text-xs font-semibold uppercase tracking-wider text-slate-300 mb-1.5">
-                      Contraseña de Seguridad
+                      Contraseña
                     </label>
                     <div className="relative">
                       <Lock className="w-4 h-4 text-slate-500 absolute left-3.5 top-1/2 -translate-y-1/2" />
                       <input
                         type="password"
-                        value={password}
-                        onChange={(e) => setPassword(e.target.value)}
+                        value={loginPassword}
+                        onChange={(e) => setLoginPassword(e.target.value)}
                         required
                         className="w-full pl-10 pr-4 py-2.5 bg-[#090a0f] border border-[#1e2230] rounded-xl text-sm text-white placeholder-slate-600 focus:outline-none focus:border-amber-500 transition-colors"
                         placeholder="••••••••••••"
@@ -434,7 +662,7 @@ export default function App() {
                     <span>Autenticación de 2 Pasos (2FA)</span>
                   </div>
                   <p className="text-xs text-slate-300">
-                    Abre <strong>Google Authenticator</strong> o <strong>Authy</strong> e introduce el código de 6 dígitos:
+                    Introduce el código de 6 dígitos de tu app Authenticator:
                   </p>
                   <input
                     type="text"
@@ -474,7 +702,7 @@ export default function App() {
 
             <div className="mt-6 pt-5 border-t border-[#1e2230] text-center">
               <p className="text-xs text-slate-500 font-mono">
-                Swagger API disponible en: <a href="/api/swagger" target="_blank" className="text-amber-400 underline">/api/swagger</a>
+                Tattoo Hub Ops • Seguridad con API Key, JWT y Roles
               </p>
             </div>
           </div>
@@ -500,28 +728,36 @@ export default function App() {
                 <span className="font-bold text-white tracking-wide font-mono text-sm">TATTOO HUB</span>
                 <span className="px-1.5 py-0.5 text-[10px] font-bold bg-amber-500/20 text-amber-300 border border-amber-500/30 rounded uppercase font-mono">OPS CLOUD</span>
               </div>
-              <p className="text-[11px] text-slate-400 font-mono">Vercel Serverless & Firebase Firestore</p>
+              <p className="text-[11px] text-slate-400 font-mono">Control Serverless & Agentes</p>
             </div>
           </div>
 
           <div className="flex items-center gap-3">
-            <div className="hidden md:flex items-center gap-2 text-xs font-mono px-3 py-1.5 bg-[#090a0f] border border-[#1e2230] rounded-lg">
+            {/* Usuario actual & Rol */}
+            <button
+              onClick={() => setShowProfileModal(true)}
+              className="flex items-center gap-2 text-xs font-mono px-3 py-1.5 bg-[#090a0f] border border-[#1e2230] hover:border-amber-500/50 rounded-lg transition-colors cursor-pointer"
+              title="Haz clic para modificar tu usuario o contraseña"
+            >
+              <User className="w-3.5 h-3.5 text-amber-400" />
+              <span className="text-white font-bold">@{currentUser.username}</span>
+              <span className={`px-1.5 py-0.5 text-[9px] font-bold rounded uppercase ${
+                currentUser.role === 'Admin' ? 'bg-amber-500/20 text-amber-300 border border-amber-500/30' :
+                currentUser.role === 'Agent' ? 'bg-purple-500/20 text-purple-300 border border-purple-500/30' :
+                'bg-blue-500/20 text-blue-300 border border-blue-500/30'
+              }`}>
+                {currentUser.role}
+              </span>
+              <Edit3 className="w-3 h-3 text-slate-500" />
+            </button>
+
+            <div className="hidden md:flex items-center gap-2 text-xs font-mono px-2.5 py-1.5 bg-[#090a0f] border border-[#1e2230] rounded-lg">
               <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
               <span className="text-slate-400">2FA:</span>
               <span className={twoFactorEnabled ? 'text-emerald-400' : 'text-amber-400'}>
                 {twoFactorEnabled ? 'ACTIVO' : 'OPCIONAL'}
               </span>
             </div>
-
-            <a
-              href="/api/swagger"
-              target="_blank"
-              rel="noreferrer"
-              className="flex items-center gap-1.5 text-xs font-mono text-purple-300 hover:text-white px-3 py-1.5 rounded-lg bg-purple-950/40 border border-purple-500/30 hover:border-purple-400 transition-colors"
-            >
-              <BookOpen className="w-3.5 h-3.5" />
-              <span>Swagger UI</span>
-            </a>
 
             <button
               onClick={handleLogout}
@@ -567,13 +803,13 @@ export default function App() {
 
           <div className="p-4 bg-[#12141c] border border-[#1e2230] rounded-2xl">
             <div className="flex items-center justify-between mb-2">
-              <span className="text-xs text-slate-400 font-medium uppercase tracking-wider">Seguridad 2FA</span>
+              <span className="text-xs text-slate-400 font-medium uppercase tracking-wider">Seguridad & RBAC</span>
               <Shield className="w-4 h-4 text-emerald-400" />
             </div>
             <div className="text-xl font-bold font-mono text-emerald-400">
-              {twoFactorEnabled ? '2FA Habilitado' : '2FA Configurable'}
+              {currentUser.role === 'Admin' ? `${usersList.length || 3} Usuarios` : `Rol: ${currentUser.role}`}
             </div>
-            <p className="text-[11px] text-slate-500 mt-1">TOTP SHA-256 + Google Auth</p>
+            <p className="text-[11px] text-slate-500 mt-1">API Key + JWT Bearer + Header</p>
           </div>
         </div>
 
@@ -612,7 +848,7 @@ export default function App() {
             }`}
           >
             <Terminal className="w-4 h-4" />
-            <span>Historial Comandos ({commands.length})</span>
+            <span>Historial Bot ({commands.length})</span>
           </button>
 
           <button
@@ -624,8 +860,23 @@ export default function App() {
             }`}
           >
             <Layers className="w-4 h-4" />
-            <span>Cola Tareas PO ({tasks.length})</span>
+            <span>Cola Tareas Jira ({tasks.length})</span>
           </button>
+
+          {/* Tab de Gestión de Usuarios y Roles (Solo visible para Admin) */}
+          {currentUser.role === 'Admin' && (
+            <button
+              onClick={() => setActiveTab('users')}
+              className={`flex items-center gap-2 px-4 py-3 text-sm font-semibold border-b-2 transition-colors cursor-pointer whitespace-nowrap ${
+                activeTab === 'users'
+                  ? 'border-amber-500 text-amber-400'
+                  : 'border-transparent text-slate-400 hover:text-slate-200'
+              }`}
+            >
+              <Users className="w-4 h-4" />
+              <span>Usuarios & Roles ({usersList.length})</span>
+            </button>
+          )}
 
           <button
             onClick={() => setActiveTab('security')}
@@ -732,14 +983,13 @@ export default function App() {
         {/* TAB 2: GESTIÓN DE DISCORD DESDE LA WEB */}
         {activeTab === 'discord-mgmt' && (
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            {/* Emisor de Mensajes a Canales */}
             <div className="bg-[#12141c] border border-[#1e2230] rounded-2xl p-5">
               <div className="flex items-center gap-2 mb-2">
                 <Send className="w-5 h-5 text-amber-400" />
                 <h3 className="font-bold text-white text-base">Enviar Mensaje / Alerta a Discord</h3>
               </div>
               <p className="text-xs text-slate-400 mb-4">
-                Publica anuncios, alertas de prueba o notificaciones en los canales oficiales sin abrir la app de Discord.
+                Publica comunicados firmados por tu usuario autenticado (<strong>@{currentUser.username}</strong>).
               </p>
 
               <form onSubmit={handleSendToDiscord} className="space-y-4">
@@ -763,7 +1013,7 @@ export default function App() {
                     type="text"
                     value={discordTitle}
                     onChange={(e) => setDiscordTitle(e.target.value)}
-                    placeholder="Ej. Anuncio de Lanzamiento Staging"
+                    placeholder="Ej. Anuncio de Nuevo Sprint en Jira"
                     className="w-full px-3 py-2 bg-[#090a0f] border border-[#1e2230] rounded-xl text-xs text-white placeholder-slate-600 focus:outline-none focus:border-amber-500"
                   />
                 </div>
@@ -817,7 +1067,7 @@ export default function App() {
                 <h3 className="font-bold text-white text-base">Ejecutor Web de Slash Commands</h3>
               </div>
               <p className="text-xs text-slate-400 mb-4">
-                Dispara las mismas rutinas que los Slash Commands de Discord directamente desde este panel.
+                Dispara rutinas serverless idénticas a los Slash Commands del Bot en Discord.
               </p>
 
               <div className="space-y-4">
@@ -851,7 +1101,7 @@ export default function App() {
                 <button
                   type="button"
                   onClick={() => {
-                    setRemoteCommandResult(`✅ Comando ${remoteCommand} procesado. Registrado en Firestore y despachado.`);
+                    setRemoteCommandResult(`✅ Comando ${remoteCommand} procesado con éxito por el servicio serverless.`);
                   }}
                   className="w-full py-2.5 bg-purple-600 hover:bg-purple-500 text-white font-semibold rounded-xl text-xs transition-colors flex items-center justify-center gap-2 cursor-pointer"
                 >
@@ -869,11 +1119,11 @@ export default function App() {
           </div>
         )}
 
-        {/* TAB 3: COMANDOS DISCORD HISTORIAL */}
+        {/* TAB 3: COMANDOS BOT HISTORIAL */}
         {activeTab === 'commands' && (
           <div className="space-y-4">
             <div className="bg-[#12141c] p-4 rounded-2xl border border-[#1e2230]">
-              <h3 className="font-bold text-white text-base">Historial de Comandos de Discord</h3>
+              <h3 className="font-bold text-white text-base">Historial de Comandos de Discord & Panel</h3>
               <p className="text-xs text-slate-400 mt-0.5">
                 Peticiones procesadas por la arquitectura Serverless en Vercel y guardadas en Firestore.
               </p>
@@ -916,114 +1166,331 @@ export default function App() {
           </div>
         )}
 
-        {/* TAB 4: COLA DE TAREAS PO */}
+        {/* TAB 4: COLA DE TAREAS JIRA */}
         {activeTab === 'tasks' && (
-          <div className="bg-[#12141c] border border-[#1e2230] rounded-2xl overflow-hidden">
-            <div className="p-4 border-b border-[#1e2230] flex items-center justify-between">
-              <div>
-                <h3 className="font-bold text-white text-base">Cola de Tareas de Antigravity & Jira</h3>
-                <p className="text-xs text-slate-400">Tareas encoladas desde Discord, Jira y el Panel Ops.</p>
+          <div className="space-y-6">
+            {/* Formulario de Nueva Tarea */}
+            <div className="bg-[#12141c] border border-[#1e2230] rounded-2xl p-5">
+              <div className="flex items-center gap-2 mb-2">
+                <PlusCircle className="w-5 h-5 text-amber-400" />
+                <h3 className="font-bold text-white text-base">Crear Tarea para Jira & Agente Autónomo</h3>
               </div>
-              <span className="text-xs text-slate-500 font-mono">{tasks.length} tareas</span>
+              <p className="text-xs text-slate-400 mb-4">
+                Genera un ticket técnico en la cola que el agente procesará utilizando API Key y autenticación estricta.
+              </p>
+
+              <form onSubmit={handleCreateTask} className="grid grid-cols-1 md:grid-cols-4 gap-4">
+                <div className="md:col-span-2">
+                  <label className="block text-xs font-semibold text-slate-300 mb-1">Título de la Tarea</label>
+                  <input
+                    type="text"
+                    value={newTaskTitle}
+                    onChange={(e) => setNewTaskTitle(e.target.value)}
+                    required
+                    placeholder="Ej. Implementar integración de mapas con geolocalización"
+                    className="w-full px-3 py-2 bg-[#090a0f] border border-[#1e2230] rounded-xl text-xs text-white placeholder-slate-600 focus:outline-none focus:border-amber-500"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-xs font-semibold text-slate-300 mb-1">Prioridad</label>
+                  <select
+                    value={newTaskPriority}
+                    onChange={(e) => setNewTaskPriority(e.target.value)}
+                    className="w-full px-3 py-2 bg-[#090a0f] border border-[#1e2230] rounded-xl text-xs text-white focus:outline-none focus:border-amber-500 font-mono"
+                  >
+                    <option value="CRITICAL">CRITICAL</option>
+                    <option value="HIGH">HIGH</option>
+                    <option value="MEDIUM">MEDIUM</option>
+                    <option value="LOW">LOW</option>
+                  </select>
+                </div>
+
+                <div className="flex items-end">
+                  <button
+                    type="submit"
+                    disabled={isSubmittingTask}
+                    className="w-full py-2 bg-amber-500 hover:bg-amber-400 text-black font-semibold rounded-xl text-xs transition-colors flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50"
+                  >
+                    <PlusCircle className="w-4 h-4" />
+                    <span>{isSubmittingTask ? 'Encolando...' : 'Crear Tarea'}</span>
+                  </button>
+                </div>
+
+                <div className="md:col-span-4">
+                  <label className="block text-xs font-semibold text-slate-300 mb-1">Descripción / Criterios de Aceptación</label>
+                  <input
+                    type="text"
+                    value={newTaskDesc}
+                    onChange={(e) => setNewTaskDesc(e.target.value)}
+                    placeholder="Detalles técnicos, requerimientos y especificaciones para el agente..."
+                    className="w-full px-3 py-2 bg-[#090a0f] border border-[#1e2230] rounded-xl text-xs text-white placeholder-slate-600 focus:outline-none focus:border-amber-500"
+                  />
+                </div>
+              </form>
             </div>
-            <div className="divide-y divide-[#1e2230]">
-              {tasks.length === 0 ? (
-                <div className="p-8 text-center text-slate-500 text-xs">Sin tareas pendientes en la cola.</div>
-              ) : (
-                tasks.map((t) => (
-                  <div key={t.id} className="p-4 hover:bg-[#161922] transition-colors flex items-center justify-between gap-4">
-                    <div>
-                      <div className="flex items-center gap-2">
-                        <span className="text-xs font-mono font-bold text-amber-400">{t.id}</span>
-                        <span className="text-xs font-semibold text-white">{t.title}</span>
+
+            {/* Listado de Tareas */}
+            <div className="bg-[#12141c] border border-[#1e2230] rounded-2xl overflow-hidden">
+              <div className="p-4 border-b border-[#1e2230] flex items-center justify-between">
+                <div>
+                  <h3 className="font-bold text-white text-base">Cola de Tareas Activas</h3>
+                  <p className="text-xs text-slate-400">Sincronizadas con Firestore `task_queue` y accesibles por API.</p>
+                </div>
+                <span className="text-xs text-slate-500 font-mono">{tasks.length} tareas</span>
+              </div>
+              <div className="divide-y divide-[#1e2230]">
+                {tasks.length === 0 ? (
+                  <div className="p-8 text-center text-slate-500 text-xs">Sin tareas pendientes en la cola.</div>
+                ) : (
+                  tasks.map((t) => (
+                    <div key={t.id} className="p-4 hover:bg-[#161922] transition-colors flex items-center justify-between gap-4">
+                      <div>
+                        <div className="flex items-center gap-2">
+                          <span className="text-xs font-mono font-bold text-amber-400">{t.id}</span>
+                          <span className="text-xs font-semibold text-white">{t.title}</span>
+                        </div>
+                        {t.description && (
+                          <p className="text-xs text-slate-400 mt-0.5">{t.description}</p>
+                        )}
+                        <div className="flex items-center gap-3 mt-1.5 text-[11px] text-slate-500 font-mono">
+                          <span>Origen: {t.source}</span>
+                          <span>•</span>
+                          <span>Prioridad: {t.priority}</span>
+                          {t.createdBy && (
+                            <>
+                              <span>•</span>
+                              <span>Por: @{t.createdBy}</span>
+                            </>
+                          )}
+                          <span>•</span>
+                          <span>{new Date(t.createdAt).toLocaleString()}</span>
+                        </div>
                       </div>
-                      <div className="flex items-center gap-3 mt-1 text-[11px] text-slate-500 font-mono">
-                        <span>Origen: {t.source}</span>
-                        <span>•</span>
-                        <span>Prioridad: {t.priority}</span>
-                      </div>
+                      <span className={`text-[10px] font-mono px-2.5 py-1 rounded-full uppercase ${
+                        t.status === 'COMPLETED' ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20' :
+                        t.status === 'IN_PROGRESS' ? 'bg-amber-500/10 text-amber-400 border border-amber-500/20' :
+                        'bg-slate-500/10 text-slate-400 border border-slate-500/20'
+                      }`}>
+                        {t.status}
+                      </span>
                     </div>
-                    <span className={`text-[10px] font-mono px-2.5 py-1 rounded-full uppercase ${
-                      t.status === 'COMPLETED' ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20' :
-                      t.status === 'IN_PROGRESS' ? 'bg-amber-500/10 text-amber-400 border border-amber-500/20' :
-                      'bg-slate-500/10 text-slate-400 border border-slate-500/20'
-                    }`}>
-                      {t.status}
-                    </span>
-                  </div>
-                ))
-              )}
+                  ))
+                )}
+              </div>
             </div>
           </div>
         )}
 
-        {/* TAB 5: SEGURIDAD & 2FA */}
+        {/* TAB 5: USUARIOS & ROLES (RBAC - SOLO ADMIN) */}
+        {activeTab === 'users' && currentUser.role === 'Admin' && (
+          <div className="space-y-6">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-[#12141c] p-5 rounded-2xl border border-[#1e2230]">
+              <div>
+                <h3 className="font-bold text-white text-base">Control de Usuarios, Subusuarios & Roles (RBAC)</h3>
+                <p className="text-xs text-slate-400 mt-0.5">
+                  Solo los administradores pueden crear subusuarios, asignar roles y generar API Keys.
+                </p>
+              </div>
+              <button
+                onClick={() => setShowCreateUserModal(true)}
+                className="px-4 py-2.5 bg-amber-500 hover:bg-amber-400 text-black font-semibold rounded-xl text-xs flex items-center gap-2 transition-colors cursor-pointer"
+              >
+                <UserPlus className="w-4 h-4" />
+                <span>Crear Nuevo Subusuario</span>
+              </button>
+            </div>
+
+            {userActionMsg.text && (
+              <div className={`p-3 rounded-xl text-xs ${
+                userActionMsg.isError ? 'bg-red-500/10 border border-red-500/20 text-red-400' : 'bg-emerald-500/10 border border-emerald-500/20 text-emerald-400'
+              }`}>
+                {userActionMsg.text}
+              </div>
+            )}
+
+            <div className="bg-[#12141c] border border-[#1e2230] rounded-2xl overflow-hidden">
+              <table className="w-full text-left text-xs font-mono">
+                <thead className="bg-[#090a0f] text-slate-400 border-b border-[#1e2230]">
+                  <tr>
+                    <th className="p-3.5">Usuario / Nombre</th>
+                    <th className="p-3.5">Rol de Acceso</th>
+                    <th className="p-3.5">API Key Asignada</th>
+                    <th className="p-3.5">2FA</th>
+                    <th className="p-3.5">Estado</th>
+                    <th className="p-3.5 text-right">Acciones</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-[#1e2230] text-slate-300">
+                  {usersList.length === 0 ? (
+                    <tr>
+                      <td colSpan={6} className="p-8 text-center text-slate-500">Cargando usuarios...</td>
+                    </tr>
+                  ) : (
+                    usersList.map((u) => {
+                      const isKeyVisible = visibleApiKeys[u.username];
+                      return (
+                        <tr key={u.username} className="hover:bg-[#161922] transition-colors">
+                          <td className="p-3.5">
+                            <div className="font-bold text-white">@{u.username}</div>
+                            <div className="text-[11px] text-slate-400">{u.name || u.username}</div>
+                          </td>
+                          <td className="p-3.5">
+                            <span className={`px-2 py-0.5 rounded text-[10px] font-bold uppercase ${
+                              u.role === 'Admin' ? 'bg-amber-500/20 text-amber-300 border border-amber-500/30' :
+                              u.role === 'Agent' ? 'bg-purple-500/20 text-purple-300 border border-purple-500/30' :
+                              u.role === 'Operator' ? 'bg-blue-500/20 text-blue-300 border border-blue-500/30' :
+                              'bg-slate-500/20 text-slate-300 border border-slate-500/30'
+                            }`}>
+                              {u.role}
+                            </span>
+                          </td>
+                          <td className="p-3.5">
+                            {u.apiKey ? (
+                              <div className="flex items-center gap-2">
+                                <span className="font-mono text-slate-300">
+                                  {isKeyVisible ? u.apiKey : `${u.apiKey.slice(0, 12)}••••••••••••`}
+                                </span>
+                                <button
+                                  onClick={() => setVisibleApiKeys(prev => ({ ...prev, [u.username]: !isKeyVisible }))}
+                                  className="text-slate-500 hover:text-slate-300"
+                                  title={isKeyVisible ? 'Ocultar' : 'Revelar'}
+                                >
+                                  {isKeyVisible ? <EyeOff className="w-3.5 h-3.5" /> : <Eye className="w-3.5 h-3.5" />}
+                                </button>
+                                <button
+                                  onClick={() => copyToClipboard(u.apiKey!, `key_${u.username}`)}
+                                  className="text-slate-500 hover:text-amber-400"
+                                  title="Copiar API Key"
+                                >
+                                  {copiedUrl === `key_${u.username}` ? <Check className="w-3.5 h-3.5 text-emerald-400" /> : <Copy className="w-3.5 h-3.5" />}
+                                </button>
+                              </div>
+                            ) : (
+                              <span className="text-slate-600">Sin clave</span>
+                            )}
+                          </td>
+                          <td className="p-3.5">
+                            <span className={`text-[10px] px-2 py-0.5 rounded ${
+                              u.twoFactorEnabled ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20' : 'text-slate-500'
+                            }`}>
+                              {u.twoFactorEnabled ? 'Activo' : 'No'}
+                            </span>
+                          </td>
+                          <td className="p-3.5">
+                            <span className="text-emerald-400 text-[10px]">Activo</span>
+                          </td>
+                          <td className="p-3.5 text-right">
+                            <div className="flex items-center justify-end gap-2">
+                              <button
+                                onClick={() => handleRegenerateKey(u.username)}
+                                className="px-2.5 py-1 bg-[#090a0f] hover:bg-[#1a1d28] border border-[#1e2230] text-slate-300 rounded-lg text-[10px] cursor-pointer"
+                                title="Regenerar clave de acceso API"
+                              >
+                                Regenerar Key
+                              </button>
+                              {u.username !== currentUser.username && (
+                                <button
+                                  onClick={() => handleDeleteUser(u.username)}
+                                  className="p-1.5 hover:bg-red-500/20 text-red-400 rounded-lg border border-transparent hover:border-red-500/30 transition-colors cursor-pointer"
+                                  title="Eliminar usuario"
+                                >
+                                  <Trash2 className="w-3.5 h-3.5" />
+                                </button>
+                              )}
+                            </div>
+                          </td>
+                        </tr>
+                      );
+                    })
+                  )}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        )}
+
+        {/* TAB 6: SEGURIDAD & 2FA */}
         {activeTab === 'security' && (
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            {/* Cambio de Contraseña */}
+            {/* Mis Credenciales API */}
             <div className="bg-[#12141c] border border-[#1e2230] rounded-2xl p-6">
               <div className="flex items-center gap-2 mb-2">
                 <Key className="w-5 h-5 text-amber-400" />
-                <h3 className="font-bold text-white text-base">Cambiar Contraseña Predefinida</h3>
+                <h3 className="font-bold text-white text-base">Mis Credenciales para Postman / Agente</h3>
               </div>
               <p className="text-xs text-slate-400 mb-5">
-                Reemplaza la contraseña por defecto con una clave robusta cifrada con SHA-256 y salt en Firestore.
+                Utiliza estas cabeceras para autorizar peticiones protegidas desde Postman, terminal o agentes de IA.
               </p>
 
-              <form onSubmit={handleChangePassword} className="space-y-4">
+              <div className="space-y-4">
                 <div>
-                  <label className="block text-xs font-semibold text-slate-300 mb-1">Contraseña Actual</label>
-                  <input
-                    type="password"
-                    value={currentPass}
-                    onChange={(e) => setCurrentPass(e.target.value)}
-                    required
-                    placeholder="••••••••••••"
-                    className="w-full px-3 py-2 bg-[#090a0f] border border-[#1e2230] rounded-xl text-xs text-white placeholder-slate-600 focus:outline-none focus:border-amber-500"
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-xs font-semibold text-slate-300 mb-1">Nueva Contraseña</label>
-                  <input
-                    type="password"
-                    value={newPass}
-                    onChange={(e) => setNewPass(e.target.value)}
-                    required
-                    placeholder="Mínimo 6 caracteres"
-                    className="w-full px-3 py-2 bg-[#090a0f] border border-[#1e2230] rounded-xl text-xs text-white placeholder-slate-600 focus:outline-none focus:border-amber-500"
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-xs font-semibold text-slate-300 mb-1">Confirmar Nueva Contraseña</label>
-                  <input
-                    type="password"
-                    value={confirmPass}
-                    onChange={(e) => setConfirmPass(e.target.value)}
-                    required
-                    placeholder="Repite la nueva contraseña"
-                    className="w-full px-3 py-2 bg-[#090a0f] border border-[#1e2230] rounded-xl text-xs text-white placeholder-slate-600 focus:outline-none focus:border-amber-500"
-                  />
-                </div>
-
-                {passMsg.text && (
-                  <div className={`p-3 rounded-xl text-xs ${
-                    passMsg.isError ? 'bg-red-500/10 border border-red-500/20 text-red-400' : 'bg-emerald-500/10 border border-emerald-500/20 text-emerald-400'
-                  }`}>
-                    {passMsg.text}
+                  <div className="flex items-center justify-between mb-1">
+                    <span className="text-[11px] font-semibold text-slate-300">Header: X-API-Key</span>
+                    <button
+                      onClick={() => copyToClipboard(currentUser.apiKey || '', 'my_apikey')}
+                      className="text-xs text-amber-400 hover:underline flex items-center gap-1 cursor-pointer"
+                    >
+                      {copiedUrl === 'my_apikey' ? <Check className="w-3 h-3" /> : <Copy className="w-3 h-3" />}
+                      <span>{copiedUrl === 'my_apikey' ? 'Copiado' : 'Copiar'}</span>
+                    </button>
                   </div>
-                )}
+                  <input
+                    type="text"
+                    readOnly
+                    value={currentUser.apiKey || 'Generando...'}
+                    className="w-full px-3 py-2 bg-[#090a0f] border border-[#1e2230] rounded-xl text-xs text-amber-300 font-mono select-all"
+                  />
+                </div>
 
-                <button
-                  type="submit"
-                  disabled={isChangingPass}
-                  className="w-full py-2.5 bg-amber-500 hover:bg-amber-400 text-black font-semibold rounded-xl text-xs transition-colors flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50"
-                >
-                  <Lock className="w-4 h-4" />
-                  <span>{isChangingPass ? 'Guardando en Firestore...' : 'Actualizar Contraseña'}</span>
-                </button>
-              </form>
+                <div>
+                  <div className="flex items-center justify-between mb-1">
+                    <span className="text-[11px] font-semibold text-slate-300">Header: Authorization (Bearer JWT)</span>
+                    <button
+                      onClick={() => copyToClipboard(sessionToken, 'my_bearer')}
+                      className="text-xs text-amber-400 hover:underline flex items-center gap-1 cursor-pointer"
+                    >
+                      {copiedUrl === 'my_bearer' ? <Check className="w-3 h-3" /> : <Copy className="w-3 h-3" />}
+                      <span>{copiedUrl === 'my_bearer' ? 'Copiado' : 'Copiar'}</span>
+                    </button>
+                  </div>
+                  <input
+                    type="text"
+                    readOnly
+                    value={sessionToken ? `Bearer ${sessionToken}` : ''}
+                    className="w-full px-3 py-2 bg-[#090a0f] border border-[#1e2230] rounded-xl text-xs text-purple-300 font-mono select-all"
+                  />
+                </div>
+
+                <div>
+                  <div className="flex items-center justify-between mb-1">
+                    <span className="text-[11px] font-semibold text-slate-300">Header: X-Username</span>
+                    <button
+                      onClick={() => copyToClipboard(currentUser.username, 'my_user')}
+                      className="text-xs text-amber-400 hover:underline flex items-center gap-1 cursor-pointer"
+                    >
+                      {copiedUrl === 'my_user' ? <Check className="w-3 h-3" /> : <Copy className="w-3 h-3" />}
+                      <span>{copiedUrl === 'my_user' ? 'Copiado' : 'Copiar'}</span>
+                    </button>
+                  </div>
+                  <input
+                    type="text"
+                    readOnly
+                    value={currentUser.username}
+                    className="w-full px-3 py-2 bg-[#090a0f] border border-[#1e2230] rounded-xl text-xs text-slate-200 font-mono select-all"
+                  />
+                </div>
+
+                <div className="pt-2">
+                  <button
+                    onClick={() => setShowProfileModal(true)}
+                    className="w-full py-2.5 bg-[#090a0f] hover:bg-[#161922] border border-[#1e2230] text-amber-400 font-semibold rounded-xl text-xs transition-colors flex items-center justify-center gap-2 cursor-pointer"
+                  >
+                    <Edit3 className="w-4 h-4" />
+                    <span>Cambiar Mi Usuario o Contraseña</span>
+                  </button>
+                </div>
+              </div>
             </div>
 
             {/* Configuración 2FA */}
@@ -1033,7 +1500,7 @@ export default function App() {
                 <h3 className="font-bold text-white text-base">Autenticación en 2 Pasos (2FA)</h3>
               </div>
               <p className="text-xs text-slate-400 mb-5">
-                Blindaje con código TOTP compatible con Google Authenticator y Authy.
+                Protección adicional con código TOTP SHA-256 (Google Authenticator / Authy).
               </p>
 
               {twoFactorEnabled ? (
@@ -1043,7 +1510,7 @@ export default function App() {
                     <div>
                       <div className="text-xs font-bold text-emerald-400 uppercase font-mono">2FA Activado y Blindado</div>
                       <p className="text-xs text-slate-300 mt-0.5">
-                        Tu cuenta requiere un código de 6 dígitos en cada inicio de sesión.
+                        Tu cuenta requiere el código de 6 dígitos en cada inicio de sesión.
                       </p>
                     </div>
                   </div>
@@ -1144,68 +1611,67 @@ export default function App() {
           </div>
         )}
 
-        {/* TAB 6: SWAGGER & POSTMAN */}
+        {/* TAB 7: SWAGGER & POSTMAN (PROTEGIDO) */}
         {activeTab === 'swagger' && (
           <div className="space-y-6">
             <div className="bg-[#12141c] p-6 rounded-2xl border border-[#1e2230]">
               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-4">
                 <div>
-                  <h3 className="font-bold text-white text-base">Documentación Swagger & Colección Postman</h3>
+                  <h3 className="font-bold text-white text-base">API Explorer & OpenAPI para Agentes / Postman</h3>
                   <p className="text-xs text-slate-400 mt-1">
-                    Puedes consultar, probar interactivamente y exportar todos los endpoints serverless de Tattoo Hub Ops.
+                    Solo expone endpoints operativos (Jira, Discord, Sentry) protegidos con API Key y JWT Bearer.
                   </p>
                 </div>
                 <div className="flex items-center gap-3">
                   <a
-                    href="/api/swagger"
+                    href={`/api/swagger?token=${encodeURIComponent(sessionToken)}`}
                     target="_blank"
                     rel="noreferrer"
                     className="px-4 py-2 bg-purple-600 hover:bg-purple-500 text-white rounded-xl text-xs font-semibold flex items-center gap-2 transition-colors"
                   >
                     <ExternalLink className="w-4 h-4" />
-                    <span>Abrir Swagger UI Completo</span>
+                    <span>Abrir Swagger en Nueva Pestaña</span>
                   </a>
-                  <a
-                    href="/api/openapi.json"
-                    download="tattoo-hub-ops-openapi.json"
-                    className="px-4 py-2 bg-[#090a0f] border border-[#1e2230] hover:border-slate-600 text-slate-300 rounded-xl text-xs font-mono flex items-center gap-2 transition-colors"
+                  <button
+                    onClick={handleDownloadOpenAPI}
+                    className="px-4 py-2 bg-[#090a0f] border border-[#1e2230] hover:border-slate-600 text-slate-300 rounded-xl text-xs font-mono flex items-center gap-2 transition-colors cursor-pointer"
                   >
                     <Download className="w-4 h-4" />
                     <span>Descargar openapi.json</span>
-                  </a>
-                </div>
-              </div>
-
-              {/* Instrucciones de Postman */}
-              <div className="p-4 bg-[#090a0f] border border-[#1e2230] rounded-xl space-y-2 mb-6">
-                <span className="text-xs font-bold text-amber-400 uppercase font-mono">📥 Cómo importar en Postman en 10 segundos:</span>
-                <ol className="text-xs text-slate-300 list-decimal list-inside space-y-1">
-                  <li>Abre tu aplicación <strong>Postman</strong> en tu computadora.</li>
-                  <li>Haz clic en el botón <strong>"Import"</strong> (arriba a la izquierda).</li>
-                  <li>Pega la siguiente URL en el campo de importación:</li>
-                </ol>
-                <div className="flex items-center gap-2 mt-2">
-                  <input
-                    type="text"
-                    readOnly
-                    value={`${currentHost}/api/openapi.json`}
-                    className="flex-1 px-3 py-2 bg-[#12141c] border border-[#1e2230] rounded-xl text-xs text-amber-300 font-mono"
-                  />
-                  <button
-                    onClick={() => copyToClipboard(`${currentHost}/api/openapi.json`, 'postman')}
-                    className="px-3 py-2 bg-amber-500/10 hover:bg-amber-500/20 text-amber-400 border border-amber-500/30 rounded-xl text-xs font-mono flex items-center gap-1.5 transition-colors cursor-pointer"
-                  >
-                    {copiedUrl === 'postman' ? <Check className="w-3.5 h-3.5" /> : <Copy className="w-3.5 h-3.5" />}
-                    <span>{copiedUrl === 'postman' ? 'Copiado' : 'Copiar URL'}</span>
                   </button>
                 </div>
               </div>
 
-              {/* Swagger Iframe Embebido */}
+              {/* Banner de Headers de Seguridad */}
+              <div className="p-4 bg-[#090a0f] border border-[#1e2230] rounded-xl space-y-3 mb-6">
+                <div className="flex items-center gap-2 text-xs font-bold text-amber-400 uppercase font-mono">
+                  <Key className="w-4 h-4" />
+                  <span>Configuración de Cabeceras Requeridas para Postman / Agente:</span>
+                </div>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+                  <div className="p-3 bg-[#12141c] border border-[#1e2230] rounded-lg">
+                    <span className="text-[10px] text-slate-400 block font-mono">1. Key: X-API-Key</span>
+                    <code className="text-xs text-amber-300 font-mono block truncate select-all">{currentUser.apiKey || 'th_admin_...'}</code>
+                  </div>
+                  <div className="p-3 bg-[#12141c] border border-[#1e2230] rounded-lg">
+                    <span className="text-[10px] text-slate-400 block font-mono">2. Key: Authorization</span>
+                    <code className="text-xs text-purple-300 font-mono block truncate select-all">Bearer {sessionToken.slice(0, 15)}...</code>
+                  </div>
+                  <div className="p-3 bg-[#12141c] border border-[#1e2230] rounded-lg">
+                    <span className="text-[10px] text-slate-400 block font-mono">3. Key: X-Username</span>
+                    <code className="text-xs text-emerald-300 font-mono block truncate select-all">{currentUser.username}</code>
+                  </div>
+                </div>
+                <p className="text-[11px] text-slate-500 font-mono mt-1">
+                  Nota: Por razones de seguridad, las operaciones de cambio de contraseñas y gestión de credenciales no se exponen en Swagger y están restringidas exclusivamente al panel administrativo.
+                </p>
+              </div>
+
+              {/* Swagger Iframe Embebido con Token */}
               <div className="rounded-xl overflow-hidden border border-[#1e2230] h-[600px]">
                 <iframe
-                  src="/api/swagger"
-                  title="Swagger UI"
+                  src={`/api/swagger?token=${encodeURIComponent(sessionToken)}`}
+                  title="Swagger UI Autenticado"
                   className="w-full h-full bg-white"
                 />
               </div>
@@ -1213,13 +1679,13 @@ export default function App() {
           </div>
         )}
 
-        {/* TAB 7: WEBHOOKS & ENDPOINTS */}
+        {/* TAB 8: WEBHOOKS & ENDPOINTS */}
         {activeTab === 'webhooks' && (
           <div className="space-y-4">
             <div className="bg-[#12141c] p-5 rounded-2xl border border-[#1e2230]">
-              <h3 className="font-bold text-white text-base mb-1">URLs Oficiales de Producción</h3>
+              <h3 className="font-bold text-white text-base mb-1">Puntos de Conexión de Producción</h3>
               <p className="text-xs text-slate-400">
-                Puntos de conexión configurados para Discord Developer Portal y Sentry.
+                URLs oficiales configuradas para Discord Interactions y Sentry Webhook.
               </p>
             </div>
 
@@ -1228,7 +1694,7 @@ export default function App() {
                 <div className="flex items-center justify-between mb-2">
                   <span className="text-sm font-bold text-white">Discord Interactions Endpoint URL</span>
                   <span className="text-[10px] font-mono px-2 py-0.5 bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 rounded">
-                    ed25519 tweetnacl
+                    ed25519 tweetnacl verificado
                   </span>
                 </div>
                 <div className="flex items-center gap-2">
@@ -1252,7 +1718,7 @@ export default function App() {
                 <div className="flex items-center justify-between mb-2">
                   <span className="text-sm font-bold text-white">Sentry Webhook Alert URL</span>
                   <span className="text-[10px] font-mono px-2 py-0.5 bg-purple-500/10 text-purple-400 border border-purple-500/20 rounded">
-                    Listo & Verificado
+                    Listo & Activo
                   </span>
                 </div>
                 <div className="flex items-center gap-2">
@@ -1275,6 +1741,198 @@ export default function App() {
           </div>
         )}
       </main>
+
+      {/* MODAL: EDITAR PERFIL (CAMBIAR USUARIO / CONTRASEÑA) */}
+      {showProfileModal && (
+        <div className="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+          <div className="bg-[#12141c] border border-[#1e2230] rounded-2xl max-w-md w-full p-6 shadow-2xl relative">
+            <div className="flex items-center justify-between mb-4">
+              <div className="flex items-center gap-2">
+                <Edit3 className="w-5 h-5 text-amber-400" />
+                <h3 className="font-bold text-white text-base">Modificar Mi Perfil</h3>
+              </div>
+              <button
+                onClick={() => setShowProfileModal(false)}
+                className="text-slate-500 hover:text-white text-sm"
+              >
+                ✕
+              </button>
+            </div>
+
+            <form onSubmit={handleUpdateProfile} className="space-y-4">
+              <div>
+                <label className="block text-xs font-semibold text-slate-300 mb-1">Nombre de Usuario</label>
+                <input
+                  type="text"
+                  value={editUsername}
+                  onChange={(e) => setEditUsername(e.target.value)}
+                  required
+                  className="w-full px-3 py-2 bg-[#090a0f] border border-[#1e2230] rounded-xl text-xs text-white focus:outline-none focus:border-amber-500 font-mono"
+                  placeholder="nuevo_usuario"
+                />
+                <span className="text-[10px] text-slate-500 mt-1 block">
+                  Puedes personalizar libremente tu usuario (letras, números, guiones).
+                </span>
+              </div>
+
+              <div>
+                <label className="block text-xs font-semibold text-slate-300 mb-1">Nombre Completo / Alias</label>
+                <input
+                  type="text"
+                  value={editName}
+                  onChange={(e) => setEditName(e.target.value)}
+                  className="w-full px-3 py-2 bg-[#090a0f] border border-[#1e2230] rounded-xl text-xs text-white focus:outline-none focus:border-amber-500"
+                  placeholder="Giovanni PO"
+                />
+              </div>
+
+              <div className="pt-2 border-t border-[#1e2230]">
+                <span className="text-[11px] font-bold text-amber-400 uppercase font-mono block mb-2">
+                  Cambiar Contraseña (Opcional)
+                </span>
+                <div className="space-y-3">
+                  <div>
+                    <label className="block text-xs text-slate-400 mb-1">Contraseña Actual</label>
+                    <input
+                      type="password"
+                      value={editCurrentPass}
+                      onChange={(e) => setEditCurrentPass(e.target.value)}
+                      placeholder="••••••••••••"
+                      className="w-full px-3 py-2 bg-[#090a0f] border border-[#1e2230] rounded-xl text-xs text-white placeholder-slate-600 focus:outline-none focus:border-amber-500"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-xs text-slate-400 mb-1">Nueva Contraseña</label>
+                    <input
+                      type="password"
+                      value={editNewPass}
+                      onChange={(e) => setEditNewPass(e.target.value)}
+                      placeholder="Mínimo 6 caracteres"
+                      className="w-full px-3 py-2 bg-[#090a0f] border border-[#1e2230] rounded-xl text-xs text-white placeholder-slate-600 focus:outline-none focus:border-amber-500"
+                    />
+                  </div>
+                </div>
+              </div>
+
+              {profileMsg.text && (
+                <div className={`p-3 rounded-xl text-xs ${
+                  profileMsg.isError ? 'bg-red-500/10 border border-red-500/20 text-red-400' : 'bg-emerald-500/10 border border-emerald-500/20 text-emerald-400'
+                }`}>
+                  {profileMsg.text}
+                </div>
+              )}
+
+              <div className="flex gap-3 pt-2">
+                <button
+                  type="button"
+                  onClick={() => setShowProfileModal(false)}
+                  className="flex-1 py-2.5 bg-[#090a0f] hover:bg-[#1a1d28] border border-[#1e2230] text-slate-300 rounded-xl text-xs transition-colors"
+                >
+                  Cancelar
+                </button>
+                <button
+                  type="submit"
+                  disabled={isUpdatingProfile}
+                  className="flex-1 py-2.5 bg-amber-500 hover:bg-amber-400 text-black font-semibold rounded-xl text-xs transition-colors disabled:opacity-50"
+                >
+                  {isUpdatingProfile ? 'Guardando...' : 'Guardar Cambios'}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* MODAL: CREAR SUBUSUARIO & ASIGNAR ROL (ADMIN ONLY) */}
+      {showCreateUserModal && (
+        <div className="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+          <div className="bg-[#12141c] border border-[#1e2230] rounded-2xl max-w-md w-full p-6 shadow-2xl relative">
+            <div className="flex items-center justify-between mb-4">
+              <div className="flex items-center gap-2">
+                <UserPlus className="w-5 h-5 text-amber-400" />
+                <h3 className="font-bold text-white text-base">Crear Subusuario & Asignar Rol</h3>
+              </div>
+              <button
+                onClick={() => setShowCreateUserModal(false)}
+                className="text-slate-500 hover:text-white text-sm"
+              >
+                ✕
+              </button>
+            </div>
+
+            <form onSubmit={handleCreateSubUser} className="space-y-4">
+              <div>
+                <label className="block text-xs font-semibold text-slate-300 mb-1">Nombre de Usuario</label>
+                <input
+                  type="text"
+                  value={newSubUsername}
+                  onChange={(e) => setNewSubUsername(e.target.value)}
+                  required
+                  placeholder="ej. qa_tester o agente_backup"
+                  className="w-full px-3 py-2 bg-[#090a0f] border border-[#1e2230] rounded-xl text-xs text-white focus:outline-none focus:border-amber-500 font-mono"
+                />
+              </div>
+
+              <div>
+                <label className="block text-xs font-semibold text-slate-300 mb-1">Nombre Descriptivo</label>
+                <input
+                  type="text"
+                  value={newSubName}
+                  onChange={(e) => setNewSubName(e.target.value)}
+                  placeholder="Ej. Agente de Automatización QA"
+                  className="w-full px-3 py-2 bg-[#090a0f] border border-[#1e2230] rounded-xl text-xs text-white focus:outline-none focus:border-amber-500"
+                />
+              </div>
+
+              <div>
+                <label className="block text-xs font-semibold text-slate-300 mb-1">Contraseña Inicial</label>
+                <input
+                  type="password"
+                  value={newSubPassword}
+                  onChange={(e) => setNewSubPassword(e.target.value)}
+                  required
+                  placeholder="Mínimo 6 caracteres"
+                  className="w-full px-3 py-2 bg-[#090a0f] border border-[#1e2230] rounded-xl text-xs text-white placeholder-slate-600 focus:outline-none focus:border-amber-500"
+                />
+              </div>
+
+              <div>
+                <label className="block text-xs font-semibold text-slate-300 mb-1">Rol de Acceso (RBAC)</label>
+                <select
+                  value={newSubRole}
+                  onChange={(e) => setNewSubRole(e.target.value as any)}
+                  className="w-full px-3 py-2 bg-[#090a0f] border border-[#1e2230] rounded-xl text-xs text-white focus:outline-none focus:border-amber-500 font-mono"
+                >
+                  <option value="Agent">Agent — Permisos de creación de tareas y despacho API</option>
+                  <option value="Operator">Operator — Gestión de incidentes y comandos de soporte</option>
+                  <option value="Viewer">Viewer — Solo lectura para métricas y telemetría</option>
+                  <option value="Admin">Admin — Control administrativo completo y gestión de usuarios</option>
+                </select>
+                <span className="text-[10px] text-amber-400/80 mt-1 block">
+                  * Se generará automáticamente una clave API exclusiva para este usuario.
+                </span>
+              </div>
+
+              <div className="flex gap-3 pt-2">
+                <button
+                  type="button"
+                  onClick={() => setShowCreateUserModal(false)}
+                  className="flex-1 py-2.5 bg-[#090a0f] hover:bg-[#1a1d28] border border-[#1e2230] text-slate-300 rounded-xl text-xs transition-colors"
+                >
+                  Cancelar
+                </button>
+                <button
+                  type="submit"
+                  className="flex-1 py-2.5 bg-amber-500 hover:bg-amber-400 text-black font-semibold rounded-xl text-xs transition-colors"
+                >
+                  Crear Subusuario
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

@@ -1,9 +1,14 @@
 import { getDb } from './_lib/firebase.js';
+import { requireAuth } from './_lib/security.js';
 
 export default async function handler(req, res) {
   if (req.method !== 'GET') {
     return res.status(405).json({ error: 'Method Not Allowed' });
   }
+
+  // Requiere autenticación
+  const caller = await requireAuth(req, res);
+  if (!caller) return;
 
   try {
     const db = getDb();

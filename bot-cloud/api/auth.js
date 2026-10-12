@@ -1,6 +1,7 @@
 import crypto from 'crypto';
 import { verifySync } from 'otplib';
 import { getDb } from './_lib/firebase.js';
+import { signToken } from './_lib/security.js';
 
 export default async function handler(req, res) {
   if (req.method !== 'POST') {
@@ -13,15 +14,20 @@ export default async function handler(req, res) {
     return res.status(400).json({ error: 'Usuario y contraseña requeridos' });
   }
 
+  const normalizedUser = username.trim().toLowerCase();
   const db = getDb();
   let userRecord = null;
   let isPasswordValid = false;
 
   // 1. Verificación de credenciales en Firestore
   try {
-    const userDoc = await db.collection('admin_users').doc(username).get();
+    const userDoc = await db.collection('admin_users').doc(normalizedUser).get();
     if (userDoc.exists) {
       userRecord = userDoc.data();
+      if (!userRecord.active) {
+        return res.status(403).json({ error: 'La cuenta de usuario está inactiva o desactivada' });
+      }
+
       const salt = userRecord.salt || 'tattoohub_secure_salt_2026';
       const hash = crypto.createHash('sha256').update(`${password}${salt}`).digest('hex');
 
@@ -33,14 +39,14 @@ export default async function handler(req, res) {
     console.error("[Auth Error]", err);
   }
 
-  // 2. Fallback con variables de entorno o default si la BD aún no tiene contraseña personalizada
+  // 2. Fallback con variables de entorno si aún no está inicializado en BD
   if (!isPasswordValid) {
-    const envUser = process.env.ADMIN_USER || 'admin';
+    const envUser = (process.env.ADMIN_USER || 'admin').toLowerCase();
     const envPass = process.env.ADMIN_PASSWORD;
 
-    if (envPass && username === envUser && password === envPass) {
+    if (envPass && normalizedUser === envUser && password === envPass) {
       isPasswordValid = true;
-    } else if (username === 'admin' && (password === 'admin123!' || password === 'tattoo2026!')) {
+    } else if (normalizedUser === 'admin' && (password === 'admin123!' || password === 'tattoo2026!')) {
       isPasswordValid = true;
     }
   }
@@ -67,17 +73,23 @@ export default async function handler(req, res) {
       if (!check || !check.valid) {
         return res.status(401).json({ error: 'Código 2FA incorrecto o expirado' });
       }
-    } catch (err) {
+    } catch {
       return res.status(401).json({ error: 'Fallo al verificar código 2FA' });
     }
   }
 
+  const role = userRecord?.role || 'Admin';
+  const token = signToken({ username: normalizedUser, role: role });
+
   return res.status(200).json({
     success: true,
-    token: 'session_token_' + Date.now(),
+    token: token,
+    apiKey: userRecord?.apiKey || null,
     user: {
-      username: username,
-      role: userRecord?.role || 'Product Owner / Lead Engineer',
+      username: normalizedUser,
+      name: userRecord?.name || normalizedUser,
+      role: role,
+      apiKey: userRecord?.apiKey || null,
       twoFactorEnabled: !!userRecord?.twoFactorEnabled
     }
   });

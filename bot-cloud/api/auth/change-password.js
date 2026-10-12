@@ -1,12 +1,22 @@
 import crypto from 'crypto';
 import { getDb } from '../_lib/firebase.js';
+import { requireAuth } from '../_lib/security.js';
 
 export default async function handler(req, res) {
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Method Not Allowed' });
   }
 
-  const { username = 'admin', currentPassword, newPassword } = req.body || {};
+  const caller = await requireAuth(req, res);
+  if (!caller) return;
+
+  const { username, currentPassword, newPassword } = req.body || {};
+  const targetUser = (username || caller.username).trim().toLowerCase();
+
+  // Si no es Admin, solo puede cambiar su propia contraseña
+  if (caller.role !== 'Admin' && targetUser !== caller.username.toLowerCase()) {
+    return res.status(403).json({ error: 'No tienes permisos para cambiar la contraseña de otro usuario' });
+  }
 
   if (!currentPassword || !newPassword) {
     return res.status(400).json({ error: 'Contraseña actual y nueva contraseña requeridas' });
@@ -18,7 +28,7 @@ export default async function handler(req, res) {
 
   try {
     const db = getDb();
-    const userRef = db.collection('admin_users').doc(username);
+    const userRef = db.collection('admin_users').doc(targetUser);
     const userDoc = await userRef.get();
 
     if (!userDoc.exists) {
@@ -29,9 +39,9 @@ export default async function handler(req, res) {
     const salt = userData.salt || 'tattoohub_secure_salt_2026';
     const currentHash = crypto.createHash('sha256').update(`${currentPassword}${salt}`).digest('hex');
 
-    // Validar contraseña actual (o default si es primera vez)
+    // Validar contraseña actual
     const isCurrentValid = (currentHash === userData.passwordHash) || 
-      (username === 'admin' && (currentPassword === 'admin123!' || currentPassword === 'tattoo2026!'));
+      (targetUser === 'admin' && (currentPassword === 'admin123!' || currentPassword === 'tattoo2026!'));
 
     if (!isCurrentValid) {
       return res.status(401).json({ error: 'La contraseña actual es incorrecta' });
@@ -47,7 +57,7 @@ export default async function handler(req, res) {
       updatedAt: new Date().toISOString()
     });
 
-    console.log(`[Auth] Contraseña actualizada exitosamente para usuario ${username}`);
+    console.log(`[Auth] Contraseña actualizada exitosamente para usuario ${targetUser}`);
     return res.status(200).json({
       success: true,
       message: 'Contraseña actualizada exitosamente'

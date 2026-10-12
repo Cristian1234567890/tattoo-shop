@@ -2,16 +2,20 @@ import { generateSecret, generateURI, verifySync } from 'otplib';
 import QRCode from 'qrcode';
 import crypto from 'crypto';
 import { getDb } from '../_lib/firebase.js';
+import { requireAuth } from '../_lib/security.js';
 
 export default async function handler(req, res) {
+  const caller = await requireAuth(req, res);
+  if (!caller) return;
+
   const db = getDb();
-  const username = req.body?.username || req.query?.username || 'admin';
+  const username = caller.username.toLowerCase();
 
   if (req.method === 'GET') {
     try {
       const userDoc = await db.collection('admin_users').doc(username).get();
       const isEnabled = userDoc.exists ? !!userDoc.data().twoFactorEnabled : false;
-      return res.status(200).json({ twoFactorEnabled: isEnabled });
+      return res.status(200).json({ twoFactorEnabled: isEnabled, username });
     } catch (err) {
       return res.status(500).json({ error: err.message });
     }
