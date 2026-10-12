@@ -1,6 +1,6 @@
 import { getDb } from './_lib/firebase.js';
 
-const DISCORD_WEBHOOK_URL = process.env.DISCORD_ERROR_WEBHOOK || "https://discord.com/api/webhooks/1557473405408907336/oSgTd2JZ6BAdSfk9JSObe1nsO3uO6Ni5G1YGOt23WaVU6k6UIwWSGDcN6YRVfTrTQVEf";
+const DISCORD_WEBHOOK_URL = process.env.DISCORD_ERROR_WEBHOOK;
 
 export default async function handler(req, res) {
   if (req.method !== 'POST') {

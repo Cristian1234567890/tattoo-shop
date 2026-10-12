@@ -1,4 +1,5 @@
 import crypto from 'crypto';
+import { verifySync } from 'otplib';
 import { getDb } from './_lib/firebase.js';
 
 export default async function handler(req, res) {
@@ -6,54 +7,78 @@ export default async function handler(req, res) {
     return res.status(405).json({ error: 'Method Not Allowed' });
   }
 
-  const { username, password } = req.body || {};
+  const { username = 'admin', password, twoFactorCode } = req.body || {};
 
   if (!username || !password) {
     return res.status(400).json({ error: 'Usuario y contraseña requeridos' });
   }
 
-  // 1. Verificación contra variables de entorno
-  const envUser = process.env.ADMIN_USER || 'admin';
-  const envPass = process.env.ADMIN_PASSWORD;
+  const db = getDb();
+  let userRecord = null;
+  let isPasswordValid = false;
 
-  if (envPass && username === envUser && password === envPass) {
-    return res.status(200).json({
-      success: true,
-      token: 'session_token_' + Date.now(),
-      user: { username: envUser, role: 'Owner' }
-    });
-  }
-
-  // 2. Verificación contra Firestore
+  // 1. Verificación de credenciales en Firestore
   try {
-    const db = getDb();
     const userDoc = await db.collection('admin_users').doc(username).get();
-
     if (userDoc.exists) {
-      const userData = userDoc.data();
-      const salt = userData.salt || 'tattoohub_secure_salt_2026';
+      userRecord = userDoc.data();
+      const salt = userRecord.salt || 'tattoohub_secure_salt_2026';
       const hash = crypto.createHash('sha256').update(`${password}${salt}`).digest('hex');
 
-      if (hash === userData.passwordHash) {
-        return res.status(200).json({
-          success: true,
-          token: 'session_token_' + Date.now(),
-          user: { username: userData.username, role: userData.role }
-        });
+      if (hash === userRecord.passwordHash) {
+        isPasswordValid = true;
       }
     }
   } catch (err) {
     console.error("[Auth Error]", err);
   }
 
-  // 3. Fallback de emergencia inicial
-  if (username === 'admin' && (password === 'admin123!' || password === 'tattoo2026!')) {
-    return res.status(200).json({
-      success: true,
-      token: 'session_token_' + Date.now(),
-      user: { username: 'admin', role: 'Default Owner' }
-    });
+  // 2. Fallback con variables de entorno o default si la BD aún no tiene contraseña personalizada
+  if (!isPasswordValid) {
+    const envUser = process.env.ADMIN_USER || 'admin';
+    const envPass = process.env.ADMIN_PASSWORD;
+
+    if (envPass && username === envUser && password === envPass) {
+      isPasswordValid = true;
+    } else if (username === 'admin' && (password === 'admin123!' || password === 'tattoo2026!')) {
+      isPasswordValid = true;
+    }
   }
 
-  return res.status(401).json({ error: 'Credenciales inválidas' });
+  if (!isPasswordValid) {
+    return res.status(401).json({ error: 'Credenciales inválidas' });
+  }
+
+  // 3. Verificación de 2FA si está habilitado
+  if (userRecord && userRecord.twoFactorEnabled && userRecord.twoFactorSecret) {
+    if (!twoFactorCode) {
+      return res.status(200).json({
+        requires2FA: true,
+        message: 'Autenticación en 2 pasos requerida. Ingrese el código de su aplicación Authenticator.'
+      });
+    }
+
+    try {
+      const check = verifySync({
+        token: twoFactorCode.trim(),
+        secret: userRecord.twoFactorSecret
+      });
+
+      if (!check || !check.valid) {
+        return res.status(401).json({ error: 'Código 2FA incorrecto o expirado' });
+      }
+    } catch (err) {
+      return res.status(401).json({ error: 'Fallo al verificar código 2FA' });
+    }
+  }
+
+  return res.status(200).json({
+    success: true,
+    token: 'session_token_' + Date.now(),
+    user: {
+      username: username,
+      role: userRecord?.role || 'Product Owner / Lead Engineer',
+      twoFactorEnabled: !!userRecord?.twoFactorEnabled
+    }
+  });
 }

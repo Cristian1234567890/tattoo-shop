@@ -1,14 +1,41 @@
-import { verifyKey, InteractionType, InteractionResponseType } from 'discord-interactions';
+import nacl from 'tweetnacl';
+import { InteractionType, InteractionResponseType } from 'discord-interactions';
 import { getDb } from './_lib/firebase.js';
 
-const PUBLIC_KEY = process.env.DISCORD_PUBLIC_KEY || "f2c0ed3e5e986d726d3108c65f15040f872588c1e6771c5aa8cf6154ce29a5f7";
+export const config = {
+  api: {
+    bodyParser: false,
+  },
+};
+
+const PUBLIC_KEY = (process.env.DISCORD_PUBLIC_KEY || "f2c0ed3e5e986d726d3108c65f15040f872588c1e6771c5aa8cf6154ce29a5f7").trim();
+
+function verifyDiscordSignature(rawBody, signature, timestamp, clientPublicKey) {
+  try {
+    const isBuffer = Buffer.isBuffer(rawBody);
+    const bodyBuf = isBuffer ? rawBody : Buffer.from(rawBody, 'utf-8');
+    const timeBuf = Buffer.from(timestamp, 'utf-8');
+    const message = Buffer.concat([timeBuf, bodyBuf]);
+    const sigBuf = Buffer.from(signature, 'hex');
+    const pubBuf = Buffer.from(clientPublicKey, 'hex');
+
+    return nacl.sign.detached.verify(message, sigBuf, pubBuf);
+  } catch (err) {
+    console.error("[Interactions] Verification exception:", err);
+    return false;
+  }
+}
 
 async function getRawBody(req) {
-  const chunks = [];
-  for await (const chunk of req) {
-    chunks.push(typeof chunk === 'string' ? Buffer.from(chunk) : chunk);
-  }
-  return Buffer.concat(chunks);
+  if (Buffer.isBuffer(req.body)) return req.body;
+  if (typeof req.body === 'string') return Buffer.from(req.body, 'utf-8');
+
+  return new Promise((resolve, reject) => {
+    const chunks = [];
+    req.on('data', chunk => chunks.push(chunk));
+    req.on('end', () => resolve(Buffer.concat(chunks)));
+    req.on('error', err => reject(err));
+  });
 }
 
 export default async function handler(req, res) {
@@ -20,42 +47,40 @@ export default async function handler(req, res) {
   const timestamp = req.headers['x-signature-timestamp'];
 
   if (!signature || !timestamp) {
+    console.warn("[Interactions] Missing signature or timestamp headers");
     return res.status(401).send('Missing Discord signature headers');
   }
 
   let rawBody;
-  let bodyJson;
-
   try {
-    if (Buffer.isBuffer(req.body)) {
-      rawBody = req.body;
-      bodyJson = JSON.parse(rawBody.toString('utf8'));
-    } else if (typeof req.body === 'string') {
-      rawBody = Buffer.from(req.body, 'utf8');
-      bodyJson = JSON.parse(req.body);
-    } else if (typeof req.body === 'object' && req.body !== null) {
-      rawBody = Buffer.from(JSON.stringify(req.body), 'utf8');
-      bodyJson = req.body;
-    } else {
-      rawBody = await getRawBody(req);
-      bodyJson = JSON.parse(rawBody.toString('utf8'));
-    }
+    rawBody = await getRawBody(req);
   } catch (err) {
-    return res.status(400).send('Invalid body');
+    console.error("[Interactions] Error reading raw body:", err);
+    return res.status(400).send('Error reading body');
   }
 
-  const isValid = verifyKey(rawBody, signature, timestamp, PUBLIC_KEY);
+  const isValid = verifyDiscordSignature(rawBody, signature, timestamp, PUBLIC_KEY);
   if (!isValid) {
+    console.warn("[Interactions] Signature invalid for ed25519");
     return res.status(401).send('Invalid request signature');
   }
 
+  let bodyJson;
+  try {
+    bodyJson = JSON.parse(rawBody.toString('utf-8'));
+  } catch (err) {
+    return res.status(400).send('Invalid JSON');
+  }
+
   // 1. Manejo de PING de Discord (Type 1)
-  if (bodyJson.type === InteractionType.PING) {
-    return res.status(200).json({ type: InteractionResponseType.PONG });
+  if (bodyJson.type === InteractionType.PING || bodyJson.type === 1) {
+    console.log("✅ [Interactions] Discord PING verificado exitosamente. Respondiendo PONG (Type 1)");
+    res.setHeader('Content-Type', 'application/json');
+    return res.status(200).send(JSON.stringify({ type: 1 }));
   }
 
   // 2. Manejo de Slash Commands (Type 2)
-  if (bodyJson.type === InteractionType.APPLICATION_COMMAND) {
+  if (bodyJson.type === InteractionType.APPLICATION_COMMAND || bodyJson.type === 2) {
     const { name, options } = bodyJson.data;
     const user = bodyJson.member?.user?.username || bodyJson.user?.username || 'Usuario';
     const channelId = bodyJson.channel_id;
@@ -80,6 +105,7 @@ export default async function handler(req, res) {
 
     // COMANDO: /status
     if (name === 'status') {
+      res.setHeader('Content-Type', 'application/json');
       return res.status(200).json({
         type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
         data: {
@@ -104,16 +130,17 @@ export default async function handler(req, res) {
 
     // COMANDO: /dashboard
     if (name === 'dashboard') {
+      res.setHeader('Content-Type', 'application/json');
       return res.status(200).json({
         type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
         data: {
           embeds: [
             {
               title: "📊 PANEL DE CONTROL SEGURO - TATTOO HUB OPS",
-              description: "Accede al panel aislado en Vercel protegido mediante usuario y contraseña:\n\n" +
+              description: "Accede al panel aislado en Vercel protegido mediante usuario, contraseña y 2FA:\n\n" +
                 "🔗 **URL del Panel:** [Abrir Dashboard Seguro](https://tattoo-hub-ops.vercel.app)\n" +
                 "👤 **Usuario Administrador:** `admin`\n" +
-                "🛡️ **Monitoreo:** Telemetría Sentry en vivo, historial de comandos y cola de trabajo de Antigravity.",
+                "🛡️ **Monitoreo:** Telemetría Sentry en vivo, historial de comandos, cola de trabajo y Swagger API.",
               color: 0xf59e0b,
               footer: { text: "Tattoo Hub Cloud Infrastructure" },
               timestamp: new Date().toISOString()
@@ -125,6 +152,7 @@ export default async function handler(req, res) {
 
     // COMANDO: /help
     if (name === 'help') {
+      res.setHeader('Content-Type', 'application/json');
       return res.status(200).json({
         type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
         data: {
@@ -168,6 +196,7 @@ export default async function handler(req, res) {
         });
       } catch {}
 
+      res.setHeader('Content-Type', 'application/json');
       return res.status(200).json({
         type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
         data: {
@@ -206,6 +235,7 @@ export default async function handler(req, res) {
         });
       } catch {}
 
+      res.setHeader('Content-Type', 'application/json');
       return res.status(200).json({
         type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
         data: {
@@ -244,6 +274,7 @@ export default async function handler(req, res) {
           });
         } catch {}
 
+        res.setHeader('Content-Type', 'application/json');
         return res.status(200).json({
           type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
           data: {
@@ -271,6 +302,7 @@ export default async function handler(req, res) {
         ? recentErrors.map(e => `• **${e.title}** (${e.level}) - ${e.status}`).join('\n')
         : "Sin errores recientes registrados.";
 
+      res.setHeader('Content-Type', 'application/json');
       return res.status(200).json({
         type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
         data: {
@@ -302,6 +334,7 @@ export default async function handler(req, res) {
         });
       } catch {}
 
+      res.setHeader('Content-Type', 'application/json');
       return res.status(200).json({
         type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
         data: {
@@ -319,6 +352,7 @@ export default async function handler(req, res) {
     }
 
     // Fallback
+    res.setHeader('Content-Type', 'application/json');
     return res.status(200).json({
       type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
       data: {
