@@ -1,5 +1,5 @@
 /* ==========================================================================
-   Tattoo Hub Luxury Dark Atelier Styles & Utility Classes (Milestone 13)
+   Tattoo Hub Luxury Dark & Light Atelier Styles & Unique Brand Identity
    ========================================================================== */
 
 /* Cross-Browser Homogenization (Chrome, Edge, Brave, Safari, Firefox) */
@@ -16,14 +16,38 @@ html {
   -moz-osx-font-smoothing: grayscale;
   scroll-behavior: smooth;
   scrollbar-width: thin;
+}
+
+/* ==========================================================================
+   THEME STYLES: DARK ATELIER (DEFAULT)
+   ========================================================================== */
+html.dark, html:not(.light) {
   scrollbar-color: #27272a #090d16;
 }
 
-body {
+html.dark body, html:not(.light) body {
   margin: 0;
   padding: 0;
   overflow-x: hidden;
   background-color: #090d16;
+  color: #f1f5f9;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+/* ==========================================================================
+   THEME STYLES: LIGHT PARCHMENT CANVAS (MODO CLARO DE ALTA VISIBILIDAD)
+   ========================================================================== */
+html.light {
+  scrollbar-color: #cbd5e1 #f8fafc;
+}
+
+html.light body {
+  margin: 0;
+  padding: 0;
+  overflow-x: hidden;
+  background-color: #f8fafc;
+  color: #0f172a;
+  transition: background-color 0.3s ease, color 0.3s ease;
 }
 
 /* Unified Custom Scrollbar */
@@ -32,18 +56,32 @@ body {
   height: 8px;
 }
 
-::-webkit-scrollbar-track {
+html.dark ::-webkit-scrollbar-track, html:not(.light) ::-webkit-scrollbar-track {
   background: #090d16;
 }
 
-::-webkit-scrollbar-thumb {
+html.dark ::-webkit-scrollbar-thumb, html:not(.light) ::-webkit-scrollbar-thumb {
   background: #27272a;
   border-radius: 9999px;
   border: 2px solid #090d16;
 }
 
-::-webkit-scrollbar-thumb:hover {
+html.dark ::-webkit-scrollbar-thumb:hover, html:not(.light) ::-webkit-scrollbar-thumb:hover {
   background: #3f3f46;
+}
+
+html.light ::-webkit-scrollbar-track {
+  background: #f1f5f9;
+}
+
+html.light ::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 9999px;
+  border: 2px solid #f1f5f9;
+}
+
+html.light ::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
 }
 
 button {
@@ -51,33 +89,56 @@ button {
   user-select: none;
 }
 
-/* Glassmorphic Dark Atelier Container */
+/* Focus Visible for Accessibility (WCAG 2.1 AA) */
+:focus-visible {
+  outline: 2px solid #f59e0b;
+  outline-offset: 2px;
+}
+
+/* ==========================================================================
+   ATELIER NOIR & GOLD LUXURY COMPONENTS
+   ========================================================================== */
+
+/* Glassmorphic Atelier Card */
 .atelier-card {
-  background-color: rgba(19, 19, 26, 0.7);
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
-  border: 1px solid rgba(255, 255, 255, 0.08);
   border-radius: 1rem;
-  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.5), 0 8px 10px -6px rgba(0, 0, 0, 0.5);
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+html.dark .atelier-card, html:not(.light) .atelier-card {
+  background-color: rgba(19, 19, 26, 0.75);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.5), 0 8px 10px -6px rgba(0, 0, 0, 0.5);
+}
+
+html.light .atelier-card {
+  background-color: rgba(255, 255, 255, 0.92);
+  border: 1px solid rgba(226, 232, 240, 0.9);
+  box-shadow: 0 10px 20px -3px rgba(15, 23, 42, 0.08), 0 4px 6px -4px rgba(15, 23, 42, 0.04);
 }
 
 .atelier-card-hover {
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-.atelier-card-hover:hover {
-  border-color: rgba(139, 92, 246, 0.4);
-  background-color: rgba(26, 26, 36, 0.85);
-  box-shadow: 0 0 30px rgba(124, 58, 237, 0.25), 0 20px 25px -5px rgba(0, 0, 0, 0.5);
+html.dark .atelier-card-hover:hover, html:not(.light) .atelier-card-hover:hover {
+  border-color: rgba(245, 158, 11, 0.45);
+  background-color: rgba(26, 26, 36, 0.9);
+  box-shadow: 0 0 30px rgba(245, 158, 11, 0.2), 0 20px 25px -5px rgba(0, 0, 0, 0.5);
   transform: translateY(-0.25rem);
 }
 
-/* Form Elements: Dark studio surface with signature violet glow focus */
+html.light .atelier-card-hover:hover {
+  border-color: rgba(217, 119, 6, 0.4);
+  background-color: #ffffff;
+  box-shadow: 0 14px 28px -4px rgba(217, 119, 6, 0.15), 0 6px 12px -2px rgba(15, 23, 42, 0.08);
+  transform: translateY(-0.25rem);
+}
+
+/* Form Elements */
 .input-atelier {
-  background-color: rgba(11, 11, 14, 0.9);
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  color: #ffffff;
   border-radius: 0.75rem;
   padding: 0.625rem 1rem;
   font-size: 0.875rem;
@@ -85,35 +146,58 @@ button {
   transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-.input-atelier::placeholder {
+html.dark .input-atelier, html:not(.light) .input-atelier {
+  background-color: rgba(11, 11, 14, 0.9);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  color: #ffffff;
+}
+
+html.dark .input-atelier::placeholder, html:not(.light) .input-atelier::placeholder {
   color: #71717a;
 }
 
-.input-atelier:focus {
+html.dark .input-atelier:focus, html:not(.light) .input-atelier:focus {
   outline: none;
-  border-color: #8b5cf6;
-  box-shadow: 0 0 0 2px rgba(139, 92, 246, 0.4), 0 0 15px rgba(139, 92, 246, 0.3);
+  border-color: #f59e0b;
+  box-shadow: 0 0 0 2px rgba(245, 158, 11, 0.4), 0 0 15px rgba(245, 158, 11, 0.25);
+}
+
+html.light .input-atelier {
+  background-color: #ffffff;
+  border: 1px solid #cbd5e1;
+  color: #0f172a;
+}
+
+html.light .input-atelier::placeholder {
+  color: #94a3b8;
+}
+
+html.light .input-atelier:focus {
+  outline: none;
+  border-color: #d97706;
+  box-shadow: 0 0 0 2px rgba(217, 119, 6, 0.35), 0 0 10px rgba(217, 119, 6, 0.15);
 }
 
 /* Interactive Luxury Button */
 .btn-atelier-primary {
-  background: linear-gradient(135deg, #7c3aed 0%, #4f46e5 100%);
+  background: linear-gradient(135deg, #d97706 0%, #b45309 100%);
   color: #ffffff;
   font-weight: 600;
   border-radius: 0.75rem;
   padding: 0.625rem 1.25rem;
   transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-  box-shadow: 0 0 20px rgba(124, 58, 237, 0.35);
+  box-shadow: 0 0 20px rgba(217, 119, 6, 0.3);
   display: inline-flex;
   align-items: center;
   justify-content: center;
   gap: 0.5rem;
   cursor: pointer;
+  border: 1px solid rgba(245, 158, 11, 0.3);
 }
 
 .btn-atelier-primary:hover {
-  background: linear-gradient(135deg, #8b5cf6 0%, #6366f1 100%);
-  box-shadow: 0 0 30px rgba(124, 58, 237, 0.55);
+  background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+  box-shadow: 0 0 30px rgba(245, 158, 11, 0.5);
   transform: translateY(-1px);
 }
 
@@ -121,20 +205,47 @@ button {
   transform: scale(0.97);
 }
 
-/* Dark Luxury Glow Accents */
-.glow-violet {
-  box-shadow: 0 0 25px rgba(124, 58, 237, 0.35);
+/* Luxury Glow Accents */
+.glow-gold {
+  box-shadow: 0 0 25px rgba(245, 158, 11, 0.35);
 }
 
-.glow-violet-lg {
-  box-shadow: 0 0 45px rgba(124, 58, 237, 0.5);
+.glow-gold-lg {
+  box-shadow: 0 0 45px rgba(245, 158, 11, 0.5);
 }
 
 .glow-emerald {
   box-shadow: 0 0 25px rgba(16, 185, 129, 0.35);
 }
 
-/* Concentric Violet Ring for Studio Residents */
-.ring-concentric-violet {
-  box-shadow: 0 0 0 2px #0b0b0e, 0 0 0 4px rgba(139, 92, 246, 0.8), 0 0 15px rgba(139, 92, 246, 0.5);
+/* Concentric Gold Ring for Certified Studios */
+.ring-concentric-gold {
+  box-shadow: 0 0 0 2px #0b0b0e, 0 0 0 4px rgba(245, 158, 11, 0.8), 0 0 15px rgba(245, 158, 11, 0.5);
+}
+
+/* Subtle Shimmer for High-End Studio Art */
+@keyframes atelier-shimmer {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(100%); }
+}
+
+.atelier-shimmer {
+  position: relative;
+  overflow: hidden;
+}
+
+.atelier-shimmer::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(255, 255, 255, 0.06) 50%,
+    transparent 100%
+  );
+  animation: atelier-shimmer 2.5s infinite;
 }

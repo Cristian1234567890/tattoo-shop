@@ -13,6 +13,9 @@ import { generalApiLimiter } from './middlewares/rateLimit.middleware';
 export function createApp(): Application {
   const app: Application = express();
 
+  // Trust reverse proxy (Vercel / Cloudflare) for accurate IP-based rate limiting
+  app.set('trust proxy', 1);
+
   // Cross-Origin Resource Sharing
   app.use(cors());
 

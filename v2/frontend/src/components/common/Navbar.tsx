@@ -25,6 +25,7 @@ import {
   Lock,
 } from 'lucide-react';
 import { isQaEnvironment } from '../../api/supabase';
+import { ThemeSwitch } from './ThemeSwitch';
 
 export const NavbarContext = React.createContext<{ isMounted: boolean }>({ isMounted: false });
 
@@ -250,6 +251,9 @@ export const Navbar: React.FC<NavbarProps> = ({ forceRender = false }) => {
               )}
             </div>
 
+            {/* Theme Toggle (Light & Dark Mode) */}
+            <ThemeSwitch />
+
             {/* Auth Actions */}
             {isRecoveryMode ? (
               <div
@@ -416,6 +420,14 @@ export const Navbar: React.FC<NavbarProps> = ({ forceRender = false }) => {
                 );
               })}
             </div>
+          </div>
+
+          {/* Mobile Theme Selector */}
+          <div className="pt-3 border-t border-white/10 flex items-center justify-between px-1">
+            <span className="text-xs font-bold uppercase tracking-wider text-zinc-400">
+              Tema Visual
+            </span>
+            <ThemeSwitch />
           </div>
 
           {/* Mobile Country & Currency Selector */}
