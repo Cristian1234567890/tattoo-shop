@@ -127,6 +127,6 @@ $RECYCLE.BIN/
 .agents/queue/
 .agents/bot/
 .agents/evidence/
-.agents/scripts/*.json
-.gemini/
+.gemini/*
+!.gemini/rules/
 scratch/
