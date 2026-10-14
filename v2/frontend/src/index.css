@@ -264,6 +264,31 @@ html.light .bg-gray-800 {
   border-color: rgba(226, 232, 240, 0.9) !important;
 }
 
+/* Background overrides for page containers with hardcoded black palette */
+html.light,
+html.light body,
+html.light .bg-\[\#0B0B0E\],
+html.light .bg-\[\#090b10\],
+html.light .bg-\[\#090d16\],
+html.light .bg-\[\#0f0e17\],
+html.light .bg-\[\#13131A\] {
+  background-color: #f8fafc !important;
+  color: #0f172a !important;
+}
+
+/* Luxury Atelier Cards in Light Mode */
+html.light .atelier-card {
+  background-color: #ffffff !important;
+  border-color: #e2e8f0 !important;
+  box-shadow: 0 10px 25px -5px rgba(15, 23, 42, 0.06), 0 8px 10px -6px rgba(15, 23, 42, 0.03) !important;
+}
+
+html.light .atelier-card-hover:hover {
+  background-color: #ffffff !important;
+  border-color: rgba(139, 92, 246, 0.35) !important;
+  box-shadow: 0 14px 28px -4px rgba(15, 23, 42, 0.1), 0 6px 12px -2px rgba(15, 23, 42, 0.05) !important;
+}
+
 html.light .text-white:not(.bg-primary):not(.bg-violet-600):not(.bg-amber-600):not([class*="bg-primary"]):not([class*="bg-violet"]):not([class*="bg-amber"]):not([class*="bg-emerald"]) {
   color: #0f172a !important;
 }
@@ -294,6 +319,39 @@ html.light .border-zinc-800,
 html.light .border-gray-700,
 html.light .border-gray-800 {
   border-color: #e2e8f0 !important;
+}
+
+html.light .divide-zinc-800\/60 > * + *,
+html.light .divide-zinc-800 > * + * {
+  border-color: #e2e8f0 !important;
+}
+
+/* Headings in Light Mode */
+html.light main h1.text-white,
+html.light main h2.text-white,
+html.light main h3.text-white,
+html.light .atelier-card h1,
+html.light .atelier-card h2,
+html.light .atelier-card h3,
+html.light .atelier-card h4,
+html.light td.font-semibold {
+  color: #0f172a !important;
+}
+
+/* Navbar in Light Mode */
+html.light nav {
+  background-color: rgba(255, 255, 255, 0.88) !important;
+  border-color: #e2e8f0 !important;
+  color: #0f172a !important;
+}
+
+html.light nav a.text-gray-300 {
+  color: #475569 !important;
+}
+
+html.light nav a.text-gray-300:hover {
+  color: #0f172a !important;
+  background-color: rgba(0, 0, 0, 0.05) !important;
 }
 
 html.light input:not([type="checkbox"]):not([type="radio"]),

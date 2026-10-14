@@ -158,7 +158,7 @@ export const RegisterPage: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-[#0B0B0E] text-zinc-300 font-sans selection:bg-violet-500/30 flex flex-col">
+    <div className="min-h-screen text-slate-800 dark:text-zinc-300 font-sans selection:bg-violet-500/30 flex flex-col">
       <main className="max-w-5xl mx-auto px-6 py-12 flex-1 w-full">
         <Link
           to="/"

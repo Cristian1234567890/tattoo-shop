@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import { Navbar } from '../components/common/Navbar';
 import { api } from '../api/client';
 import {
   Sparkles,
@@ -106,8 +105,7 @@ export const ClientDashboardPage: React.FC = () => {
   // Loading skeleton state
   if (isLoading || !user) {
     return (
-      <div className="min-h-screen bg-[#090d16] text-white flex flex-col">
-        <Navbar />
+      <div className="min-h-screen text-slate-800 dark:text-white flex flex-col">
         <main className="flex-1 container mx-auto px-4 py-8 max-w-6xl space-y-8 animate-pulse">
           {/* Welcome Banner Skeleton */}
           <div className="bg-gradient-to-r from-gray-800/80 via-gray-850/80 to-gray-900/80 border border-gray-700/50 rounded-2xl p-6 md:p-8 flex flex-col md:flex-row md:items-center justify-between gap-6">
@@ -242,9 +240,7 @@ export const ClientDashboardPage: React.FC = () => {
 
   return (
     <PageTransition>
-      <div className="min-h-screen bg-[#090d16] text-white flex flex-col relative">
-        <Navbar />
-
+      <div className="min-h-screen text-slate-800 dark:text-white flex flex-col relative">
         {/* Global Toast Notification */}
         {toastMessage && (
           <div className="fixed top-20 right-4 z-50 max-w-md animate-bounce">

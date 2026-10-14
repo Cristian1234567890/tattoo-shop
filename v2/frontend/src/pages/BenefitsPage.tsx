@@ -15,7 +15,7 @@ import { PageTransition } from '../components/common/PageTransition';
 export const BenefitsPage: React.FC = () => {
   return (
     <PageTransition>
-      <div className="bg-[#0B0B0E] min-h-screen text-zinc-300 font-sans flex flex-col selection:bg-violet-500/30">
+      <div className="min-h-screen text-slate-800 dark:text-zinc-300 font-sans flex flex-col selection:bg-violet-500/30">
         <main className="flex-1 max-w-7xl mx-auto px-6 py-16 md:py-24 w-full">
           {/* 1. Manifesto Hero */}
           <div className="text-center max-w-3xl mx-auto mb-20">

@@ -146,7 +146,7 @@ export const ShopPage: React.FC = () => {
 
   return (
     <PageTransition>
-      <div className="bg-[#0B0B0E] min-h-screen text-zinc-300 font-sans flex flex-col selection:bg-violet-500/30">
+      <div className="min-h-screen text-slate-800 dark:text-zinc-300 font-sans flex flex-col selection:bg-violet-500/30">
         <main className="flex-1 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 md:py-16 w-full">
           {/* Header & Badges */}
           <div className="text-center max-w-3xl mx-auto mb-10">
@@ -308,6 +308,10 @@ export const ShopPage: React.FC = () => {
                       alt={product.name}
                       className="w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-500 ease-out"
                       loading="lazy"
+                      onError={(e) => {
+                        (e.target as HTMLImageElement).src =
+                          'https://images.unsplash.com/photo-1598371839696-5c5bb00bdc28?auto=format&fit=crop&w=600&q=80';
+                      }}
                     />
                     <div className="absolute inset-0 bg-gradient-to-t from-[#13131A] via-transparent to-transparent opacity-60"></div>
 

@@ -110,7 +110,7 @@ export const DEFAULT_PRODUCTS_CATALOG: ProductItem[] = [
     category: 'aftercare',
     in_stock: true,
     rating: 5.0,
-    image_url: 'https://images.unsplash.com/photo-1608248597359-250810260714?auto=format&fit=crop&w=600&q=80',
+    image_url: 'https://images.unsplash.com/photo-1556228720-195a672e8a03?auto=format&fit=crop&w=600&q=80',
     created_at: new Date('2026-01-02').toISOString()
   },
   {
@@ -158,7 +158,7 @@ export const DEFAULT_PRODUCTS_CATALOG: ProductItem[] = [
     category: 'jewelry',
     in_stock: true,
     rating: 5.0,
-    image_url: 'https://images.unsplash.com/photo-1611591475152-47354c86574a?auto=format&fit=crop&w=600&q=80',
+    image_url: 'https://images.unsplash.com/photo-1535632066927-ab7c9ab60908?auto=format&fit=crop&w=600&q=80',
     created_at: new Date('2026-01-06').toISOString()
   },
   {

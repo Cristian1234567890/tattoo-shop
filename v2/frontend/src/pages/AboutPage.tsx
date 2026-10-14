@@ -97,7 +97,7 @@ export const AboutPage: React.FC = () => {
 
   return (
     <PageTransition>
-      <div className="flex flex-col min-h-screen bg-[#090b10] text-white selection:bg-purple-500/30 font-sans">
+      <div className="flex flex-col min-h-screen text-slate-800 dark:text-white selection:bg-purple-500/30 font-sans">
         <main className="flex-grow flex flex-col items-center">
           {/* Header Institucional */}
           <section className="relative w-full py-20 md:py-28 flex items-center justify-center border-b border-zinc-800/80 overflow-hidden">

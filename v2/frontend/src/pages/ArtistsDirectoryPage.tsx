@@ -300,7 +300,7 @@ export const ArtistsDirectoryPage: React.FC = () => {
 
   return (
     <PageTransition>
-      <div className="bg-[#0B0B0E] min-h-screen text-zinc-300 font-sans flex flex-col selection:bg-violet-500/30">
+      <div className="min-h-screen text-slate-800 dark:text-zinc-300 font-sans flex flex-col selection:bg-violet-500/30">
         {/* Send Sketch Modal */}
         {sketchTarget && (
           <SendSketchModal

@@ -26,7 +26,7 @@ export const ThemeSwitch: React.FC = () => {
           <Sun className="w-3.5 h-3.5 text-amber-500 transition-transform duration-300 rotate-180" />
         )}
       </span>
-      <span className="hidden sm:inline font-mono uppercase text-[10px] tracking-wider">
+      <span className="hidden 2xl:inline font-mono uppercase text-[10px] tracking-wider">
         {isDark ? 'Oscuro' : 'Claro'}
       </span>
     </button>

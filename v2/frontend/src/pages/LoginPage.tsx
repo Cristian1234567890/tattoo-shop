@@ -193,7 +193,7 @@ export const LoginPage: React.FC = () => {
       : '/register';
 
   return (
-    <div className="min-h-screen bg-[#090b10] text-[#e5e1e6] flex flex-col justify-center items-center px-4 py-12 relative overflow-hidden font-sans">
+    <div className="min-h-screen dark:bg-[#090b10] bg-transparent text-slate-800 dark:text-[#e5e1e6] flex flex-col justify-center items-center px-4 py-12 relative overflow-hidden font-sans">
       {/* Dynamic Atmospheric Glows & Ink Haze */}
       <div className="absolute -top-32 left-1/2 -translate-x-1/2 w-[680px] h-[360px] bg-violet-600/15 rounded-full blur-[140px] pointer-events-none -z-10" />
       <div className="absolute bottom-10 right-1/4 w-[420px] h-[280px] bg-indigo-600/10 rounded-full blur-[120px] pointer-events-none -z-10" />
@@ -204,7 +204,7 @@ export const LoginPage: React.FC = () => {
         {/* Outer Ambient Glow Border Frame (Stitch Neon Halo Effect) */}
         <div className="relative rounded-2xl p-[1px] bg-gradient-to-b from-purple-500/80 via-purple-600/30 to-white/10 shadow-[0_0_50px_rgba(124,58,237,0.25)]">
           {/* Smoked Glass Inner Surface Card */}
-          <div className="bg-[#0f0e17]/95 backdrop-blur-2xl rounded-2xl p-7 sm:p-9 relative overflow-hidden shadow-2xl border border-white/5">
+          <div className="dark:bg-[#0f0e17]/95 bg-white/95 text-slate-900 dark:text-white backdrop-blur-2xl rounded-2xl p-7 sm:p-9 relative overflow-hidden shadow-2xl border border-slate-200 dark:border-white/5">
             {/* Subtle Atelier Ink Texture Top Bar */}
             <div className="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-transparent via-purple-500 to-transparent opacity-80" />
 

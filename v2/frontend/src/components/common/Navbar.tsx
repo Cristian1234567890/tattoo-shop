@@ -39,17 +39,31 @@ export const Navbar: React.FC<NavbarProps> = ({ forceRender = false }) => {
     return null;
   }
 
-  const { isAuthenticated, isPasswordRecovery, user, logout } = useAuth();
+  const { isAuthenticated, isPasswordRecovery, user, logout, updateUserMetadata } = useAuth();
   const { country, currency, countryInfo, setCountry } = useCurrency();
   const { language, setLanguage, t } = useLanguage();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [currencyDropdownOpen, setCurrencyDropdownOpen] = useState(false);
   const [languageDropdownOpen, setLanguageDropdownOpen] = useState(false);
+  const [userDropdownOpen, setUserDropdownOpen] = useState(false);
 
   const closeMenu = () => {
     setMobileMenuOpen(false);
     setCurrencyDropdownOpen(false);
     setLanguageDropdownOpen(false);
+    setUserDropdownOpen(false);
+  };
+
+  const handleSwitchRole = (targetRole: 'Cliente' | 'Tatuador') => {
+    updateUserMetadata({
+      tipo: targetRole,
+      role: targetRole,
+    });
+    if (targetRole === 'Tatuador') {
+      window.location.href = '/artist-dashboard';
+    } else {
+      window.location.href = '/client-dashboard';
+    }
   };
 
   const isRecoveryMode =
@@ -84,7 +98,7 @@ export const Navbar: React.FC<NavbarProps> = ({ forceRender = false }) => {
     '';
 
   return (
-    <nav className="bg-gray-950/40 backdrop-blur-xl border-b border-white/10 sticky top-0 z-50 transition-all font-sans text-white">
+    <nav className="bg-white/90 dark:bg-gray-950/40 backdrop-blur-xl border-b border-slate-200 dark:border-white/10 sticky top-0 z-50 transition-all font-sans text-slate-900 dark:text-white">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
           {/* Brand Logo (Left Section) */}
@@ -94,22 +108,22 @@ export const Navbar: React.FC<NavbarProps> = ({ forceRender = false }) => {
             </Link>
           </div>
 
-          {/* Desktop Navigation Links (Center Section) */}
-          <div className="hidden lg:flex flex-1 items-center justify-center gap-1 xl:gap-2 px-2 overflow-hidden">
+          {/* Desktop Navigation Links (Center Section - Generously spaced) */}
+          <div className="hidden lg:flex flex-1 items-center justify-center gap-1.5 xl:gap-3 px-3">
             {/* Only show Beneficios & Precios if NOT authenticated with VIP */}
             {(!isAuthenticated || !hasVip) && (
               <>
                 <Link
                   id="nav-beneficios"
                   to="/beneficios"
-                  className="px-2.5 xl:px-3 py-1.5 rounded-full text-xs xl:text-sm font-medium text-gray-300 hover:text-white hover:bg-white/10 transition-colors whitespace-nowrap shrink-0"
+                  className="px-3 py-1.5 rounded-full text-xs xl:text-sm font-medium text-slate-700 hover:text-slate-900 hover:bg-slate-100 dark:text-gray-300 dark:hover:text-white dark:hover:bg-white/10 transition-colors whitespace-nowrap shrink-0"
                 >
                   {t('nav.benefits')}
                 </Link>
                 <Link
                   id="nav-precios"
                   to="/precios"
-                  className="px-2.5 xl:px-3 py-1.5 rounded-full text-xs xl:text-sm font-medium text-gray-300 hover:text-white hover:bg-white/10 transition-colors whitespace-nowrap shrink-0"
+                  className="px-3 py-1.5 rounded-full text-xs xl:text-sm font-medium text-slate-700 hover:text-slate-900 hover:bg-slate-100 dark:text-gray-300 dark:hover:text-white dark:hover:bg-white/10 transition-colors whitespace-nowrap shrink-0"
                 >
                   {t('nav.pricing')}
                 </Link>
@@ -118,26 +132,26 @@ export const Navbar: React.FC<NavbarProps> = ({ forceRender = false }) => {
             <Link
               id="nav-artistas"
               to="/artistas"
-              className="px-2.5 xl:px-3 py-1.5 rounded-full text-xs xl:text-sm font-medium text-gray-300 hover:text-white hover:bg-white/10 transition-colors whitespace-nowrap shrink-0"
+              className="px-3 py-1.5 rounded-full text-xs xl:text-sm font-medium text-slate-700 hover:text-slate-900 hover:bg-slate-100 dark:text-gray-300 dark:hover:text-white dark:hover:bg-white/10 transition-colors whitespace-nowrap shrink-0"
             >
               {t('nav.artists')}
             </Link>
             <Link
               id="nav-tienda"
               to="/tienda"
-              className="px-2.5 xl:px-3 py-1.5 rounded-full text-xs xl:text-sm font-medium text-gray-300 hover:text-white hover:bg-white/10 transition-colors whitespace-nowrap shrink-0"
+              className="px-3 py-1.5 rounded-full text-xs xl:text-sm font-medium text-slate-700 hover:text-slate-900 hover:bg-slate-100 dark:text-gray-300 dark:hover:text-white dark:hover:bg-white/10 transition-colors whitespace-nowrap shrink-0"
             >
               {t('nav.shop')}
             </Link>
             <Link
               to="/hub"
-              className="px-2.5 xl:px-3 py-1.5 rounded-full text-xs xl:text-sm font-medium text-gray-300 hover:text-white hover:bg-white/10 transition-colors whitespace-nowrap shrink-0"
+              className="px-3 py-1.5 rounded-full text-xs xl:text-sm font-medium text-slate-700 hover:text-slate-900 hover:bg-slate-100 dark:text-gray-300 dark:hover:text-white dark:hover:bg-white/10 transition-colors whitespace-nowrap shrink-0"
             >
               {t('nav.explore_map')}
             </Link>
             <Link
               to="/about"
-              className="px-2.5 xl:px-3 py-1.5 rounded-full text-xs xl:text-sm font-medium text-gray-300 hover:text-white hover:bg-white/10 transition-colors whitespace-nowrap shrink-0"
+              className="px-3 py-1.5 rounded-full text-xs xl:text-sm font-medium text-slate-700 hover:text-slate-900 hover:bg-slate-100 dark:text-gray-300 dark:hover:text-white dark:hover:bg-white/10 transition-colors whitespace-nowrap shrink-0"
             >
               {t('nav.about')}
             </Link>
@@ -150,13 +164,11 @@ export const Navbar: React.FC<NavbarProps> = ({ forceRender = false }) => {
               <button
                 id="country-currency-selector-btn"
                 onClick={() => setCurrencyDropdownOpen(!currencyDropdownOpen)}
-                className="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold bg-white/5 hover:bg-white/10 border border-white/10 text-zinc-300 hover:text-white transition-all cursor-pointer shadow-sm"
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold bg-slate-100 hover:bg-slate-200 dark:bg-white/5 dark:hover:bg-white/10 border border-slate-200 dark:border-white/10 text-slate-700 dark:text-zinc-300 hover:text-slate-900 dark:hover:text-white transition-all cursor-pointer shadow-sm"
                 aria-label="Seleccionar País y Moneda"
               >
                 <span className="text-base leading-none">{countryInfo.flag}</span>
-                <span>{countryInfo.code}</span>
-                <span className="text-zinc-500">•</span>
-                <span className="text-violet-400 font-bold">{currency}</span>
+                <span className="text-violet-600 dark:text-violet-400 font-bold">{currency}</span>
                 <ChevronDown className="w-3.5 h-3.5 text-zinc-400" />
               </button>
 
@@ -286,44 +298,162 @@ export const Navbar: React.FC<NavbarProps> = ({ forceRender = false }) => {
                 <span>{t('nav.recovering_password')}</span>
               </div>
             ) : isAuthenticated ? (
-              <div className="flex items-center gap-2 xl:gap-3">
-                {isQaEnvironment() && (
-                  <span
-                    id="qa-user-sandbox-badge"
-                    className="hidden sm:inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-extrabold uppercase bg-amber-500/15 border border-amber-500/40 text-amber-300 tracking-wider shadow-sm"
-                    title="Usuario ejecutando en entorno de pruebas segregado"
+              <div className="relative">
+                <div className="flex items-center gap-1.5">
+                  <Link
+                    to={isArtist ? '/artist-dashboard' : '/client-dashboard'}
+                    id="nav-user-panel-link"
+                    className="flex items-center gap-2 pl-1.5 pr-2.5 py-1 rounded-full text-xs font-semibold text-slate-800 dark:text-zinc-200 hover:text-slate-950 dark:hover:text-white bg-slate-100 hover:bg-slate-200 dark:bg-white/5 dark:hover:bg-white/10 border border-slate-200 dark:border-white/10 transition-all shadow-sm"
+                    title="Ir a mi panel de control"
                   >
-                    <span className="w-1.5 h-1.5 rounded-full bg-amber-400"></span>
-                    SANDBOX QA
-                  </span>
+                    <div className="w-6 h-6 rounded-full overflow-hidden bg-zinc-800 border border-violet-400/50 flex items-center justify-center shrink-0 shadow-sm">
+                      {displayAvatar ? (
+                        <img
+                          src={displayAvatar}
+                          alt="Avatar"
+                          className="w-full h-full object-cover"
+                          onError={(e) => {
+                            (e.target as HTMLImageElement).style.display = 'none';
+                          }}
+                        />
+                      ) : (
+                        <User className="w-3.5 h-3.5 text-violet-400" />
+                      )}
+                    </div>
+                    <span className="max-w-[85px] truncate font-medium">
+                      {user?.user_metadata?.nombre || (isArtist ? 'Tatuador' : 'Cliente')}
+                    </span>
+                    <span className="hidden xl:inline-block px-1.5 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider bg-violet-500/20 text-violet-700 dark:text-violet-300 border border-violet-500/30">
+                      {isArtist ? 'Tatuador' : 'Cliente'}
+                    </span>
+                  </Link>
+
+                  <button
+                    id="user-menu-toggle-btn"
+                    onClick={() => {
+                      setUserDropdownOpen(!userDropdownOpen);
+                      setCurrencyDropdownOpen(false);
+                      setLanguageDropdownOpen(false);
+                    }}
+                    aria-label="Abrir opciones de cuenta"
+                    className="p-1.5 rounded-full text-slate-600 hover:text-slate-900 dark:text-zinc-300 dark:hover:text-white bg-slate-100 hover:bg-slate-200 dark:bg-white/5 dark:hover:bg-white/10 border border-slate-200 dark:border-white/10 transition-all cursor-pointer"
+                  >
+                    <ChevronDown className={`w-3.5 h-3.5 transition-transform duration-200 ${userDropdownOpen ? 'rotate-180' : ''}`} />
+                  </button>
+                </div>
+
+                {userDropdownOpen && (
+                  <>
+                    <div
+                      className="fixed inset-0 z-40"
+                      onClick={() => setUserDropdownOpen(false)}
+                    />
+                    <div
+                      id="user-account-dropdown"
+                      className="absolute right-0 mt-2 w-72 bg-white dark:bg-zinc-950/95 border border-slate-200 dark:border-zinc-800 rounded-2xl shadow-2xl p-2.5 z-50 backdrop-blur-xl animate-in fade-in slide-in-from-top-1 duration-150 text-left"
+                    >
+                      <div className="px-3 py-2 border-b border-slate-100 dark:border-zinc-800/80 mb-2">
+                        <div className="flex items-center gap-2.5">
+                          <div className="w-8 h-8 rounded-full overflow-hidden bg-zinc-800 border border-violet-500/40 shrink-0">
+                            {displayAvatar ? (
+                              <img src={displayAvatar} alt="Avatar" className="w-full h-full object-cover" />
+                            ) : (
+                              <User className="w-4 h-4 text-violet-400 m-2" />
+                            )}
+                          </div>
+                          <div className="flex-1 min-w-0">
+                            <p className="text-xs font-bold text-slate-900 dark:text-white truncate">
+                              {user?.user_metadata?.full_name || user?.user_metadata?.nombre || user?.email}
+                            </p>
+                            <p className="text-[10px] text-slate-500 dark:text-zinc-400 truncate">{user?.email}</p>
+                          </div>
+                        </div>
+
+                        <div className="mt-2.5 pt-2 border-t border-slate-100 dark:border-zinc-900 flex items-center justify-between text-[10px]">
+                          <span className="text-slate-500 dark:text-zinc-400">Rol activo:</span>
+                          <span className="font-bold px-2 py-0.5 rounded bg-violet-500/20 text-violet-700 dark:text-violet-300 border border-violet-500/30">
+                            {isArtist ? 'Tatuador Profesional' : 'Cliente Explorador'}
+                          </span>
+                        </div>
+                        {hasVip && (
+                          <div className="mt-1 flex items-center justify-between text-[10px]">
+                            <span className="text-slate-500 dark:text-zinc-400">Suscripción:</span>
+                            <span className="font-bold px-2 py-0.5 rounded bg-amber-500/20 text-amber-700 dark:text-amber-300 border border-amber-500/30">
+                              VIP Club Activo
+                            </span>
+                          </div>
+                        )}
+                        {isQaEnvironment() && (
+                          <div className="mt-1 flex items-center justify-between text-[10px]">
+                            <span className="text-slate-500 dark:text-zinc-400">Entorno:</span>
+                            <span className="font-bold text-amber-500 dark:text-amber-400">QA Sandbox</span>
+                          </div>
+                        )}
+                      </div>
+
+                      <div className="px-1 py-1 mb-2">
+                        <p className="px-2 text-[10px] font-bold uppercase tracking-wider text-slate-400 dark:text-zinc-500 mb-1">
+                          Cambio Rápido de Función
+                        </p>
+                        <button
+                          id="btn-switch-role"
+                          onClick={() => {
+                            handleSwitchRole(isArtist ? 'Cliente' : 'Tatuador');
+                            setUserDropdownOpen(false);
+                          }}
+                          className="w-full flex items-center justify-between px-2.5 py-2 rounded-xl text-xs font-medium text-amber-800 dark:text-amber-300 hover:text-amber-900 dark:hover:text-amber-200 bg-amber-500/10 hover:bg-amber-500/20 border border-amber-500/30 transition-all cursor-pointer"
+                        >
+                          <div className="flex items-center gap-2">
+                            <Sparkles className="w-3.5 h-3.5 text-amber-500 dark:text-amber-400" />
+                            <span>{isArtist ? 'Cambiar a Modo Cliente' : 'Cambiar a Modo Tatuador'}</span>
+                          </div>
+                          <span className="text-[10px] bg-amber-500/20 px-1.5 py-0.5 rounded text-amber-700 dark:text-amber-300 font-semibold">Switch</span>
+                        </button>
+                      </div>
+
+                      <div className="space-y-0.5 border-t border-slate-100 dark:border-zinc-800/80 pt-1.5">
+                        <Link
+                          to={isArtist ? '/artist-dashboard' : '/client-dashboard'}
+                          onClick={() => setUserDropdownOpen(false)}
+                          className="w-full flex items-center gap-2.5 px-2.5 py-2 rounded-xl text-xs font-medium text-slate-700 dark:text-zinc-300 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-white/5 transition-colors"
+                        >
+                          <User className="w-3.5 h-3.5 text-violet-500 dark:text-violet-400" />
+                          <span>{isArtist ? 'Mi Panel de Tatuador' : 'Mi Panel de Cliente'}</span>
+                        </Link>
+                        <Link
+                          to={isArtist ? '/artist-dashboard?tab=agenda' : '/client-dashboard?tab=citas'}
+                          onClick={() => setUserDropdownOpen(false)}
+                          className="w-full flex items-center gap-2.5 px-2.5 py-2 rounded-xl text-xs font-medium text-slate-700 dark:text-zinc-300 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-white/5 transition-colors"
+                        >
+                          <Compass className="w-3.5 h-3.5 text-indigo-500 dark:text-indigo-400" />
+                          <span>{isArtist ? 'Mi Agenda & Citas' : 'Mis Citas Reservadas'}</span>
+                        </Link>
+                        <Link
+                          to="/precios"
+                          onClick={() => setUserDropdownOpen(false)}
+                          className="w-full flex items-center gap-2.5 px-2.5 py-2 rounded-xl text-xs font-medium text-slate-700 dark:text-zinc-300 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-white/5 transition-colors"
+                        >
+                          <DollarSign className="w-3.5 h-3.5 text-emerald-500 dark:text-emerald-400" />
+                          <span>Facturación & Suscripciones</span>
+                        </Link>
+                      </div>
+
+                      <div className="border-t border-slate-100 dark:border-zinc-800/80 mt-2 pt-1.5">
+                        <button
+                          id="log-out"
+                          onClick={() => {
+                            setUserDropdownOpen(false);
+                            logout();
+                          }}
+                          className="w-full flex items-center gap-2.5 px-2.5 py-2 rounded-xl text-xs font-semibold text-red-600 dark:text-red-400 hover:text-red-700 dark:hover:text-red-300 hover:bg-red-500/10 transition-colors cursor-pointer"
+                        >
+                          <LogOut className="w-3.5 h-3.5 text-red-500 dark:text-red-400" />
+                          <span>{t('nav.logout')}</span>
+                        </button>
+                      </div>
+                    </div>
+                  </>
                 )}
-                <Link
-                  to={isArtist ? '/artist-dashboard' : '/client-dashboard'}
-                  className="flex items-center gap-2 px-3.5 py-1.5 rounded-full text-sm font-semibold text-indigo-300 bg-indigo-500/10 hover:bg-indigo-500/20 border border-indigo-500/30 transition-all shadow-sm"
-                >
-                  <div className="w-5 h-5 rounded-full overflow-hidden bg-zinc-800 border border-indigo-400/50 flex items-center justify-center shrink-0">
-                    {displayAvatar ? (
-                      <img
-                        src={displayAvatar}
-                        alt="Avatar"
-                        className="w-full h-full object-cover"
-                        onError={(e) => {
-                          (e.target as HTMLImageElement).style.display = 'none';
-                        }}
-                      />
-                    ) : (
-                      <User className="w-3 h-3 text-indigo-400" />
-                    )}
-                  </div>
-                  <span>{isArtist ? t('nav.artist_panel') : t('nav.my_panel')}</span>
-                </Link>
-                <button
-                  onClick={() => logout()}
-                  id="log-out"
-                  className="px-4 py-1.5 rounded-full text-sm font-semibold bg-white/5 hover:bg-red-500/20 text-gray-300 hover:text-red-300 border border-white/10 hover:border-red-500/30 transition-all cursor-pointer"
-                >
-                  {t('nav.logout')}
-                </button>
               </div>
             ) : (
               <div className="flex items-center gap-3">
@@ -534,6 +664,17 @@ export const Navbar: React.FC<NavbarProps> = ({ forceRender = false }) => {
                   </div>
                   <span>{isArtist ? t('nav.artist_panel') : t('nav.my_panel')}</span>
                 </Link>
+                <button
+                  id="mobile-btn-switch-role"
+                  onClick={() => {
+                    handleSwitchRole(isArtist ? 'Cliente' : 'Tatuador');
+                    closeMenu();
+                  }}
+                  className="flex items-center justify-center gap-2 w-full py-2.5 px-4 rounded-full text-xs font-semibold text-amber-300 bg-amber-500/15 hover:bg-amber-500/25 border border-amber-500/30 transition-all cursor-pointer"
+                >
+                  <Sparkles className="w-4 h-4 text-amber-400" />
+                  <span>{isArtist ? 'Cambiar a Modo Cliente' : 'Cambiar a Modo Tatuador'}</span>
+                </button>
                 <button
                   onClick={() => {
                     logout();

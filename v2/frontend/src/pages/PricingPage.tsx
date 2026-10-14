@@ -9,11 +9,17 @@ import {
 } from 'lucide-react';
 import { PageTransition } from '../components/common/PageTransition';
 import { useCurrency } from '../context/CurrencyContext';
+import { useAuth } from '../context/AuthContext';
 
 export const PricingPage: React.FC = () => {
   const { formatPrice, currency, countryInfo } = useCurrency();
+  const { isAuthenticated, user } = useAuth();
   const [billingCycle, setBillingCycle] = useState<'monthly' | 'annual'>('annual');
   const [openFaq, setOpenFaq] = useState<number | null>(null);
+
+  const userRole = (user?.user_metadata?.tipo || user?.user_metadata?.role || '').toLowerCase();
+  const isClient = userRole === 'cliente';
+  const hasActiveSub = Boolean(user?.user_metadata?.has_active_subscription);
 
   const vipPrice = billingCycle === 'annual' ? 3.99 : 4.99;
   const studioPrice = billingCycle === 'annual' ? 3.99 : 4.99;
@@ -47,56 +53,60 @@ export const PricingPage: React.FC = () => {
 
   return (
     <PageTransition>
-      <div className="bg-[#0B0B0E] min-h-screen text-zinc-300 font-sans flex flex-col selection:bg-violet-500/30">
+      <div className="min-h-screen text-slate-800 dark:text-zinc-300 font-sans flex flex-col selection:bg-violet-500/30">
         <main className="flex-1 max-w-6xl mx-auto px-6 py-16 md:py-24 w-full">
           {/* Header */}
           <div className="text-center max-w-2xl mx-auto mb-12">
-            <span className="text-xs font-bold tracking-widest uppercase text-violet-400 bg-violet-600/10 px-4 py-1.5 rounded-full border border-violet-500/20 mb-4 inline-block">
+            <span className="text-xs font-bold tracking-widest uppercase text-violet-600 dark:text-violet-400 bg-violet-600/10 px-4 py-1.5 rounded-full border border-violet-500/20 mb-4 inline-block">
               TARIFAS CLARAS • CERO COMISIONES
             </span>
-            <h1 className="text-4xl md:text-5xl font-extrabold text-white tracking-tight mb-4 leading-tight">
+            <h1 className="text-4xl md:text-5xl font-extrabold text-slate-900 dark:text-white tracking-tight mb-4 leading-tight">
               Planes y Membresías Transparentes
             </h1>
-            <p className="text-zinc-400 text-base leading-relaxed">
+            <p className="text-slate-600 dark:text-zinc-400 text-base leading-relaxed">
               Herramientas profesionales de estudio y coleccionismo sin entregar porcentajes de tus obras.
             </p>
 
-            {/* Currency Pill Indicator */}
-            <div className="mt-4 inline-flex items-center gap-2 px-3 py-1 rounded-full bg-zinc-900 border border-zinc-800 text-xs text-zinc-400">
-              <Globe className="w-3.5 h-3.5 text-violet-400" />
-              <span>
-                Moneda activa:{' '}
-                <strong className="text-white">
-                  {countryInfo.name} ({currency})
-                </strong>
-              </span>
-            </div>
-
-            {/* Billing Cycle Toggle */}
-            <div className="mt-8 inline-flex items-center p-1.5 bg-[#13131A] border border-white/[0.08] rounded-full shadow-inner">
-              <button
-                onClick={() => setBillingCycle('monthly')}
-                className={`px-5 py-2 rounded-full text-xs font-bold transition-all cursor-pointer ${
-                  billingCycle === 'monthly'
-                    ? 'bg-violet-600 text-white shadow-md'
-                    : 'text-zinc-400 hover:text-white'
-                }`}
-              >
-                Facturación Mensual
-              </button>
-              <button
-                onClick={() => setBillingCycle('annual')}
-                className={`px-5 py-2 rounded-full text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer ${
-                  billingCycle === 'annual'
-                    ? 'bg-violet-600 text-white shadow-md'
-                    : 'text-zinc-400 hover:text-white'
-                }`}
-              >
-                Facturación Anual
-                <span className="bg-emerald-500/20 text-emerald-400 text-[10px] px-2 py-0.5 rounded-full uppercase tracking-wider font-extrabold border border-emerald-500/30">
-                  Ahorra 20%
+            {/* Currency Pill Indicator & Billing Cycle Toggle (Stacked with generous spacing) */}
+            <div className="mt-8 flex flex-col items-center justify-center gap-4">
+              <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-slate-100 dark:bg-zinc-900 border border-slate-200 dark:border-zinc-800 text-xs text-slate-600 dark:text-zinc-400 shadow-sm">
+                <Globe className="w-3.5 h-3.5 text-violet-500" />
+                <span>
+                  Moneda activa:{' '}
+                  <strong className="text-slate-900 dark:text-white">
+                    {countryInfo.name} ({currency})
+                  </strong>
                 </span>
-              </button>
+              </div>
+
+              {/* Billing Cycle Toggle */}
+              <div className="inline-flex items-center p-1.5 bg-slate-100 dark:bg-[#13131A] border border-slate-200 dark:border-white/[0.08] rounded-full shadow-inner">
+                <button
+                  type="button"
+                  onClick={() => setBillingCycle('monthly')}
+                  className={`px-5 py-2 rounded-full text-xs font-bold transition-all cursor-pointer ${
+                    billingCycle === 'monthly'
+                      ? 'bg-violet-600 text-white shadow-md'
+                      : 'text-slate-600 dark:text-zinc-400 hover:text-slate-900 dark:hover:text-white'
+                  }`}
+                >
+                  Facturación Mensual
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setBillingCycle('annual')}
+                  className={`px-5 py-2 rounded-full text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer ${
+                    billingCycle === 'annual'
+                      ? 'bg-violet-600 text-white shadow-md'
+                      : 'text-slate-600 dark:text-zinc-400 hover:text-slate-900 dark:hover:text-white'
+                  }`}
+                >
+                  Facturación Anual
+                  <span className="bg-emerald-500/20 text-emerald-600 dark:text-emerald-400 text-[10px] px-2 py-0.5 rounded-full uppercase tracking-wider font-extrabold border border-emerald-500/30">
+                    Ahorra 20%
+                  </span>
+                </button>
+              </div>
             </div>
           </div>
 
@@ -105,39 +115,64 @@ export const PricingPage: React.FC = () => {
             {/* 1. Explorador */}
             <div className="atelier-card p-8 rounded-3xl flex flex-col justify-between">
               <div>
-                <span className="text-xs font-bold uppercase tracking-wider text-zinc-400 mb-2 block">
-                  EXPLORADOR
-                </span>
-                <h3 className="text-2xl font-bold text-white mb-2">Gratis</h3>
-                <div className="text-3xl font-extrabold text-white mb-6">0 {currency}</div>
-                <p className="text-xs text-zinc-400 mb-6 leading-relaxed">
+                <div className="flex items-center justify-between mb-2">
+                  <span className="text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-zinc-400">
+                    EXPLORADOR
+                  </span>
+                  {isAuthenticated && isClient && !hasActiveSub && (
+                    <span className="text-[10px] font-extrabold px-2 py-0.5 rounded-full bg-emerald-500/15 border border-emerald-500/30 text-emerald-600 dark:text-emerald-400 uppercase tracking-wider">
+                      Tu Plan Actual
+                    </span>
+                  )}
+                </div>
+                <h3 className="text-2xl font-bold text-slate-900 dark:text-white mb-2">
+                  {isAuthenticated && isClient && !hasActiveSub ? 'Membresía Incluida' : 'Gratis'}
+                </h3>
+                <div className="text-3xl font-extrabold text-slate-900 dark:text-white mb-6">
+                  {isAuthenticated && isClient && !hasActiveSub ? (
+                    <span className="text-emerald-600 dark:text-emerald-400 text-xl font-bold">Activo con tu cuenta</span>
+                  ) : (
+                    `0 ${currency}`
+                  )}
+                </div>
+                <p className="text-xs text-slate-600 dark:text-zinc-400 mb-6 leading-relaxed">
                   Para entusiastas y personas que buscan su primer tatuaje o explorar estudios locales.
                 </p>
-                <ul className="space-y-3 mb-8 text-xs text-zinc-300">
+                <ul className="space-y-3 mb-8 text-xs text-slate-700 dark:text-zinc-300">
                   <li className="flex gap-2.5">
-                    <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />
+                    <CheckCircle2 className="w-4 h-4 text-emerald-500 shrink-0" />
                     <span>Explorar mapa interactivo de estudios</span>
                   </li>
                   <li className="flex gap-2.5">
-                    <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />
+                    <CheckCircle2 className="w-4 h-4 text-emerald-500 shrink-0" />
                     <span>Ver portafolios y flashes disponibles</span>
                   </li>
                   <li className="flex gap-2.5">
-                    <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />
+                    <CheckCircle2 className="w-4 h-4 text-emerald-500 shrink-0" />
                     <span>Contactar estudios por WhatsApp directo</span>
                   </li>
-                  <li className="flex gap-2.5 text-zinc-500">
-                    <CheckCircle2 className="w-4 h-4 text-zinc-700 shrink-0" />
+                  <li className="flex gap-2.5 text-slate-400 dark:text-zinc-500">
+                    <CheckCircle2 className="w-4 h-4 text-slate-300 dark:text-zinc-700 shrink-0" />
                     <span>Seguimiento clínico de cicatrización</span>
                   </li>
                 </ul>
               </div>
-              <Link
-                to="/register?role=Cliente"
-                className="w-full text-center py-3 rounded-xl bg-zinc-800 hover:bg-zinc-700 text-white text-xs font-bold transition-colors cursor-pointer"
-              >
-                Empezar Gratis
-              </Link>
+              {isAuthenticated && isClient && !hasActiveSub ? (
+                <Link
+                  to="/client-dashboard"
+                  className="w-full text-center py-3 rounded-xl bg-emerald-500/15 hover:bg-emerald-500/25 border border-emerald-500/30 text-emerald-600 dark:text-emerald-400 text-xs font-bold transition-all flex items-center justify-center gap-2 shadow-sm"
+                >
+                  <CheckCircle2 className="w-4 h-4" />
+                  <span>Ir a Mi Panel de Control</span>
+                </Link>
+              ) : (
+                <Link
+                  to="/register?role=Cliente"
+                  className="w-full text-center py-3 rounded-xl bg-slate-900 hover:bg-slate-800 dark:bg-zinc-800 dark:hover:bg-zinc-700 text-white text-xs font-bold transition-colors cursor-pointer shadow-sm"
+                >
+                  Empezar Gratis
+                </Link>
+              )}
             </div>
 
             {/* 2. Coleccionista VIP */}

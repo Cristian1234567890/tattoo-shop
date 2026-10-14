@@ -19,7 +19,7 @@ export const HomePage: React.FC = () => {
   const { requireAuth } = useGuestGate();
 
   return (
-    <div className="bg-[#0B0B0E] min-h-screen text-zinc-300 font-sans selection:bg-violet-500/30 flex flex-col">
+    <div className="min-h-screen text-slate-800 dark:text-zinc-300 font-sans selection:bg-violet-500/30 flex flex-col">
       {/* 1. Hero Section */}
       <section className="relative px-6 py-24 md:py-32 flex flex-col items-center text-center overflow-hidden">
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-violet-900/25 via-[#0B0B0E] to-[#0B0B0E] -z-10" />

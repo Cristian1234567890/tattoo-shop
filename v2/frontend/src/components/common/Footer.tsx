@@ -38,7 +38,7 @@ export const Footer: React.FC<FooterProps> = ({ forceRender = false }) => {
   if (isExempt) return null;
 
   return (
-    <footer className="mt-auto bg-[#07090e] border-t border-white/5 text-zinc-400 font-sans selection:bg-violet-500/30">
+    <footer className="mt-auto bg-slate-50 dark:bg-[#07090e] border-t border-slate-200 dark:border-white/5 text-slate-600 dark:text-zinc-400 font-sans selection:bg-violet-500/30">
       <div id="footer" className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-14">
         {/* Main 4-column Grid matching Stitch Atelier reference */}
         <div className="grid grid-cols-1 md:grid-cols-4 gap-10 lg:gap-12 mb-14">
@@ -47,10 +47,10 @@ export const Footer: React.FC<FooterProps> = ({ forceRender = false }) => {
             <Link to="/" className="inline-block no-underline">
               <Logo size="md" />
             </Link>
-            <p className="text-sm text-zinc-400 leading-relaxed font-normal">
+            <p className="text-sm text-slate-600 dark:text-zinc-400 leading-relaxed font-normal">
               Tattoo Hub es un espacio digital concebido para el arte del tatuaje independiente: facilitando el encuentro entre entusiastas, coleccionistas y artistas dedicados a la aguja y la tinta.
             </p>
-            <div className="flex items-center gap-2 pt-2 text-[11px] font-bold uppercase tracking-wider text-zinc-400">
+            <div className="flex items-center gap-2 pt-2 text-[11px] font-bold uppercase tracking-wider text-slate-500 dark:text-zinc-400">
               <span className="w-2 h-2 rounded-full bg-violet-500 shadow-[0_0_8px_rgba(139,92,246,0.8)]" />
               <span>DIRECTORIO EN EXPANSIÓN CONSTANTE</span>
             </div>
@@ -58,10 +58,10 @@ export const Footer: React.FC<FooterProps> = ({ forceRender = false }) => {
 
           {/* Column 2: Sobre Nosotros & Manifiesto */}
           <div className="space-y-4">
-            <h4 className="text-white font-bold text-base tracking-tight">
+            <h4 className="text-slate-900 dark:text-white font-bold text-base tracking-tight">
               Sobre Nosotros
             </h4>
-            <p className="text-sm text-zinc-400 leading-relaxed font-normal">
+            <p className="text-sm text-slate-600 dark:text-zinc-400 leading-relaxed font-normal">
               Nacimos con la premisa de devolver el foco a los estudios locales y al valor artístico de cada pieza, creando una alternativa clara y profesional a las redes sociales saturadas de ruido publicitario.
             </p>
             <Link
@@ -75,27 +75,27 @@ export const Footer: React.FC<FooterProps> = ({ forceRender = false }) => {
 
           {/* Column 3: Explorar */}
           <div>
-            <h4 className="text-white font-bold text-base tracking-tight mb-4">
+            <h4 className="text-slate-900 dark:text-white font-bold text-base tracking-tight mb-4">
               Explorar
             </h4>
             <ul className="space-y-3 text-sm">
               <li>
-                <Link to="/hub" className="text-zinc-400 hover:text-white transition-colors">
+                <Link to="/hub" className="text-slate-600 dark:text-zinc-400 hover:text-slate-900 dark:hover:text-white transition-colors">
                   Explorar Mapa
                 </Link>
               </li>
               <li>
-                <Link to="/artistas" className="text-zinc-400 hover:text-white transition-colors">
+                <Link to="/artistas" className="text-slate-600 dark:text-zinc-400 hover:text-slate-900 dark:hover:text-white transition-colors">
                   Portafolios & Estilos
                 </Link>
               </li>
               <li>
-                <Link to="/beneficios" className="text-zinc-400 hover:text-white transition-colors">
+                <Link to="/beneficios" className="text-slate-600 dark:text-zinc-400 hover:text-slate-900 dark:hover:text-white transition-colors">
                   Herramientas de Estudio
                 </Link>
               </li>
               <li>
-                <Link to="/precios" className="text-zinc-400 hover:text-white transition-colors">
+                <Link to="/precios" className="text-slate-600 dark:text-zinc-400 hover:text-slate-900 dark:hover:text-white transition-colors">
                   Planes y Membresías
                 </Link>
               </li>
@@ -104,22 +104,22 @@ export const Footer: React.FC<FooterProps> = ({ forceRender = false }) => {
 
           {/* Column 4: Legal & Taller */}
           <div>
-            <h4 className="text-white font-bold text-base tracking-tight mb-4">
+            <h4 className="text-slate-900 dark:text-white font-bold text-base tracking-tight mb-4">
               Legal & Taller
             </h4>
             <ul className="space-y-3 text-sm">
               <li>
-                <Link to="/legal/terms" className="text-zinc-400 hover:text-white transition-colors">
+                <Link to="/legal/terms" className="text-slate-600 dark:text-zinc-400 hover:text-slate-900 dark:hover:text-white transition-colors">
                   Términos y Condiciones
                 </Link>
               </li>
               <li>
-                <Link to="/legal/privacy" className="text-zinc-400 hover:text-white transition-colors">
+                <Link to="/legal/privacy" className="text-slate-600 dark:text-zinc-400 hover:text-slate-900 dark:hover:text-white transition-colors">
                   Política de Privacidad
                 </Link>
               </li>
               <li>
-                <Link to="/about#cuidados" className="text-zinc-400 hover:text-white transition-colors">
+                <Link to="/about#cuidados" className="text-slate-600 dark:text-zinc-400 hover:text-slate-900 dark:hover:text-white transition-colors">
                   Guía de Higiene y Cuidados
                 </Link>
               </li>
@@ -127,18 +127,18 @@ export const Footer: React.FC<FooterProps> = ({ forceRender = false }) => {
           </div>
         </div>
 
-        {/* Bottom Bar: Copyright & Dark Atelier Edition Pill */}
-        <div className="pt-8 border-t border-white/5 flex flex-col sm:flex-row items-center justify-between text-xs text-zinc-500 gap-4">
-          <p className="font-medium text-zinc-400 text-center sm:text-left">
+        {/* Bottom Bar: Copyright & Edition Pill */}
+        <div className="pt-8 border-t border-slate-200 dark:border-white/5 flex flex-col sm:flex-row items-center justify-between text-xs text-slate-500 dark:text-zinc-500 gap-4">
+          <p className="font-medium text-slate-600 dark:text-zinc-400 text-center sm:text-left">
             © {currentYear} Tattoo Hub. Todos los derechos reservados.
           </p>
 
           <div
             id="dark-atelier-edition-badge"
-            className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full border border-zinc-800 bg-zinc-900/70 text-[11px] font-bold text-zinc-300 tracking-wider shadow-sm"
+            className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full border border-slate-300 dark:border-zinc-800 bg-white dark:bg-zinc-900/70 text-[11px] font-bold text-slate-700 dark:text-zinc-300 tracking-wider shadow-sm"
           >
-            <span className="w-2 h-2 rounded-full border border-violet-400 inline-block" />
-            <span>DARK ATELIER EDITION</span>
+            <span className="w-2 h-2 rounded-full border border-violet-500 inline-block" />
+            <span>DARK & LIGHT ATELIER EDITION</span>
           </div>
         </div>
       </div>
