@@ -61,6 +61,28 @@ export const Navbar: React.FC<NavbarProps> = ({ forceRender = false }) => {
 
   const hasVip = Boolean(user?.user_metadata?.has_active_subscription);
 
+  const [navAvatar, setNavAvatar] = useState<string>(() => {
+    if (typeof window !== 'undefined') {
+      return localStorage.getItem('user_avatar_override') || '';
+    }
+    return '';
+  });
+
+  React.useEffect(() => {
+    const handleAvatarChange = (e: any) => {
+      setNavAvatar(e.detail || (typeof window !== 'undefined' ? localStorage.getItem('user_avatar_override') || '' : ''));
+    };
+    window.addEventListener('user_avatar_changed', handleAvatarChange);
+    return () => window.removeEventListener('user_avatar_changed', handleAvatarChange);
+  }, []);
+
+  const displayAvatar =
+    navAvatar ||
+    user?.user_metadata?.profile ||
+    user?.user_metadata?.avatar_url ||
+    user?.user_metadata?.picture ||
+    '';
+
   return (
     <nav className="bg-gray-950/40 backdrop-blur-xl border-b border-white/10 sticky top-0 z-50 transition-all font-sans text-white">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -277,9 +299,23 @@ export const Navbar: React.FC<NavbarProps> = ({ forceRender = false }) => {
                 )}
                 <Link
                   to={isArtist ? '/artist-dashboard' : '/client-dashboard'}
-                  className="px-4 py-1.5 rounded-full text-sm font-semibold text-indigo-300 bg-indigo-500/10 hover:bg-indigo-500/20 border border-indigo-500/30 transition-all"
+                  className="flex items-center gap-2 px-3.5 py-1.5 rounded-full text-sm font-semibold text-indigo-300 bg-indigo-500/10 hover:bg-indigo-500/20 border border-indigo-500/30 transition-all shadow-sm"
                 >
-                  {isArtist ? t('nav.artist_panel') : t('nav.my_panel')}
+                  <div className="w-5 h-5 rounded-full overflow-hidden bg-zinc-800 border border-indigo-400/50 flex items-center justify-center shrink-0">
+                    {displayAvatar ? (
+                      <img
+                        src={displayAvatar}
+                        alt="Avatar"
+                        className="w-full h-full object-cover"
+                        onError={(e) => {
+                          (e.target as HTMLImageElement).style.display = 'none';
+                        }}
+                      />
+                    ) : (
+                      <User className="w-3 h-3 text-indigo-400" />
+                    )}
+                  </div>
+                  <span>{isArtist ? t('nav.artist_panel') : t('nav.my_panel')}</span>
                 </Link>
                 <button
                   onClick={() => logout()}
@@ -480,10 +516,23 @@ export const Navbar: React.FC<NavbarProps> = ({ forceRender = false }) => {
                 <Link
                   to={isArtist ? '/artist-dashboard' : '/client-dashboard'}
                   onClick={closeMenu}
-                  className="flex items-center justify-center gap-2 w-full py-2.5 px-4 rounded-full text-sm font-semibold text-indigo-300 bg-indigo-500/20 border border-indigo-500/30"
+                  className="flex items-center justify-center gap-2.5 w-full py-2.5 px-4 rounded-full text-sm font-semibold text-indigo-300 bg-indigo-500/20 border border-indigo-500/30 shadow-sm"
                 >
-                  <User className="w-4 h-4" />
-                  {isArtist ? t('nav.artist_panel') : t('nav.my_panel')}
+                  <div className="w-5 h-5 rounded-full overflow-hidden bg-zinc-800 border border-indigo-400/50 flex items-center justify-center shrink-0">
+                    {displayAvatar ? (
+                      <img
+                        src={displayAvatar}
+                        alt="Avatar"
+                        className="w-full h-full object-cover"
+                        onError={(e) => {
+                          (e.target as HTMLImageElement).style.display = 'none';
+                        }}
+                      />
+                    ) : (
+                      <User className="w-3.5 h-3.5 text-indigo-400" />
+                    )}
+                  </div>
+                  <span>{isArtist ? t('nav.artist_panel') : t('nav.my_panel')}</span>
                 </Link>
                 <button
                   onClick={() => {

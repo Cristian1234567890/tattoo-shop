@@ -45,11 +45,31 @@ export const ClientHeroHeader: React.FC<ClientHeroHeaderProps> = ({
     user?.email?.split('@')[0] ||
     (lang === 'en' ? 'Client' : 'Cliente');
 
+  const [avatarOverride, setAvatarOverride] = React.useState<string>(() => {
+    if (typeof window !== 'undefined') {
+      return localStorage.getItem('user_avatar_override') || '';
+    }
+    return '';
+  });
+
+  React.useEffect(() => {
+    const onAvatarChanged = (e: any) => {
+      setAvatarOverride(e.detail || (typeof window !== 'undefined' ? localStorage.getItem('user_avatar_override') || '' : ''));
+    };
+    window.addEventListener('user_avatar_changed', onAvatarChanged);
+    return () => window.removeEventListener('user_avatar_changed', onAvatarChanged);
+  }, []);
+
   const avatarUrl =
+    avatarOverride ||
     meta.profile ||
     meta.avatar_url ||
     meta.picture ||
     '';
+
+  React.useEffect(() => {
+    setImgError(false);
+  }, [avatarUrl]);
 
   const t = {
     panelBadge: lang === 'en' ? 'Client Studio' : 'Panel del Cliente',
@@ -75,7 +95,7 @@ export const ClientHeroHeader: React.FC<ClientHeroHeaderProps> = ({
   };
 
   return (
-    <section className="bg-gradient-to-r from-gray-900 via-gray-850 to-gray-900 border border-white/10 rounded-2xl p-6 md:p-8 mb-8 shadow-2xl relative overflow-hidden backdrop-blur-md">
+    <section className="bg-white/95 dark:bg-gradient-to-r dark:from-gray-900 dark:via-gray-850 dark:to-gray-900 border border-slate-200 dark:border-white/10 rounded-2xl p-6 md:p-8 mb-8 shadow-2xl relative overflow-hidden backdrop-blur-md transition-colors duration-300">
       {/* Decorative ambient light */}
       <div className="absolute -top-24 -right-24 w-72 h-72 bg-primary/10 rounded-full blur-3xl pointer-events-none" />
       {isVip && (
@@ -88,7 +108,7 @@ export const ClientHeroHeader: React.FC<ClientHeroHeaderProps> = ({
           {/* Avatar with illuminated ring & online indicator */}
           <div className="relative shrink-0">
             <div
-              className={`w-20 h-20 md:w-24 md:h-24 rounded-full overflow-hidden p-0.5 bg-[#090d16] flex items-center justify-center ${
+              className={`w-20 h-20 md:w-24 md:h-24 rounded-full overflow-hidden p-0.5 bg-slate-100 dark:bg-[#090d16] flex items-center justify-center ${
                 isVip
                   ? 'ring-2 ring-amber-400/80 shadow-[0_0_25px_rgba(245,158,11,0.35)]'
                   : 'ring-2 ring-primary/80 shadow-[0_0_25px_rgba(230,81,0,0.35)]'
@@ -110,7 +130,7 @@ export const ClientHeroHeader: React.FC<ClientHeroHeaderProps> = ({
             {/* Pulsing online status badge */}
             <span
               title={t.online}
-              className="absolute bottom-1 right-1 w-4 h-4 bg-emerald-500 border-2 border-[#090d16] rounded-full ring-2 ring-emerald-500/40 animate-pulse"
+              className="absolute bottom-1 right-1 w-4 h-4 bg-emerald-500 border-2 border-white dark:border-[#090d16] rounded-full ring-2 ring-emerald-500/40 animate-pulse"
             />
           </div>
 
@@ -128,17 +148,17 @@ export const ClientHeroHeader: React.FC<ClientHeroHeaderProps> = ({
                 <button
                   onClick={onUpgradeVip}
                   type="button"
-                  className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-gray-800 hover:bg-gray-750 text-gray-300 hover:text-amber-300 border border-gray-700 text-xs font-semibold transition"
+                  className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-slate-100 hover:bg-slate-200 dark:bg-gray-800 dark:hover:bg-gray-750 text-slate-700 dark:text-gray-300 hover:text-amber-600 dark:hover:text-amber-300 border border-slate-200 dark:border-gray-700 text-xs font-semibold transition"
                 >
-                  <Lock size={12} className="text-amber-400" /> {t.standardClient}
+                  <Lock size={12} className="text-amber-500 dark:text-amber-400" /> {t.standardClient}
                 </button>
               )}
             </div>
 
-            <h1 className="text-2xl md:text-3xl lg:text-4xl font-black text-white tracking-tight">
+            <h1 className="text-2xl md:text-3xl lg:text-4xl font-black text-slate-900 dark:text-white tracking-tight">
               {t.greeting}
             </h1>
-            <p className="text-gray-300 text-xs md:text-sm max-w-xl leading-relaxed">
+            <p className="text-slate-600 dark:text-gray-300 text-xs md:text-sm max-w-xl leading-relaxed">
               {t.subtitle}
             </p>
           </div>
@@ -162,37 +182,37 @@ export const ClientHeroHeader: React.FC<ClientHeroHeaderProps> = ({
       </div>
 
       {/* Quick Stats Grid */}
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-6 mt-6 border-t border-white/10">
-        <div className="bg-gray-900/60 border border-white/5 rounded-xl p-3.5 flex items-center gap-3.5">
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-6 mt-6 border-t border-slate-200 dark:border-white/10">
+        <div className="bg-slate-50/80 dark:bg-gray-900/60 border border-slate-200 dark:border-white/5 rounded-xl p-3.5 flex items-center gap-3.5">
           <div className="w-10 h-10 rounded-xl bg-primary/15 border border-primary/30 flex items-center justify-center text-primary shrink-0">
             <Activity size={18} />
           </div>
           <div>
-            <div className="text-lg md:text-xl font-bold text-white">{tattoosCount}</div>
-            <div className="text-xs text-gray-400">{t.statTattoos}</div>
+            <div className="text-lg md:text-xl font-bold text-slate-900 dark:text-white">{tattoosCount}</div>
+            <div className="text-xs text-slate-500 dark:text-gray-400">{t.statTattoos}</div>
           </div>
         </div>
 
-        <div className="bg-gray-900/60 border border-white/5 rounded-xl p-3.5 flex items-center gap-3.5">
+        <div className="bg-slate-50/80 dark:bg-gray-900/60 border border-slate-200 dark:border-white/5 rounded-xl p-3.5 flex items-center gap-3.5">
           <div className="w-10 h-10 rounded-xl bg-blue-500/15 border border-blue-500/30 flex items-center justify-center text-blue-400 shrink-0">
             <Calendar size={18} />
           </div>
           <div>
-            <div className="text-lg md:text-xl font-bold text-white">{appointmentsCount}</div>
-            <div className="text-xs text-gray-400">{t.statAppointments}</div>
+            <div className="text-lg md:text-xl font-bold text-slate-900 dark:text-white">{appointmentsCount}</div>
+            <div className="text-xs text-slate-500 dark:text-gray-400">{t.statAppointments}</div>
           </div>
         </div>
 
-        <div className="bg-gray-900/60 border border-white/5 rounded-xl p-3.5 flex items-center gap-3.5">
+        <div className="bg-slate-50/80 dark:bg-gray-900/60 border border-slate-200 dark:border-white/5 rounded-xl p-3.5 flex items-center gap-3.5">
           <div className="w-10 h-10 rounded-xl bg-emerald-500/15 border border-emerald-500/30 flex items-center justify-center text-emerald-400 shrink-0">
             <ShieldCheck size={18} />
           </div>
           <div>
-            <div className="text-xs md:text-sm font-bold text-emerald-400 flex items-center gap-1.5">
-              <span className="w-2 h-2 rounded-full bg-emerald-400 inline-block" />
+            <div className="text-xs md:text-sm font-bold text-emerald-500 dark:text-emerald-400 flex items-center gap-1.5">
+              <span className="w-2 h-2 rounded-full bg-emerald-500 inline-block" />
               {t.statProtected}
             </div>
-            <div className="text-xs text-gray-400">{t.statSecurity}</div>
+            <div className="text-xs text-slate-500 dark:text-gray-400">{t.statSecurity}</div>
           </div>
         </div>
       </div>

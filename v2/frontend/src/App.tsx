@@ -2,7 +2,7 @@ import React from 'react';
 import { BrowserRouter, Routes, Route, Navigate, useLocation, useNavigate } from 'react-router-dom';
 import { AnimatePresence } from 'framer-motion';
 import { AuthProvider, useAuth } from './context/AuthContext';
-import { ThemeProvider } from './context/ThemeContext';
+import { ThemeProvider, useTheme } from './context/ThemeContext';
 import { CurrencyProvider } from './context/CurrencyContext';
 import { LanguageProvider } from './context/LanguageContext';
 import { GeolocationProvider } from './context/GeolocationContext';
@@ -158,22 +158,53 @@ const HIDE_FOOTER_PREFIXES = [
 
 export const AnimatedAppRoutes: React.FC = () => {
   const location = useLocation();
+  const { isDark } = useTheme();
   const shouldHideFooter = HIDE_FOOTER_PREFIXES.some(
     (prefix) => location.pathname === prefix || location.pathname.startsWith(`${prefix}/`)
   );
+  const isFullScreenApp = location.pathname === '/chat' || location.pathname === '/hub';
 
   return (
     <NavbarContext.Provider value={{ isMounted: true }}>
       <FooterContext.Provider value={{ isMounted: true }}>
-        <div className="min-h-screen bg-[#090d16] text-white flex flex-col font-sans selection:bg-violet-500/30">
+        <div
+          className={`${
+            isFullScreenApp ? 'h-screen max-h-screen overflow-hidden' : 'min-h-screen'
+          } flex flex-col font-sans transition-colors duration-300 relative selection:bg-amber-500/30 ${
+            isDark ? 'bg-[#090d16] text-slate-100' : 'bg-[#f8fafc] text-slate-900'
+          }`}
+        >
+          {/* Vibrant Ambient Glows & Atmosphere */}
+          <div className="fixed inset-0 pointer-events-none z-0 overflow-hidden" aria-hidden="true">
+            {isDark ? (
+              <>
+                <div className="absolute -top-40 -left-40 w-[600px] h-[600px] bg-amber-500/10 rounded-full blur-[140px]" />
+                <div className="absolute top-1/3 -right-40 w-[650px] h-[650px] bg-violet-600/10 rounded-full blur-[150px]" />
+                <div className="absolute -bottom-40 left-1/3 w-[700px] h-[700px] bg-amber-600/5 rounded-full blur-[160px]" />
+                <div className="absolute inset-0 bg-[radial-gradient(#ffffff08_1px,transparent_1px)] [background-size:24px_24px] opacity-70" />
+              </>
+            ) : (
+              <>
+                <div className="absolute -top-40 -left-40 w-[600px] h-[600px] bg-amber-200/35 rounded-full blur-[140px]" />
+                <div className="absolute top-1/3 -right-40 w-[650px] h-[650px] bg-indigo-200/25 rounded-full blur-[150px]" />
+                <div className="absolute -bottom-40 left-1/3 w-[700px] h-[700px] bg-amber-100/50 rounded-full blur-[160px]" />
+                <div className="absolute inset-0 bg-[radial-gradient(#00000008_1px,transparent_1px)] [background-size:24px_24px] opacity-50" />
+              </>
+            )}
+          </div>
+
           {/* Segregated QA Environment banner (only active on QA/Staging environments) */}
-          <QaEnvironmentBanner />
+          <div className="relative z-50">
+            <QaEnvironmentBanner />
+          </div>
 
           {/* Persistent global Navbar: stays mounted across all routes without re-mounting flickering */}
-          <Navbar forceRender={true} />
+          <div className="relative z-40">
+            <Navbar forceRender={true} />
+          </div>
 
           {/* Animated Route Viewport */}
-          <div className="flex-1 flex flex-col w-full relative">
+          <div className={`flex-1 flex flex-col w-full relative z-10 min-h-0 ${isFullScreenApp ? 'overflow-hidden' : ''}`}>
             <AnimatePresence mode="wait">
               <Routes location={location} key={location.pathname}>
                 {/* <Route path="/" element={<HomePage />} /> */}

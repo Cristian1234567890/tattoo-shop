@@ -42,6 +42,34 @@ function MapRecenter({ center, zoom }: { center: [number, number]; zoom?: number
   return null;
 }
 
+/**
+ * Controller to ensure Leaflet tiles have accessibility metadata and presentation role
+ */
+function MapTileA11yFix() {
+  const map = useMap();
+  useEffect(() => {
+    const fixTiles = () => {
+      const container = map.getContainer();
+      if (!container) return;
+      const tiles = container.querySelectorAll<HTMLImageElement>('.leaflet-tile');
+      tiles.forEach((t) => {
+        if (!t.getAttribute('alt')) {
+          t.setAttribute('alt', 'Sección del mapa de estudios y artistas');
+          t.setAttribute('role', 'presentation');
+        }
+      });
+    };
+    fixTiles();
+    map.on('tileload', fixTiles);
+    map.on('moveend', fixTiles);
+    return () => {
+      map.off('tileload', fixTiles);
+      map.off('moveend', fixTiles);
+    };
+  }, [map]);
+  return null;
+}
+
 const UserGpsIcon = L.divIcon({
   className: 'user-gps-marker',
   html: `<div class="relative flex items-center justify-center">
@@ -571,7 +599,7 @@ export default function ArtistsHubPage() {
   };
 
   return (
-    <div className="flex-1 relative flex flex-col h-[calc(100vh-4rem)] overflow-hidden bg-zinc-950 text-zinc-100">
+    <div className="flex-1 relative flex flex-col h-full min-h-0 overflow-hidden bg-zinc-950 text-zinc-100">
       {/* Modal de Envío de Bocetos */}
       {sketchTarget && (
         <SendSketchModal
@@ -598,8 +626,9 @@ export default function ArtistsHubPage() {
             {/* Zoom Controls */}
             <ZoomControl position="bottomright" />
 
-            {/* Dynamic Re-centering controller */}
+            {/* Dynamic Re-centering and A11y accessibility controllers */}
             <MapRecenter center={mapCenter} zoom={mapZoom} />
+            <MapTileA11yFix />
 
             {/* OpenStreetMap Tiles con paleta oscura de lujo */}
             <TileLayer

@@ -49,12 +49,7 @@ const PANAMA_PROVINCES: SelectOption[] = [
   { value: 'Darién', label: 'Darién' },
 ];
 
-const PRESET_AVATARS = [
-  { id: 'rotary', name: 'Rotary Classic', url: '/assets/Tattoo Machine Rotary.png' },
-  { id: 'dark', name: 'Dark Machine', url: '/assets/Tattoo Machine Dark.png' },
-  { id: 'skull', name: 'Studio Skull', url: '/assets/Tattoo Machine Rotary.png' },
-  { id: 'ink', name: 'Needle Craft', url: '/assets/Tattoo Machine Dark.png' },
-];
+const STUDIO_DEFAULT_AVATAR = '/assets/Tattoo Machine Rotary.png';
 
 export const ClientSettingsTab: React.FC<ClientSettingsTabProps> = ({
   user,
@@ -152,28 +147,58 @@ export const ClientSettingsTab: React.FC<ClientSettingsTabProps> = ({
     if (e.target.files && e.target.files[0]) {
       const file = e.target.files[0];
       const reader = new FileReader();
-      reader.onload = () => {
+      reader.onload = async () => {
         const res = reader.result as string;
         setSelectedImage(res);
         setProfileImg(res);
         const clean = res.includes(',') ? res.split(',')[1] : res;
         setBase64Img(clean);
+
+        // Immediate reactive update across application (ClientHeroHeader, Navbar, Settings)
+        updateUserMetadata({ profile: res, avatar_url: res });
+
+        try {
+          await api.updateUser({ profile: res, avatar_url: res });
+          onShowToast(
+            lang === 'en' ? 'Profile picture updated successfully!' : '¡Foto de perfil actualizada exitosamente!',
+            false
+          );
+        } catch (err) {
+          console.warn('Auto-save avatar warning:', err);
+        }
       };
       reader.readAsDataURL(file);
     }
   };
 
-  const handleSelectPreset = (url: string) => {
+  const handleSelectStudioDefault = async () => {
+    const url = STUDIO_DEFAULT_AVATAR;
     setProfileImg(url);
     setSelectedImage(url);
     setBase64Img('');
+    updateUserMetadata({ profile: url, avatar_url: url });
+    try {
+      await api.updateUser({ profile: url, avatar_url: url });
+    } catch (err) {
+      console.warn('Set studio avatar error:', err);
+    }
+    onShowToast(
+      lang === 'en' ? 'Studio brand avatar selected!' : '¡Arte de estudio seleccionado como foto de perfil!',
+      false
+    );
   };
 
-  const handleRestoreGoogleAvatar = () => {
+  const handleRestoreGoogleAvatar = async () => {
     if (googleAvatarUrl) {
       setProfileImg(googleAvatarUrl);
       setSelectedImage(googleAvatarUrl);
       setBase64Img('');
+      updateUserMetadata({ profile: googleAvatarUrl, avatar_url: googleAvatarUrl });
+      try {
+        await api.updateUser({ profile: googleAvatarUrl, avatar_url: googleAvatarUrl });
+      } catch (err) {
+        console.warn('Restore google avatar error:', err);
+      }
       onShowToast(
         lang === 'en' ? 'Google profile photo restored!' : '¡Foto de perfil de Google restaurada!',
         false
@@ -181,10 +206,16 @@ export const ClientSettingsTab: React.FC<ClientSettingsTabProps> = ({
     }
   };
 
-  const handleSetDefaultAvatar = () => {
+  const handleSetDefaultAvatar = async () => {
     setProfileImg('');
     setSelectedImage('');
     setBase64Img('');
+    updateUserMetadata({ profile: '', avatar_url: '' });
+    try {
+      await api.updateUser({ profile: '', avatar_url: '' });
+    } catch (err) {
+      console.warn('Default avatar error:', err);
+    }
     onShowToast(
       lang === 'en' ? 'Default avatar icon applied' : 'Icono de perfil predeterminado aplicado',
       false
@@ -505,30 +536,25 @@ export const ClientSettingsTab: React.FC<ClientSettingsTabProps> = ({
               <div className="space-y-3 flex-1 text-center sm:text-left">
                 <div className="text-xs text-gray-400 font-semibold">{t.avatarPresets}</div>
                 <div className="flex flex-wrap items-center justify-center sm:justify-start gap-2.5">
-                  {PRESET_AVATARS.map((preset) => (
-                    <button
-                      key={preset.id}
-                      type="button"
-                      onClick={() => handleSelectPreset(preset.url)}
-                      className={`relative w-11 h-11 rounded-full p-1 bg-gray-800 border transition cursor-pointer ${
-                        profileImg === preset.url
-                          ? 'border-primary ring-2 ring-primary/50'
-                          : 'border-gray-700 hover:border-gray-500'
-                      }`}
-                      title={preset.name}
-                    >
-                      <img
-                        src={preset.url}
-                        alt={preset.name}
-                        className="w-full h-full object-contain rounded-full"
-                      />
-                      {profileImg === preset.url && (
-                        <span className="absolute -top-1 -right-1 w-4 h-4 bg-primary rounded-full flex items-center justify-center text-[10px] text-white">
-                          <Check size={10} />
-                        </span>
-                      )}
-                    </button>
-                  ))}
+                  {/* Clean Single Studio Default Artwork Option */}
+                  <button
+                    type="button"
+                    onClick={handleSelectStudioDefault}
+                    className={`inline-flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs font-semibold cursor-pointer transition border ${
+                      profileImg === STUDIO_DEFAULT_AVATAR
+                        ? 'bg-amber-500/20 text-amber-300 border-amber-500 ring-2 ring-amber-500/40'
+                        : 'bg-zinc-800 hover:bg-zinc-750 text-zinc-300 hover:text-white border-zinc-700'
+                    }`}
+                    title="Usar arte exclusivo de Tattoo Hub Studio"
+                  >
+                    <img
+                      src={STUDIO_DEFAULT_AVATAR}
+                      alt="Arte de Estudio"
+                      className="w-4 h-4 object-contain rounded-full"
+                    />
+                    <span>Arte de Estudio</span>
+                    {profileImg === STUDIO_DEFAULT_AVATAR && <Check size={12} className="text-amber-400" />}
+                  </button>
 
                   <label className="inline-flex items-center gap-2 px-3 py-2 bg-gray-800 hover:bg-gray-750 text-gray-200 hover:text-white border border-gray-700 rounded-xl text-xs font-semibold cursor-pointer transition">
                     <Upload size={14} />

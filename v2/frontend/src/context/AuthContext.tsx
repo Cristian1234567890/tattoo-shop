@@ -187,6 +187,19 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   };
 
   const updateUserMetadata = (metadata: Partial<UserMetadata>) => {
+    if (metadata.profile || metadata.avatar_url) {
+      const av = (metadata.profile || metadata.avatar_url) as string;
+      if (typeof window !== 'undefined') {
+        localStorage.setItem('user_avatar_override', av);
+        window.dispatchEvent(new CustomEvent('user_avatar_changed', { detail: av }));
+      }
+    } else if (metadata.profile === '' || metadata.avatar_url === '') {
+      if (typeof window !== 'undefined') {
+        localStorage.removeItem('user_avatar_override');
+        window.dispatchEvent(new CustomEvent('user_avatar_changed', { detail: '' }));
+      }
+    }
+
     setUser((prevUser) => {
       if (!prevUser) return null;
       const updatedUser: User = {

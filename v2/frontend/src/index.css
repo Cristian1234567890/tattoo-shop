@@ -249,3 +249,63 @@ html.light .input-atelier:focus {
   );
   animation: atelier-shimmer 2.5s infinite;
 }
+
+/* ==========================================================================
+   GLOBAL LIGHT THEME ADAPTATION OVERRIDES (WCAG 2.1 AA)
+   ========================================================================== */
+html.light .bg-gray-850\/90,
+html.light .bg-gray-850,
+html.light .bg-gray-900,
+html.light .bg-zinc-900,
+html.light .bg-zinc-950,
+html.light .bg-gray-800 {
+  background-color: rgba(255, 255, 255, 0.94) !important;
+  color: #0f172a !important;
+  border-color: rgba(226, 232, 240, 0.9) !important;
+}
+
+html.light .text-white:not(.bg-primary):not(.bg-violet-600):not(.bg-amber-600):not([class*="bg-primary"]):not([class*="bg-violet"]):not([class*="bg-amber"]):not([class*="bg-emerald"]) {
+  color: #0f172a !important;
+}
+
+html.light button.bg-primary,
+html.light a.bg-primary,
+html.light button[class*="bg-primary"],
+html.light button[class*="bg-amber-600"],
+html.light button[class*="bg-violet-600"] {
+  color: #ffffff !important;
+}
+
+html.light .text-gray-200,
+html.light .text-gray-300,
+html.light .text-zinc-200,
+html.light .text-zinc-300 {
+  color: #334155 !important;
+}
+
+html.light .text-gray-400,
+html.light .text-zinc-400 {
+  color: #64748b !important;
+}
+
+html.light .border-white\/10,
+html.light .border-white\/5,
+html.light .border-zinc-800,
+html.light .border-gray-700,
+html.light .border-gray-800 {
+  border-color: #e2e8f0 !important;
+}
+
+html.light input:not([type="checkbox"]):not([type="radio"]),
+html.light select,
+html.light textarea {
+  color: #0f172a !important;
+  background-color: #ffffff !important;
+  border-color: #cbd5e1 !important;
+}
+
+html.light input::placeholder,
+html.light textarea::placeholder {
+  color: #94a3b8 !important;
+}
+

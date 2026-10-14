@@ -276,6 +276,7 @@ export const AboutPage: React.FC = () => {
                           onClick={() => setRating(star)}
                           onMouseEnter={() => setHoverRating(star)}
                           onMouseLeave={() => setHoverRating(0)}
+                          aria-label={`Calificar con ${star} ${star === 1 ? 'estrella' : 'estrellas'}`}
                           className="p-1 cursor-pointer transition transform hover:scale-110"
                         >
                           <Star
