@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="es" class="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tattoo Hub — Boceto Interactivo de Diseño & Figma Blueprint (Sprint 12)</title>
+  <!-- Tailwind CSS CDN for rapid prototype inspection -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            atelier: {
+              canvas: '#f8fafc',
+              dark: '#090d16',
+              cardLight: 'rgba(255, 255, 255, 0.75)',
+              cardDark: 'rgba(19, 19, 26, 0.70)'
+            }
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    /* Dynamic Tattoo Pattern SVG as CSS Background Variable */
+    .tattoo-bg-light {
+      background-image: radial-gradient(circle at 10% 20%, rgba(139, 92, 246, 0.06) 0%, transparent 40%),
+                        radial-gradient(circle at 90% 80%, rgba(245, 158, 11, 0.04) 0%, transparent 40%),
+                        url("data:image/svg+xml,%3Csvg width='240' height='240' viewBox='0 0 240 240' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M120 20 L123 35 L138 38 L123 41 L120 56 L117 41 L102 38 L117 35 Z M120 180 L123 195 L138 198 L123 201 L120 216 L117 201 L102 198 L117 195 Z M20 120 L35 123 L38 138 L41 123 L56 120 L41 117 L38 102 L35 117 Z M180 120 L195 123 L198 138 L201 123 L216 120 L201 117 L198 102 L195 117 Z M120 70 C140 70 160 85 160 110 C160 135 120 160 120 160 C120 160 80 135 80 110 C80 85 100 70 120 70 Z M120 60 L120 150 M100 95 L140 95' stroke='rgba(51, 65, 85, 0.06)' stroke-width='1.5' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3Ccircle cx='60' cy='60' r='18' stroke='rgba(51, 65, 85, 0.04)' stroke-width='1' fill='none' stroke-dasharray='2 3'/%3E%3Ccircle cx='180' cy='180' r='18' stroke='rgba(51, 65, 85, 0.04)' stroke-width='1' fill='none' stroke-dasharray='2 3'/%3E%3C/svg%3E");
+    }
+
+    .tattoo-bg-dark {
+      background-image: radial-gradient(circle at 10% 20%, rgba(139, 92, 246, 0.12) 0%, transparent 40%),
+                        radial-gradient(circle at 90% 80%, rgba(245, 158, 11, 0.08) 0%, transparent 40%),
+                        url("data:image/svg+xml,%3Csvg width='240' height='240' viewBox='0 0 240 240' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M120 20 L123 35 L138 38 L123 41 L120 56 L117 41 L102 38 L117 35 Z M120 180 L123 195 L138 198 L123 201 L120 216 L117 201 L102 198 L117 195 Z M20 120 L35 123 L38 138 L41 123 L56 120 L41 117 L38 102 L35 117 Z M180 120 L195 123 L198 138 L201 123 L216 120 L201 117 L198 102 L195 117 Z M120 70 C140 70 160 85 160 110 C160 135 120 160 120 160 C120 160 80 135 80 110 C80 85 100 70 120 70 Z M120 60 L120 150 M100 95 L140 95' stroke='rgba(139, 92, 246, 0.14)' stroke-width='1.5' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3Ccircle cx='60' cy='60' r='18' stroke='rgba(245, 158, 11, 0.08)' stroke-width='1' fill='none' stroke-dasharray='2 3'/%3E%3Ccircle cx='180' cy='180' r='18' stroke='rgba(245, 158, 11, 0.08)' stroke-width='1' fill='none' stroke-dasharray='2 3'/%3E%3C/svg%3E");
+    }
+
+    .glass-surface {
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+    }
+  </style>
+</head>
+<body class="transition-colors duration-500 font-sans min-h-screen bg-[#f8fafc] text-slate-800 dark:bg-[#090d16] dark:text-slate-100 tattoo-bg-light" id="appBody">
+
+  <!-- Floating Mockup Controls Header -->
+  <header class="sticky top-0 z-50 glass-surface bg-white/80 dark:bg-gray-950/80 border-b border-slate-200 dark:border-white/10 px-6 py-4 transition-colors">
+    <div class="max-w-7xl mx-auto flex items-center justify-between">
+      <div class="flex items-center gap-3">
+        <div class="w-9 h-9 rounded-xl bg-gradient-to-tr from-violet-600 to-indigo-600 flex items-center justify-center text-white font-black shadow-lg shadow-violet-500/25">
+          TH
+        </div>
+        <div>
+          <h1 class="text-base font-extrabold text-slate-900 dark:text-white leading-none">
+            Boceto de Diseño — Sprint 12
+          </h1>
+          <p class="text-xs text-slate-500 dark:text-zinc-400 mt-0.5">
+            Comparativa directa para Figma • Fondo Tatuado + Glassmorphism
+          </p>
+        </div>
+      </div>
+
+      <!-- Theme Switcher & Jira Pill -->
+      <div class="flex items-center gap-3">
+        <span class="hidden sm:inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold uppercase bg-violet-500/10 dark:bg-violet-500/20 text-violet-700 dark:text-violet-300 border border-violet-500/30">
+          Jira: TH-45 · TH-46 · TH-47 · TH-48
+        </span>
+
+        <button id="toggleThemeBtn" class="flex items-center gap-2 px-4 py-2 rounded-full font-bold text-xs bg-slate-100 hover:bg-slate-200 dark:bg-white/10 dark:hover:bg-white/20 border border-slate-300 dark:border-white/10 transition-all shadow-sm cursor-pointer">
+          <span id="themeIcon">☀️</span>
+          <span id="themeLabel">Modo Claro Activo (Click para Alternar)</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Container -->
+  <main class="max-w-6xl mx-auto px-4 py-10 space-y-16">
+
+    <!-- SECCIÓN 1: DASHBOARD ACCIONES RÁPIDAS (Solución a Captura 1) -->
+    <section class="space-y-4">
+      <div class="flex items-center justify-between">
+        <div>
+          <span class="text-[11px] font-bold uppercase tracking-wider text-violet-600 dark:text-violet-400">
+            Solución a Captura 1 (Dashboard Overview)
+          </span>
+          <h2 class="text-2xl font-black text-slate-900 dark:text-white">
+            Acciones Rápidas con Difuminación Glassmorphic
+          </h2>
+          <p class="text-xs text-slate-500 dark:text-zinc-400">
+            Reemplaza las cajas negras opacas por cristales traslúcidos con halos de color vivo y textos de alto contraste.
+          </p>
+        </div>
+      </div>
+
+      <!-- Grid de Acciones Rápidas -->
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6 relative">
+        <!-- Ambient Glow Orb detrás de las cajas -->
+        <div class="absolute -top-6 left-10 w-48 h-48 bg-violet-500/15 dark:bg-violet-600/20 rounded-full blur-3xl pointer-events-none -z-10"></div>
+        <div class="absolute -bottom-6 right-10 w-48 h-48 bg-amber-500/15 dark:bg-amber-600/15 rounded-full blur-3xl pointer-events-none -z-10"></div>
+
+        <!-- Tarjeta 1 -->
+        <div class="glass-surface bg-white/70 dark:bg-zinc-900/60 border border-slate-200/90 dark:border-white/10 rounded-2xl p-6 shadow-xl shadow-slate-200/50 dark:shadow-none hover:-translate-y-1 transition duration-300 flex flex-col justify-between">
+          <div>
+            <div class="w-12 h-12 rounded-xl bg-violet-500/10 dark:bg-violet-500/20 border border-violet-500/30 flex items-center justify-center text-violet-600 dark:text-violet-300 font-black text-xl mb-4">
+              🧭
+            </div>
+            <h3 class="text-lg font-bold text-slate-900 dark:text-white mb-1.5">
+              Explorar Artistas
+            </h3>
+            <p class="text-xs text-slate-600 dark:text-zinc-400 leading-relaxed mb-4">
+              Navega por el mapa interactivo global y descubre estudios y artistas verificados cerca de ti sin ruido corporativo.
+            </p>
+          </div>
+          <a href="#" class="inline-flex items-center gap-1.5 text-xs font-bold text-violet-600 dark:text-violet-400 hover:underline">
+            Ver mapa interactivo →
+          </a>
+        </div>
+
+        <!-- Tarjeta 2 -->
+        <div class="glass-surface bg-white/70 dark:bg-zinc-900/60 border border-slate-200/90 dark:border-white/10 rounded-2xl p-6 shadow-xl shadow-slate-200/50 dark:shadow-none hover:-translate-y-1 transition duration-300 flex flex-col justify-between">
+          <div>
+            <div class="w-12 h-12 rounded-xl bg-indigo-500/10 dark:bg-indigo-500/20 border border-indigo-500/30 flex items-center justify-center text-indigo-600 dark:text-indigo-300 font-black text-xl mb-4">
+              💬
+            </div>
+            <h3 class="text-lg font-bold text-slate-900 dark:text-white mb-1.5">
+              Mis Citas & Mensajes
+            </h3>
+            <p class="text-xs text-slate-600 dark:text-zinc-400 leading-relaxed mb-4">
+              Consulta tus conversaciones directas con artistas, cotizaciones solicitadas y fechas de cita acordadas.
+            </p>
+          </div>
+          <a href="#" class="inline-flex items-center gap-1.5 text-xs font-bold text-indigo-600 dark:text-indigo-400 hover:underline">
+            Abrir chat de mensajes →
+          </a>
+        </div>
+
+        <!-- Tarjeta 3 -->
+        <div class="glass-surface bg-white/70 dark:bg-zinc-900/60 border border-slate-200/90 dark:border-white/10 rounded-2xl p-6 shadow-xl shadow-slate-200/50 dark:shadow-none hover:-translate-y-1 transition duration-300 flex flex-col justify-between">
+          <div>
+            <div class="w-12 h-12 rounded-xl bg-emerald-500/10 dark:bg-emerald-500/20 border border-emerald-500/30 flex items-center justify-center text-emerald-600 dark:text-emerald-300 font-black text-xl mb-4">
+              ✨
+            </div>
+            <h3 class="text-lg font-bold text-slate-900 dark:text-white mb-1.5">
+              Catálogo de Estilos
+            </h3>
+            <p class="text-xs text-slate-600 dark:text-zinc-400 leading-relaxed mb-4">
+              Filtra trabajos por estilos: Realismo, Tradicional, Blackwork, Japonés, Acuarela y más.
+            </p>
+          </div>
+          <a href="#" class="inline-flex items-center gap-1.5 text-xs font-bold text-emerald-600 dark:text-emerald-400 hover:underline">
+            Explorar catálogo →
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- SECCIÓN 2: SEGUIMIENTO DE TATUAJES & CURACIÓN (Solución a Captura 1 y 2) -->
+    <section class="glass-surface bg-white/80 dark:bg-zinc-900/70 border border-slate-200 dark:border-white/10 rounded-3xl p-8 shadow-2xl relative overflow-hidden">
+      <!-- Glow decorativo interno -->
+      <div class="absolute -right-16 -top-16 w-60 h-60 bg-amber-500/10 dark:bg-amber-500/15 rounded-full blur-3xl pointer-events-none"></div>
+
+      <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6 pb-4 border-b border-slate-200/80 dark:border-zinc-800">
+        <div>
+          <div class="flex items-center gap-3">
+            <h3 class="text-xl font-black text-slate-900 dark:text-white">
+              Seguimiento de Tatuajes & Curación
+            </h3>
+            <span class="px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase bg-amber-500/15 text-amber-700 dark:text-amber-300 border border-amber-500/30">
+              VIP Premium ($4.99)
+            </span>
+          </div>
+          <p class="text-xs text-slate-500 dark:text-zinc-400 mt-1">
+            Lleva un diario fotográfico de la cicatrización con recordatorios clínicos y alertas de cuidado.
+          </p>
+        </div>
+        <button class="px-4 py-2 rounded-xl text-xs font-bold text-slate-950 bg-gradient-to-r from-amber-400 to-amber-500 hover:from-amber-500 hover:to-amber-600 shadow-md shadow-amber-500/20 transition-all cursor-pointer">
+          ✨ Desbloquear VIP ($4.99)
+        </button>
+      </div>
+
+      <!-- Fases de curación homologadas -->
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <!-- Fase 1 -->
+        <div class="p-5 rounded-2xl bg-slate-50/80 dark:bg-zinc-800/60 border border-slate-200 dark:border-zinc-700 hover:border-violet-500/40 transition">
+          <div class="flex items-center justify-between mb-2">
+            <span class="text-[10px] font-bold uppercase px-2 py-0.5 rounded bg-violet-500/10 text-violet-700 dark:text-violet-300 border border-violet-500/20">
+              Fase 1
+            </span>
+            <span class="text-[10px] font-semibold text-slate-400 dark:text-zinc-500">Días 1 - 3</span>
+          </div>
+          <h4 class="text-sm font-bold text-slate-900 dark:text-white mb-1">
+            Limpieza & Primer Vendaje
+          </h4>
+          <p class="text-xs text-slate-600 dark:text-zinc-400 leading-relaxed">
+            Lavar suavemente con agua tibia y jabón neutro sin perfume. Aplicar capa milimétrica de ungüento.
+          </p>
+        </div>
+
+        <!-- Fase 2 -->
+        <div class="p-5 rounded-2xl bg-slate-50/80 dark:bg-zinc-800/60 border border-slate-200 dark:border-zinc-700 hover:border-violet-500/40 transition">
+          <div class="flex items-center justify-between mb-2">
+            <span class="text-[10px] font-bold uppercase px-2 py-0.5 rounded bg-emerald-500/10 text-emerald-700 dark:text-emerald-300 border border-emerald-500/20">
+              Fase 2
+            </span>
+            <span class="text-[10px] font-semibold text-slate-400 dark:text-zinc-500">Días 4 - 14</span>
+          </div>
+          <h4 class="text-sm font-bold text-slate-900 dark:text-white mb-1">
+            Descamación & Hidratación
+          </h4>
+          <p class="text-xs text-slate-600 dark:text-zinc-400 leading-relaxed">
+            No rascar ni retirar costras en formación. Mantener la dermis elástica con crema hipoalergénica.
+          </p>
+        </div>
+
+        <!-- Fase 3 -->
+        <div class="p-5 rounded-2xl bg-slate-50/80 dark:bg-zinc-800/60 border border-slate-200 dark:border-zinc-700 hover:border-violet-500/40 transition">
+          <div class="flex items-center justify-between mb-2">
+            <span class="text-[10px] font-bold uppercase px-2 py-0.5 rounded bg-sky-500/10 text-sky-700 dark:text-sky-300 border border-sky-500/20">
+              Fase 3
+            </span>
+            <span class="text-[10px] font-semibold text-slate-400 dark:text-zinc-500">Días 15 - 30</span>
+          </div>
+          <h4 class="text-sm font-bold text-slate-900 dark:text-white mb-1">
+            Cicatrización & Protección Solar
+          </h4>
+          <p class="text-xs text-slate-600 dark:text-zinc-400 leading-relaxed">
+            Bloqueador solar obligatorio SPF 50+ para proteger el brillo de los pigmentos.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- SECCIÓN 3: AGENDA DEL ATELIER (Solución a Captura 2) -->
+    <section class="space-y-4">
+      <div class="flex items-center justify-between">
+        <div>
+          <span class="text-[11px] font-bold uppercase tracking-wider text-violet-600 dark:text-violet-400">
+            Solución a Captura 2 (Agenda de Citas)
+          </span>
+          <h2 class="text-2xl font-black text-slate-900 dark:text-white">
+            Tarjetas de Citas & Notas Técnicas Iluminadas
+          </h2>
+          <p class="text-xs text-slate-500 dark:text-zinc-400">
+            Fondo esmerilado con notas técnicas en contenedor lavanda tenue en vez de cajas negras.
+          </p>
+        </div>
+      </div>
+
+      <div class="space-y-4">
+        <!-- Cita 1 -->
+        <div class="glass-surface bg-white/75 dark:bg-zinc-900/60 border border-slate-200 dark:border-white/10 rounded-2xl p-5 shadow-lg space-y-3">
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+            <div>
+              <h4 class="font-bold text-slate-900 dark:text-white text-base">
+                Manga Blackwork Custom
+              </h4>
+              <p class="text-xs text-violet-600 dark:text-violet-300 font-medium">
+                Artista: Kaelen Voss • Obsidian Atelier
+              </p>
+            </div>
+            <span class="px-3 py-1 rounded-full text-xs font-bold uppercase bg-emerald-500/15 text-emerald-700 dark:text-emerald-300 border border-emerald-500/30">
+              Confirmada
+            </span>
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs text-slate-600 dark:text-zinc-400 pt-2 border-t border-slate-100 dark:border-zinc-800">
+            <div>📅 Jueves, 15 de Octubre • 04:00 PM</div>
+            <div>📍 Obsidian Atelier — Panamá Central</div>
+          </div>
+
+          <!-- Nota técnica clara -->
+          <div class="p-3 rounded-xl bg-violet-500/5 dark:bg-violet-950/20 border border-violet-500/15 text-xs text-slate-700 dark:text-zinc-300">
+            <span class="font-bold text-violet-600 dark:text-violet-400">Notas técnicas: </span>
+            Sesión 1/2: Manga Blackwork Floral & Geometría Sagrada. Agujas 07RL y 15M1 preparadas.
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SECCIÓN 4: MODAL DE SEGURIDAD QA (Solución a Captura 5) -->
+    <section class="space-y-4">
+      <div>
+        <span class="text-[11px] font-bold uppercase tracking-wider text-violet-600 dark:text-violet-400">
+          Solución a Captura 5 (Modal de Segregación QA)
+        </span>
+        <h2 class="text-2xl font-black text-slate-900 dark:text-white">
+          Modal Homologado con Tarjetas Semánticas Claras
+        </h2>
+      </div>
+
+      <!-- Preview del Modal -->
+      <div class="max-w-xl mx-auto glass-surface bg-white dark:bg-zinc-950 border border-slate-200 dark:border-amber-500/30 rounded-3xl p-6 shadow-2xl">
+        <div class="flex items-center gap-3 pb-3 mb-4 border-b border-slate-100 dark:border-zinc-800">
+          <div class="w-10 h-10 rounded-xl bg-amber-500/15 text-amber-600 dark:text-amber-400 flex items-center justify-center font-bold text-xl">
+            🛡️
+          </div>
+          <div>
+            <h3 class="font-extrabold text-slate-900 dark:text-white text-base leading-none">
+              Protocolo de Segregación y Blindaje QA
+            </h3>
+            <p class="text-[11px] text-amber-600 dark:text-amber-300 font-mono mt-1">
+              Esquema de Base de Datos: <span class="font-bold underline">qa_isolated</span>
+            </p>
+          </div>
+        </div>
+
+        <div class="space-y-3">
+          <div class="p-3 rounded-xl bg-violet-50 dark:bg-violet-950/20 border border-violet-200/80 dark:border-violet-500/30 text-xs text-slate-700 dark:text-zinc-300">
+            <span class="font-bold text-violet-700 dark:text-violet-400 block mb-0.5">1. Espejo Aislado en Supabase (Schema QA)</span>
+            Todas las consultas y escrituras se ejecutan en el esquema dedicado qa. Los datos productivos están 100% protegidos.
+          </div>
+          <div class="p-3 rounded-xl bg-amber-50 dark:bg-amber-950/20 border border-amber-200/80 dark:border-amber-500/30 text-xs text-slate-700 dark:text-zinc-300">
+            <span class="font-bold text-amber-700 dark:text-amber-400 block mb-0.5">2. Segregación de Usuarios Externos</span>
+            Cualquier registro se etiqueta como [QA Sandbox User] sin validez comercial.
+          </div>
+          <div class="p-3 rounded-xl bg-emerald-50 dark:bg-emerald-950/20 border border-emerald-200/80 dark:border-emerald-500/30 text-xs text-slate-700 dark:text-zinc-300">
+            <span class="font-bold text-emerald-700 dark:text-emerald-400 block mb-0.5">3. Blindaje de Pasarelas</span>
+            Modo simulación en Stripe/PayPal. No se efectúan cargos a cuentas bancarias reales.
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <script>
+    const toggleBtn = document.getElementById('toggleThemeBtn');
+    const themeIcon = document.getElementById('themeIcon');
+    const themeLabel = document.getElementById('themeLabel');
+    const appBody = document.getElementById('appBody');
+    const html = document.documentElement;
+
+    toggleBtn.addEventListener('click', () => {
+      if (html.classList.contains('light')) {
+        html.classList.remove('light');
+        html.classList.add('dark');
+        appBody.classList.remove('tattoo-bg-light');
+        appBody.classList.add('tattoo-bg-dark');
+        themeIcon.textContent = '🌙';
+        themeLabel.textContent = 'Modo Oscuro Activo (Click para Alternar)';
+      } else {
+        html.classList.remove('dark');
+        html.classList.add('light');
+        appBody.classList.remove('tattoo-bg-dark');
+        appBody.classList.add('tattoo-bg-light');
+        themeIcon.textContent = '☀️';
+        themeLabel.textContent = 'Modo Claro Activo (Click para Alternar)';
+      }
+    });
+  </script>
+</body>
+</html>
