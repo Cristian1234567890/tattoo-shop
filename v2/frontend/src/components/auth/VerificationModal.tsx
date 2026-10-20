@@ -106,33 +106,33 @@ export const VerificationModal: React.FC<VerificationModalProps> = ({
           initial={{ opacity: 0, scale: 0.95, y: 15 }}
           animate={{ opacity: 1, scale: 1, y: 0 }}
           exit={{ opacity: 0, scale: 0.95, y: 15 }}
-          className="relative w-full max-w-md bg-[#0f0e17] border border-purple-500/30 rounded-3xl shadow-[0_25px_60px_rgba(124,58,237,0.25)] p-7 md:p-9 text-white overflow-hidden"
+          className="relative w-full max-w-md bg-white dark:bg-[#0f0e17] border border-slate-200 dark:border-purple-500/30 rounded-3xl shadow-2xl p-7 md:p-9 text-slate-900 dark:text-white overflow-hidden"
         >
           {/* Glow */}
           <div className="absolute top-0 right-0 w-64 h-64 bg-purple-600/10 rounded-full blur-3xl pointer-events-none" />
 
           {/* Header */}
           <div className="text-center mb-6">
-            <div className="w-14 h-14 rounded-2xl bg-purple-500/10 border border-purple-500/20 text-purple-400 flex items-center justify-center mx-auto mb-3 shadow-inner">
+            <div className="w-14 h-14 rounded-2xl bg-purple-500/10 border border-purple-500/20 text-purple-600 dark:text-purple-400 flex items-center justify-center mx-auto mb-3 shadow-inner">
               <ShieldCheck className="w-7 h-7" />
             </div>
-            <span className="text-[10px] font-bold tracking-widest uppercase bg-zinc-900 border border-zinc-800 px-3 py-1 rounded-full text-zinc-400">
+            <span className="text-[10px] font-bold tracking-widest uppercase bg-slate-100 dark:bg-zinc-900 border border-slate-200 dark:border-zinc-800 px-3 py-1 rounded-full text-slate-600 dark:text-zinc-400">
               SEGURIDAD & PROTECCIÓN DE IDENTIDAD
             </span>
-            <h2 className="text-2xl font-black text-white mt-3">
+            <h2 className="text-2xl font-black text-slate-900 dark:text-white mt-3">
               {step === 'email' && 'Verifica tu Correo'}
               {step === 'phone' && 'Verifica tu Teléfono'}
               {step === 'success' && '¡Identidad Verificada!'}
             </h2>
-            <p className="text-xs text-zinc-400 mt-1 max-w-sm mx-auto leading-relaxed">
+            <p className="text-xs text-slate-600 dark:text-zinc-400 mt-1 max-w-sm mx-auto leading-relaxed">
               {step === 'email' && (
                 <>
-                  Hemos enviado un código a <strong className="text-white">{email}</strong>. Para evitar cuentas fraudulentas, confirma tu correo antes de continuar.
+                  Hemos enviado un código a <strong className="text-slate-900 dark:text-white">{email}</strong>. Para evitar cuentas fraudulentas, confirma tu correo antes de continuar.
                 </>
               )}
               {step === 'phone' && (
                 <>
-                  Hemos enviado un código SMS al <strong className="text-white">{phone}</strong> para validar la autenticidad de tu línea móvil.
+                  Hemos enviado un código SMS al <strong className="text-slate-900 dark:text-white">{phone}</strong> para validar la autenticidad de tu línea móvil.
                 </>
               )}
               {step === 'success' && 'Tanto tu correo como tu número móvil han sido autenticados con éxito.'}
@@ -150,7 +150,7 @@ export const VerificationModal: React.FC<VerificationModalProps> = ({
           {step === 'email' && (
             <div className="space-y-4">
               <div>
-                <label className="block text-xs font-semibold uppercase tracking-wider text-zinc-300 mb-1.5">
+                <label className="block text-xs font-semibold uppercase tracking-wider text-slate-700 dark:text-zinc-300 mb-1.5">
                   Código de Confirmación (6 dígitos)
                 </label>
                 <div className="relative">
@@ -165,11 +165,11 @@ export const VerificationModal: React.FC<VerificationModalProps> = ({
                       if (e.key === 'Enter' && emailCode.length >= 6) handleVerifyEmail(e);
                     }}
                     placeholder="123456"
-                    className="w-full text-center tracking-widest font-mono text-xl py-3 rounded-xl border border-zinc-800 bg-zinc-950/80 text-white placeholder-zinc-600 focus:border-purple-500 focus:ring-1 focus:ring-purple-500 focus:outline-none transition shadow-inner"
+                    className="w-full text-center tracking-widest font-mono text-xl py-3 rounded-xl border border-slate-300 dark:border-zinc-800 bg-slate-50 dark:bg-zinc-950/80 text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-zinc-600 focus:border-purple-500 focus:ring-1 focus:ring-purple-500 focus:outline-none transition shadow-inner"
                   />
-                  <Mail className="w-4 h-4 text-zinc-500 absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
+                  <Mail className="w-4 h-4 text-slate-400 dark:text-zinc-500 absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
                 </div>
-                <p className="text-[11px] text-zinc-500 text-center mt-1.5">
+                <p className="text-[11px] text-slate-500 dark:text-zinc-500 text-center mt-1.5">
                   * Introduce el código recibido en tu bandeja de entrada o carpeta de spam.
                 </p>
               </div>
@@ -201,10 +201,10 @@ export const VerificationModal: React.FC<VerificationModalProps> = ({
             <div className="space-y-4">
               <div>
                 <div className="flex items-center justify-between mb-1.5">
-                  <label className="block text-xs font-semibold uppercase tracking-wider text-zinc-300">
+                  <label className="block text-xs font-semibold uppercase tracking-wider text-slate-700 dark:text-zinc-300">
                     Código SMS (6 dígitos)
                   </label>
-                  <span className="text-[10px] text-purple-400 font-mono">
+                  <span className="text-[10px] text-purple-600 dark:text-purple-400 font-mono">
                     Código de prueba: <strong>{expectedPhoneOtp}</strong>
                   </span>
                 </div>
@@ -220,19 +220,19 @@ export const VerificationModal: React.FC<VerificationModalProps> = ({
                       if (e.key === 'Enter' && phoneCode.length >= 6) handleVerifyPhone(e);
                     }}
                     placeholder={expectedPhoneOtp}
-                    className="w-full text-center tracking-widest font-mono text-xl py-3 rounded-xl border border-zinc-800 bg-zinc-950/80 text-white placeholder-zinc-600 focus:border-purple-500 focus:ring-1 focus:ring-purple-500 focus:outline-none transition shadow-inner"
+                    className="w-full text-center tracking-widest font-mono text-xl py-3 rounded-xl border border-slate-300 dark:border-zinc-800 bg-slate-50 dark:bg-zinc-950/80 text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-zinc-600 focus:border-purple-500 focus:ring-1 focus:ring-purple-500 focus:outline-none transition shadow-inner"
                   />
-                  <Phone className="w-4 h-4 text-zinc-500 absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
+                  <Phone className="w-4 h-4 text-slate-400 dark:text-zinc-500 absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
                 </div>
               </div>
 
-              <div className="flex items-center justify-between text-xs text-zinc-500 pt-1">
+              <div className="flex items-center justify-between text-xs text-slate-500 dark:text-zinc-500 pt-1">
                 <span>¿No recibiste el SMS?</span>
                 <button
                   type="button"
                   onClick={handleResendPhone}
                   disabled={resendCooldown > 0}
-                  className="text-purple-400 hover:text-purple-300 font-medium inline-flex items-center gap-1 cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed"
+                  className="text-purple-600 hover:text-purple-700 dark:text-purple-400 dark:hover:text-purple-300 font-medium inline-flex items-center gap-1 cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed"
                 >
                   <RefreshCw className={`w-3 h-3 ${resendCooldown > 0 ? 'animate-spin' : ''}`} />
                   <span>{resendCooldown > 0 ? `Reintentar en ${resendCooldown}s` : 'Reenviar código'}</span>
@@ -268,9 +268,9 @@ export const VerificationModal: React.FC<VerificationModalProps> = ({
               animate={{ opacity: 1, scale: 1 }}
               className="py-6 text-center space-y-3"
             >
-              <CheckCircle2 className="w-14 h-14 text-emerald-400 mx-auto animate-bounce" />
-              <p className="text-white font-bold text-lg">Cuenta Verificada con Éxito</p>
-              <p className="text-xs text-zinc-400">
+              <CheckCircle2 className="w-14 h-14 text-emerald-500 dark:text-emerald-400 mx-auto animate-bounce" />
+              <p className="text-slate-900 dark:text-white font-bold text-lg">Cuenta Verificada con Éxito</p>
+              <p className="text-xs text-slate-500 dark:text-zinc-400">
                 Redirigiendo a tu espacio seguro en Tattoo Hub...
               </p>
             </motion.div>

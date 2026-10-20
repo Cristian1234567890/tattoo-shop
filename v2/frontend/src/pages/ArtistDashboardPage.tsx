@@ -70,18 +70,18 @@ export const ArtistDashboardPage: React.FC = () => {
 
       {/* Trial Expired Blocking Lockout Modal */}
       {isTrialExpired && (
-        <div className="fixed inset-0 z-50 bg-black/90 backdrop-blur-md flex items-center justify-center p-4">
-          <div className="bg-gradient-to-b from-gray-900 via-gray-850 to-gray-900 border-2 border-red-500/50 rounded-2xl max-w-lg w-full p-8 shadow-2xl text-center">
-            <div className="w-16 h-16 rounded-full bg-red-500/20 border border-red-500/40 flex items-center justify-center text-red-400 mx-auto mb-5">
+        <div className="fixed inset-0 z-50 bg-black/85 backdrop-blur-md flex items-center justify-center p-4">
+          <div className="bg-white dark:bg-gradient-to-b dark:from-gray-900 dark:via-gray-850 dark:to-gray-900 border-2 border-red-500/50 rounded-2xl max-w-lg w-full p-8 shadow-2xl text-center text-slate-900 dark:text-white">
+            <div className="w-16 h-16 rounded-full bg-red-100 dark:bg-red-500/20 border border-red-200 dark:border-red-500/40 flex items-center justify-center text-red-600 dark:text-red-400 mx-auto mb-5">
               <Lock size={32} />
             </div>
-            <span className="px-3.5 py-1 rounded-full bg-red-500/20 border border-red-500/40 text-red-400 text-xs font-bold uppercase tracking-wider">
+            <span className="px-3.5 py-1 rounded-full bg-red-100 dark:bg-red-500/20 border border-red-200 dark:border-red-500/40 text-red-700 dark:text-red-400 text-xs font-bold uppercase tracking-wider">
               Acceso Comercial Bloqueado
             </span>
-            <h2 className="text-2xl font-black text-white mt-4 mb-2">
+            <h2 className="text-2xl font-black text-slate-900 dark:text-white mt-4 mb-2">
               Tu Período de Prueba de 90 Días ha Expirado
             </h2>
-            <p className="text-gray-300 text-sm leading-relaxed mb-6">
+            <p className="text-slate-600 dark:text-gray-300 text-sm leading-relaxed mb-6">
               Han transcurrido {trialDay} días desde tu registro. Para continuar publicando en tu catálogo, recibiendo cotizaciones y apareciendo en el mapa de artistas, adquiere tu membresía comercial por {formatPrice(4.99)}/mes.
             </p>
             <div className="space-y-3">
@@ -93,7 +93,7 @@ export const ArtistDashboardPage: React.FC = () => {
               </Link>
               <button
                 onClick={() => logout()}
-                className="w-full text-xs text-gray-400 hover:text-gray-200 transition py-2"
+                className="w-full text-xs text-slate-500 dark:text-gray-400 hover:text-slate-800 dark:hover:text-gray-200 transition py-2"
               >
                 Cerrar sesión
               </button>
@@ -104,22 +104,22 @@ export const ArtistDashboardPage: React.FC = () => {
 
       <main className="flex-1 container mx-auto px-4 py-8 max-w-6xl">
         {/* Trial Status Banner */}
-        <section className="bg-gradient-to-r from-indigo-950 via-purple-950 to-gray-900 border border-primary/40 rounded-2xl p-6 md:p-8 mb-8 shadow-2xl relative overflow-hidden text-white">
+        <section className="dark-banner bg-gradient-to-r from-violet-700 via-indigo-700 to-purple-800 dark:from-indigo-950 dark:via-purple-950 dark:to-gray-900 border border-violet-400/30 dark:border-primary/40 rounded-2xl p-6 md:p-8 mb-8 shadow-2xl relative overflow-hidden text-white">
           <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 relative z-10">
             <div>
               {hasActiveSubscription ? (
-                <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-emerald-500/20 border border-emerald-500/40 text-emerald-400 text-xs font-bold uppercase tracking-wider mb-3">
+                <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-emerald-500/20 border border-emerald-500/40 text-emerald-300 dark:text-emerald-400 text-xs font-bold uppercase tracking-wider mb-3">
                   <CheckCircle2 size={14} /> Membresía Comercial Activa (Suscripción Premium)
                 </div>
               ) : (
-                <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-emerald-500/20 border border-emerald-500/40 text-emerald-400 text-xs font-bold uppercase tracking-wider mb-3">
+                <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-emerald-500/20 border border-emerald-500/40 text-emerald-300 dark:text-emerald-400 text-xs font-bold uppercase tracking-wider mb-3">
                   <CheckCircle2 size={14} /> Prueba Gratuita de 90 Días Activa
                 </div>
               )}
               <h1 className="text-2xl md:text-3xl font-extrabold text-white tracking-tight">
                 ¡Bienvenido a tu Estudio, {artistName}! 🎨
               </h1>
-              <p className="text-gray-300 mt-2 max-w-xl text-sm md:text-base leading-relaxed">
+              <p className="text-white/90 dark:text-gray-300 mt-2 max-w-xl text-sm md:text-base leading-relaxed">
                 {hasActiveSubscription
                   ? 'Tu suscripción comercial está activa. Tienes acceso completo para gestionar tu catálogo, recibir cotizaciones y aparecer en el mapa.'
                   : 'Tienes acceso total a todas las herramientas comerciales para publicar tu catálogo, recibir cotizaciones y aparecer en el mapa geolocalizado de Tattoo Hub.'}
@@ -127,16 +127,16 @@ export const ArtistDashboardPage: React.FC = () => {
             </div>
 
             {/* Trial Counter Card */}
-            <div className="bg-gray-900/80 backdrop-blur border border-primary/30 rounded-xl p-5 shrink-0 flex flex-col items-center md:items-end text-right">
-              <div className="flex items-center gap-2 text-primary font-bold text-sm mb-1">
+            <div className="bg-white/10 dark:bg-gray-900/80 backdrop-blur border border-white/20 dark:border-primary/30 rounded-xl p-5 shrink-0 flex flex-col items-center md:items-end text-right">
+              <div className="flex items-center gap-2 text-amber-300 dark:text-primary font-bold text-sm mb-1">
                 <Clock size={16} /> Estado de Membresía
               </div>
               {hasActiveSubscription ? (
                 <>
-                  <div className="text-2xl font-black text-emerald-400">
+                  <div className="text-2xl font-black text-emerald-300 dark:text-emerald-400">
                     Suscripción Activa
                   </div>
-                  <p className="text-xs text-gray-400 mt-1">
+                  <p className="text-xs text-white/80 dark:text-gray-400 mt-1">
                     Plan Artista Pro ({formatPrice(4.99)}/mes)
                   </p>
                 </>
@@ -145,12 +145,12 @@ export const ArtistDashboardPage: React.FC = () => {
                   <div className="text-2xl font-black text-white">
                     {daysRemaining} Días Restantes
                   </div>
-                  <p className="text-xs text-gray-400 mt-1">
+                  <p className="text-xs text-white/80 dark:text-gray-400 mt-1">
                     Día {Math.min(trialDay, 90)} de 90 (Prueba Gratuita)
                   </p>
                   <Link
                     to="/subscription/creditcard"
-                    className="mt-3 inline-flex items-center gap-1.5 text-xs font-semibold text-primary hover:text-primary-hover hover:underline"
+                    className="mt-3 inline-flex items-center gap-1.5 text-xs font-semibold text-amber-300 dark:text-primary hover:text-amber-200 hover:underline"
                   >
                     <CreditCard size={14} /> Planes de Membresía ({formatPrice(4.99)}/mes)
                   </Link>

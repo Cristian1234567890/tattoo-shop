@@ -97,23 +97,23 @@ export const TermsModal: React.FC<TermsModalProps> = ({
           onTouchStart={(e) => e.stopPropagation()}
           onTouchMove={(e) => e.stopPropagation()}
           onWheel={(e) => e.stopPropagation()}
-          className="relative w-full max-w-2xl bg-[#0e0e14] border border-zinc-800 rounded-3xl shadow-[0_25px_60px_rgba(0,0,0,0.9)] overflow-hidden flex flex-col max-h-[90vh] sm:max-h-[85vh]"
+          className="relative w-full max-w-2xl bg-white dark:bg-[#0e0e14] border border-slate-200 dark:border-zinc-800 rounded-3xl shadow-2xl overflow-hidden flex flex-col max-h-[90vh] sm:max-h-[85vh] text-slate-900 dark:text-white"
         >
           {/* Header */}
-          <div className="flex items-center justify-between p-4 sm:p-6 border-b border-zinc-800/80 bg-[#12121a] shrink-0">
+          <div className="flex items-center justify-between p-4 sm:p-6 border-b border-slate-200 dark:border-zinc-800/80 bg-slate-50 dark:bg-[#12121a] shrink-0">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-xl bg-violet-600/10 border border-violet-500/20 flex items-center justify-center text-violet-400 shrink-0">
+              <div className="w-10 h-10 rounded-xl bg-violet-600/10 border border-violet-500/20 flex items-center justify-center text-violet-600 dark:text-violet-400 shrink-0">
                 <ScrollText className="w-5 h-5" />
               </div>
               <div>
-                <h3 className="text-base sm:text-lg font-bold text-white leading-tight">{title}</h3>
-                <p className="text-xs text-zinc-400">Lectura requerida para validar tu consentimiento informado</p>
+                <h3 className="text-base sm:text-lg font-bold text-slate-900 dark:text-white leading-tight">{title}</h3>
+                <p className="text-xs text-slate-500 dark:text-zinc-400">Lectura requerida para validar tu consentimiento informado</p>
               </div>
             </div>
             <button
               onClick={onClose}
               id="terms-modal-close-btn"
-              className="w-8 h-8 rounded-full bg-zinc-800/60 hover:bg-zinc-700 text-zinc-400 hover:text-white flex items-center justify-center transition-colors cursor-pointer"
+              className="w-8 h-8 rounded-full bg-slate-100 hover:bg-slate-200 dark:bg-zinc-800/60 dark:hover:bg-zinc-700 text-slate-500 hover:text-slate-900 dark:text-zinc-400 dark:hover:text-white flex items-center justify-center transition-colors cursor-pointer"
             >
               <X className="w-4 h-4" />
             </button>
@@ -129,64 +129,64 @@ export const TermsModal: React.FC<TermsModalProps> = ({
               WebkitOverflowScrolling: 'touch',
               touchAction: 'pan-y',
             }}
-            className="flex-1 p-4 sm:p-6 overflow-y-auto min-h-0 space-y-5 text-sm text-zinc-300 leading-relaxed scrollbar-thin scrollbar-thumb-zinc-700 scrollbar-track-zinc-900 selection:bg-violet-500/30"
+            className="flex-1 p-4 sm:p-6 overflow-y-auto min-h-0 space-y-5 text-sm text-slate-700 dark:text-zinc-300 leading-relaxed scrollbar-thin scrollbar-thumb-slate-300 dark:scrollbar-thumb-zinc-700 scrollbar-track-slate-100 dark:scrollbar-track-zinc-900 selection:bg-violet-500/30"
           >
-            <div className="p-3.5 rounded-2xl bg-violet-950/20 border border-violet-500/20 flex items-start gap-3 text-xs text-violet-300">
-              <ShieldAlert className="w-5 h-5 text-violet-400 shrink-0 mt-0.5" />
+            <div className="p-3.5 rounded-2xl bg-violet-50 dark:bg-violet-950/20 border border-violet-200 dark:border-violet-500/20 flex items-start gap-3 text-xs text-violet-800 dark:text-violet-300">
+              <ShieldAlert className="w-5 h-5 text-violet-600 dark:text-violet-400 shrink-0 mt-0.5" />
               <span>
                 Para proteger tu seguridad legal y sanitaria, revisa este documento antes de confirmar tu registro en el ecosistema.
               </span>
             </div>
 
             <section className="space-y-2">
-              <h4 className="text-base font-bold text-white">1. Requisitos Sanitarios y Mayoría de Edad</h4>
+              <h4 className="text-base font-bold text-slate-900 dark:text-white">1. Requisitos Sanitarios y Mayoría de Edad</h4>
               <p>
                 Tattoo Hub es una plataforma exclusiva para personas mayores de 18 años. Al registrarte declaras bajo gravedad de juramento que posees plena capacidad civil y legal para contratar intervenciones corporales permanentes. Los tatuadores independientes y estudios se reservan el derecho legal de solicitar documento de identidad oficial previo a cualquier procedimiento.
               </p>
             </section>
 
             <section className="space-y-2">
-              <h4 className="text-base font-bold text-white">2. Independencia Profesional de Tatuadores</h4>
+              <h4 className="text-base font-bold text-slate-900 dark:text-white">2. Independencia Profesional de Tatuadores</h4>
               <p>
                 Tattoo Hub opera como un directorio y plataforma de conectividad directa. No somos empleadores ni agentes laborales de los tatuadores registrados. Cada artista opera con su propia licencia sanitaria, protocolos de bioseguridad, esterilización de grado hospitalario y consentimiento informado particular. El 100% de la ejecución técnica y acuerdos económicos por servicios son acordados de mutuo acuerdo entre cliente y artista.
               </p>
             </section>
 
             <section className="space-y-2">
-              <h4 className="text-base font-bold text-white">3. Protección y Confidencialidad de Datos</h4>
+              <h4 className="text-base font-bold text-slate-900 dark:text-white">3. Protección y Confidencialidad de Datos</h4>
               <p>
                 Tus datos de contacto, bocetos e historial de intervenciones se gestionan con cifrado en reposo y en tránsito bajo estándares de seguridad informática. Tus credenciales y números telefónicos no son compartidos con terceros comerciales ajenos a la gestión directa de tus citas.
               </p>
             </section>
 
             <section className="space-y-2">
-              <h4 className="text-base font-bold text-white">4. Políticas de Reserva y Cancelación</h4>
+              <h4 className="text-base font-bold text-slate-900 dark:text-white">4. Políticas de Reserva y Cancelación</h4>
               <p>
                 Las políticas de anticipo de cita o señas dependen de los términos estipulados por cada estudio o artista en su cotización. Tattoo Hub facilita la agenda y trazabilidad de la reserva pero no retiene fondos de depósitos en custodia.
               </p>
             </section>
 
-            <div className="pt-3 border-t border-zinc-800 text-center text-xs text-zinc-500">
+            <div className="pt-3 border-t border-slate-200 dark:border-zinc-800 text-center text-xs text-slate-500 dark:text-zinc-500">
               --- Fin del documento legal de Tattoo Hub (Versión 2.0 - 2026) ---
             </div>
           </div>
 
           {/* Footer Controls */}
-          <div className="p-4 sm:p-6 border-t border-zinc-800/80 bg-[#12121a] shrink-0 flex flex-col gap-3">
+          <div className="p-4 sm:p-6 border-t border-slate-200 dark:border-zinc-800/80 bg-slate-50 dark:bg-[#12121a] shrink-0 flex flex-col gap-3">
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs">
               {/* Direct Agreement Checkbox or Scroll Prompt */}
               <button
                 type="button"
                 id="terms-manual-agree-checkbox"
                 onClick={() => setManualAgreed(!manualAgreed)}
-                className="flex items-center gap-2 text-zinc-300 hover:text-white cursor-pointer select-none text-left"
+                className="flex items-center gap-2 text-slate-700 hover:text-slate-900 dark:text-zinc-300 dark:hover:text-white cursor-pointer select-none text-left"
               >
                 {canAccept ? (
-                  <CheckSquare className="w-4 h-4 text-emerald-400 shrink-0" />
+                  <CheckSquare className="w-4 h-4 text-emerald-600 dark:text-emerald-400 shrink-0" />
                 ) : (
-                  <Square className="w-4 h-4 text-zinc-500 shrink-0" />
+                  <Square className="w-4 h-4 text-slate-400 dark:text-zinc-500 shrink-0" />
                 )}
-                <span className={canAccept ? 'text-emerald-300 font-semibold' : 'text-zinc-400'}>
+                <span className={canAccept ? 'text-emerald-700 dark:text-emerald-300 font-semibold' : 'text-slate-600 dark:text-zinc-400'}>
                   He leído, comprendido y acepto las condiciones
                 </span>
               </button>
@@ -196,7 +196,7 @@ export const TermsModal: React.FC<TermsModalProps> = ({
                   type="button"
                   id="terms-scroll-to-bottom-btn"
                   onClick={scrollToBottom}
-                  className="flex items-center gap-1.5 text-violet-400 hover:text-violet-300 font-medium cursor-pointer transition-colors self-start sm:self-auto"
+                  className="flex items-center gap-1.5 text-violet-600 dark:text-violet-400 hover:text-violet-700 dark:hover:text-violet-300 font-semibold cursor-pointer transition-colors self-start sm:self-auto"
                 >
                   <ArrowDown className="w-3.5 h-3.5 animate-bounce" /> Ir al final para habilitar
                 </button>
@@ -207,7 +207,7 @@ export const TermsModal: React.FC<TermsModalProps> = ({
               <button
                 type="button"
                 onClick={onClose}
-                className="px-4 py-2.5 rounded-xl border border-zinc-800 hover:bg-zinc-800 text-zinc-400 hover:text-white text-xs sm:text-sm font-semibold transition cursor-pointer flex-1 sm:flex-initial"
+                className="px-4 py-2.5 rounded-xl border border-slate-300 hover:bg-slate-100 dark:border-zinc-800 dark:hover:bg-zinc-800 text-slate-700 hover:text-slate-900 dark:text-zinc-400 dark:hover:text-white text-xs sm:text-sm font-semibold transition cursor-pointer flex-1 sm:flex-initial"
               >
                 Cancelar
               </button>
@@ -219,7 +219,7 @@ export const TermsModal: React.FC<TermsModalProps> = ({
                 className={`px-5 sm:px-6 py-2.5 rounded-xl text-xs sm:text-sm font-bold transition flex items-center justify-center gap-2 flex-1 sm:flex-initial cursor-pointer ${
                   canAccept
                     ? 'btn-atelier-primary shadow-[0_0_20px_rgba(139,92,246,0.4)]'
-                    : 'bg-zinc-800 text-zinc-500 cursor-not-allowed border border-zinc-700/50'
+                    : 'bg-slate-200 text-slate-400 dark:bg-zinc-800 dark:text-zinc-500 cursor-not-allowed border border-slate-300 dark:border-zinc-700/50'
                 }`}
               >
                 <CheckCircle2 className="w-4 h-4" />

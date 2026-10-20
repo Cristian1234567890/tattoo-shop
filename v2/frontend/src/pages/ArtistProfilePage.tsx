@@ -212,8 +212,9 @@ export const ArtistProfilePage: React.FC = () => {
       setCity(meta.city || meta.ciudad || 'Ciudad de Panamá');
       setDirection(meta.direccion || '');
       setEmail(user.email || '');
-      if (meta.profile) {
-        setProfileImg(meta.profile);
+      const candidateAvatar = meta.profile || meta.avatar_url;
+      if (candidateAvatar) {
+        setProfileImg(candidateAvatar);
       }
     }
   }, [user, isPublicView]);
@@ -268,6 +269,7 @@ export const ArtistProfilePage: React.FC = () => {
         instagram,
         link: linkUrl,
         profile: uploadedUrl,
+        avatar_url: uploadedUrl,
       };
 
       if (newPassword) {
@@ -294,6 +296,7 @@ export const ArtistProfilePage: React.FC = () => {
           instagram,
           link: linkUrl,
           profile: uploadedUrl,
+          avatar_url: uploadedUrl,
         });
         setMessage({ text: '¡Perfil de tatuador actualizado correctamente!', isError: false });
       } else {

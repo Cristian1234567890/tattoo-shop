@@ -75,6 +75,17 @@ export const Navbar: React.FC<NavbarProps> = ({ forceRender = false }) => {
 
   const hasVip = Boolean(user?.user_metadata?.has_active_subscription);
 
+  const userCandidate =
+    user?.user_metadata?.avatar_url ||
+    user?.user_metadata?.picture ||
+    user?.user_metadata?.profile ||
+    user?.user_metadata?.avatar ||
+    (user as any)?.avatar_url ||
+    (user as any)?.picture ||
+    (user as any)?.identities?.[0]?.identity_data?.avatar_url ||
+    (user as any)?.identities?.[0]?.identity_data?.picture ||
+    '';
+
   const [navAvatar, setNavAvatar] = useState<string>(() => {
     if (typeof window !== 'undefined') {
       return localStorage.getItem('user_avatar_override') || '';
@@ -85,24 +96,22 @@ export const Navbar: React.FC<NavbarProps> = ({ forceRender = false }) => {
 
   React.useEffect(() => {
     const handleAvatarChange = (e: any) => {
-      setNavAvatar(e.detail || (typeof window !== 'undefined' ? localStorage.getItem('user_avatar_override') || '' : ''));
+      const newAv = e.detail || (typeof window !== 'undefined' ? localStorage.getItem('user_avatar_override') || '' : '');
+      setNavAvatar(newAv);
       setAvatarError(false);
     };
     window.addEventListener('user_avatar_changed', handleAvatarChange);
     return () => window.removeEventListener('user_avatar_changed', handleAvatarChange);
   }, []);
 
-  const displayAvatar =
-    navAvatar ||
-    user?.user_metadata?.avatar_url ||
-    user?.user_metadata?.picture ||
-    user?.user_metadata?.profile ||
-    user?.user_metadata?.avatar ||
-    (user as any)?.avatar_url ||
-    (user as any)?.picture ||
-    (user as any)?.identities?.[0]?.identity_data?.avatar_url ||
-    (user as any)?.identities?.[0]?.identity_data?.picture ||
-    '';
+  React.useEffect(() => {
+    if (userCandidate) {
+      setNavAvatar(userCandidate);
+      setAvatarError(false);
+    }
+  }, [userCandidate]);
+
+  const displayAvatar = navAvatar || userCandidate;
 
   React.useEffect(() => {
     setAvatarError(false);
@@ -503,7 +512,7 @@ export const Navbar: React.FC<NavbarProps> = ({ forceRender = false }) => {
 
       {/* Mobile Drawer / Overlay */}
       {mobileMenuOpen && (
-        <div className="lg:hidden bg-gray-950/95 backdrop-blur-2xl border-b border-white/10 px-4 pt-3 pb-6 space-y-4 animate-in fade-in slide-in-from-top-2 duration-200">
+        <div className="lg:hidden bg-white/95 dark:bg-gray-950/95 backdrop-blur-2xl border-b border-slate-200 dark:border-white/10 px-4 pt-3 pb-6 space-y-4 animate-in fade-in slide-in-from-top-2 duration-200 text-slate-900 dark:text-white shadow-xl">
           <div className="space-y-1">
             {(!isAuthenticated || !hasVip) && (
               <>
@@ -511,18 +520,18 @@ export const Navbar: React.FC<NavbarProps> = ({ forceRender = false }) => {
                   id="mobile-beneficios"
                   to="/beneficios"
                   onClick={closeMenu}
-                  className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-base font-medium text-gray-200 hover:text-white hover:bg-white/10 transition-colors"
+                  className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-base font-medium text-slate-800 hover:text-slate-950 hover:bg-slate-100 dark:text-gray-200 dark:hover:text-white dark:hover:bg-white/10 transition-colors"
                 >
-                  <Sparkles className="w-5 h-5 text-violet-400" />
+                  <Sparkles className="w-5 h-5 text-violet-600 dark:text-violet-400" />
                   {t('nav.benefits')}
                 </Link>
                 <Link
                   id="mobile-precios"
                   to="/precios"
                   onClick={closeMenu}
-                  className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-base font-medium text-gray-200 hover:text-white hover:bg-white/10 transition-colors"
+                  className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-base font-medium text-slate-800 hover:text-slate-950 hover:bg-slate-100 dark:text-gray-200 dark:hover:text-white dark:hover:bg-white/10 transition-colors"
                 >
-                  <DollarSign className="w-5 h-5 text-indigo-400" />
+                  <DollarSign className="w-5 h-5 text-indigo-600 dark:text-indigo-400" />
                   {t('nav.pricing')}
                 </Link>
               </>
@@ -531,45 +540,45 @@ export const Navbar: React.FC<NavbarProps> = ({ forceRender = false }) => {
               id="mobile-artistas"
               to="/artistas"
               onClick={closeMenu}
-              className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-base font-medium text-gray-200 hover:text-white hover:bg-white/10 transition-colors"
+              className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-base font-medium text-slate-800 hover:text-slate-950 hover:bg-slate-100 dark:text-gray-200 dark:hover:text-white dark:hover:bg-white/10 transition-colors"
             >
-              <User className="w-5 h-5 text-fuchsia-400" />
+              <User className="w-5 h-5 text-fuchsia-600 dark:text-fuchsia-400" />
               {t('nav.artists')}
             </Link>
             <Link
               id="mobile-tienda"
               to="/tienda"
               onClick={closeMenu}
-              className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-base font-medium text-gray-200 hover:text-white hover:bg-white/10 transition-colors"
+              className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-base font-medium text-slate-800 hover:text-slate-950 hover:bg-slate-100 dark:text-gray-200 dark:hover:text-white dark:hover:bg-white/10 transition-colors"
             >
-              <ShoppingBag className="w-5 h-5 text-amber-400" />
+              <ShoppingBag className="w-5 h-5 text-amber-600 dark:text-amber-400" />
               {t('nav.shop')}
             </Link>
             <Link
               to="/hub"
               onClick={closeMenu}
-              className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-base font-medium text-gray-200 hover:text-white hover:bg-white/10 transition-colors"
+              className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-base font-medium text-slate-800 hover:text-slate-950 hover:bg-slate-100 dark:text-gray-200 dark:hover:text-white dark:hover:bg-white/10 transition-colors"
             >
-              <Compass className="w-5 h-5 text-emerald-400" />
+              <Compass className="w-5 h-5 text-emerald-600 dark:text-emerald-400" />
               {t('nav.explore_map')}
             </Link>
             <Link
               to="/about"
               onClick={closeMenu}
-              className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-base font-medium text-gray-200 hover:text-white hover:bg-white/10 transition-colors"
+              className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-base font-medium text-slate-800 hover:text-slate-950 hover:bg-slate-100 dark:text-gray-200 dark:hover:text-white dark:hover:bg-white/10 transition-colors"
             >
-              <Info className="w-5 h-5 text-sky-400" />
+              <Info className="w-5 h-5 text-sky-600 dark:text-sky-400" />
               {t('nav.about')}
             </Link>
           </div>
 
           {/* Mobile Language Selector */}
-          <div className="pt-3 border-t border-white/10">
+          <div className="pt-3 border-t border-slate-200 dark:border-white/10">
             <div className="flex items-center justify-between mb-2.5 px-1">
-              <span className="text-xs font-bold uppercase tracking-wider text-zinc-400 flex items-center gap-1.5">
-                <Languages className="w-3.5 h-3.5 text-violet-400" /> Idioma
+              <span className="text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-zinc-400 flex items-center gap-1.5">
+                <Languages className="w-3.5 h-3.5 text-violet-600 dark:text-violet-400" /> Idioma
               </span>
-              <span className="text-xs text-violet-400 font-bold uppercase">
+              <span className="text-xs text-violet-600 dark:text-violet-400 font-bold uppercase">
                 {language === 'es' ? '🇪🇸 Español' : '🇺🇸 English'}
               </span>
             </div>
@@ -584,15 +593,15 @@ export const Navbar: React.FC<NavbarProps> = ({ forceRender = false }) => {
                     }}
                     className={`flex items-center justify-between px-3 py-2 rounded-xl text-xs transition-all ${
                       isSelected
-                        ? 'bg-violet-600/30 text-white border border-violet-500/50 font-bold'
-                        : 'bg-zinc-900/60 text-zinc-300 hover:bg-zinc-800 border border-zinc-800'
+                        ? 'bg-violet-600 text-white dark:bg-violet-600/30 dark:text-white border border-violet-500 font-bold shadow-sm'
+                        : 'bg-slate-100 text-slate-700 hover:bg-slate-200 border border-slate-200 dark:bg-zinc-900/60 dark:text-zinc-300 dark:hover:bg-zinc-800 dark:border-zinc-800'
                     }`}
                   >
                     <span className="flex items-center gap-1.5">
                       <span>{opt.flag}</span>
                       <span>{opt.name}</span>
                     </span>
-                    {isSelected && <Check className="w-3.5 h-3.5 text-violet-400" />}
+                    {isSelected && <Check className="w-3.5 h-3.5 text-white dark:text-violet-400" />}
                   </button>
                 );
               })}
@@ -600,20 +609,20 @@ export const Navbar: React.FC<NavbarProps> = ({ forceRender = false }) => {
           </div>
 
           {/* Mobile Theme Selector */}
-          <div className="pt-3 border-t border-white/10 flex items-center justify-between px-1">
-            <span className="text-xs font-bold uppercase tracking-wider text-zinc-400">
+          <div className="pt-3 border-t border-slate-200 dark:border-white/10 flex items-center justify-between px-1">
+            <span className="text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-zinc-400">
               Tema Visual
             </span>
             <ThemeSwitch />
           </div>
 
           {/* Mobile Country & Currency Selector */}
-          <div className="pt-3 border-t border-white/10">
+          <div className="pt-3 border-t border-slate-200 dark:border-white/10">
             <div className="flex items-center justify-between mb-2.5 px-1">
-              <span className="text-xs font-bold uppercase tracking-wider text-zinc-400 flex items-center gap-1.5">
-                <Globe className="w-3.5 h-3.5 text-violet-400" /> País & Divisa
+              <span className="text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-zinc-400 flex items-center gap-1.5">
+                <Globe className="w-3.5 h-3.5 text-violet-600 dark:text-violet-400" /> País & Divisa
               </span>
-              <span className="text-xs text-violet-400 font-bold">
+              <span className="text-xs text-violet-600 dark:text-violet-400 font-bold">
                 {countryInfo.flag} {countryInfo.code} ({currency})
               </span>
             </div>
@@ -628,15 +637,15 @@ export const Navbar: React.FC<NavbarProps> = ({ forceRender = false }) => {
                     }}
                     className={`flex items-center justify-between px-3 py-2 rounded-xl text-xs transition-all ${
                       isSelected
-                        ? 'bg-violet-600/30 text-white border border-violet-500/50 font-bold'
-                        : 'bg-zinc-900/60 text-zinc-300 hover:bg-zinc-800 border border-zinc-800'
+                        ? 'bg-violet-600 text-white dark:bg-violet-600/30 dark:text-white border border-violet-500 font-bold shadow-sm'
+                        : 'bg-slate-100 text-slate-700 hover:bg-slate-200 border border-slate-200 dark:bg-zinc-900/60 dark:text-zinc-300 dark:hover:bg-zinc-800 dark:border-zinc-800'
                     }`}
                   >
                     <span className="flex items-center gap-1.5 truncate">
                       <span>{c.flag}</span>
                       <span className="truncate">{c.name}</span>
                     </span>
-                    <span className="text-[10px] text-zinc-400 shrink-0">
+                    <span className="text-[10px] text-slate-500 dark:text-zinc-400 shrink-0">
                       {c.defaultCurrency}
                     </span>
                   </button>

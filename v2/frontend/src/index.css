@@ -335,16 +335,29 @@ html.light label:not([class*="text-violet"]):not([class*="text-emerald"]):not([c
   color: #0f172a;
 }
 
-html.light main h1.text-white,
-html.light main h2.text-white,
-html.light main h3.text-white,
-html.light main h4.text-white,
+html.light main h1.text-white:not(.dark-banner *):not(.keep-white-text *),
+html.light main h2.text-white:not(.dark-banner *):not(.keep-white-text *),
+html.light main h3.text-white:not(.dark-banner *):not(.keep-white-text *),
+html.light main h4.text-white:not(.dark-banner *):not(.keep-white-text *),
 html.light .atelier-card h1,
 html.light .atelier-card h2,
 html.light .atelier-card h3,
 html.light .atelier-card h4,
 html.light td.font-semibold {
   color: #0f172a !important;
+}
+
+/* Guard intentional dark hero banners and badges in light mode */
+html.light .dark-banner,
+html.light .dark-banner h1,
+html.light .dark-banner h2,
+html.light .dark-banner h3,
+html.light .dark-banner h4,
+html.light .dark-banner p,
+html.light .dark-banner span,
+html.light .keep-white-text,
+html.light .keep-white-text * {
+  color: #ffffff !important;
 }
 
 /* Navbar in Light Mode */

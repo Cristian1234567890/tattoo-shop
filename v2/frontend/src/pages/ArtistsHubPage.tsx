@@ -777,8 +777,8 @@ export default function ArtistsHubPage() {
                       <div className="p-3.5 space-y-2.5">
                         <div>
                           <h4 className="font-extrabold text-sm text-slate-900 dark:text-white truncate">{studio.name}</h4>
-                          <p className="text-[11px] text-zinc-400 truncate flex items-center gap-1 mt-0.5">
-                            <MapPin className="w-3 h-3 text-violet-400 shrink-0" />
+                          <p className="text-[11px] text-slate-500 dark:text-zinc-400 truncate flex items-center gap-1 mt-0.5">
+                            <MapPin className="w-3 h-3 text-violet-500 dark:text-violet-400 shrink-0" />
                             {studio.address}
                           </p>
                         </div>
@@ -1113,8 +1113,8 @@ export default function ArtistsHubPage() {
                           <CheckCircle2 className="w-4 h-4 text-violet-400 fill-violet-400/20" />
                         )}
                       </div>
-                      <p className="text-xs text-zinc-400 mt-1 flex items-center gap-1">
-                        <MapPin className="w-3 h-3 text-violet-400" />
+                      <p className="text-xs text-slate-600 dark:text-zinc-400 mt-1 flex items-center gap-1">
+                        <MapPin className="w-3 h-3 text-violet-600 dark:text-violet-400" />
                         {activeStudio.address} • {activeStudio.distance}
                       </p>
                     </div>
@@ -1132,10 +1132,10 @@ export default function ArtistsHubPage() {
                     activeStudio.residents.length > 0 && (
                       <div className="p-3 bg-slate-50 dark:bg-zinc-900/60 rounded-xl border border-slate-200 dark:border-zinc-800/80">
                         <div className="flex items-center justify-between mb-2.5">
-                          <span className="text-xs font-bold text-zinc-400 uppercase tracking-wider flex items-center gap-1.5">
-                            <Sparkles className="w-3.5 h-3.5 text-violet-400" /> Artistas en este Local:
+                          <span className="text-xs font-bold text-slate-700 dark:text-zinc-400 uppercase tracking-wider flex items-center gap-1.5">
+                            <Sparkles className="w-3.5 h-3.5 text-violet-600 dark:text-violet-400" /> Artistas en este Local:
                           </span>
-                          <span className="text-[11px] text-zinc-500">Selecciona para contactar</span>
+                          <span className="text-[11px] text-slate-500 dark:text-zinc-400 font-medium">Selecciona para contactar</span>
                         </div>
 
                         {/* Concentric Violet Avatar Rings */}
@@ -1211,7 +1211,7 @@ export default function ArtistsHubPage() {
                           </h4>
                         </div>
                         <div className="text-right">
-                          <span className="text-[10px] uppercase tracking-wider text-zinc-500 font-bold block">
+                          <span className="text-[10px] uppercase tracking-wider text-slate-500 dark:text-zinc-400 font-bold block">
                             Tarifa Base
                           </span>
                           <span className="text-xs font-extrabold text-violet-700 dark:text-violet-300">
@@ -1240,7 +1240,7 @@ export default function ArtistsHubPage() {
                   {activeResident && activeResident.flashes && activeResident.flashes.length > 0 && (
                     <div>
                       <div className="flex items-center justify-between mb-2">
-                        <h4 className="text-xs font-bold text-zinc-400 uppercase tracking-wider">
+                        <h4 className="text-xs font-bold text-slate-700 dark:text-zinc-400 uppercase tracking-wider">
                           {isEn ? "Flashes by" : "Flashes de"} {activeResident.alias || activeResident.name}
                         </h4>
                         <span className="text-[11px] text-violet-400 hover:text-violet-300 cursor-pointer">
@@ -1366,7 +1366,7 @@ export default function ArtistsHubPage() {
                             </span>
                           )}
                         </div>
-                        <p className="text-xs text-zinc-500 mt-0.5 truncate">
+                        <p className="text-xs text-slate-600 dark:text-zinc-400 mt-0.5 truncate">
                           {studio.residents?.map((r) => r.alias || r.name).join(', ')} •{' '}
                           {studio.distance}
                         </p>
@@ -1399,15 +1399,6 @@ export default function ArtistsHubPage() {
         .light-map-tiles .leaflet-overlay-pane {
           filter: none !important;
         }
-        .light-map-tiles .leaflet-control-zoom a {
-          background: rgba(255, 255, 255, 0.95) !important;
-          color: #1e293b !important;
-          border-color: rgba(0, 0, 0, 0.1) !important;
-        }
-        .light-map-tiles .leaflet-control-zoom a:hover {
-          background: rgba(139, 92, 246, 0.15) !important;
-          color: #7c3aed !important;
-        }
         .custom-studio-pin-icon {
           background: transparent !important;
           border: none !important;
@@ -1416,13 +1407,16 @@ export default function ArtistsHubPage() {
           background: transparent;
           border: none;
         }
-        .leaflet-control-zoom {
+        /* Zoom Control: Dark Theme */
+        .dark-map-tiles .leaflet-control-zoom,
+        html.dark .leaflet-control-zoom {
           border: 1px solid rgba(255, 255, 255, 0.15) !important;
           border-radius: 12px !important;
           overflow: hidden;
           box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5) !important;
         }
-        .leaflet-control-zoom a {
+        .dark-map-tiles .leaflet-control-zoom a,
+        html.dark .leaflet-control-zoom a {
           background: rgba(9, 13, 22, 0.9) !important;
           color: #e5e7eb !important;
           border-color: rgba(255, 255, 255, 0.1) !important;
@@ -1432,9 +1426,33 @@ export default function ArtistsHubPage() {
           font-size: 18px !important;
           backdrop-filter: blur(12px);
         }
-        .leaflet-control-zoom a:hover {
+        .dark-map-tiles .leaflet-control-zoom a:hover,
+        html.dark .leaflet-control-zoom a:hover {
           background: rgba(105, 68, 255, 0.3) !important;
           color: #fff !important;
+        }
+        /* Zoom Control: Light Theme */
+        .light-map-tiles .leaflet-control-zoom,
+        html.light .leaflet-control-zoom {
+          border: 1px solid rgba(0, 0, 0, 0.12) !important;
+          border-radius: 12px !important;
+          overflow: hidden;
+          box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08) !important;
+        }
+        .light-map-tiles .leaflet-control-zoom a,
+        html.light .leaflet-control-zoom a {
+          background: rgba(255, 255, 255, 0.95) !important;
+          color: #0f172a !important;
+          border-color: rgba(0, 0, 0, 0.1) !important;
+          width: 36px !important;
+          height: 36px !important;
+          line-height: 36px !important;
+          font-size: 18px !important;
+        }
+        .light-map-tiles .leaflet-control-zoom a:hover,
+        html.light .leaflet-control-zoom a:hover {
+          background: #f1f5f9 !important;
+          color: #7c3aed !important;
         }
         .leaflet-popup-content-wrapper {
           background: transparent !important;

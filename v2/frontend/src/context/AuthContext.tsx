@@ -54,7 +54,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       }
     } catch {}
 
-    // Fallback: direct Supabase query
+    // Fallback: direct Supabase query (user_profiles and users tables)
     try {
       const { data: dbProfile } = await supabase
         .from('user_profiles')
@@ -74,7 +74,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
           legal_accepted_at: dbProfile.legal_accepted_at || undefined,
           onboarding_completed: dbProfile.onboarding_completed,
           full_name: dbProfile.full_name || undefined,
-          avatar_url: dbProfile.avatar_url || undefined,
+          avatar_url: dbProfile.avatar_url || (dbProfile as any).profile || undefined,
+          profile: (dbProfile as any).profile || dbProfile.avatar_url || undefined,
           phone_number: dbProfile.phone_number || undefined,
           telefono: dbProfile.phone_number || undefined,
           has_active_subscription: hasSub,
@@ -82,6 +83,20 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
           is_trial_active: isArtist ? diffDays <= 90 : undefined,
           trial_expired: isArtist ? diffDays > 90 && !hasSub : undefined,
           days_active: diffDays,
+        });
+      }
+    } catch {}
+
+    try {
+      const { data: dbUser } = await supabase
+        .from('users')
+        .select('*')
+        .eq('id', currentUser.id)
+        .maybeSingle();
+      if (dbUser && (dbUser.avatar_url || dbUser.profile)) {
+        updateUserMetadata({
+          avatar_url: dbUser.avatar_url || dbUser.profile,
+          profile: dbUser.profile || dbUser.avatar_url,
         });
       }
     } catch {}
@@ -182,6 +197,10 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       setSession(null);
       setIsPasswordRecovery(false);
       sessionStorage.removeItem('is_password_recovery');
+      if (typeof window !== 'undefined') {
+        localStorage.removeItem('user_avatar_override');
+        window.dispatchEvent(new CustomEvent('user_avatar_changed', { detail: '' }));
+      }
       api.clearStoredSession();
     }
   };

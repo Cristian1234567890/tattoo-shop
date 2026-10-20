@@ -54,7 +54,7 @@ async function run() {
   const context = await browser.newContext({ viewport: { width: 1440, height: 900 } });
   await context.addInitScript(() => {
     localStorage.setItem('tattoo_hub_theme', 'light');
-    localStorage.setItem('user_avatar_override', 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=150&q=80');
+    // Notice: user_avatar_override is explicitly NOT set, ensuring authentic reactive avatar sync from user_metadata
     localStorage.setItem('user', JSON.stringify({
       user: {
         id: 'mock-artist-uuid',
@@ -127,7 +127,7 @@ async function run() {
     // 2. Validar TattooPatternBackground (Opacidad tenue en modo claro)
     console.log('\n--- 2. Auditando TattooPatternBackground: Opacidad Tenue (10-12%) ---');
     const patternOpacityValid = await page.evaluate(() => {
-      const patternEl = document.querySelector('svg.opacity-\\[0\\.11\\], .opacity-\\[0\\.11\\]');
+      const patternEl = document.querySelector('svg.opacity-\\[0\\.10\\], svg.opacity-\\[0\\.11\\], .opacity-\\[0\\.10\\], .opacity-\\[0\\.11\\]');
       if (patternEl) {
         const computed = window.getComputedStyle(patternEl);
         const op = parseFloat(computed.opacity);

@@ -11,7 +11,7 @@ import { useTheme } from '../../context/ThemeContext';
 export const TattooPatternBackground: React.FC = () => {
   const { isDark } = useTheme();
 
-  const strokeColor = isDark ? 'currentColor' : '#94a3b8';
+  const strokeColor = isDark ? 'currentColor' : '#cbd5e1';
 
   return (
     <div
@@ -20,7 +20,7 @@ export const TattooPatternBackground: React.FC = () => {
     >
       <svg
         className={`w-full h-full transition-opacity duration-700 ${
-          isDark ? 'opacity-25 text-violet-400' : 'opacity-[0.11] text-slate-400'
+          isDark ? 'opacity-25 text-violet-400' : 'opacity-[0.10] text-slate-300'
         }`}
         xmlns="http://www.w3.org/2000/svg"
         width="100%"
