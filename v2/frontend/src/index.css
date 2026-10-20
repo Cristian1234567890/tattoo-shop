@@ -326,10 +326,19 @@ html.light .divide-zinc-800 > * + * {
   border-color: #e2e8f0 !important;
 }
 
-/* Headings in Light Mode */
+/* Headings and Labels in Light Mode */
+html.light h1:not([class*="text-violet"]):not([class*="text-emerald"]):not([class*="text-amber"]):not([class*="text-red"]),
+html.light h2:not([class*="text-violet"]):not([class*="text-emerald"]):not([class*="text-amber"]):not([class*="text-red"]),
+html.light h3:not([class*="text-violet"]):not([class*="text-emerald"]):not([class*="text-amber"]):not([class*="text-red"]),
+html.light h4:not([class*="text-violet"]):not([class*="text-emerald"]):not([class*="text-amber"]):not([class*="text-red"]),
+html.light label:not([class*="text-violet"]):not([class*="text-emerald"]):not([class*="text-amber"]):not([class*="text-red"]) {
+  color: #0f172a;
+}
+
 html.light main h1.text-white,
 html.light main h2.text-white,
 html.light main h3.text-white,
+html.light main h4.text-white,
 html.light .atelier-card h1,
 html.light .atelier-card h2,
 html.light .atelier-card h3,

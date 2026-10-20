@@ -669,7 +669,7 @@ export default function ArtistsHubPage() {
   };
 
   return (
-    <div className="flex-1 relative flex flex-col h-full min-h-0 overflow-hidden bg-zinc-950 text-zinc-100">
+    <div className="flex-1 relative flex flex-col h-full min-h-0 overflow-hidden bg-slate-50 dark:bg-zinc-950 text-slate-900 dark:text-zinc-100">
       {/* Modal de Envío de Bocetos */}
       {sketchTarget && (
         <SendSketchModal
@@ -700,22 +700,18 @@ export default function ArtistsHubPage() {
             <MapRecenter center={mapCenter} zoom={mapZoom} />
             <MapTileA11yFix />
 
-            {/* Dynamic Map Tiles: CartoDB Voyager Light in light mode, Dark OSM Inverted in dark mode */}
+            {/* Dynamic Map Tiles: Natural OSM Light in light mode, Dark OSM Inverted in dark mode */}
             <TileLayer
               key={isDark ? 'dark-tiles' : 'light-tiles'}
               attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-              url={
-                isDark
-                  ? "https://tile.openstreetmap.org/{z}/{x}/{y}.png"
-                  : "https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png"
-              }
+              url="https://tile.openstreetmap.org/{z}/{x}/{y}.png"
             />
 
             {/* Marcador GPS pulsante del usuario */}
             {userCoords && (
               <Marker position={userCoords} icon={UserGpsIcon}>
                 <Popup className="custom-popup">
-                  <div className="p-2.5 bg-zinc-900 text-white rounded-xl text-xs font-bold border border-violet-500/30 flex items-center gap-2 shadow-2xl">
+                  <div className="p-2.5 bg-white dark:bg-zinc-900 text-slate-900 dark:text-white rounded-xl text-xs font-bold border border-slate-200 dark:border-violet-500/30 flex items-center gap-2 shadow-2xl">
                     <div className="w-2.5 h-2.5 rounded-full bg-violet-500 animate-ping"></div>
                     <span>📍 Tu ubicación actual</span>
                   </div>
@@ -791,10 +787,10 @@ export default function ArtistsHubPage() {
                           <div className="flex items-center gap-2 p-2 bg-slate-50 dark:bg-zinc-900/80 rounded-xl border border-slate-200 dark:border-zinc-800">
                             <img src={resident.avatar} alt={resident.name} className="w-7 h-7 rounded-full object-cover" />
                             <div className="min-w-0 flex-1">
-                              <p className="text-xs font-bold text-white truncate">{resident.alias || resident.name}</p>
-                              <p className="text-[10px] text-zinc-400 truncate">{resident.specialties.join(', ')}</p>
+                              <p className="text-xs font-bold text-slate-900 dark:text-white truncate">{resident.alias || resident.name}</p>
+                              <p className="text-[10px] text-slate-500 dark:text-zinc-400 truncate">{resident.specialties.join(', ')}</p>
                             </div>
-                            <span className="text-xs font-black text-violet-300">
+                            <span className="text-xs font-black text-violet-700 dark:text-violet-300">
                               {formatPrice(resident.hourlyRate || 70)}/h
                             </span>
                           </div>
@@ -834,7 +830,7 @@ export default function ArtistsHubPage() {
 
                           <Link
                             to={`/artist/${artist.id}`}
-                            className="px-2.5 flex items-center justify-center bg-zinc-800 hover:bg-zinc-700 text-zinc-300 hover:text-white text-xs font-medium rounded-xl transition border border-zinc-700"
+                            className="px-2.5 flex items-center justify-center bg-slate-100 hover:bg-slate-200 dark:bg-zinc-800 dark:hover:bg-zinc-700 text-slate-700 hover:text-slate-900 dark:text-zinc-300 dark:hover:text-white text-xs font-medium rounded-xl transition border border-slate-300 dark:border-zinc-700"
                           >
                             Perfil
                           </Link>
@@ -988,7 +984,7 @@ export default function ArtistsHubPage() {
                     className={`px-2.5 py-1 rounded-md text-xs font-semibold flex items-center gap-1 transition-colors cursor-pointer ${
                       typeFilter === 'studio'
                         ? 'bg-violet-600 text-white'
-                        : 'text-zinc-400 hover:text-zinc-200'
+                        : 'text-slate-600 dark:text-zinc-400 hover:text-slate-900 dark:hover:text-zinc-200'
                     }`}
                   >
                     <Building2 className="w-3 h-3" /> Estudios
@@ -1007,11 +1003,11 @@ export default function ArtistsHubPage() {
                 </div>
 
                 {/* Toggle Vista Mapa / Lista */}
-                <div className="flex p-1 bg-zinc-950 rounded-lg border border-zinc-800/80">
+                <div className="flex p-1 bg-slate-100 dark:bg-zinc-950 rounded-lg border border-slate-200 dark:border-zinc-800/80">
                   <button
                     onClick={() => setViewMode('map')}
                     className={`p-1.5 rounded-md transition-colors cursor-pointer ${
-                      viewMode === 'map' ? 'bg-zinc-800 text-white' : 'text-zinc-500'
+                      viewMode === 'map' ? 'bg-white dark:bg-zinc-800 text-slate-900 dark:text-white shadow-sm' : 'text-slate-500 dark:text-zinc-500 hover:text-slate-800 dark:hover:text-zinc-300'
                     }`}
                     aria-label="Ver Mapa"
                   >
@@ -1020,7 +1016,7 @@ export default function ArtistsHubPage() {
                   <button
                     onClick={() => setViewMode('list')}
                     className={`p-1.5 rounded-md transition-colors cursor-pointer ${
-                      viewMode === 'list' ? 'bg-zinc-800 text-white' : 'text-zinc-500'
+                      viewMode === 'list' ? 'bg-white dark:bg-zinc-800 text-slate-900 dark:text-white shadow-sm' : 'text-slate-500 dark:text-zinc-500 hover:text-slate-800 dark:hover:text-zinc-300'
                     }`}
                     aria-label="Ver Lista"
                   >
@@ -1062,9 +1058,9 @@ export default function ArtistsHubPage() {
                 <button
                   id="hub-request-location-btn"
                   onClick={requestUserLocation}
-                  className="w-full flex items-center justify-center gap-1.5 py-1.5 px-3 rounded-lg bg-zinc-900 hover:bg-zinc-800 border border-violet-500/30 text-violet-300 text-xs font-medium transition cursor-pointer"
+                  className="w-full flex items-center justify-center gap-1.5 py-1.5 px-3 rounded-lg bg-slate-100 hover:bg-slate-200 dark:bg-zinc-900 dark:hover:bg-zinc-800 border border-violet-500/30 text-violet-700 dark:text-violet-300 text-xs font-semibold transition cursor-pointer shadow-sm"
                 >
-                  <MapPin className="w-3.5 h-3.5 text-violet-400" />
+                  <MapPin className="w-3.5 h-3.5 text-violet-600 dark:text-violet-400" />
                   Usar mi ubicación
                 </button>
               )}
@@ -1159,8 +1155,8 @@ export default function ArtistsHubPage() {
                                 onClick={() => setSelectedResidentId(resident.id)}
                                 className={`flex items-center gap-2 p-1.5 pr-3 rounded-full border transition-all shrink-0 text-left cursor-pointer ${
                                   isResidentSelected
-                                    ? 'bg-violet-950/80 border-violet-500 shadow-[0_0_15px_rgba(139,92,246,0.4)] text-white'
-                                    : 'bg-zinc-950/60 border-zinc-800 text-zinc-400 hover:border-zinc-700 hover:text-zinc-200'
+                                    ? 'bg-violet-600 text-white border-violet-500 shadow-md shadow-violet-600/30 dark:bg-violet-950/80 dark:text-white dark:shadow-[0_0_15px_rgba(139,92,246,0.4)]'
+                                    : 'bg-slate-100 dark:bg-zinc-950/60 border-slate-200 dark:border-zinc-800 text-slate-700 dark:text-zinc-400 hover:border-slate-300 dark:hover:border-zinc-700 hover:text-slate-900 dark:hover:text-zinc-200'
                                 }`}
                               >
                                 <div
@@ -1177,10 +1173,18 @@ export default function ArtistsHubPage() {
                                   />
                                 </div>
                                 <div className="leading-tight">
-                                  <div className="text-xs font-bold text-white flex items-center gap-1">
+                                  <div className={`text-xs font-bold flex items-center gap-1 ${
+                                    isResidentSelected
+                                      ? 'text-white'
+                                      : 'text-slate-900 dark:text-white'
+                                  }`}>
                                     {resident.alias || resident.name}
                                   </div>
-                                  <div className="text-[10px] text-zinc-400 truncate max-w-[90px]">
+                                  <div className={`text-[10px] truncate max-w-[90px] ${
+                                    isResidentSelected
+                                      ? 'text-violet-100 dark:text-zinc-300'
+                                      : 'text-slate-500 dark:text-zinc-400'
+                                  }`}>
                                     {resident.specialties[0]}
                                   </div>
                                 </div>
@@ -1210,7 +1214,7 @@ export default function ArtistsHubPage() {
                           <span className="text-[10px] uppercase tracking-wider text-zinc-500 font-bold block">
                             Tarifa Base
                           </span>
-                          <span className="text-xs font-extrabold text-violet-300">
+                          <span className="text-xs font-extrabold text-violet-700 dark:text-violet-300">
                             {formatPrice(activeResident.hourlyRate || 70)}/h
                           </span>
                         </div>
@@ -1269,7 +1273,7 @@ export default function ArtistsHubPage() {
                               className="w-full h-full object-cover transition-transform group-hover:scale-110"
                             />
                             <div className="absolute inset-x-0 bottom-0 bg-white/90 dark:bg-zinc-950/85 py-0.5 px-1 flex justify-center border-t border-slate-200/60 dark:border-transparent">
-                              <span className="text-[10px] font-black text-violet-300">
+                              <span className="text-[10px] font-black text-violet-700 dark:text-violet-300">
                                 {formatPrice(flash.amount || flash.price || 90)}
                               </span>
                             </div>
@@ -1353,11 +1357,11 @@ export default function ArtistsHubPage() {
                         <div className="flex items-center gap-2">
                           <h4 className="text-sm font-semibold text-slate-900 dark:text-white truncate">{studio.name}</h4>
                           {studio.type === 'studio' ? (
-                            <span className="text-[10px] px-1.5 py-0.5 rounded-full bg-violet-950 text-violet-300 font-bold border border-violet-800/40 shrink-0">
+                            <span className="text-[10px] px-1.5 py-0.5 rounded-full bg-violet-100 text-violet-800 dark:bg-violet-950 dark:text-violet-300 font-bold border border-violet-200 dark:border-violet-800/40 shrink-0">
                               {studio.artistsCount} Residentes
                             </span>
                           ) : (
-                            <span className="text-[10px] px-1.5 py-0.5 rounded-full bg-zinc-800 text-zinc-400 font-medium shrink-0">
+                            <span className="text-[10px] px-1.5 py-0.5 rounded-full bg-slate-100 text-slate-600 dark:bg-zinc-800 dark:text-zinc-400 font-medium border border-slate-200 dark:border-zinc-700 shrink-0">
                               Indep.
                             </span>
                           )}
@@ -1443,6 +1447,9 @@ export default function ArtistsHubPage() {
         }
         .leaflet-popup-tip {
           background: #09090b !important;
+        }
+        .light-map-tiles .leaflet-popup-tip {
+          background: #ffffff !important;
         }
         [data-testid="studio-pin"] * {
           pointer-events: none;

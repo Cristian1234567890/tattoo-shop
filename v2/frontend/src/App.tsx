@@ -42,7 +42,7 @@ export const OnboardingGate: React.FC = () => {
     if (isLoading || !user) return;
 
     // Public / Legal pages exempt from redirection
-    const exemptPaths = ['/about', '/beneficios', '/precios', '/artistas', '/tienda', '/shop', '/legal/terms', '/legal/privacy', '/login', '/register', '/forget-password', '/change-password', '/chat', '/user', '/onboarding'];
+    const exemptPaths = ['/hub', '/about', '/beneficios', '/precios', '/artistas', '/tienda', '/shop', '/legal/terms', '/legal/privacy', '/login', '/register', '/forget-password', '/change-password', '/chat', '/user', '/onboarding'];
     if (exemptPaths.some((p) => location.pathname.startsWith(p))) {
       return;
     }

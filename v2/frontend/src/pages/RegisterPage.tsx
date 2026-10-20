@@ -162,7 +162,7 @@ export const RegisterPage: React.FC = () => {
       <main className="max-w-5xl mx-auto px-6 py-12 flex-1 w-full">
         <Link
           to="/"
-          className="inline-flex items-center gap-2 text-sm text-zinc-400 hover:text-white transition-colors mb-8"
+          className="inline-flex items-center gap-2 text-sm text-slate-500 hover:text-slate-900 dark:text-zinc-400 dark:hover:text-white transition-colors mb-8"
         >
           <ArrowLeft className="w-4 h-4" /> Volver al inicio
         </Link>
@@ -171,10 +171,10 @@ export const RegisterPage: React.FC = () => {
           <span className="text-[10px] font-bold tracking-widest uppercase text-violet-400 mb-2 block bg-violet-600/10 w-max px-2.5 py-1 rounded-full border border-violet-500/20">
             PORTAL DE ACCESO AL COLECTIVO
           </span>
-          <h1 className="text-4xl font-extrabold text-white tracking-tight mb-3">
+          <h1 className="text-4xl font-extrabold text-slate-900 dark:text-white tracking-tight mb-3">
             Elige cómo quieres formar parte de la comunidad
           </h1>
-          <p className="text-zinc-400 text-lg">
+          <p className="text-slate-600 dark:text-zinc-400 text-lg">
             Ya sea que busques plasmar una nueva pieza o gestionar la agenda y flashes de tu estudio.
           </p>
         </div>
@@ -205,34 +205,34 @@ export const RegisterPage: React.FC = () => {
             className={`cursor-pointer rounded-3xl p-8 border-2 transition-all ${
               tipo === 'Cliente'
                 ? 'atelier-card border-violet-500 shadow-[0_0_30px_rgba(124,58,237,0.2)]'
-                : 'bg-[#13131A] border-zinc-800 hover:border-zinc-700'
+                : 'bg-white dark:bg-[#13131A] border-slate-200 dark:border-zinc-800 hover:border-slate-300 dark:hover:border-zinc-700 shadow-sm'
             }`}
           >
             <div className="flex justify-between items-start mb-6">
-              <span className="text-[10px] font-bold tracking-widest text-zinc-400 uppercase bg-zinc-800 px-3 py-1.5 rounded-full">
+              <span className="text-[10px] font-bold tracking-widest text-slate-600 dark:text-zinc-400 uppercase bg-slate-100 dark:bg-zinc-800 px-3 py-1.5 rounded-full">
                 ACCESO GRATUITO • EXPLORACIÓN
               </span>
               {tipo === 'Cliente' ? (
                 <CheckCircle className="w-6 h-6 text-violet-500" />
               ) : (
-                <Circle className="w-6 h-6 text-zinc-700" />
+                <Circle className="w-6 h-6 text-zinc-400 dark:text-zinc-700" />
               )}
             </div>
 
-            <h3 className="text-2xl font-bold text-white mb-3">Cliente</h3>
-            <p className="text-zinc-400 text-sm leading-relaxed mb-8">
+            <h3 className="text-2xl font-bold text-slate-900 dark:text-white mb-3">Cliente</h3>
+            <p className="text-slate-600 dark:text-zinc-400 text-sm leading-relaxed mb-8">
               Descubre artistas locales, guarda stencils y flash books en tus favoritos, solicita
               cotizaciones directas sin comisiones y lleva un diario de cicatrización de tus piezas.
             </p>
 
             <ul className="space-y-3 mb-8">
-              <li className="flex gap-3 text-sm text-zinc-300">
+              <li className="flex gap-3 text-sm text-slate-700 dark:text-zinc-300">
                 <CheckCircle2 className="w-5 h-5 text-emerald-500 shrink-0" /> Exploración sin límites y contacto directo por chat.
               </li>
-              <li className="flex gap-3 text-sm text-zinc-300">
+              <li className="flex gap-3 text-sm text-slate-700 dark:text-zinc-300">
                 <CheckCircle2 className="w-5 h-5 text-emerald-500 shrink-0" /> Cotizaciones con medidas y zona anatómica clara.
               </li>
-              <li className="flex gap-3 text-sm text-zinc-300">
+              <li className="flex gap-3 text-sm text-slate-700 dark:text-zinc-300">
                 <CheckCircle2 className="w-5 h-5 text-emerald-500 shrink-0" /> Historial clínico de sesiones y cuidados post-tinta.
               </li>
             </ul>
@@ -244,7 +244,7 @@ export const RegisterPage: React.FC = () => {
             className={`cursor-pointer rounded-3xl p-8 border-2 transition-all relative overflow-hidden ${
               tipo === 'Tatuador'
                 ? 'atelier-card border-violet-500 shadow-[0_0_30px_rgba(124,58,237,0.2)]'
-                : 'bg-[#13131A] border-zinc-800 hover:border-zinc-700'
+                : 'bg-white dark:bg-[#13131A] border-slate-200 dark:border-zinc-800 hover:border-slate-300 dark:hover:border-zinc-700 shadow-sm'
             }`}
           >
             {tipo === 'Tatuador' && (
@@ -257,27 +257,27 @@ export const RegisterPage: React.FC = () => {
               {tipo === 'Tatuador' ? (
                 <CheckCircle className="w-6 h-6 text-violet-500" />
               ) : (
-                <Circle className="w-6 h-6 text-zinc-700" />
+                <Circle className="w-6 h-6 text-zinc-400 dark:text-zinc-700" />
               )}
             </div>
 
-            <h3 className="text-2xl font-bold text-white mb-3">Tatuador / Estudio Independiente</h3>
-            <p className="text-zinc-400 text-sm leading-relaxed mb-8">
+            <h3 className="text-2xl font-bold text-slate-900 dark:text-white mb-3">Tatuador / Estudio Independiente</h3>
+            <p className="text-slate-600 dark:text-zinc-400 text-sm leading-relaxed mb-8">
               Publica tu portafolio en alta resolución, expón tus flash designs con tarifas cerradas,
               agenda guest spots en otras ciudades y recibe cotizaciones organizadas sin mensajes perdidos.
             </p>
 
             <ul className="space-y-3 mb-8">
-              <li className="flex gap-3 text-sm text-zinc-300">
+              <li className="flex gap-3 text-sm text-slate-700 dark:text-zinc-300">
                 <CheckCircle2 className="w-5 h-5 text-emerald-500 shrink-0" /> Perfil geolocalizado en el mapa de estudios.
               </li>
-              <li className="flex gap-3 text-sm text-zinc-300">
+              <li className="flex gap-3 text-sm text-slate-700 dark:text-zinc-300">
                 <CheckCircle2 className="w-5 h-5 text-emerald-500 shrink-0" /> Subida directa de flashes con medidas y zonas recomendadas.
               </li>
-              <li className="flex gap-3 text-sm text-zinc-300">
+              <li className="flex gap-3 text-sm text-slate-700 dark:text-zinc-300">
                 <CheckCircle2 className="w-5 h-5 text-emerald-500 shrink-0" /> Control de agenda para residentes y artistas invitados.
               </li>
-              <li className="flex gap-3 text-sm text-zinc-300">
+              <li className="flex gap-3 text-sm text-slate-700 dark:text-zinc-300">
                 <CheckCircle2 className="w-5 h-5 text-emerald-500 shrink-0" /> Sin comisiones sobre lo que cobras en el estudio.
               </li>
             </ul>
@@ -286,14 +286,14 @@ export const RegisterPage: React.FC = () => {
 
         {/* Form Container */}
         <div className="atelier-card rounded-3xl p-8 md:p-12 relative shadow-2xl">
-          <div className="absolute -top-3.5 left-1/2 -translate-x-1/2 bg-zinc-900 border border-zinc-800 px-4 py-1 rounded-full text-[10px] font-bold tracking-widest text-zinc-400 uppercase">
+          <div className="absolute -top-3.5 left-1/2 -translate-x-1/2 bg-slate-100 dark:bg-zinc-900 border border-slate-300 dark:border-zinc-800 px-4 py-1 rounded-full text-[10px] font-bold tracking-widest text-slate-600 dark:text-zinc-400 uppercase">
             REGISTRO DE {tipo.toUpperCase()}
           </div>
 
           <form onSubmit={handlePreRegister} className="space-y-6 mt-6">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
-                <label className="block text-sm font-medium text-white mb-2">Nombre(s)</label>
+                <label className="block text-sm font-medium text-slate-900 dark:text-white mb-2">Nombre(s)</label>
                 <input
                   type="text"
                   required
@@ -304,7 +304,7 @@ export const RegisterPage: React.FC = () => {
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-white mb-2">Apellido(s)</label>
+                <label className="block text-sm font-medium text-slate-900 dark:text-white mb-2">Apellido(s)</label>
                 <input
                   type="text"
                   required
@@ -317,7 +317,7 @@ export const RegisterPage: React.FC = () => {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-white mb-2">Correo electrónico</label>
+              <label className="block text-sm font-medium text-slate-900 dark:text-white mb-2">Correo electrónico</label>
               <input
                 type="email"
                 required
@@ -338,9 +338,9 @@ export const RegisterPage: React.FC = () => {
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-white mb-2">Número de teléfono móvil</label>
-                <div className="flex rounded-xl overflow-hidden border border-zinc-800 bg-[#121217] focus-within:border-violet-500 focus-within:ring-1 focus-within:ring-violet-500 transition-all">
-                  <div className="bg-zinc-900/90 px-3.5 py-3 border-r border-zinc-800 flex items-center gap-1.5 text-sm font-semibold text-violet-300 shrink-0 select-none">
+                <label className="block text-sm font-medium text-slate-900 dark:text-white mb-2">Número de teléfono móvil</label>
+                <div className="flex rounded-xl overflow-hidden border border-slate-300 dark:border-zinc-800 bg-slate-50 dark:bg-[#121217] focus-within:border-violet-500 focus-within:ring-1 focus-within:ring-violet-500 transition-all">
+                  <div className="bg-slate-100 dark:bg-zinc-900/90 px-3.5 py-3 border-r border-slate-300 dark:border-zinc-800 flex items-center gap-1.5 text-sm font-semibold text-violet-700 dark:text-violet-300 shrink-0 select-none">
                     <span className="text-base">{selectedCountryData.flag}</span>
                     <span className="font-mono">{selectedCountryData.dialCode}</span>
                   </div>
@@ -350,10 +350,10 @@ export const RegisterPage: React.FC = () => {
                     value={phoneLocal}
                     onChange={(e) => setPhoneLocal(e.target.value)}
                     placeholder={selectedCountryData.placeholder}
-                    className="bg-transparent px-4 py-3 text-white placeholder-zinc-600 text-sm focus:outline-none w-full"
+                    className="bg-transparent px-4 py-3 text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-zinc-600 text-sm focus:outline-none w-full"
                   />
                 </div>
-                <p className="text-[11px] text-zinc-500 mt-1">
+                <p className="text-[11px] text-slate-500 dark:text-zinc-500 mt-1">
                   Prefijo reactivo {selectedCountryData.dialCode} ({selectedCountryData.label}).
                 </p>
               </div>
@@ -362,8 +362,8 @@ export const RegisterPage: React.FC = () => {
             {/* Fecha de Nacimiento con Validación 18+ */}
             <div>
               <div className="flex items-center justify-between mb-2">
-                <label className="flex items-center gap-2 text-sm font-medium text-white">
-                  <Calendar className="w-4 h-4 text-violet-400" /> Fecha de Nacimiento
+                <label className="flex items-center gap-2 text-sm font-medium text-slate-900 dark:text-white">
+                  <Calendar className="w-4 h-4 text-violet-600 dark:text-violet-400" /> Fecha de Nacimiento
                 </label>
                 {currentAge !== null && (
                   <span
@@ -406,7 +406,7 @@ export const RegisterPage: React.FC = () => {
                   className="space-y-6 overflow-hidden"
                 >
                   <div className="flex items-center justify-between">
-                    <label className="block text-sm font-medium text-white">
+                    <label className="block text-sm font-medium text-slate-900 dark:text-white">
                       Ubicación para el Mapa de Estudios
                     </label>
                     <span className="text-[10px] text-emerald-400 font-bold bg-emerald-500/10 px-2 py-1 rounded-full border border-emerald-500/30">
@@ -447,7 +447,7 @@ export const RegisterPage: React.FC = () => {
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
-                <label className="flex items-center justify-between text-sm font-medium text-white mb-2">
+                <label className="flex items-center justify-between text-sm font-medium text-slate-900 dark:text-white mb-2">
                   Contraseña segura
                   {password.length > 0 && <span className="text-[10px] text-emerald-400 font-bold">MEDIA</span>}
                 </label>
@@ -463,14 +463,14 @@ export const RegisterPage: React.FC = () => {
                   <button
                     type="button"
                     onClick={() => setShowPassword(!showPassword)}
-                    className="absolute right-4 top-1/2 -translate-y-1/2 text-zinc-500 hover:text-zinc-300 cursor-pointer"
+                    className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 dark:text-zinc-500 dark:hover:text-zinc-300 cursor-pointer"
                   >
                     {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
                   </button>
                 </div>
               </div>
               <div>
-                <label className="flex items-center justify-between text-sm font-medium text-white mb-2">
+                <label className="flex items-center justify-between text-sm font-medium text-slate-900 dark:text-white mb-2">
                   Confirmar contraseña
                   {confirmPassword.length > 0 && confirmPassword === password && (
                     <span className="text-[10px] text-emerald-400 font-bold">COINCIDE</span>
@@ -496,7 +496,7 @@ export const RegisterPage: React.FC = () => {
             )}
 
             {/* Terms and Privacy Agreement with Forced Scroll Modal */}
-            <div className="flex items-start gap-3 mt-6 p-4 rounded-2xl bg-[#121217] border border-zinc-800">
+            <div className="flex items-start gap-3 mt-6 p-4 rounded-2xl bg-slate-50 dark:bg-[#121217] border border-slate-200 dark:border-zinc-800">
               <input
                 type="checkbox"
                 id="terms"
@@ -509,21 +509,21 @@ export const RegisterPage: React.FC = () => {
                     setTermsAccepted(!termsAccepted);
                   }
                 }}
-                className="mt-1 w-5 h-5 rounded border-zinc-700 bg-zinc-900 text-violet-600 focus:ring-violet-500 focus:ring-offset-zinc-900 cursor-pointer"
+                className="mt-1 w-5 h-5 rounded border-slate-300 dark:border-zinc-700 bg-white dark:bg-zinc-900 text-violet-600 focus:ring-violet-500 focus:ring-offset-slate-100 dark:focus:ring-offset-zinc-900 cursor-pointer"
               />
-              <div className="text-sm text-zinc-400">
+              <div className="text-sm text-slate-600 dark:text-zinc-400">
                 <span
                   onClick={() => setIsTermsModalOpen(true)}
                   className="cursor-pointer"
                 >
                   He leído y acepto los{' '}
-                  <span className="text-violet-400 hover:text-violet-300 font-semibold underline underline-offset-4 cursor-pointer">
+                  <span className="text-violet-600 dark:text-violet-400 hover:text-violet-500 dark:hover:text-violet-300 font-semibold underline underline-offset-4 cursor-pointer">
                     Términos, Condiciones y Políticas de Privacidad
                   </span>{' '}
                   de Tattoo Hub (lectura obligatoria de consentimiento).
                 </span>
                 {!termsAccepted && (
-                  <p className="text-xs text-zinc-500 mt-1">
+                  <p className="text-xs text-slate-500 dark:text-zinc-500 mt-1">
                     * Debes abrir la ventana emergente y desplazarte hasta el final para habilitar esta casilla.
                   </p>
                 )}
@@ -557,9 +557,9 @@ export const RegisterPage: React.FC = () => {
                 : 'Crear mi Cuenta - Empezar Ahora'}
             </button>
 
-            <p className="text-center text-sm text-zinc-500 mt-6">
+            <p className="text-center text-sm text-slate-500 dark:text-zinc-500 mt-6">
               ¿Ya tienes cuenta en Tattoo Hub?{' '}
-              <Link to={loginLink} className="text-white font-medium hover:underline">
+              <Link to={loginLink} className="text-violet-600 dark:text-white font-medium hover:underline">
                 Iniciar Sesión
               </Link>
             </p>
@@ -583,28 +583,28 @@ export const RegisterPage: React.FC = () => {
         {/* Trust Badges */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-16 pb-20">
           <div className="atelier-card p-6 rounded-2xl flex items-start gap-4">
-            <ShieldCheck className="w-6 h-6 text-emerald-400 shrink-0" />
+            <ShieldCheck className="w-6 h-6 text-emerald-500 dark:text-emerald-400 shrink-0" />
             <div>
-              <h4 className="text-white font-bold mb-1">Taller Libre de Comisiones</h4>
-              <p className="text-zinc-500 text-xs leading-relaxed">
+              <h4 className="text-slate-900 dark:text-white font-bold mb-1">Taller Libre de Comisiones</h4>
+              <p className="text-slate-500 dark:text-zinc-500 text-xs leading-relaxed">
                 El 100% de lo pactado por tus piezas es para ti. No intermediamos en el cobro de tu arte en camilla.
               </p>
             </div>
           </div>
           <div className="atelier-card p-6 rounded-2xl flex items-start gap-4">
-            <Sparkles className="w-6 h-6 text-violet-400 shrink-0" />
+            <Sparkles className="w-6 h-6 text-violet-600 dark:text-violet-400 shrink-0" />
             <div>
-              <h4 className="text-white font-bold mb-1">Privacidad & Resguardo</h4>
-              <p className="text-zinc-500 text-xs leading-relaxed">
+              <h4 className="text-slate-900 dark:text-white font-bold mb-1">Privacidad & Resguardo</h4>
+              <p className="text-slate-500 dark:text-zinc-500 text-xs leading-relaxed">
                 Tus bocetos, stencils y flashes no son utilizados para alimentar motores generativos de IA.
               </p>
             </div>
           </div>
           <div className="atelier-card p-6 rounded-2xl flex items-start gap-4">
-            <Heart className="w-6 h-6 text-pink-400 shrink-0" />
+            <Heart className="w-6 h-6 text-pink-500 dark:text-pink-400 shrink-0" />
             <div>
-              <h4 className="text-white font-bold mb-1">Cultura Independiente</h4>
-              <p className="text-zinc-500 text-xs leading-relaxed">
+              <h4 className="text-slate-900 dark:text-white font-bold mb-1">Cultura Independiente</h4>
+              <p className="text-slate-500 dark:text-zinc-500 text-xs leading-relaxed">
                 Diseñado exclusivamente por y para la comunidad del tatuaje. Conectando tinta real con piel de verdad.
               </p>
             </div>

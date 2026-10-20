@@ -319,18 +319,18 @@ export const ClientDashboardPage: React.FC = () => {
             <div className="bg-white dark:bg-zinc-900 border border-emerald-500/40 rounded-2xl max-w-lg w-full p-6 md:p-8 shadow-2xl relative text-slate-900 dark:text-white">
               <button
                 onClick={() => setShowProgressModal(false)}
-                className="absolute top-4 right-4 text-gray-400 hover:text-white transition"
+                className="absolute top-4 right-4 text-slate-400 hover:text-slate-700 dark:text-gray-400 dark:hover:text-white transition cursor-pointer"
                 aria-label="Cerrar modal"
               >
                 <X size={20} />
               </button>
               <div className="flex items-center gap-3 mb-4">
-                <div className="w-10 h-10 rounded-full bg-emerald-500/20 border border-emerald-500/40 flex items-center justify-center text-emerald-400">
+                <div className="w-10 h-10 rounded-full bg-emerald-500/20 border border-emerald-500/40 flex items-center justify-center text-emerald-500 dark:text-emerald-400">
                   <CheckCircle size={20} />
                 </div>
                 <div>
                   <h3 className="text-lg font-bold text-slate-900 dark:text-white">{lang === "en" ? "Log Healing Progress" : "Registrar Avance de Cicatrización"}</h3>
-                  <p className="text-xs text-emerald-400 font-semibold">Cliente VIP Activo</p>
+                  <p className="text-xs text-emerald-600 dark:text-emerald-400 font-semibold">Cliente VIP Activo</p>
                 </div>
               </div>
 
@@ -345,7 +345,7 @@ export const ClientDashboardPage: React.FC = () => {
                 </div>
 
                 <div>
-                  <label className="block text-xs font-semibold text-gray-300 uppercase mb-1">
+                  <label className="block text-xs font-semibold text-slate-700 dark:text-gray-300 uppercase mb-1">
                     Notas de Estado / Cuidados
                   </label>
                   <textarea
@@ -353,7 +353,7 @@ export const ClientDashboardPage: React.FC = () => {
                     value={progressNotes}
                     onChange={(e) => setProgressNotes(e.target.value)}
                     placeholder="Ej. Piel sin enrojecimiento, aplicando crema neutra 3 veces al día..."
-                    className="w-full bg-gray-800 border border-gray-700 rounded-xl px-4 py-2.5 text-white text-sm focus:outline-none focus:border-primary placeholder-gray-500"
+                    className="w-full bg-slate-50 dark:bg-gray-800 border border-slate-300 dark:border-gray-700 rounded-xl px-4 py-2.5 text-slate-900 dark:text-white text-sm focus:outline-none focus:border-violet-500 placeholder-slate-400 dark:placeholder-gray-500"
                   ></textarea>
                 </div>
 
@@ -361,14 +361,14 @@ export const ClientDashboardPage: React.FC = () => {
                   <button
                     type="button"
                     onClick={() => setShowProgressModal(false)}
-                    className="px-4 py-2 text-sm text-gray-400 hover:text-white"
+                    className="px-4 py-2 text-sm text-slate-600 hover:text-slate-900 dark:text-gray-400 dark:hover:text-white cursor-pointer"
                   >
                     Cancelar
                   </button>
                   <button
                     type="submit"
                     disabled={isSaving}
-                    className="inline-flex items-center gap-2 bg-primary hover:bg-primary-hover text-white text-sm font-bold px-5 py-2.5 rounded-xl shadow transition"
+                    className="inline-flex items-center gap-2 bg-violet-600 hover:bg-violet-500 text-white text-sm font-bold px-5 py-2.5 rounded-xl shadow transition cursor-pointer"
                   >
                     {isSaving ? 'Guardando...' : 'Guardar Avance'}
                   </button>
@@ -381,7 +381,7 @@ export const ClientDashboardPage: React.FC = () => {
         {/* Main Dashboard Container */}
         <main className="flex-1 container mx-auto px-4 py-8 max-w-6xl">
           {/* Studio Breadcrumb & Quick Hub Link */}
-          <div className="flex items-center justify-between mb-4 text-xs text-gray-400">
+          <div className="flex items-center justify-between mb-4 text-xs text-slate-500 dark:text-gray-400">
             <span className="hidden sm:inline">Tattoo Hub &gt; Dashboard</span>
             <Link
               to="/hub"

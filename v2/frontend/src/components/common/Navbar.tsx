@@ -81,10 +81,12 @@ export const Navbar: React.FC<NavbarProps> = ({ forceRender = false }) => {
     }
     return '';
   });
+  const [avatarError, setAvatarError] = useState(false);
 
   React.useEffect(() => {
     const handleAvatarChange = (e: any) => {
       setNavAvatar(e.detail || (typeof window !== 'undefined' ? localStorage.getItem('user_avatar_override') || '' : ''));
+      setAvatarError(false);
     };
     window.addEventListener('user_avatar_changed', handleAvatarChange);
     return () => window.removeEventListener('user_avatar_changed', handleAvatarChange);
@@ -92,10 +94,19 @@ export const Navbar: React.FC<NavbarProps> = ({ forceRender = false }) => {
 
   const displayAvatar =
     navAvatar ||
-    user?.user_metadata?.profile ||
     user?.user_metadata?.avatar_url ||
     user?.user_metadata?.picture ||
+    user?.user_metadata?.profile ||
+    user?.user_metadata?.avatar ||
+    (user as any)?.avatar_url ||
+    (user as any)?.picture ||
+    (user as any)?.identities?.[0]?.identity_data?.avatar_url ||
+    (user as any)?.identities?.[0]?.identity_data?.picture ||
     '';
+
+  React.useEffect(() => {
+    setAvatarError(false);
+  }, [displayAvatar]);
 
   return (
     <nav className="bg-white/90 dark:bg-gray-950/40 backdrop-blur-xl border-b border-slate-200 dark:border-white/10 sticky top-0 z-50 transition-all font-sans text-slate-900 dark:text-white">
@@ -301,18 +312,17 @@ export const Navbar: React.FC<NavbarProps> = ({ forceRender = false }) => {
                     className="flex items-center gap-2 pl-1.5 pr-2.5 py-1 rounded-full text-xs font-semibold text-slate-800 dark:text-zinc-200 hover:text-slate-950 dark:hover:text-white bg-slate-100 hover:bg-slate-200 dark:bg-white/5 dark:hover:bg-white/10 border border-slate-200 dark:border-white/10 transition-all shadow-sm"
                     title="Ir a mi panel de control"
                   >
-                    <div className="w-6 h-6 rounded-full overflow-hidden bg-zinc-800 border border-violet-400/50 flex items-center justify-center shrink-0 shadow-sm">
-                      {displayAvatar ? (
+                    <div className="w-6 h-6 rounded-full overflow-hidden bg-slate-200 dark:bg-zinc-800 border border-violet-400/50 flex items-center justify-center shrink-0 shadow-sm">
+                      {displayAvatar && !avatarError ? (
                         <img
                           src={displayAvatar}
                           alt="Avatar"
+                          referrerPolicy="no-referrer"
                           className="w-full h-full object-cover"
-                          onError={(e) => {
-                            (e.target as HTMLImageElement).style.display = 'none';
-                          }}
+                          onError={() => setAvatarError(true)}
                         />
                       ) : (
-                        <User className="w-3.5 h-3.5 text-violet-400" />
+                        <User className="w-3.5 h-3.5 text-violet-600 dark:text-violet-400" />
                       )}
                     </div>
                     <span className="max-w-[85px] truncate font-medium">
@@ -349,11 +359,17 @@ export const Navbar: React.FC<NavbarProps> = ({ forceRender = false }) => {
                     >
                       <div className="px-3 py-2 border-b border-slate-100 dark:border-zinc-800/80 mb-2">
                         <div className="flex items-center gap-2.5">
-                          <div className="w-8 h-8 rounded-full overflow-hidden bg-zinc-800 border border-violet-500/40 shrink-0">
-                            {displayAvatar ? (
-                              <img src={displayAvatar} alt="Avatar" className="w-full h-full object-cover" />
+                          <div className="w-8 h-8 rounded-full overflow-hidden bg-slate-200 dark:bg-zinc-800 border border-violet-500/40 shrink-0 flex items-center justify-center">
+                            {displayAvatar && !avatarError ? (
+                              <img
+                                src={displayAvatar}
+                                alt="Avatar"
+                                referrerPolicy="no-referrer"
+                                className="w-full h-full object-cover"
+                                onError={() => setAvatarError(true)}
+                              />
                             ) : (
-                              <User className="w-4 h-4 text-violet-400 m-2" />
+                              <User className="w-4 h-4 text-violet-600 dark:text-violet-400" />
                             )}
                           </div>
                           <div className="flex-1 min-w-0">
@@ -643,18 +659,17 @@ export const Navbar: React.FC<NavbarProps> = ({ forceRender = false }) => {
                   onClick={closeMenu}
                   className="flex items-center justify-center gap-2.5 w-full py-2.5 px-4 rounded-full text-sm font-semibold text-indigo-300 bg-indigo-500/20 border border-indigo-500/30 shadow-sm"
                 >
-                  <div className="w-5 h-5 rounded-full overflow-hidden bg-zinc-800 border border-indigo-400/50 flex items-center justify-center shrink-0">
-                    {displayAvatar ? (
+                  <div className="w-5 h-5 rounded-full overflow-hidden bg-slate-200 dark:bg-zinc-800 border border-indigo-400/50 flex items-center justify-center shrink-0">
+                    {displayAvatar && !avatarError ? (
                       <img
                         src={displayAvatar}
                         alt="Avatar"
+                        referrerPolicy="no-referrer"
                         className="w-full h-full object-cover"
-                        onError={(e) => {
-                          (e.target as HTMLImageElement).style.display = 'none';
-                        }}
+                        onError={() => setAvatarError(true)}
                       />
                     ) : (
-                      <User className="w-3.5 h-3.5 text-indigo-400" />
+                      <User className="w-3.5 h-3.5 text-indigo-600 dark:text-indigo-400" />
                     )}
                   </div>
                   <span>{isArtist ? t('nav.artist_panel') : t('nav.my_panel')}</span>

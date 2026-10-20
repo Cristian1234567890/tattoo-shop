@@ -65,7 +65,7 @@ export const ArtistDashboardPage: React.FC = () => {
 
   return (
     <PageTransition>
-      <div className="min-h-screen bg-gray-900 text-white flex flex-col relative">
+      <div className="min-h-screen bg-slate-50 dark:bg-gray-900 text-slate-900 dark:text-white flex flex-col relative">
         <Navbar />
 
       {/* Trial Expired Blocking Lockout Modal */}
@@ -104,7 +104,7 @@ export const ArtistDashboardPage: React.FC = () => {
 
       <main className="flex-1 container mx-auto px-4 py-8 max-w-6xl">
         {/* Trial Status Banner */}
-        <section className="bg-gradient-to-r from-indigo-950 via-purple-950 to-gray-900 border border-primary/40 rounded-2xl p-6 md:p-8 mb-8 shadow-2xl relative overflow-hidden">
+        <section className="bg-gradient-to-r from-indigo-950 via-purple-950 to-gray-900 border border-primary/40 rounded-2xl p-6 md:p-8 mb-8 shadow-2xl relative overflow-hidden text-white">
           <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 relative z-10">
             <div>
               {hasActiveSubscription ? (
@@ -161,7 +161,7 @@ export const ArtistDashboardPage: React.FC = () => {
         </section>
 
         {/* Studio Summary Bar */}
-        <section className="bg-gray-800/60 border border-gray-700/80 rounded-2xl p-6 mb-8 shadow-lg">
+        <section className="bg-white dark:bg-gray-800/60 border border-slate-200 dark:border-gray-700/80 rounded-2xl p-6 mb-8 shadow-lg text-slate-900 dark:text-white">
           <div className="flex flex-wrap items-center justify-between gap-4">
             <div className="flex items-center gap-4">
               <img
@@ -173,8 +173,8 @@ export const ArtistDashboardPage: React.FC = () => {
                 }}
               />
               <div>
-                <h2 className="text-lg font-bold text-white">{artistName}</h2>
-                <p className="text-sm text-gray-400">{studioName} • <span className="text-primary font-medium capitalize">{workType}</span></p>
+                <h2 className="text-lg font-bold text-slate-900 dark:text-white">{artistName}</h2>
+                <p className="text-sm text-slate-500 dark:text-gray-400">{studioName} • <span className="text-violet-600 dark:text-primary font-medium capitalize">{workType}</span></p>
               </div>
             </div>
 
@@ -187,7 +187,7 @@ export const ArtistDashboardPage: React.FC = () => {
               </Link>
               <Link
                 to="/chat"
-                className="inline-flex items-center gap-2 bg-gray-700 hover:bg-gray-600 text-gray-200 text-sm font-semibold px-4 py-2.5 rounded-xl shadow transition hover:scale-105"
+                className="inline-flex items-center gap-2 bg-slate-100 hover:bg-slate-200 dark:bg-gray-700 dark:hover:bg-gray-600 text-slate-700 dark:text-gray-200 text-sm font-semibold px-4 py-2.5 rounded-xl shadow transition hover:scale-105 border border-slate-300 dark:border-transparent"
               >
                 <MessageSquare size={16} /> Mensajes Directos
               </Link>
@@ -197,72 +197,72 @@ export const ArtistDashboardPage: React.FC = () => {
 
         {/* Quick Actions Grid */}
         <section className="mb-10">
-          <h2 className="text-xl font-bold text-white mb-4 flex items-center gap-2">
+          <h2 className="text-xl font-bold text-slate-900 dark:text-white mb-4 flex items-center gap-2">
             <Sparkles className="text-primary" size={20} /> Gestión del Artista
           </h2>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             {/* Card 1: Mi Estudio / Portafolio */}
-            <div className="bg-gray-800/80 backdrop-blur border border-gray-700/60 rounded-xl p-6 hover:border-primary/50 transition-all hover:shadow-lg flex flex-col justify-between">
+            <div className="bg-white dark:bg-gray-800/80 backdrop-blur border border-slate-200 dark:border-gray-700/60 rounded-xl p-6 hover:border-violet-500/50 transition-all hover:shadow-lg flex flex-col justify-between text-slate-900 dark:text-white">
               <div>
                 <div className="w-12 h-12 rounded-xl bg-purple-500/10 border border-purple-500/30 flex items-center justify-center text-purple-400 mb-4">
                   <Palette size={24} />
                 </div>
-                <h3 className="text-lg font-bold text-white mb-2">Mi Estudio / Portafolio</h3>
-                <p className="text-gray-300 text-sm leading-relaxed mb-4">
+                <h3 className="text-lg font-bold text-slate-900 dark:text-white mb-2">Mi Estudio / Portafolio</h3>
+                <p className="text-slate-600 dark:text-gray-300 text-sm leading-relaxed mb-4">
                   Actualiza tus datos de contacto, sube nuevas fotos de tus tatuajes y define tus estilos de especialidad.
                 </p>
               </div>
               <Link
                 to="/tattoo"
-                className="inline-flex items-center gap-2 text-primary font-semibold text-sm hover:underline"
+                className="inline-flex items-center gap-2 text-violet-600 dark:text-primary font-semibold text-sm hover:underline"
               >
                 Administrar portafolio <ArrowRight size={16} />
               </Link>
             </div>
 
             {/* Card 2: Mensajes & Cotizaciones */}
-            <div className="bg-gray-800/80 backdrop-blur border border-gray-700/60 rounded-xl p-6 hover:border-primary/50 transition-all hover:shadow-lg flex flex-col justify-between">
+            <div className="bg-white dark:bg-gray-800/80 backdrop-blur border border-slate-200 dark:border-gray-700/60 rounded-xl p-6 hover:border-violet-500/50 transition-all hover:shadow-lg flex flex-col justify-between text-slate-900 dark:text-white">
               <div>
                 <div className="flex items-center justify-between mb-4">
                   <div className="w-12 h-12 rounded-xl bg-blue-500/10 border border-blue-500/30 flex items-center justify-center text-blue-400">
                     <MessageSquare size={24} />
                   </div>
-                  <span className="px-2.5 py-1 rounded-full text-[11px] font-bold bg-violet-500/20 border border-violet-500/40 text-violet-300">
+                  <span className="px-2.5 py-1 rounded-full text-[11px] font-bold bg-violet-100 text-violet-800 dark:bg-violet-500/20 dark:border-violet-500/40 dark:text-violet-300 border border-violet-200">
                     🌐 Multilenguaje
                   </span>
                 </div>
-                <h3 className="text-lg font-bold text-white mb-2">Mensajes & Cotizaciones</h3>
-                <p className="text-gray-300 text-sm leading-relaxed mb-3">
+                <h3 className="text-lg font-bold text-slate-900 dark:text-white mb-2">Mensajes & Cotizaciones</h3>
+                <p className="text-slate-600 dark:text-gray-300 text-sm leading-relaxed mb-3">
                   Revisa los mensajes enviados por clientes. Ahora puedes visualizar el <strong>idioma preferido del cliente (ES / EN)</strong> para comunicarte de forma clara.
                 </p>
-                <div className="p-2.5 rounded-lg bg-gray-900/70 border border-gray-700/50 text-xs text-zinc-300 flex items-center gap-2 mb-4">
+                <div className="p-2.5 rounded-lg bg-slate-100 dark:bg-gray-900/70 border border-slate-200 dark:border-gray-700/50 text-xs text-slate-700 dark:text-zinc-300 flex items-center gap-2 mb-4">
                   <span className="text-base">🗣️</span>
                   <span>Insignia de idioma visible en chat y cotizaciones</span>
                 </div>
               </div>
               <Link
                 to="/chat"
-                className="inline-flex items-center gap-2 text-primary font-semibold text-sm hover:underline"
+                className="inline-flex items-center gap-2 text-violet-600 dark:text-primary font-semibold text-sm hover:underline"
               >
                 Ir a bandeja de mensajes <ArrowRight size={16} />
               </Link>
             </div>
 
             {/* Card 3: Explorar Comunidad & Mapa */}
-            <div className="bg-gray-800/80 backdrop-blur border border-gray-700/60 rounded-xl p-6 hover:border-primary/50 transition-all hover:shadow-lg flex flex-col justify-between">
+            <div className="bg-white dark:bg-gray-800/80 backdrop-blur border border-slate-200 dark:border-gray-700/60 rounded-xl p-6 hover:border-violet-500/50 transition-all hover:shadow-lg flex flex-col justify-between text-slate-900 dark:text-white">
               <div>
-                <div className="w-12 h-12 rounded-xl bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center text-emerald-400 mb-4">
+                <div className="w-12 h-12 rounded-xl bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center text-emerald-500 dark:text-emerald-400 mb-4">
                   <Compass size={24} />
                 </div>
-                <h3 className="text-lg font-bold text-white mb-2">Explorar Comunidad</h3>
-                <p className="text-gray-300 text-sm leading-relaxed mb-4">
+                <h3 className="text-lg font-bold text-slate-900 dark:text-white mb-2">Explorar Comunidad</h3>
+                <p className="text-slate-600 dark:text-gray-300 text-sm leading-relaxed mb-4">
                   Observa la ubicación de tu estudio en el mapa interactivo y descubre otros artistas y estudios de la comunidad.
                 </p>
               </div>
               <Link
                 to="/hub"
-                className="inline-flex items-center gap-2 text-primary font-semibold text-sm hover:underline"
+                className="inline-flex items-center gap-2 text-violet-600 dark:text-primary font-semibold text-sm hover:underline"
               >
                 Abrir mapa interactivo <ArrowRight size={16} />
               </Link>
@@ -271,22 +271,22 @@ export const ArtistDashboardPage: React.FC = () => {
         </section>
 
         {/* Commercial Features Overview */}
-        <section className="bg-gray-850 border border-gray-700/80 rounded-2xl p-6 md:p-8 mb-10 shadow-xl">
-          <h3 className="text-lg md:text-xl font-bold text-white mb-4 flex items-center gap-2">
+        <section className="bg-white dark:bg-gray-850 border border-slate-200 dark:border-gray-700/80 rounded-2xl p-6 md:p-8 mb-10 shadow-xl text-slate-900 dark:text-white">
+          <h3 className="text-lg md:text-xl font-bold text-slate-900 dark:text-white mb-4 flex items-center gap-2">
             <TrendingUp className="text-primary" size={20} /> Ventajas de tu Cuenta Comercial
           </h3>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm text-gray-300">
-            <div className="flex items-start gap-3 bg-gray-900/60 p-4 rounded-xl border border-gray-800">
-              <ShieldCheck className="text-emerald-400 shrink-0 mt-0.5" size={20} />
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm text-slate-600 dark:text-gray-300">
+            <div className="flex items-start gap-3 bg-slate-50 dark:bg-gray-900/60 p-4 rounded-xl border border-slate-200 dark:border-gray-800">
+              <ShieldCheck className="text-emerald-500 dark:text-emerald-400 shrink-0 mt-0.5" size={20} />
               <div>
-                <strong className="text-white block mb-0.5">Perfil Verificado en Búsquedas</strong>
+                <strong className="text-slate-900 dark:text-white block mb-0.5">Perfil Verificado en Búsquedas</strong>
                 Aparece en los primeros resultados de búsqueda cuando los clientes filtran por tu estilo y ciudad.
               </div>
             </div>
-            <div className="flex items-start gap-3 bg-gray-900/60 p-4 rounded-xl border border-gray-800">
+            <div className="flex items-start gap-3 bg-slate-50 dark:bg-gray-900/60 p-4 rounded-xl border border-slate-200 dark:border-gray-800">
               <Calendar className="text-primary shrink-0 mt-0.5" size={20} />
               <div>
-                <strong className="text-white block mb-0.5">Gestión Directa de Cotizaciones</strong>
+                <strong className="text-slate-900 dark:text-white block mb-0.5">Gestión Directa de Cotizaciones</strong>
                 Recibe requerimientos de clientes con especificaciones de tamaño, zona del cuerpo y referencias.
               </div>
             </div>

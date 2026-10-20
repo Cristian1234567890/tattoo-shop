@@ -178,39 +178,39 @@ export const PricingPage: React.FC = () => {
             {/* 2. Coleccionista VIP */}
             <div className="atelier-card p-8 rounded-3xl flex flex-col justify-between">
               <div>
-                <span className="text-xs font-bold uppercase tracking-wider text-violet-400 mb-2 block">
+                <span className="text-xs font-bold uppercase tracking-wider text-violet-600 dark:text-violet-400 mb-2 block">
                   COLECCIONISTA
                 </span>
-                <h3 className="text-2xl font-bold text-white mb-2">Coleccionista VIP</h3>
+                <h3 className="text-2xl font-bold text-slate-900 dark:text-white mb-2">Coleccionista VIP</h3>
                 <div className="flex items-baseline gap-1 mb-6">
-                  <span className="text-3xl font-extrabold text-white">{formatPrice(vipPrice)}</span>
-                  <span className="text-xs text-zinc-500">/mes</span>
+                  <span className="text-3xl font-extrabold text-slate-900 dark:text-white">{formatPrice(vipPrice)}</span>
+                  <span className="text-xs text-slate-500 dark:text-zinc-500">/mes</span>
                 </div>
-                <p className="text-xs text-zinc-400 mb-6 leading-relaxed">
+                <p className="text-xs text-slate-600 dark:text-zinc-400 mb-6 leading-relaxed">
                   Para apasionados de la tinta: seguimiento clínico, flash drops y línea prioritaria.
                 </p>
-                <ul className="space-y-3 mb-8 text-xs text-zinc-300">
+                <ul className="space-y-3 mb-8 text-xs text-slate-700 dark:text-zinc-300">
                   <li className="flex gap-2.5">
-                    <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />
+                    <CheckCircle2 className="w-4 h-4 text-emerald-500 shrink-0" />
                     <span>Todo lo incluido en Explorador</span>
                   </li>
                   <li className="flex gap-2.5">
-                    <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />
+                    <CheckCircle2 className="w-4 h-4 text-emerald-500 shrink-0" />
                     <span>Diario de cicatrización fotográfico seguro</span>
                   </li>
                   <li className="flex gap-2.5">
-                    <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />
+                    <CheckCircle2 className="w-4 h-4 text-emerald-500 shrink-0" />
                     <span>Alertas tempranas de flash drops exclusivos</span>
                   </li>
                   <li className="flex gap-2.5">
-                    <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />
+                    <CheckCircle2 className="w-4 h-4 text-emerald-500 shrink-0" />
                     <span>Chat directo prioritario con residentes</span>
                   </li>
                 </ul>
               </div>
               <Link
                 to="/register?role=Cliente"
-                className="w-full text-center py-3 rounded-xl bg-zinc-800 hover:bg-zinc-700 text-white text-xs font-bold transition-colors cursor-pointer"
+                className="w-full text-center py-3 rounded-xl bg-slate-900 hover:bg-slate-800 dark:bg-zinc-800 dark:hover:bg-zinc-700 text-white text-xs font-bold transition-colors cursor-pointer shadow-sm"
               >
                 Elegir Coleccionista VIP
               </Link>
@@ -222,38 +222,38 @@ export const PricingPage: React.FC = () => {
                 MÁS POPULAR • 30 DÍAS GRATIS
               </div>
               <div>
-                <span className="text-xs font-bold uppercase tracking-wider text-violet-400 mb-2 block">
+                <span className="text-xs font-bold uppercase tracking-wider text-violet-600 dark:text-violet-400 mb-2 block">
                   ESTUDIOS & TATUADORES
                 </span>
-                <h3 className="text-2xl font-bold text-white mb-2">Estudio Profesional</h3>
+                <h3 className="text-2xl font-bold text-slate-900 dark:text-white mb-2">Estudio Profesional</h3>
                 <div className="flex items-baseline gap-1 mb-2">
-                  <span className="text-3xl font-extrabold text-white">
+                  <span className="text-3xl font-extrabold text-slate-900 dark:text-white">
                     {formatPrice(studioPrice)}
                   </span>
-                  <span className="text-xs text-zinc-500">/mes</span>
+                  <span className="text-xs text-slate-500 dark:text-zinc-500">/mes</span>
                 </div>
-                <div className="text-[11px] text-emerald-400 font-bold mb-4 flex items-center gap-1">
+                <div className="text-[11px] text-emerald-600 dark:text-emerald-400 font-bold mb-4 flex items-center gap-1">
                   <Sparkles className="w-3.5 h-3.5" /> 30 días de prueba gratuita sin compromiso
                 </div>
-                <ul className="space-y-3 mb-8 text-xs text-zinc-300">
+                <ul className="space-y-3 mb-8 text-xs text-slate-700 dark:text-zinc-300">
                   <li className="flex gap-2.5">
-                    <CheckCircle2 className="w-4 h-4 text-violet-400 shrink-0" />
+                    <CheckCircle2 className="w-4 h-4 text-violet-600 dark:text-violet-400 shrink-0" />
                     <span>Pin geolocalizado destacado en el mapa</span>
                   </li>
                   <li className="flex gap-2.5">
-                    <CheckCircle2 className="w-4 h-4 text-violet-400 shrink-0" />
+                    <CheckCircle2 className="w-4 h-4 text-violet-600 dark:text-violet-400 shrink-0" />
                     <span>Gestión multi-artista de residentes del local</span>
                   </li>
                   <li className="flex gap-2.5">
-                    <CheckCircle2 className="w-4 h-4 text-violet-400 shrink-0" />
+                    <CheckCircle2 className="w-4 h-4 text-violet-600 dark:text-violet-400 shrink-0" />
                     <span>Catálogo ilimitado de flash designs</span>
                   </li>
                   <li className="flex gap-2.5">
-                    <CheckCircle2 className="w-4 h-4 text-violet-400 shrink-0" />
+                    <CheckCircle2 className="w-4 h-4 text-violet-600 dark:text-violet-400 shrink-0" />
                     <span>Recepción estructurada con cm y zona</span>
                   </li>
                   <li className="flex gap-2.5">
-                    <CheckCircle2 className="w-4 h-4 text-violet-400 shrink-0" />
+                    <CheckCircle2 className="w-4 h-4 text-violet-600 dark:text-violet-400 shrink-0" />
                     <span>Publicación de fechas de guest spots</span>
                   </li>
                 </ul>
@@ -269,60 +269,60 @@ export const PricingPage: React.FC = () => {
 
           {/* Feature Comparison Matrix */}
           <div className="atelier-card p-8 md:p-12 rounded-3xl mb-20 overflow-x-auto">
-            <h2 className="text-2xl font-bold text-white mb-6 text-center">
+            <h2 className="text-2xl font-bold text-slate-900 dark:text-white mb-6 text-center">
               Comparativa Detallada de Funciones
             </h2>
             <table className="w-full text-left text-xs min-w-[550px]">
               <thead>
-                <tr className="border-b border-zinc-800 text-zinc-400 font-bold uppercase tracking-wider">
+                <tr className="border-b border-slate-200 dark:border-zinc-800 text-slate-500 dark:text-zinc-400 font-bold uppercase tracking-wider">
                   <th className="pb-3">Función</th>
                   <th className="pb-3 text-center">Explorador</th>
-                  <th className="pb-3 text-center text-violet-400">Coleccionista VIP</th>
-                  <th className="pb-3 text-center text-indigo-400">Estudio Pro</th>
+                  <th className="pb-3 text-center text-violet-600 dark:text-violet-400">Coleccionista VIP</th>
+                  <th className="pb-3 text-center text-indigo-600 dark:text-indigo-400">Estudio Pro</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-zinc-800/60">
+              <tbody className="divide-y divide-slate-200/60 dark:divide-zinc-800/60">
                 <tr>
-                  <td className="py-3 font-medium text-white">Navegación en Mapa & Directorio</td>
-                  <td className="py-3 text-center text-emerald-400 font-bold">✓</td>
-                  <td className="py-3 text-center text-emerald-400 font-bold">✓</td>
-                  <td className="py-3 text-center text-emerald-400 font-bold">✓</td>
+                  <td className="py-3 font-medium text-slate-900 dark:text-white">Navegación en Mapa & Directorio</td>
+                  <td className="py-3 text-center text-emerald-500 dark:text-emerald-400 font-bold">✓</td>
+                  <td className="py-3 text-center text-emerald-500 dark:text-emerald-400 font-bold">✓</td>
+                  <td className="py-3 text-center text-emerald-500 dark:text-emerald-400 font-bold">✓</td>
                 </tr>
                 <tr>
-                  <td className="py-3 font-medium text-white">Contacto Directo por WhatsApp</td>
-                  <td className="py-3 text-center text-emerald-400 font-bold">✓</td>
-                  <td className="py-3 text-center text-emerald-400 font-bold">✓</td>
-                  <td className="py-3 text-center text-emerald-400 font-bold">✓</td>
+                  <td className="py-3 font-medium text-slate-900 dark:text-white">Contacto Directo por WhatsApp</td>
+                  <td className="py-3 text-center text-emerald-500 dark:text-emerald-400 font-bold">✓</td>
+                  <td className="py-3 text-center text-emerald-500 dark:text-emerald-400 font-bold">✓</td>
+                  <td className="py-3 text-center text-emerald-500 dark:text-emerald-400 font-bold">✓</td>
                 </tr>
                 <tr>
-                  <td className="py-3 font-medium text-white">Envío de Bocetos Estructurados</td>
-                  <td className="py-3 text-center text-emerald-400 font-bold">✓</td>
-                  <td className="py-3 text-center text-emerald-400 font-bold">✓</td>
-                  <td className="py-3 text-center text-emerald-400 font-bold">✓</td>
+                  <td className="py-3 font-medium text-slate-900 dark:text-white">Envío de Bocetos Estructurados</td>
+                  <td className="py-3 text-center text-emerald-500 dark:text-emerald-400 font-bold">✓</td>
+                  <td className="py-3 text-center text-emerald-500 dark:text-emerald-400 font-bold">✓</td>
+                  <td className="py-3 text-center text-emerald-500 dark:text-emerald-400 font-bold">✓</td>
                 </tr>
                 <tr>
-                  <td className="py-3 font-medium text-white">Diario de Cicatrización Fotográfico</td>
-                  <td className="py-3 text-center text-zinc-600">—</td>
-                  <td className="py-3 text-center text-emerald-400 font-bold">✓</td>
-                  <td className="py-3 text-center text-emerald-400 font-bold">✓</td>
+                  <td className="py-3 font-medium text-slate-900 dark:text-white">Diario de Cicatrización Fotográfico</td>
+                  <td className="py-3 text-center text-slate-400 dark:text-zinc-600">—</td>
+                  <td className="py-3 text-center text-emerald-500 dark:text-emerald-400 font-bold">✓</td>
+                  <td className="py-3 text-center text-emerald-500 dark:text-emerald-400 font-bold">✓</td>
                 </tr>
                 <tr>
-                  <td className="py-3 font-medium text-white">Pin Destacado en el Mapa</td>
-                  <td className="py-3 text-center text-zinc-600">—</td>
-                  <td className="py-3 text-center text-zinc-600">—</td>
-                  <td className="py-3 text-center text-emerald-400 font-bold">✓</td>
+                  <td className="py-3 font-medium text-slate-900 dark:text-white">Pin Destacado en el Mapa</td>
+                  <td className="py-3 text-center text-slate-400 dark:text-zinc-600">—</td>
+                  <td className="py-3 text-center text-slate-400 dark:text-zinc-600">—</td>
+                  <td className="py-3 text-center text-emerald-500 dark:text-emerald-400 font-bold">✓</td>
                 </tr>
                 <tr>
-                  <td className="py-3 font-medium text-white">Gestión de N Artistas Residentes</td>
-                  <td className="py-3 text-center text-zinc-600">—</td>
-                  <td className="py-3 text-center text-zinc-600">—</td>
-                  <td className="py-3 text-center text-emerald-400 font-bold">✓</td>
+                  <td className="py-3 font-medium text-slate-900 dark:text-white">Gestión de N Artistas Residentes</td>
+                  <td className="py-3 text-center text-slate-400 dark:text-zinc-600">—</td>
+                  <td className="py-3 text-center text-slate-400 dark:text-zinc-600">—</td>
+                  <td className="py-3 text-center text-emerald-500 dark:text-emerald-400 font-bold">✓</td>
                 </tr>
                 <tr>
-                  <td className="py-3 font-medium text-white">Subida Ilimitada de Flashes</td>
-                  <td className="py-3 text-center text-zinc-600">—</td>
-                  <td className="py-3 text-center text-zinc-600">—</td>
-                  <td className="py-3 text-center text-emerald-400 font-bold">✓</td>
+                  <td className="py-3 font-medium text-slate-900 dark:text-white">Subida Ilimitada de Flashes</td>
+                  <td className="py-3 text-center text-slate-400 dark:text-zinc-600">—</td>
+                  <td className="py-3 text-center text-slate-400 dark:text-zinc-600">—</td>
+                  <td className="py-3 text-center text-emerald-500 dark:text-emerald-400 font-bold">✓</td>
                 </tr>
               </tbody>
             </table>
@@ -330,7 +330,7 @@ export const PricingPage: React.FC = () => {
 
           {/* FAQ Accordion */}
           <div className="max-w-3xl mx-auto">
-            <h2 className="text-2xl font-bold text-white mb-6 text-center">Preguntas Frecuentes</h2>
+            <h2 className="text-2xl font-bold text-slate-900 dark:text-white mb-6 text-center">Preguntas Frecuentes</h2>
             <div className="space-y-3">
               {faqs.map((faq, idx) => (
                 <div
@@ -339,17 +339,17 @@ export const PricingPage: React.FC = () => {
                 >
                   <button
                     onClick={() => toggleFaq(idx)}
-                    className="w-full p-5 text-left flex items-center justify-between text-sm font-bold text-white hover:text-violet-300 transition-colors cursor-pointer"
+                    className="w-full p-5 text-left flex items-center justify-between text-sm font-bold text-slate-900 dark:text-white hover:text-violet-600 dark:hover:text-violet-300 transition-colors cursor-pointer"
                   >
                     <span>{faq.q}</span>
                     {openFaq === idx ? (
-                      <ChevronUp className="w-4 h-4 text-violet-400 shrink-0" />
+                      <ChevronUp className="w-4 h-4 text-violet-600 dark:text-violet-400 shrink-0" />
                     ) : (
-                      <ChevronDown className="w-4 h-4 text-zinc-500 shrink-0" />
+                      <ChevronDown className="w-4 h-4 text-slate-400 dark:text-zinc-500 shrink-0" />
                     )}
                   </button>
                   {openFaq === idx && (
-                    <div className="px-5 pb-5 text-xs text-zinc-400 leading-relaxed border-t border-zinc-800/60 pt-3">
+                    <div className="px-5 pb-5 text-xs text-slate-600 dark:text-zinc-400 leading-relaxed border-t border-slate-200/60 dark:border-zinc-800/60 pt-3">
                       {faq.a}
                     </div>
                   )}

@@ -154,35 +154,35 @@ export const ShopPage: React.FC = () => {
               <Sparkles className="w-3.5 h-3.5 text-violet-400" />
               <span>Fase 1 • Tienda Oficial del Atelier</span>
             </div>
-            <h1 className="text-3xl sm:text-4xl md:text-5xl font-extrabold text-white tracking-tight mb-4 leading-tight">
+            <h1 className="text-3xl sm:text-4xl md:text-5xl font-extrabold text-slate-900 dark:text-white tracking-tight mb-4 leading-tight">
               Joyería Biocompatible &amp; Cuidado Posterior
             </h1>
-            <p className="text-zinc-400 text-sm sm:text-base leading-relaxed">
+            <p className="text-slate-600 dark:text-zinc-400 text-sm sm:text-base leading-relaxed">
               Insumos de grado dermatológico, piercings biocompatibles para implante inicial y arte de edición limitada curado por nuestros artistas residentes.
             </p>
           </div>
 
           {/* Phase 1 Studio Pickup Banner */}
-          <div className="atelier-card mb-10 p-4 sm:p-5 border border-emerald-500/20 bg-emerald-950/20 rounded-2xl flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 shadow-lg shadow-emerald-950/20">
+          <div className="atelier-card mb-10 p-4 sm:p-5 border border-emerald-500/30 bg-emerald-50 dark:bg-emerald-950/20 rounded-2xl flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 shadow-lg text-slate-900 dark:text-white">
             <div className="flex items-start sm:items-center gap-3.5">
-              <div className="p-2.5 rounded-xl bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 flex-shrink-0">
+              <div className="p-2.5 rounded-xl bg-emerald-500/10 border border-emerald-500/30 text-emerald-600 dark:text-emerald-400 flex-shrink-0">
                 <MapPin className="w-5 h-5" />
               </div>
               <div>
                 <div className="flex items-center gap-2">
-                  <span className="text-xs font-bold uppercase tracking-wider text-emerald-400">
+                  <span className="text-xs font-bold uppercase tracking-wider text-emerald-700 dark:text-emerald-400">
                     Solo Retiro en Estudio
                   </span>
-                  <span className="px-2 py-0.5 rounded text-[10px] font-semibold bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">
+                  <span className="px-2 py-0.5 rounded text-[10px] font-semibold bg-emerald-100 text-emerald-800 dark:bg-emerald-500/20 dark:text-emerald-300 border border-emerald-300 dark:border-emerald-500/30">
                     Fase 1 Activa
                   </span>
                 </div>
-                <p className="text-xs sm:text-sm text-zinc-300 mt-0.5">
-                  Reserva en línea y retira en <strong className="text-white">Obsidian Atelier (Panamá Central)</strong>. Inspecciona tu pieza con nuestros orfebres y piercers certificados antes de finalizar.
+                <p className="text-xs sm:text-sm text-slate-700 dark:text-zinc-300 mt-0.5">
+                  Reserva en línea y retira en <strong className="text-slate-900 dark:text-white">Obsidian Atelier (Panamá Central)</strong>. Inspecciona tu pieza con nuestros orfebres y piercers certificados antes de finalizar.
                 </p>
               </div>
             </div>
-            <div className="flex items-center gap-1.5 text-xs text-emerald-400 font-semibold self-end sm:self-auto flex-shrink-0">
+            <div className="flex items-center gap-1.5 text-xs text-emerald-700 dark:text-emerald-400 font-semibold self-end sm:self-auto flex-shrink-0">
               <PackageCheck className="w-4 h-4" />
               <span>Entrega Inmediata en Local</span>
             </div>
@@ -200,7 +200,7 @@ export const ShopPage: React.FC = () => {
                   className={`px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold transition-all whitespace-nowrap cursor-pointer flex-shrink-0 ${
                     activeCategory === cat.key
                       ? 'bg-violet-600 text-white shadow-lg shadow-violet-600/30 border border-violet-400/30'
-                      : 'bg-[#13131A] text-zinc-400 hover:text-white hover:bg-white/5 border border-white/5'
+                      : 'bg-slate-100 dark:bg-[#13131A] text-slate-700 dark:text-zinc-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-200 dark:hover:bg-white/5 border border-slate-200 dark:border-white/5'
                   }`}
                 >
                   {cat.label}
@@ -222,7 +222,7 @@ export const ShopPage: React.FC = () => {
                 {searchQuery && (
                   <button
                     onClick={() => setSearchQuery('')}
-                    className="absolute right-3 top-1/2 -translate-y-1/2 text-zinc-500 hover:text-white"
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 dark:text-zinc-500 dark:hover:text-white"
                   >
                     <X className="w-4 h-4" />
                   </button>
@@ -230,7 +230,7 @@ export const ShopPage: React.FC = () => {
               </div>
 
               <div className="flex items-center justify-between sm:justify-end gap-3 flex-shrink-0">
-                <span className="text-xs text-zinc-500">
+                <span className="text-xs text-slate-500 dark:text-zinc-500">
                   {filteredProducts.length} {filteredProducts.length === 1 ? 'producto' : 'productos'}
                 </span>
                 <div className="w-44">
@@ -250,21 +250,21 @@ export const ShopPage: React.FC = () => {
               {[1, 2, 3, 4, 5, 6, 7, 8].map((i) => (
                 <div
                   key={i}
-                  className="atelier-card p-4 rounded-2xl border border-white/5 bg-[#13131A]/60 animate-pulse space-y-3"
+                  className="atelier-card p-4 rounded-2xl border border-slate-200 dark:border-white/5 bg-slate-50 dark:bg-[#13131A]/60 animate-pulse space-y-3"
                 >
-                  <div className="w-full aspect-square bg-zinc-800/60 rounded-xl"></div>
-                  <div className="h-4 bg-zinc-700/60 rounded w-2/3"></div>
-                  <div className="h-3 bg-zinc-800/80 rounded w-full"></div>
-                  <div className="h-5 bg-zinc-700/40 rounded w-1/3"></div>
-                  <div className="h-9 bg-zinc-800/80 rounded-xl w-full"></div>
+                  <div className="w-full aspect-square bg-slate-200 dark:bg-zinc-800/60 rounded-xl"></div>
+                  <div className="h-4 bg-slate-300 dark:bg-zinc-700/60 rounded w-2/3"></div>
+                  <div className="h-3 bg-slate-200 dark:bg-zinc-800/80 rounded w-full"></div>
+                  <div className="h-5 bg-slate-300 dark:bg-zinc-700/40 rounded w-1/3"></div>
+                  <div className="h-9 bg-slate-200 dark:bg-zinc-800/80 rounded-xl w-full"></div>
                 </div>
               ))}
             </div>
           ) : error ? (
             <div className="atelier-card p-10 text-center border border-red-500/20 bg-red-500/10 rounded-2xl max-w-lg mx-auto">
               <AlertCircle className="w-10 h-10 text-red-400 mx-auto mb-3" />
-              <h3 className="text-base font-bold text-white mb-1">{error}</h3>
-              <p className="text-xs text-red-300 mb-4">
+              <h3 className="text-base font-bold text-slate-900 dark:text-white mb-1">{error}</h3>
+              <p className="text-xs text-red-600 dark:text-red-300 mb-4">
                 Por favor verifica tu conexión o sincroniza nuevamente con el servidor.
               </p>
               <button
@@ -276,12 +276,12 @@ export const ShopPage: React.FC = () => {
               </button>
             </div>
           ) : filteredProducts.length === 0 ? (
-            <div className="atelier-card p-12 text-center border border-dashed border-white/10 rounded-2xl max-w-md mx-auto">
-              <ShoppingBag className="w-12 h-12 text-zinc-600 mx-auto mb-3" />
-              <h3 className="text-base font-bold text-white mb-1">
+            <div className="atelier-card p-12 text-center border border-dashed border-slate-300 dark:border-white/10 rounded-2xl max-w-md mx-auto">
+              <ShoppingBag className="w-12 h-12 text-zinc-400 dark:text-zinc-600 mx-auto mb-3" />
+              <h3 className="text-base font-bold text-slate-900 dark:text-white mb-1">
                 No encontramos productos
               </h3>
-              <p className="text-xs text-zinc-400 mb-4">
+              <p className="text-xs text-slate-500 dark:text-zinc-400 mb-4">
                 Prueba buscando con otros términos o seleccionando otra categoría.
               </p>
               <button
@@ -289,7 +289,7 @@ export const ShopPage: React.FC = () => {
                   setActiveCategory('all');
                   setSearchQuery('');
                 }}
-                className="px-4 py-2 text-xs font-semibold rounded-xl bg-white/10 hover:bg-white/15 text-white transition"
+                className="px-4 py-2 text-xs font-semibold rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-white/10 dark:hover:bg-white/15 text-slate-900 dark:text-white transition"
               >
                 Limpiar filtros
               </button>
@@ -299,10 +299,10 @@ export const ShopPage: React.FC = () => {
               {filteredProducts.map((product) => (
                 <div
                   key={product.id}
-                  className="atelier-card atelier-card-hover group flex flex-col justify-between overflow-hidden rounded-2xl border border-white/10 bg-[#13131A] transition duration-300"
+                  className="atelier-card atelier-card-hover group flex flex-col justify-between overflow-hidden rounded-2xl border border-slate-200 dark:border-white/10 transition duration-300 text-slate-900 dark:text-white"
                 >
                   {/* Image Container */}
-                  <div className="relative aspect-square w-full overflow-hidden bg-black/40">
+                  <div className="relative aspect-square w-full overflow-hidden bg-slate-100 dark:bg-black/40">
                     <img
                       src={product.image_url}
                       alt={product.name}
@@ -313,16 +313,16 @@ export const ShopPage: React.FC = () => {
                           'https://images.unsplash.com/photo-1598371839696-5c5bb00bdc28?auto=format&fit=crop&w=600&q=80';
                       }}
                     />
-                    <div className="absolute inset-0 bg-gradient-to-t from-[#13131A] via-transparent to-transparent opacity-60"></div>
+                    <div className="absolute inset-0 bg-gradient-to-t from-white/90 via-transparent to-transparent dark:from-[#13131A] dark:via-transparent dark:to-transparent opacity-60"></div>
 
                     {/* Stock Pill */}
                     <div className="absolute top-3 left-3">
                       {product.in_stock ? (
-                        <span className="px-2 py-1 text-[10px] font-bold rounded-full border border-emerald-500/30 bg-emerald-500/20 text-emerald-400 backdrop-blur-md">
+                        <span className="px-2 py-1 text-[10px] font-bold rounded-full border border-emerald-500/30 bg-emerald-500/20 text-emerald-600 dark:text-emerald-400 backdrop-blur-md">
                           En Stock
                         </span>
                       ) : (
-                        <span className="px-2 py-1 text-[10px] font-bold rounded-full border border-red-500/30 bg-red-500/20 text-red-400 backdrop-blur-md">
+                        <span className="px-2 py-1 text-[10px] font-bold rounded-full border border-red-500/30 bg-red-500/20 text-red-600 dark:text-red-400 backdrop-blur-md">
                           Agotado
                         </span>
                       )}
@@ -330,8 +330,8 @@ export const ShopPage: React.FC = () => {
 
                     {/* Rating Pill */}
                     {product.rating && (
-                      <div className="absolute top-3 right-3 flex items-center gap-1 px-2 py-0.5 rounded-full border border-white/10 bg-black/60 text-amber-300 text-[11px] font-semibold backdrop-blur-md">
-                        <Star className="w-3 h-3 fill-amber-300" />
+                      <div className="absolute top-3 right-3 flex items-center gap-1 px-2 py-0.5 rounded-full border border-slate-200 dark:border-white/10 bg-white/80 dark:bg-black/60 text-amber-600 dark:text-amber-300 text-[11px] font-semibold backdrop-blur-md">
+                        <Star className="w-3 h-3 fill-amber-400 dark:fill-amber-300" />
                         <span>{product.rating.toFixed(1)}</span>
                       </div>
                     )}
@@ -341,31 +341,31 @@ export const ShopPage: React.FC = () => {
                   <div className="p-5 flex-1 flex flex-col justify-between space-y-4">
                     <div className="space-y-2">
                       {product.material && (
-                        <div className="flex items-center gap-1 text-[11px] font-medium text-violet-400">
+                        <div className="flex items-center gap-1 text-[11px] font-medium text-violet-600 dark:text-violet-400">
                           <Tag className="w-3 h-3 flex-shrink-0" />
                           <span className="truncate">{product.material}</span>
                         </div>
                       )}
-                      <h3 className="font-bold text-white text-base leading-snug line-clamp-1 group-hover:text-violet-300 transition-colors">
+                      <h3 className="font-bold text-slate-900 dark:text-white text-base leading-snug line-clamp-1 group-hover:text-violet-600 dark:group-hover:text-violet-300 transition-colors">
                         {product.name}
                       </h3>
-                      <p className="text-xs text-zinc-400 line-clamp-2 leading-relaxed">
+                      <p className="text-xs text-slate-600 dark:text-zinc-400 line-clamp-2 leading-relaxed">
                         {product.description}
                       </p>
                     </div>
 
                     {/* Price and Action */}
-                    <div className="pt-3 border-t border-white/5 space-y-3">
+                    <div className="pt-3 border-t border-slate-200 dark:border-white/5 space-y-3">
                       <div className="flex items-baseline justify-between">
                         <div>
-                          <span className="text-[10px] uppercase font-semibold text-zinc-500 block">
+                          <span className="text-[10px] uppercase font-semibold text-slate-500 dark:text-zinc-500 block">
                             Precio de Retiro
                           </span>
-                          <span className="text-xl font-extrabold text-white tracking-tight">
+                          <span className="text-xl font-extrabold text-slate-900 dark:text-white tracking-tight">
                             {formatPrice(product.price)}
                           </span>
                         </div>
-                        <span className="text-[11px] text-zinc-400 uppercase font-medium">
+                        <span className="text-[11px] text-slate-500 dark:text-zinc-400 uppercase font-medium">
                           {currency}
                         </span>
                       </div>
@@ -386,22 +386,22 @@ export const ShopPage: React.FC = () => {
           )}
 
           {/* Bio-Safety and Sterile Notice */}
-          <div className="atelier-card mt-16 p-6 sm:p-8 border border-white/10 bg-[#13131A] rounded-2xl flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
+          <div className="atelier-card mt-16 p-6 sm:p-8 border border-slate-200 dark:border-white/10 rounded-2xl flex flex-col md:flex-row items-start md:items-center justify-between gap-6 text-slate-900 dark:text-white">
             <div className="flex items-start gap-4">
-              <div className="p-3 rounded-2xl bg-violet-600/10 border border-violet-500/20 text-violet-400 flex-shrink-0">
+              <div className="p-3 rounded-2xl bg-violet-600/10 border border-violet-500/20 text-violet-600 dark:text-violet-400 flex-shrink-0">
                 <ShieldCheck className="w-6 h-6" />
               </div>
               <div className="space-y-1">
-                <h4 className="text-base font-bold text-white">
+                <h4 className="text-base font-bold text-slate-900 dark:text-white">
                   Garantía de Bioseguridad y Salud Dérmica
                 </h4>
-                <p className="text-xs sm:text-sm text-zinc-400 max-w-3xl leading-relaxed">
+                <p className="text-xs sm:text-sm text-slate-600 dark:text-zinc-400 max-w-3xl leading-relaxed">
                   Toda la joyería corporal para implante se entrega en empaque termosellado con control de autoclave. Los ungüentos e insumos post-cuidado cuentan con sello de inviolabilidad. Por sanidad, no se aceptan devoluciones de piezas abiertas.
                 </p>
               </div>
             </div>
-            <div className="text-xs text-zinc-500 flex items-center gap-1.5 flex-shrink-0">
-              <Clock className="w-4 h-4 text-emerald-400" />
+            <div className="text-xs text-slate-500 dark:text-zinc-500 flex items-center gap-1.5 flex-shrink-0">
+              <Clock className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
               <span>Retiros en horario de estudio: Lun-Sáb 10:00 - 20:00</span>
             </div>
           </div>
@@ -417,16 +417,16 @@ export const ShopPage: React.FC = () => {
               exit={{ opacity: 0 }}
             >
               <motion.div
-                className="atelier-card w-full max-w-lg rounded-2xl border border-white/10 bg-[#13131A] shadow-2xl overflow-hidden text-white"
+                className="atelier-card w-full max-w-lg rounded-2xl border border-slate-200 dark:border-white/10 shadow-2xl overflow-hidden text-slate-900 dark:text-white"
                 initial={{ scale: 0.95, y: 15 }}
                 animate={{ scale: 1, y: 0 }}
                 exit={{ scale: 0.95, y: 15 }}
               >
                 {/* Modal Header */}
-                <div className="p-5 border-b border-white/10 flex items-center justify-between">
+                <div className="p-5 border-b border-slate-200 dark:border-white/10 flex items-center justify-between">
                   <div className="flex items-center gap-2">
-                    <ShoppingBag className="w-5 h-5 text-violet-400" />
-                    <h3 className="font-bold text-lg text-white">
+                    <ShoppingBag className="w-5 h-5 text-violet-600 dark:text-violet-400" />
+                    <h3 className="font-bold text-lg text-slate-900 dark:text-white">
                       {orderSuccessTicket ? '¡Reserva Confirmada!' : 'Apartar para Retiro'}
                     </h3>
                   </div>
@@ -435,7 +435,7 @@ export const ShopPage: React.FC = () => {
                       setSelectedProduct(null);
                       setOrderSuccessTicket(null);
                     }}
-                    className="p-1 rounded-lg text-zinc-400 hover:text-white hover:bg-white/5 transition"
+                    className="p-1 rounded-lg text-slate-400 hover:text-slate-700 dark:text-zinc-400 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-white/5 transition cursor-pointer"
                   >
                     <X className="w-5 h-5" />
                   </button>
@@ -445,37 +445,37 @@ export const ShopPage: React.FC = () => {
                 <div className="p-6">
                   {orderSuccessTicket ? (
                     <div className="text-center space-y-4 py-2">
-                      <div className="w-14 h-14 rounded-full bg-emerald-500/20 border border-emerald-500/40 text-emerald-400 mx-auto flex items-center justify-center shadow-lg shadow-emerald-500/20">
+                      <div className="w-14 h-14 rounded-full bg-emerald-500/20 border border-emerald-500/40 text-emerald-500 dark:text-emerald-400 mx-auto flex items-center justify-center shadow-lg shadow-emerald-500/20">
                         <CheckCircle2 className="w-8 h-8" />
                       </div>
-                      <h4 className="text-xl font-bold text-white">
+                      <h4 className="text-xl font-bold text-slate-900 dark:text-white">
                         Tu pedido está listo para ser apartado
                       </h4>
-                      <div className="p-4 rounded-xl bg-black/40 border border-white/10 space-y-2 text-left">
+                      <div className="p-4 rounded-xl bg-slate-50 dark:bg-black/40 border border-slate-200 dark:border-white/10 space-y-2 text-left">
                         <div className="flex justify-between items-center text-xs">
-                          <span className="text-zinc-500">Código de Retiro:</span>
-                          <span className="font-mono font-bold text-violet-400 text-sm">
+                          <span className="text-slate-500 dark:text-zinc-500">Código de Retiro:</span>
+                          <span className="font-mono font-bold text-violet-600 dark:text-violet-400 text-sm">
                             {orderSuccessTicket}
                           </span>
                         </div>
                         <div className="flex justify-between items-center text-xs">
-                          <span className="text-zinc-500">Producto:</span>
-                          <span className="font-semibold text-white">
+                          <span className="text-slate-500 dark:text-zinc-500">Producto:</span>
+                          <span className="font-semibold text-slate-900 dark:text-white">
                             {selectedProduct.name} (x{quantity})
                           </span>
                         </div>
                         <div className="flex justify-between items-center text-xs">
-                          <span className="text-zinc-500">Total a liquidar:</span>
-                          <span className="font-bold text-emerald-400">
+                          <span className="text-slate-500 dark:text-zinc-500">Total a liquidar:</span>
+                          <span className="font-bold text-emerald-600 dark:text-emerald-400">
                             {formatPrice(selectedProduct.price * quantity)}
                           </span>
                         </div>
-                        <div className="flex justify-between items-center text-xs pt-2 border-t border-white/5">
-                          <span className="text-zinc-500">Lugar de Retiro:</span>
-                          <span className="text-zinc-300">Obsidian Atelier • Panamá</span>
+                        <div className="flex justify-between items-center text-xs pt-2 border-t border-slate-200 dark:border-white/5">
+                          <span className="text-slate-500 dark:text-zinc-500">Lugar de Retiro:</span>
+                          <span className="text-slate-700 dark:text-zinc-300">Obsidian Atelier • Panamá</span>
                         </div>
                       </div>
-                      <p className="text-xs text-zinc-400 leading-relaxed">
+                      <p className="text-xs text-slate-600 dark:text-zinc-400 leading-relaxed">
                         Presenta este código al recepcionista o piercer en el estudio para inspeccionar tu pieza y realizar el pago en caja o verificar tu abono.
                       </p>
                       <button
@@ -483,7 +483,7 @@ export const ShopPage: React.FC = () => {
                           setSelectedProduct(null);
                           setOrderSuccessTicket(null);
                         }}
-                        className="btn-atelier-primary w-full py-2.5 text-sm font-bold"
+                        className="btn-atelier-primary w-full py-2.5 text-sm font-bold cursor-pointer"
                       >
                         Entendido, Volver a la Tienda
                       </button>
@@ -491,34 +491,34 @@ export const ShopPage: React.FC = () => {
                   ) : (
                     <div className="space-y-5">
                       {/* Product snippet */}
-                      <div className="flex gap-4 p-3.5 rounded-xl bg-[#1A1A24]/60 border border-white/5">
+                      <div className="flex gap-4 p-3.5 rounded-xl bg-slate-50 dark:bg-[#1A1A24]/60 border border-slate-200 dark:border-white/5">
                         <img
                           src={selectedProduct.image_url}
                           alt={selectedProduct.name}
                           className="w-16 h-16 rounded-lg object-cover flex-shrink-0"
                         />
                         <div className="flex-1 min-w-0">
-                          <h4 className="font-semibold text-white text-sm truncate">
+                          <h4 className="font-semibold text-slate-900 dark:text-white text-sm truncate">
                             {selectedProduct.name}
                           </h4>
                           {selectedProduct.material && (
-                            <p className="text-xs text-violet-400 truncate mt-0.5">
+                            <p className="text-xs text-violet-600 dark:text-violet-400 truncate mt-0.5">
                               {selectedProduct.material}
                             </p>
                           )}
-                          <p className="text-sm font-bold text-white mt-1">
+                          <p className="text-sm font-bold text-slate-900 dark:text-white mt-1">
                             {formatPrice(selectedProduct.price)} c/u
                           </p>
                         </div>
                       </div>
 
                       {/* Quantity Selector */}
-                      <div className="flex items-center justify-between p-3.5 rounded-xl bg-black/30 border border-white/5">
+                      <div className="flex items-center justify-between p-3.5 rounded-xl bg-slate-50 dark:bg-black/30 border border-slate-200 dark:border-white/5">
                         <div>
-                          <span className="text-xs font-semibold text-white block">
+                          <span className="text-xs font-semibold text-slate-900 dark:text-white block">
                             Cantidad a reservar
                           </span>
-                          <span className="text-[11px] text-zinc-500">
+                          <span className="text-[11px] text-slate-500 dark:text-zinc-500">
                             Máximo 5 unidades por reserva
                           </span>
                         </div>
@@ -527,18 +527,18 @@ export const ShopPage: React.FC = () => {
                             type="button"
                             onClick={() => setQuantity(Math.max(1, quantity - 1))}
                             disabled={quantity <= 1}
-                            className="p-1.5 rounded-lg bg-white/5 hover:bg-white/10 text-white disabled:opacity-40 transition"
+                            className="p-1.5 rounded-lg bg-slate-200 hover:bg-slate-300 dark:bg-white/5 dark:hover:bg-white/10 text-slate-800 dark:text-white disabled:opacity-40 transition cursor-pointer"
                           >
                             <Minus className="w-4 h-4" />
                           </button>
-                          <span className="font-bold text-white text-sm w-5 text-center">
+                          <span className="font-bold text-slate-900 dark:text-white text-sm w-5 text-center">
                             {quantity}
                           </span>
                           <button
                             type="button"
                             onClick={() => setQuantity(Math.min(5, quantity + 1))}
                             disabled={quantity >= 5}
-                            className="p-1.5 rounded-lg bg-white/5 hover:bg-white/10 text-white disabled:opacity-40 transition"
+                            className="p-1.5 rounded-lg bg-slate-200 hover:bg-slate-300 dark:bg-white/5 dark:hover:bg-white/10 text-slate-800 dark:text-white disabled:opacity-40 transition cursor-pointer"
                           >
                             <Plus className="w-4 h-4" />
                           </button>
@@ -546,28 +546,28 @@ export const ShopPage: React.FC = () => {
                       </div>
 
                       {/* Total calculation */}
-                      <div className="p-3.5 rounded-xl border border-white/10 bg-[#1A1A24]/40 space-y-2">
-                        <div className="flex justify-between text-xs text-zinc-400">
+                      <div className="p-3.5 rounded-xl border border-slate-200 dark:border-white/10 bg-slate-50 dark:bg-[#1A1A24]/40 space-y-2">
+                        <div className="flex justify-between text-xs text-slate-600 dark:text-zinc-400">
                           <span>Subtotal ({quantity} {quantity === 1 ? 'unidad' : 'unidades'}):</span>
                           <span>{formatPrice(selectedProduct.price * quantity)}</span>
                         </div>
-                        <div className="flex justify-between text-xs text-zinc-400">
+                        <div className="flex justify-between text-xs text-slate-600 dark:text-zinc-400">
                           <span>Costo de Retiro en Estudio:</span>
-                          <span className="text-emerald-400 font-semibold">Gratis</span>
+                          <span className="text-emerald-600 dark:text-emerald-400 font-semibold">Gratis</span>
                         </div>
-                        <div className="flex justify-between items-baseline pt-2 border-t border-white/5">
-                          <span className="font-bold text-white text-sm">Total Estimado:</span>
-                          <span className="text-xl font-extrabold text-white">
+                        <div className="flex justify-between items-baseline pt-2 border-t border-slate-200 dark:border-white/5">
+                          <span className="font-bold text-slate-900 dark:text-white text-sm">Total Estimado:</span>
+                          <span className="text-xl font-extrabold text-slate-900 dark:text-white">
                             {formatPrice(selectedProduct.price * quantity)}
                           </span>
                         </div>
                       </div>
 
                       {/* Studio Notice */}
-                      <div className="p-3 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-xs text-emerald-300 flex items-start gap-2.5">
-                        <MapPin className="w-4 h-4 text-emerald-400 flex-shrink-0 mt-0.5" />
+                      <div className="p-3 rounded-xl bg-emerald-50 dark:bg-emerald-500/10 border border-emerald-500/20 text-xs text-emerald-800 dark:text-emerald-300 flex items-start gap-2.5">
+                        <MapPin className="w-4 h-4 text-emerald-600 dark:text-emerald-400 flex-shrink-0 mt-0.5" />
                         <div>
-                          <strong className="text-white block">Punto de Retiro:</strong>
+                          <strong className="text-slate-900 dark:text-white block">Punto de Retiro:</strong>
                           <span>Obsidian Atelier • Ave. Central, Panamá City. Horario Lun-Sáb 10am-8pm.</span>
                         </div>
                       </div>
@@ -577,7 +577,7 @@ export const ShopPage: React.FC = () => {
                         <button
                           type="button"
                           onClick={() => setSelectedProduct(null)}
-                          className="flex-1 px-4 py-2.5 rounded-xl border border-white/10 bg-white/5 hover:bg-white/10 text-white text-xs font-semibold transition"
+                          className="flex-1 px-4 py-2.5 rounded-xl border border-slate-300 dark:border-white/10 bg-slate-100 hover:bg-slate-200 dark:bg-white/5 dark:hover:bg-white/10 text-slate-800 dark:text-white text-xs font-semibold transition cursor-pointer"
                         >
                           Cancelar
                         </button>
@@ -585,7 +585,7 @@ export const ShopPage: React.FC = () => {
                           type="button"
                           disabled={isSubmittingOrder}
                           onClick={handleConfirmReservation}
-                          className="flex-1 btn-atelier-primary py-2.5 text-xs font-bold rounded-xl flex items-center justify-center gap-2"
+                          className="flex-1 btn-atelier-primary py-2.5 text-xs font-bold rounded-xl flex items-center justify-center gap-2 cursor-pointer"
                         >
                           {isSubmittingOrder ? (
                             <RefreshCw className="w-4 h-4 animate-spin" />

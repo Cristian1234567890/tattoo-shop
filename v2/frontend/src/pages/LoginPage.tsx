@@ -211,10 +211,10 @@ export const LoginPage: React.FC = () => {
             {/* Atelier Header Section */}
             <div className="flex flex-col items-center text-center">
               {/* Headings */}
-              <h1 className="text-2xl sm:text-3xl font-extrabold text-white tracking-tight mb-2">
+              <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-white tracking-tight mb-2">
                 ¡Bienvenido de nuevo!
               </h1>
-              <p className="text-zinc-400 text-xs sm:text-sm max-w-sm mb-6 leading-relaxed">
+              <p className="text-slate-600 dark:text-zinc-400 text-xs sm:text-sm max-w-sm mb-6 leading-relaxed">
                 Inicia sesión para gestionar tus citas, stencils confidenciales y agenda de sesiones.
               </p>
             </div>
@@ -248,7 +248,7 @@ export const LoginPage: React.FC = () => {
                   <button
                     onClick={handleGoogleLogin}
                     type="button"
-                    className="flex items-center justify-center gap-3 py-3.5 px-6 w-full rounded-xl bg-zinc-900/80 hover:bg-zinc-800 transition-all duration-200 text-white group shadow-sm text-sm font-semibold border border-white/10 cursor-pointer"
+                    className="flex items-center justify-center gap-3 py-3.5 px-6 w-full rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-zinc-900/80 dark:hover:bg-zinc-800 transition-all duration-200 text-slate-900 dark:text-white group shadow-sm text-sm font-semibold border border-slate-200 dark:border-white/10 cursor-pointer"
                   >
                     <svg className="w-4 h-4 shrink-0 transition-transform group-hover:scale-110" viewBox="0 0 24 24">
                       <path d="M12 5c1.6 0 3 .6 4.1 1.7l3.1-3.1C17.3 1.8 14.8 1 12 1 7.5 1 3.7 3.6 1.9 7.3l3.7 2.9C6.5 7.4 9 5 12 5z" fill="#EA4335" />
@@ -262,8 +262,8 @@ export const LoginPage: React.FC = () => {
 
                 {/* Section Separator */}
                 <div className="relative flex items-center justify-center my-6">
-                  <div className="w-full h-[1px] bg-gradient-to-r from-transparent via-zinc-800 to-transparent" />
-                  <span className="absolute bg-[#0f0e17] px-3 text-[10px] font-bold tracking-widest text-zinc-500 uppercase">
+                  <div className="w-full h-[1px] bg-gradient-to-r from-transparent via-slate-300 dark:via-zinc-800 to-transparent" />
+                  <span className="absolute bg-white dark:bg-[#0f0e17] px-3 text-[10px] font-bold tracking-widest text-slate-500 dark:text-zinc-500 uppercase">
                     O MEDIANTE CREDENCIALES REGISTRADAS
                   </span>
                 </div>
@@ -273,11 +273,11 @@ export const LoginPage: React.FC = () => {
                   {/* Correo o Alias */}
                   <div className="flex flex-col gap-1.5">
                     <div className="flex items-center justify-between">
-                      <label htmlFor="userEmail" className="text-[11px] font-bold tracking-wider text-zinc-300 flex items-center gap-1.5 uppercase">
+                      <label htmlFor="userEmail" className="text-[11px] font-bold tracking-wider text-slate-700 dark:text-zinc-300 flex items-center gap-1.5 uppercase">
                         <Lock className="w-3.5 h-3.5 text-purple-400" />
                         CORREO O ALIAS
                       </label>
-                      <span className="text-[11px] text-zinc-500 font-mono">@usuario / estudio@dominio</span>
+                      <span className="text-[11px] text-slate-500 dark:text-zinc-500 font-mono">@usuario / estudio@dominio</span>
                     </div>
                     <div className="relative flex items-center">
                       <input
@@ -287,7 +287,7 @@ export const LoginPage: React.FC = () => {
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}
                         placeholder="ej. artista@tattoohub.com o @master_ink"
-                        className="w-full bg-zinc-950/80 text-white pl-3.5 pr-10 py-3 rounded-xl text-sm border border-zinc-800 placeholder:text-zinc-600 focus:border-purple-500 focus:ring-1 focus:ring-purple-500 focus:outline-none transition shadow-inner"
+                        className="w-full bg-slate-50 dark:bg-zinc-950/80 text-slate-900 dark:text-white pl-3.5 pr-10 py-3 rounded-xl text-sm border border-slate-300 dark:border-zinc-800 placeholder:text-slate-400 dark:placeholder:text-zinc-600 focus:border-purple-500 focus:ring-1 focus:ring-purple-500 focus:outline-none transition shadow-inner"
                       />
                       <div className="absolute right-3.5 text-zinc-500 pointer-events-none">
                         <AtSign className="w-4 h-4" />
@@ -298,13 +298,13 @@ export const LoginPage: React.FC = () => {
                   {/* Contraseña */}
                   <div className="flex flex-col gap-1.5">
                     <div className="flex items-center justify-between">
-                      <label htmlFor="userPassword" className="text-[11px] font-bold tracking-wider text-zinc-300 flex items-center gap-1.5 uppercase">
+                      <label htmlFor="userPassword" className="text-[11px] font-bold tracking-wider text-slate-700 dark:text-zinc-300 flex items-center gap-1.5 uppercase">
                         <Key className="w-3.5 h-3.5 text-purple-400" />
                         CONTRASEÑA
                       </label>
                       <Link
                         to="/forget-password"
-                        className="text-[11px] text-purple-400 hover:text-purple-300 transition underline-offset-4 hover:underline"
+                        className="text-[11px] text-purple-600 dark:text-purple-400 hover:text-purple-500 dark:hover:text-purple-300 transition underline-offset-4 hover:underline"
                       >
                         ¿Olvidaste tu contraseña?
                       </Link>
@@ -317,12 +317,12 @@ export const LoginPage: React.FC = () => {
                         value={password}
                         onChange={(e) => setPassword(e.target.value)}
                         placeholder="••••••••••••"
-                        className="w-full bg-zinc-950/80 text-white pl-3.5 pr-11 py-3 rounded-xl text-sm border border-zinc-800 placeholder:text-zinc-600 focus:border-purple-500 focus:ring-1 focus:ring-purple-500 focus:outline-none transition shadow-inner"
+                        className="w-full bg-slate-50 dark:bg-zinc-950/80 text-slate-900 dark:text-white pl-3.5 pr-11 py-3 rounded-xl text-sm border border-slate-300 dark:border-zinc-800 placeholder:text-slate-400 dark:placeholder:text-zinc-600 focus:border-purple-500 focus:ring-1 focus:ring-purple-500 focus:outline-none transition shadow-inner"
                       />
                       <button
                         type="button"
                         onClick={() => setShowPassword(!showPassword)}
-                        className="absolute right-3.5 p-1 text-zinc-500 hover:text-zinc-300 cursor-pointer"
+                        className="absolute right-3.5 p-1 text-slate-400 hover:text-slate-600 dark:text-zinc-500 dark:hover:text-zinc-300 cursor-pointer"
                         aria-label="Alternar visibilidad"
                       >
                         {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
@@ -339,10 +339,10 @@ export const LoginPage: React.FC = () => {
                         onChange={(e) => setRememberDevice(e.target.checked)}
                         className="sr-only peer"
                       />
-                      <div className="w-4 h-4 rounded-md bg-zinc-800 peer-checked:bg-purple-600 flex items-center justify-center transition-all peer-checked:shadow-[0_0_10px_rgba(124,58,237,0.5)] border border-zinc-700">
+                      <div className="w-4 h-4 rounded-md bg-slate-200 dark:bg-zinc-800 peer-checked:bg-purple-600 flex items-center justify-center transition-all peer-checked:shadow-[0_0_10px_rgba(124,58,237,0.5)] border border-slate-300 dark:border-zinc-700">
                         {rememberDevice && <Check className="w-3 h-3 text-white stroke-[3]" />}
                       </div>
-                      <span className="text-xs text-zinc-400 group-hover:text-zinc-200 transition">
+                      <span className="text-xs text-slate-600 dark:text-zinc-400 group-hover:text-slate-900 dark:group-hover:text-zinc-200 transition">
                         Mantener sesión en este dispositivo
                       </span>
                     </label>
@@ -371,21 +371,21 @@ export const LoginPage: React.FC = () => {
                 </form>
 
                 {/* Studio Community Signup Callout (Stitch Bottom Card) */}
-                <div className="mt-6 p-4 rounded-xl bg-zinc-900/60 border border-white/5 flex flex-col sm:flex-row items-center justify-between gap-3 text-center sm:text-left">
+                <div className="mt-6 p-4 rounded-xl bg-slate-100 dark:bg-zinc-900/60 border border-slate-200 dark:border-white/5 flex flex-col sm:flex-row items-center justify-between gap-3 text-center sm:text-left">
                   <div className="flex flex-col">
-                    <span className="text-[10px] font-bold tracking-wider text-purple-400 uppercase">
+                    <span className="text-[10px] font-bold tracking-wider text-purple-600 dark:text-purple-400 uppercase">
                       NUEVO EN LA RED
                     </span>
-                    <span className="text-xs text-zinc-400">
+                    <span className="text-xs text-slate-600 dark:text-zinc-400">
                       ¿Aún no tienes cuenta registrada?
                     </span>
                   </div>
                   <Link
                     to={registerLink}
-                    className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg bg-zinc-800 hover:bg-zinc-700 text-white font-medium text-xs transition duration-200 shadow-sm shrink-0 border border-white/10"
+                    className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg bg-slate-200 hover:bg-slate-300 dark:bg-zinc-800 dark:hover:bg-zinc-700 text-slate-900 dark:text-white font-medium text-xs transition duration-200 shadow-sm shrink-0 border border-slate-300 dark:border-white/10"
                   >
                     <span>Regístrate gratis</span>
-                    <ExternalLink className="w-3.5 h-3.5 text-purple-400" />
+                    <ExternalLink className="w-3.5 h-3.5 text-purple-600 dark:text-purple-400" />
                   </Link>
                 </div>
               </>
@@ -394,11 +394,11 @@ export const LoginPage: React.FC = () => {
             {/* MFA Enroll Phase */}
             {mfaPhase === 'ENROLL' && (
               <div className="text-center py-4">
-                <h2 className="text-xl font-bold mb-3 text-white">Configurar Autenticador</h2>
-                <p className="text-zinc-400 text-xs mb-4">
+                <h2 className="text-xl font-bold mb-3 text-slate-900 dark:text-white">Configurar Autenticador</h2>
+                <p className="text-slate-600 dark:text-zinc-400 text-xs mb-4">
                   Escanea este código QR con Google Authenticator o Authy.
                 </p>
-                <div className="flex justify-center mb-5 p-3 bg-white rounded-xl w-fit mx-auto">
+                <div className="flex justify-center mb-5 p-3 bg-white rounded-xl w-fit mx-auto border border-slate-200 shadow-sm">
                   <QRCodeSVG value={totpUri} size={160} />
                 </div>
                 <form onSubmit={handleVerifyOtp} className="space-y-4 max-w-xs mx-auto">
@@ -408,7 +408,7 @@ export const LoginPage: React.FC = () => {
                     placeholder="Código 6 dígitos"
                     value={otpCode}
                     onChange={(e) => setOtpCode(e.target.value)}
-                    className="w-full text-center tracking-widest text-lg py-2.5 rounded-xl border border-zinc-700 bg-zinc-900 text-white focus:outline-none focus:border-purple-500"
+                    className="w-full text-center tracking-widest text-lg py-2.5 rounded-xl border border-slate-300 dark:border-zinc-700 bg-slate-50 dark:bg-zinc-900 text-slate-900 dark:text-white focus:outline-none focus:border-purple-500"
                   />
                   <button
                     type="submit"
@@ -424,8 +424,8 @@ export const LoginPage: React.FC = () => {
             {/* MFA Verify Phase */}
             {mfaPhase === 'VERIFY' && (
               <div className="text-center py-4">
-                <h2 className="text-xl font-bold mb-3 text-white">Verificación en Dos Pasos</h2>
-                <p className="text-zinc-400 text-xs mb-4">
+                <h2 className="text-xl font-bold mb-3 text-slate-900 dark:text-white">Verificación en Dos Pasos</h2>
+                <p className="text-slate-600 dark:text-zinc-400 text-xs mb-4">
                   Ingresa el código de 6 dígitos de tu aplicación autenticadora.
                 </p>
                 <form onSubmit={handleVerifyOtp} className="space-y-4 max-w-xs mx-auto">
@@ -435,7 +435,7 @@ export const LoginPage: React.FC = () => {
                     placeholder="000 000"
                     value={otpCode}
                     onChange={(e) => setOtpCode(e.target.value)}
-                    className="w-full text-center tracking-widest text-xl font-mono py-2.5 rounded-xl border border-zinc-700 bg-zinc-900 text-white focus:outline-none focus:border-purple-500"
+                    className="w-full text-center tracking-widest text-xl font-mono py-2.5 rounded-xl border border-slate-300 dark:border-zinc-700 bg-slate-50 dark:bg-zinc-900 text-slate-900 dark:text-white focus:outline-none focus:border-purple-500"
                   />
                   <button
                     type="submit"
@@ -451,10 +451,10 @@ export const LoginPage: React.FC = () => {
         </div>
 
         {/* Footer Link & SSL Badge */}
-        <div className="mt-5 flex items-center justify-between text-xs text-zinc-500 px-2">
+        <div className="mt-5 flex items-center justify-between text-xs text-slate-500 dark:text-zinc-500 px-2">
           <Link
             to="/"
-            className="inline-flex items-center gap-1.5 text-zinc-400 hover:text-white transition group"
+            className="inline-flex items-center gap-1.5 text-slate-600 hover:text-slate-900 dark:text-zinc-400 dark:hover:text-white transition group"
           >
             <ArrowLeft className="w-3.5 h-3.5 transition-transform group-hover:-translate-x-1" />
             <span>Volver al inicio de Tattoo Hub</span>
