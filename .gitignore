@@ -24,8 +24,16 @@ DOTENV_Supabase.txt
 *.p12
 credentials.json
 *serviceAccount*.json
+*service-account*.json
+*serviceaccount*.json
+firebase-service-account.json
+*firebase-service-account*.json
 *secret*.json
 secrets.json
+*.p8
+id_rsa
+id_ed25519
+*.kdbx
 
 # Respaldos de base de datos y dumps con datos sensibles
 *.dump

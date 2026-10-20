@@ -193,18 +193,18 @@ export const TattoosOverviewTab: React.FC<TattoosOverviewTabProps> = ({
     <div className="space-y-10">
       {/* Quick Actions Grid */}
       <section>
-        <h2 className="text-xl font-bold text-white mb-4 flex items-center gap-2">
+        <h2 className="text-xl font-bold text-slate-900 dark:text-white mb-4 flex items-center gap-2">
           <Activity className="text-primary" size={20} /> {t.quickActions}
         </h2>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {/* Card 1: Explorar Artistas & Mapa */}
-          <div className="bg-gray-800/80 backdrop-blur border border-gray-700/60 rounded-xl p-6 hover:border-primary/50 transition-all hover:shadow-lg flex flex-col justify-between">
+          <div className="backdrop-blur-xl bg-white/75 dark:bg-zinc-900/60 border border-slate-200/80 dark:border-white/10 rounded-xl p-6 hover:border-primary/50 transition-all shadow-sm hover:shadow-md dark:shadow-none flex flex-col justify-between">
             <div>
               <div className="w-12 h-12 rounded-xl bg-purple-500/10 border border-purple-500/30 flex items-center justify-center text-purple-400 mb-4">
                 <Compass size={24} />
               </div>
-              <h3 className="text-lg font-bold text-white mb-2">{t.exploreArtists}</h3>
-              <p className="text-gray-300 text-sm leading-relaxed mb-4">
+              <h3 className="text-lg font-bold text-slate-900 dark:text-white mb-2">{t.exploreArtists}</h3>
+              <p className="text-slate-600 dark:text-zinc-300 text-sm leading-relaxed mb-4">
                 {t.exploreArtistsDesc}
               </p>
             </div>
@@ -217,13 +217,13 @@ export const TattoosOverviewTab: React.FC<TattoosOverviewTabProps> = ({
           </div>
 
           {/* Card 2: Mis Citas / Mensajes */}
-          <div className="bg-gray-800/80 backdrop-blur border border-gray-700/60 rounded-xl p-6 hover:border-primary/50 transition-all hover:shadow-lg flex flex-col justify-between">
+          <div className="backdrop-blur-xl bg-white/75 dark:bg-zinc-900/60 border border-slate-200/80 dark:border-white/10 rounded-xl p-6 hover:border-primary/50 transition-all shadow-sm hover:shadow-md dark:shadow-none flex flex-col justify-between">
             <div>
               <div className="w-12 h-12 rounded-xl bg-blue-500/10 border border-blue-500/30 flex items-center justify-center text-blue-400 mb-4">
                 <MessageCircle size={24} />
               </div>
-              <h3 className="text-lg font-bold text-white mb-2">{t.myMessages}</h3>
-              <p className="text-gray-300 text-sm leading-relaxed mb-4">
+              <h3 className="text-lg font-bold text-slate-900 dark:text-white mb-2">{t.myMessages}</h3>
+              <p className="text-slate-600 dark:text-zinc-300 text-sm leading-relaxed mb-4">
                 {t.myMessagesDesc}
               </p>
             </div>
@@ -236,13 +236,13 @@ export const TattoosOverviewTab: React.FC<TattoosOverviewTabProps> = ({
           </div>
 
           {/* Card 3: Catálogo General */}
-          <div className="bg-gray-800/80 backdrop-blur border border-gray-700/60 rounded-xl p-6 hover:border-primary/50 transition-all hover:shadow-lg flex flex-col justify-between">
+          <div className="backdrop-blur-xl bg-white/75 dark:bg-zinc-900/60 border border-slate-200/80 dark:border-white/10 rounded-xl p-6 hover:border-primary/50 transition-all shadow-sm hover:shadow-md dark:shadow-none flex flex-col justify-between">
             <div>
               <div className="w-12 h-12 rounded-xl bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center text-emerald-400 mb-4">
                 <Sparkles size={24} />
               </div>
-              <h3 className="text-lg font-bold text-white mb-2">{t.catalogStyles}</h3>
-              <p className="text-gray-300 text-sm leading-relaxed mb-4">
+              <h3 className="text-lg font-bold text-slate-900 dark:text-white mb-2">{t.catalogStyles}</h3>
+              <p className="text-slate-600 dark:text-zinc-300 text-sm leading-relaxed mb-4">
                 {t.catalogStylesDesc}
               </p>
             </div>
@@ -257,11 +257,11 @@ export const TattoosOverviewTab: React.FC<TattoosOverviewTabProps> = ({
       </section>
 
       {/* Section: Seguimiento de Tatuajes & Curación */}
-      <section className="bg-gray-800/60 border border-gray-700/80 rounded-2xl p-6 md:p-8 shadow-xl">
-        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6 pb-4 border-b border-gray-700">
+      <section className="backdrop-blur-xl bg-white/80 dark:bg-zinc-900/60 border border-slate-200/80 dark:border-white/10 rounded-2xl p-6 md:p-8 shadow-xl dark:shadow-2xl">
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6 pb-4 border-b border-slate-200/80 dark:border-gray-700">
           <div>
             <div className="flex items-center gap-3">
-              <h2 className="text-xl md:text-2xl font-bold text-white">
+              <h2 className="text-xl md:text-2xl font-bold text-slate-900 dark:text-white">
                 {t.trackingTitle}
               </h2>
               {isVip ? (
@@ -274,7 +274,7 @@ export const TattoosOverviewTab: React.FC<TattoosOverviewTabProps> = ({
                 </span>
               )}
             </div>
-            <p className="text-gray-400 text-sm mt-1">{t.trackingDesc}</p>
+            <p className="text-slate-600 dark:text-gray-400 text-sm mt-1">{t.trackingDesc}</p>
           </div>
 
           <div className="flex items-center gap-3">
@@ -302,7 +302,7 @@ export const TattoosOverviewTab: React.FC<TattoosOverviewTabProps> = ({
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
           <div
             onClick={() => onOpenTracking('Fase 1: Limpieza & Primer Vendaje')}
-            className="bg-gray-900/80 border border-gray-700 hover:border-primary/50 cursor-pointer rounded-xl p-4 transition hover:bg-gray-900"
+            className="backdrop-blur-md bg-white/70 dark:bg-zinc-950/60 border border-slate-200/80 dark:border-white/10 hover:border-primary/50 cursor-pointer rounded-xl p-4 transition hover:bg-white/95 dark:hover:bg-zinc-900/80 shadow-sm"
           >
             <div className="flex items-center justify-between mb-2">
               <span className="text-xs font-semibold text-primary uppercase tracking-wide">
@@ -310,13 +310,13 @@ export const TattoosOverviewTab: React.FC<TattoosOverviewTabProps> = ({
               </span>
               <span className="text-xs text-gray-400">{t.phase1Days}</span>
             </div>
-            <h4 className="font-bold text-white text-base mb-1">{t.phase1}</h4>
-            <p className="text-xs text-gray-300 leading-relaxed">{t.phase1Desc}</p>
+            <h4 className="font-bold text-slate-900 dark:text-white text-base mb-1">{t.phase1}</h4>
+            <p className="text-xs text-slate-600 dark:text-zinc-300 leading-relaxed">{t.phase1Desc}</p>
           </div>
 
           <div
             onClick={() => onOpenTracking('Fase 2: Descamación & Hidratación')}
-            className="bg-gray-900/80 border border-gray-700 hover:border-primary/50 cursor-pointer rounded-xl p-4 transition hover:bg-gray-900"
+            className="backdrop-blur-md bg-white/70 dark:bg-zinc-950/60 border border-slate-200/80 dark:border-white/10 hover:border-primary/50 cursor-pointer rounded-xl p-4 transition hover:bg-white/95 dark:hover:bg-zinc-900/80 shadow-sm"
           >
             <div className="flex items-center justify-between mb-2">
               <span className="text-xs font-semibold text-primary uppercase tracking-wide">
@@ -324,13 +324,13 @@ export const TattoosOverviewTab: React.FC<TattoosOverviewTabProps> = ({
               </span>
               <span className="text-xs text-gray-400">{t.phase2Days}</span>
             </div>
-            <h4 className="font-bold text-white text-base mb-1">{t.phase2}</h4>
-            <p className="text-xs text-gray-300 leading-relaxed">{t.phase2Desc}</p>
+            <h4 className="font-bold text-slate-900 dark:text-white text-base mb-1">{t.phase2}</h4>
+            <p className="text-xs text-slate-600 dark:text-zinc-300 leading-relaxed">{t.phase2Desc}</p>
           </div>
 
           <div
             onClick={() => onOpenTracking('Fase 3: Cicatrización & Protección')}
-            className="bg-gray-900/80 border border-gray-700 hover:border-primary/50 cursor-pointer rounded-xl p-4 transition hover:bg-gray-900"
+            className="backdrop-blur-md bg-white/70 dark:bg-zinc-950/60 border border-slate-200/80 dark:border-white/10 hover:border-primary/50 cursor-pointer rounded-xl p-4 transition hover:bg-white/95 dark:hover:bg-zinc-900/80 shadow-sm"
           >
             <div className="flex items-center justify-between mb-2">
               <span className="text-xs font-semibold text-primary uppercase tracking-wide">
@@ -338,22 +338,22 @@ export const TattoosOverviewTab: React.FC<TattoosOverviewTabProps> = ({
               </span>
               <span className="text-xs text-gray-400">{t.phase3Days}</span>
             </div>
-            <h4 className="font-bold text-white text-base mb-1">{t.phase3}</h4>
-            <p className="text-xs text-gray-300 leading-relaxed">{t.phase3Desc}</p>
+            <h4 className="font-bold text-slate-900 dark:text-white text-base mb-1">{t.phase3}</h4>
+            <p className="text-xs text-slate-600 dark:text-zinc-300 leading-relaxed">{t.phase3Desc}</p>
           </div>
         </div>
 
         {/* VIP Feature Highlights Box */}
-        <div className="bg-gray-900/90 border border-primary/30 rounded-xl p-5 flex flex-col md:flex-row items-center justify-between gap-4">
+        <div className="backdrop-blur-md bg-violet-50/80 dark:bg-zinc-900/90 border border-primary/30 rounded-xl p-5 flex flex-col md:flex-row items-center justify-between gap-4 shadow-sm">
           <div className="flex items-center gap-4">
             <div className="w-12 h-12 rounded-full bg-primary/20 border border-primary/40 flex items-center justify-center text-primary shrink-0">
               <Heart size={22} />
             </div>
             <div>
-              <h4 className="font-bold text-white text-sm md:text-base">
+              <h4 className="font-bold text-slate-900 dark:text-white text-sm md:text-base">
                 {t.vipBannerTitle}
               </h4>
-              <p className="text-xs md:text-sm text-gray-400">
+              <p className="text-xs md:text-sm text-slate-600 dark:text-gray-400">
                 {t.vipBannerDesc}
               </p>
             </div>
@@ -382,21 +382,21 @@ export const TattoosOverviewTab: React.FC<TattoosOverviewTabProps> = ({
 
         {/* Saved VIP History Records */}
         {isVip && savedEntries.length > 0 && (
-          <div className="mt-6 pt-6 border-t border-gray-700/80">
-            <h3 className="text-sm font-bold text-gray-300 mb-3 uppercase tracking-wider">
+          <div className="mt-6 pt-6 border-t border-slate-200/80 dark:border-gray-700/80">
+            <h3 className="text-sm font-bold text-slate-700 dark:text-gray-300 mb-3 uppercase tracking-wider">
               {t.recentHistory}
             </h3>
             <div className="space-y-3">
               {savedEntries.map((entry, idx) => (
                 <div
                   key={idx}
-                  className="bg-gray-900/60 border border-gray-800 rounded-xl p-3.5 flex items-start justify-between gap-4"
+                  className="backdrop-blur-md bg-white/80 dark:bg-zinc-900/60 border border-slate-200 dark:border-gray-800 rounded-xl p-3.5 flex items-start justify-between gap-4 shadow-sm"
                 >
                   <div>
                     <span className="text-xs font-bold text-primary block mb-0.5">
                       {entry.stage}
                     </span>
-                    <p className="text-sm text-gray-200">{entry.notes}</p>
+                    <p className="text-sm text-slate-800 dark:text-gray-200">{entry.notes}</p>
                   </div>
                   <span className="text-xs text-gray-500 shrink-0">{entry.date}</span>
                 </div>
@@ -409,7 +409,7 @@ export const TattoosOverviewTab: React.FC<TattoosOverviewTabProps> = ({
       {/* Anchor Section: Tattoo Progress Gallery Bridge (R3) */}
       <section
         id="tattoo-progress-anchor"
-        className="bg-gray-800/60 border border-white/10 rounded-2xl p-6 md:p-8 shadow-xl relative overflow-hidden"
+        className="backdrop-blur-xl bg-white/80 dark:bg-zinc-900/60 border border-slate-200/80 dark:border-white/10 rounded-2xl p-6 md:p-8 shadow-xl dark:shadow-2xl relative overflow-hidden"
       >
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
           <div className="flex items-center gap-3">
@@ -417,10 +417,10 @@ export const TattoosOverviewTab: React.FC<TattoosOverviewTabProps> = ({
               <Camera size={20} />
             </div>
             <div>
-              <h3 className="text-lg md:text-xl font-bold text-white">
+              <h3 className="text-lg md:text-xl font-bold text-slate-900 dark:text-white">
                 {t.galleryAnchorTitle}
               </h3>
-              <p className="text-xs md:text-sm text-gray-400">
+              <p className="text-xs md:text-sm text-slate-600 dark:text-gray-400">
                 {t.galleryAnchorSubtitle}
               </p>
             </div>

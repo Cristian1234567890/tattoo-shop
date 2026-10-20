@@ -30,6 +30,7 @@ import { Navbar, NavbarContext } from './components/common/Navbar';
 import { QaEnvironmentBanner } from './components/common/QaEnvironmentBanner';
 import { Footer, FooterContext } from './components/common/Footer';
 import { PageTransition } from './components/common/PageTransition';
+import { TattooPatternBackground } from './components/common/TattooPatternBackground';
 import './index.css';
 
 export const OnboardingGate: React.FC = () => {
@@ -192,6 +193,9 @@ export const AnimatedAppRoutes: React.FC = () => {
               </>
             )}
           </div>
+
+          {/* Dynamic Tattoo Watermark Pattern (TH-46) */}
+          <TattooPatternBackground />
 
           {/* Segregated QA Environment banner (only active on QA/Staging environments) */}
           <div className="relative z-50">

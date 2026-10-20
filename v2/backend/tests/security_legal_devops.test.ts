@@ -2,6 +2,7 @@ import { describe, it } from 'node:test';
 import assert from 'node:assert/strict';
 import { calculateAge, AuthService } from '../src/services/auth.service';
 import { renderMailTemplate } from '../src/templates/mail.template';
+import { getSecureCookieOptions, validateCookieSecurityString } from '../src/utils/cookie';
 
 describe('TH-7 & TH-11: Security, Legal & DevOps Hardening Tests', () => {
 
@@ -159,6 +160,70 @@ describe('TH-7 & TH-11: Security, Legal & DevOps Hardening Tests', () => {
           await new Promise<void>((resolve) => server.close(() => resolve()));
         }
       }
+    });
+  });
+
+  describe('5. HTTP Security Headers Hardening (OWASP 2025)', () => {
+    let server: any;
+    let baseUrl: string;
+
+    it('should return all required OWASP security headers and suppress X-Powered-By', async () => {
+      const { app } = await import('../src/app');
+      await new Promise<void>((resolve) => {
+        server = app.listen(0, () => {
+          const addr = server.address() as { port: number };
+          baseUrl = `http://127.0.0.1:${addr.port}`;
+          resolve();
+        });
+      });
+
+      try {
+        const res = await fetch(`${baseUrl}/health`);
+        assert.strictEqual(res.status, 200);
+
+        // Verify security headers
+        assert.strictEqual(res.headers.get('x-content-type-options'), 'nosniff');
+        assert.strictEqual(res.headers.get('x-frame-options'), 'SAMEORIGIN');
+        assert.strictEqual(res.headers.get('x-xss-protection'), '1; mode=block');
+        assert.strictEqual(
+          res.headers.get('strict-transport-security'),
+          'max-age=31536000; includeSubDomains; preload'
+        );
+        assert.strictEqual(res.headers.get('referrer-policy'), 'strict-origin-when-cross-origin');
+        assert.strictEqual(
+          res.headers.get('permissions-policy'),
+          'camera=(), microphone=(), geolocation=(self)'
+        );
+
+        // Verify server fingerprinting suppression
+        assert.strictEqual(res.headers.get('x-powered-by'), null);
+      } finally {
+        if (server) {
+          await new Promise<void>((resolve) => server.close(() => resolve()));
+        }
+      }
+    });
+  });
+
+  describe('6. Cookie Handling Verification (cookie-debugging guidelines)', () => {
+    it('should generate secure cookie options with HttpOnly, SameSite=lax and root path', () => {
+      const options = getSecureCookieOptions();
+      assert.strictEqual(options.httpOnly, true, 'Cookies must have HttpOnly enabled to protect against XSS');
+      assert.strictEqual(options.sameSite, 'lax', 'Cookies must have SameSite=lax for CSRF mitigation');
+      assert.strictEqual(options.path, '/', 'Cookies must be bound to root path');
+    });
+
+    it('should validate cookie security strings correctly', () => {
+      const validCookie = 'session_id=abc123xyz; Path=/; HttpOnly; SameSite=Lax';
+      const checkValid = validateCookieSecurityString(validCookie);
+      assert.strictEqual(checkValid.valid, true);
+      assert.strictEqual(checkValid.missingAttributes.length, 0);
+
+      const insecureCookie = 'session_id=abc123xyz; Path=/';
+      const checkInsecure = validateCookieSecurityString(insecureCookie);
+      assert.strictEqual(checkInsecure.valid, false);
+      assert.ok(checkInsecure.missingAttributes.includes('HttpOnly'));
+      assert.ok(checkInsecure.missingAttributes.includes('SameSite=Lax|Strict'));
     });
   });
 });

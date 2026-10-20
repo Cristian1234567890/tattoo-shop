@@ -22,11 +22,11 @@ export const HomePage: React.FC = () => {
     <div className="min-h-screen text-slate-800 dark:text-zinc-300 font-sans selection:bg-violet-500/30 flex flex-col">
       {/* 1. Hero Section */}
       <section className="relative px-6 py-24 md:py-32 flex flex-col items-center text-center overflow-hidden">
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-violet-900/25 via-[#0B0B0E] to-[#0B0B0E] -z-10" />
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-violet-200/50 via-slate-50 to-slate-100 dark:from-violet-900/25 dark:via-[#0B0B0E] dark:to-[#0B0B0E] -z-10" />
         <motion.h1
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          className="text-5xl md:text-7xl font-extrabold text-white tracking-tight max-w-4xl leading-[1.1]"
+          className="text-5xl md:text-7xl font-extrabold text-slate-900 dark:text-white tracking-tight max-w-4xl leading-[1.1]"
         >
           El punto de encuentro entre{' '}
           <span className="text-transparent bg-clip-text bg-gradient-to-r from-violet-400 via-fuchsia-400 to-indigo-300 drop-shadow-[0_0_20px_rgba(168,85,247,0.35)]">
@@ -38,7 +38,7 @@ export const HomePage: React.FC = () => {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.1 }}
-          className="mt-8 text-lg md:text-xl text-zinc-400 max-w-2xl leading-relaxed"
+          className="mt-8 text-lg md:text-xl text-slate-600 dark:text-zinc-400 max-w-2xl leading-relaxed"
         >
           Conecta directamente con tatuadores y estudios independientes. Explora flash books, consulta
           disponibilidad y agenda tu próxima sesión sin comisiones corporativas.
@@ -423,17 +423,17 @@ export const HomePage: React.FC = () => {
       </section>
 
       {/* 7. Cultura de Taller Pre-Footer CTA Banner */}
-      <section className="border-t border-zinc-900 bg-gradient-to-b from-[#0B0B0E] to-zinc-950 py-24 px-6 text-center">
+      <section className="border-t border-slate-200 dark:border-zinc-900 bg-gradient-to-b from-slate-100 via-white to-slate-100 dark:from-[#0B0B0E] dark:to-zinc-950 py-24 px-6 text-center">
         <div className="max-w-4xl mx-auto">
-          <div className="inline-flex items-center justify-center px-3 py-1 rounded-full bg-zinc-900 border border-zinc-800 text-xs font-bold tracking-widest uppercase text-zinc-400 mb-6">
+          <div className="inline-flex items-center justify-center px-3 py-1 rounded-full bg-slate-200/90 dark:bg-zinc-900 border border-slate-300 dark:border-zinc-800 text-xs font-bold tracking-widest uppercase text-slate-700 dark:text-zinc-400 mb-6">
             CULTURA DE TALLER
           </div>
-          <h2 className="text-4xl md:text-5xl font-bold text-white mb-6 leading-tight">
+          <h2 className="text-4xl md:text-5xl font-bold text-slate-900 dark:text-white mb-6 leading-tight">
             El arte queda en la piel.
             <br />
             Tu estudio merece visibilidad real.
           </h2>
-          <p className="text-zinc-400 mb-10 max-w-xl mx-auto text-base leading-relaxed">
+          <p className="text-slate-600 dark:text-zinc-400 mb-10 max-w-xl mx-auto text-base leading-relaxed">
             Súmate hoy a la plataforma independiente de arte corporal. Sin algoritmos engañosos ni comisiones ocultas.
           </p>
           <div className="flex flex-col sm:flex-row justify-center gap-4">
@@ -445,7 +445,7 @@ export const HomePage: React.FC = () => {
             </Link>
             <Link
               to="/hub"
-              className="bg-zinc-900 hover:bg-zinc-800 text-white border border-zinc-800 px-8 py-3.5 rounded-xl font-bold transition-colors cursor-pointer"
+              className="bg-white dark:bg-zinc-900 hover:bg-slate-100 dark:hover:bg-zinc-800 text-slate-900 dark:text-white border border-slate-300 dark:border-zinc-800 px-8 py-3.5 rounded-xl font-bold transition-colors cursor-pointer shadow-sm"
             >
               Explorar Mapa de Estudios
             </Link>

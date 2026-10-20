@@ -9,12 +9,19 @@ import progressRoutes from './routes/progress.routes';
 import hubRoutes from './routes/hub.routes';
 import { errorHandler } from './middlewares/error.middleware';
 import { generalApiLimiter } from './middlewares/rateLimit.middleware';
+import { securityHeadersMiddleware } from './middlewares/security.middleware';
 
 export function createApp(): Application {
   const app: Application = express();
 
   // Trust reverse proxy (Vercel / Cloudflare) for accurate IP-based rate limiting
   app.set('trust proxy', 1);
+
+  // Disable Express fingerprinting header (OWASP Information Disclosure Prevention)
+  app.disable('x-powered-by');
+
+  // OWASP 2025 Security Headers Middleware (Helmet-equivalent hardening)
+  app.use(securityHeadersMiddleware);
 
   // Cross-Origin Resource Sharing
   app.use(cors());

@@ -91,21 +91,21 @@ export const AgendaTracking: React.FC = () => {
   };
 
   return (
-    <div className="atelier-card p-6 border border-white/10 rounded-2xl bg-[#13131A]/90 text-white shadow-2xl">
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6 pb-4 border-b border-white/5">
+    <div className="atelier-card p-6 border border-slate-200/80 dark:border-white/10 rounded-2xl backdrop-blur-xl bg-white/85 dark:bg-[#13131A]/90 text-slate-900 dark:text-white shadow-xl dark:shadow-2xl">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6 pb-4 border-b border-slate-200/80 dark:border-white/5">
         <div>
-          <h3 className="text-xl font-bold text-white tracking-wide flex items-center gap-2">
+          <h3 className="text-xl font-bold text-slate-900 dark:text-white tracking-wide flex items-center gap-2">
             <Calendar className="w-5 h-5 text-violet-400" />
             Agenda del Atelier
           </h3>
-          <p className="text-xs text-zinc-400 mt-1">
+          <p className="text-xs text-slate-600 dark:text-zinc-400 mt-1">
             Seguimiento de citas presenciales, sesiones de tatuaje y perforaciones biocompatibles.
           </p>
         </div>
         <button
           onClick={fetchAgenda}
           disabled={loading}
-          className="self-start sm:self-auto px-3 py-1.5 text-xs font-medium bg-white/5 hover:bg-white/10 border border-white/10 rounded-lg text-zinc-300 transition flex items-center gap-1.5"
+          className="self-start sm:self-auto px-3 py-1.5 text-xs font-medium bg-slate-100 hover:bg-slate-200 dark:bg-white/5 dark:hover:bg-white/10 border border-slate-300 dark:border-white/10 rounded-lg text-slate-700 dark:text-zinc-300 transition flex items-center gap-1.5"
           title="Actualizar agenda"
         >
           <RefreshCw className={`w-3.5 h-3.5 ${loading ? 'animate-spin' : ''}`} />
@@ -118,7 +118,7 @@ export const AgendaTracking: React.FC = () => {
           {[1, 2, 3].map((i) => (
             <div
               key={i}
-              className="p-5 rounded-xl border border-white/5 bg-[#1A1A24]/60 animate-pulse space-y-3"
+              className="p-5 rounded-xl border border-slate-200 dark:border-white/5 bg-slate-100/70 dark:bg-[#1A1A24]/60 animate-pulse space-y-3"
             >
               <div className="flex justify-between items-center">
                 <div className="h-4 bg-zinc-700/60 rounded w-1/3"></div>
@@ -141,10 +141,10 @@ export const AgendaTracking: React.FC = () => {
           </button>
         </div>
       ) : appointments.length === 0 ? (
-        <div className="p-8 text-center border border-dashed border-white/10 rounded-xl">
+        <div className="p-8 text-center border border-dashed border-slate-300 dark:border-white/10 rounded-xl">
           <Calendar className="w-10 h-10 text-zinc-500 mx-auto mb-3" />
-          <h4 className="text-sm font-semibold text-zinc-300">No hay citas en tu agenda</h4>
-          <p className="text-xs text-zinc-500 mt-1 max-w-sm mx-auto">
+          <h4 className="text-sm font-semibold text-slate-700 dark:text-zinc-300">No hay citas en tu agenda</h4>
+          <p className="text-xs text-slate-500 dark:text-zinc-500 mt-1 max-w-sm mx-auto">
             Cuando reserves una sesión de tatuaje o piercing con nuestros artistas residentes, aparecerá aquí.
           </p>
         </div>
@@ -153,11 +153,11 @@ export const AgendaTracking: React.FC = () => {
           {appointments.map((appt) => (
             <div
               key={appt.id}
-              className="atelier-card-hover p-5 rounded-xl border border-white/10 bg-[#1A1A24]/80 transition duration-300 space-y-3"
+              className="atelier-card-hover p-5 rounded-xl border border-slate-200/80 dark:border-white/10 backdrop-blur-md bg-white/70 dark:bg-[#1A1A24]/80 transition duration-300 space-y-3 shadow-sm dark:shadow-none"
             >
               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
                 <div>
-                  <h4 className="font-semibold text-white text-base">
+                  <h4 className="font-semibold text-slate-900 dark:text-white text-base">
                     {appt.service_title || 'Sesión en Atelier'}
                   </h4>
                   <p className="text-xs text-violet-300 flex items-center gap-1.5 mt-0.5">
@@ -168,7 +168,7 @@ export const AgendaTracking: React.FC = () => {
                 <div>{getStatusBadge(appt.status)}</div>
               </div>
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs text-zinc-300 pt-2 border-t border-white/5">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs text-slate-600 dark:text-zinc-300 pt-2 border-t border-slate-200/60 dark:border-white/5">
                 <div className="flex items-center gap-2">
                   <Clock className="w-4 h-4 text-violet-400 flex-shrink-0" />
                   <span className="capitalize">{formatAppointmentDate(appt.start_time)}</span>
@@ -180,8 +180,8 @@ export const AgendaTracking: React.FC = () => {
               </div>
 
               {appt.notes && (
-                <div className="p-3 rounded-lg bg-black/40 border border-white/5 text-xs text-zinc-400">
-                  <span className="text-zinc-500 font-medium">Notas técnicas: </span>
+                <div className="p-3 rounded-lg bg-slate-100/90 dark:bg-black/40 border border-slate-200/60 dark:border-white/5 text-xs text-slate-700 dark:text-zinc-400">
+                  <span className="text-slate-500 dark:text-zinc-500 font-medium">Notas técnicas: </span>
                   {appt.notes}
                 </div>
               )}

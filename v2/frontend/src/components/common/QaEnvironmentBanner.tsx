@@ -90,75 +90,75 @@ export const QaEnvironmentBanner: React.FC = () => {
       {/* Security Restrictions Modal */}
       {isModalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md animate-in fade-in duration-200">
-          <div className="relative w-full max-w-lg bg-zinc-950 border border-amber-500/30 rounded-2xl p-6 shadow-2xl text-zinc-200">
-            <div className="flex items-start justify-between gap-4 mb-4 pb-3 border-b border-zinc-800">
+          <div className="relative w-full max-w-lg bg-white dark:bg-zinc-950 border border-amber-500/40 rounded-2xl p-6 shadow-2xl text-slate-800 dark:text-zinc-200">
+            <div className="flex items-start justify-between gap-4 mb-4 pb-3 border-b border-slate-200 dark:border-zinc-800">
               <div className="flex items-center gap-2.5">
                 <div className="p-2 rounded-xl bg-amber-500/10 border border-amber-500/30 text-amber-400">
                   <ShieldAlert className="w-6 h-6" />
                 </div>
                 <div>
-                  <h3 className="text-base font-bold text-white">
+                  <h3 className="text-base font-bold text-slate-900 dark:text-white">
                     Protocolo de Segregación y Blindaje QA
                   </h3>
-                  <p className="text-xs text-amber-300 font-mono">
+                  <p className="text-xs text-amber-600 dark:text-amber-300 font-mono">
                     Esquema de Base de Datos: <span className="font-bold underline">{activeSchema}</span>
                   </p>
                 </div>
               </div>
               <button
                 onClick={() => setIsModalOpen(false)}
-                className="p-1 rounded-lg text-zinc-400 hover:text-white hover:bg-zinc-800 transition-colors cursor-pointer"
+                className="p-1 rounded-lg text-slate-400 hover:text-slate-900 dark:text-zinc-400 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-zinc-800 transition-colors cursor-pointer"
               >
                 <X className="w-5 h-5" />
               </button>
             </div>
 
             <div className="space-y-3.5 text-xs">
-              <div className="p-3 rounded-xl bg-zinc-900/80 border border-zinc-800 flex items-start gap-3">
+              <div className="p-3 rounded-xl bg-slate-50/90 dark:bg-zinc-900/80 border border-slate-200 dark:border-zinc-800 flex items-start gap-3">
                 <Database className="w-4 h-4 text-violet-400 mt-0.5 shrink-0" />
                 <div>
-                  <h4 className="font-semibold text-zinc-100">Espejo Aislado en Supabase (Schema QA)</h4>
-                  <p className="text-zinc-400 text-[11px] mt-0.5">
-                    Todas las consultas y escrituras se ejecutan en el esquema dedicado <code className="text-amber-300 bg-amber-950/40 px-1 py-0.5 rounded">qa</code>. Los perfiles, clientes reales y citas del ambiente productivo (<code className="text-zinc-300">public</code>) están completamente aislados y protegidos.
+                  <h4 className="font-semibold text-slate-900 dark:text-zinc-100">Espejo Aislado en Supabase (Schema QA)</h4>
+                  <p className="text-slate-600 dark:text-zinc-400 text-[11px] mt-0.5">
+                    Todas las consultas y escrituras se ejecutan en el esquema dedicado <code className="text-amber-700 dark:text-amber-300 bg-amber-100 dark:bg-amber-950/40 px-1 py-0.5 rounded font-bold">qa</code>. Los perfiles, clientes reales y citas del ambiente productivo (<code className="text-slate-800 dark:text-zinc-300 font-semibold">public</code>) están completamente aislados y protegidos.
                   </p>
                 </div>
               </div>
 
-              <div className="p-3 rounded-xl bg-zinc-900/80 border border-zinc-800 flex items-start gap-3">
+              <div className="p-3 rounded-xl bg-slate-50/90 dark:bg-zinc-900/80 border border-slate-200 dark:border-zinc-800 flex items-start gap-3">
                 <Lock className="w-4 h-4 text-amber-400 mt-0.5 shrink-0" />
                 <div>
-                  <h4 className="font-semibold text-zinc-100">Segregación de Usuarios Externos</h4>
-                  <p className="text-zinc-400 text-[11px] mt-0.5">
+                  <h4 className="font-semibold text-slate-900 dark:text-zinc-100">Segregación de Usuarios Externos</h4>
+                  <p className="text-slate-600 dark:text-zinc-400 text-[11px] mt-0.5">
                     Cualquier registro realizado en este entorno se etiqueta como <span className="text-amber-300 font-semibold">[QA Sandbox User]</span>. No otorga acceso ni validez comercial en el entorno de producción.
                   </p>
                 </div>
               </div>
 
-              <div className="p-3 rounded-xl bg-zinc-900/80 border border-zinc-800 flex items-start gap-3">
+              <div className="p-3 rounded-xl bg-slate-50/90 dark:bg-zinc-900/80 border border-slate-200 dark:border-zinc-800 flex items-start gap-3">
                 <AlertTriangle className="w-4 h-4 text-emerald-400 mt-0.5 shrink-0" />
                 <div>
-                  <h4 className="font-semibold text-zinc-100">Blindaje de Pasarelas y Transacciones Reales</h4>
-                  <p className="text-zinc-400 text-[11px] mt-0.5">
+                  <h4 className="font-semibold text-slate-900 dark:text-zinc-100">Blindaje de Pasarelas y Transacciones Reales</h4>
+                  <p className="text-slate-600 dark:text-zinc-400 text-[11px] mt-0.5">
                     Los flujos de cobro con tarjeta están protegidos en modo simulación/sandbox. No se efectúan cargos a cuentas bancarias reales.
                   </p>
                 </div>
               </div>
 
-              <div className="p-3 rounded-xl bg-zinc-900/80 border border-zinc-800 flex items-start gap-3">
+              <div className="p-3 rounded-xl bg-slate-50/90 dark:bg-zinc-900/80 border border-slate-200 dark:border-zinc-800 flex items-start gap-3">
                 <CheckCircle className="w-4 h-4 text-blue-400 mt-0.5 shrink-0" />
                 <div>
-                  <h4 className="font-semibold text-zinc-100">Aislamiento de Notificaciones</h4>
-                  <p className="text-zinc-400 text-[11px] mt-0.5">
+                  <h4 className="font-semibold text-slate-900 dark:text-zinc-100">Aislamiento de Notificaciones</h4>
+                  <p className="text-slate-600 dark:text-zinc-400 text-[11px] mt-0.5">
                     Los envíos de correo y notificaciones a clientes están encapsulados para evitar dispersión de correos o confusión con clientes verdaderos.
                   </p>
                 </div>
               </div>
             </div>
 
-            <div className="mt-5 pt-3 border-t border-zinc-800 flex justify-end">
+            <div className="mt-5 pt-3 border-t border-slate-200 dark:border-zinc-800 flex justify-end">
               <button
                 onClick={() => setIsModalOpen(false)}
-                className="px-4 py-2 rounded-xl text-xs font-semibold bg-amber-500/20 hover:bg-amber-500/30 border border-amber-500/40 text-amber-200 hover:text-white transition-all cursor-pointer"
+                className="px-4 py-2 rounded-xl text-xs font-semibold bg-amber-500/20 hover:bg-amber-500/30 border border-amber-500/40 text-amber-900 dark:text-amber-200 hover:text-amber-950 dark:hover:text-white transition-all cursor-pointer"
               >
                 Entendido, Continuar Pruebas
               </button>
