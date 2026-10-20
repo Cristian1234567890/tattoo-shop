@@ -149,12 +149,7 @@ export const Navbar: React.FC<NavbarProps> = ({ forceRender = false }) => {
             >
               {t('nav.explore_map')}
             </Link>
-            <Link
-              to="/about"
-              className="px-3 py-1.5 rounded-full text-xs xl:text-sm font-medium text-slate-700 hover:text-slate-900 hover:bg-slate-100 dark:text-gray-300 dark:hover:text-white dark:hover:bg-white/10 transition-colors whitespace-nowrap shrink-0"
-            >
-              {t('nav.about')}
-            </Link>
+
           </div>
 
           {/* Desktop Right Actions: Country/Currency Selector + Auth (Right Section) */}
@@ -164,7 +159,7 @@ export const Navbar: React.FC<NavbarProps> = ({ forceRender = false }) => {
               <button
                 id="country-currency-selector-btn"
                 onClick={() => setCurrencyDropdownOpen(!currencyDropdownOpen)}
-                className="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold bg-slate-100 hover:bg-slate-200 dark:bg-white/5 dark:hover:bg-white/10 border border-slate-200 dark:border-white/10 text-slate-700 dark:text-zinc-300 hover:text-slate-900 dark:hover:text-white transition-all cursor-pointer shadow-sm"
+                className="flex items-center justify-center gap-1.5 min-w-[78px] px-2.5 py-1.5 rounded-full text-xs font-semibold bg-slate-100 hover:bg-slate-200 dark:bg-white/5 dark:hover:bg-white/10 border border-slate-200 dark:border-white/10 text-slate-700 dark:text-zinc-300 hover:text-slate-900 dark:hover:text-white transition-all cursor-pointer shadow-sm shrink-0"
                 aria-label="Seleccionar País y Moneda"
               >
                 <span className="text-base leading-none">{countryInfo.flag}</span>
@@ -180,7 +175,7 @@ export const Navbar: React.FC<NavbarProps> = ({ forceRender = false }) => {
                   />
                   <div
                     id="country-currency-dropdown-menu"
-                    className="absolute right-0 mt-2 w-64 bg-zinc-950/95 border border-zinc-800 rounded-2xl shadow-2xl p-2 z-50 backdrop-blur-xl animate-in fade-in slide-in-from-top-1 duration-150"
+                    className="absolute right-0 mt-2 w-64 bg-white/95 dark:bg-zinc-950/95 border border-slate-200 dark:border-zinc-800 rounded-2xl shadow-2xl p-2 z-50 backdrop-blur-xl animate-in fade-in slide-in-from-top-1 duration-150 text-slate-800 dark:text-zinc-200"
                   >
                     <div className="px-2.5 py-1.5 text-[11px] font-bold uppercase tracking-wider text-zinc-400 border-b border-zinc-800/80 mb-1 flex items-center gap-1.5">
                       <Globe className="w-3.5 h-3.5 text-violet-400" />
@@ -231,7 +226,7 @@ export const Navbar: React.FC<NavbarProps> = ({ forceRender = false }) => {
                   setLanguageDropdownOpen(!languageDropdownOpen);
                   setCurrencyDropdownOpen(false);
                 }}
-                className="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold bg-white/5 hover:bg-white/10 border border-white/10 text-zinc-300 hover:text-white transition-all cursor-pointer shadow-sm"
+                className="flex items-center justify-center gap-1.5 w-16 px-2.5 py-1.5 rounded-full text-xs font-semibold bg-slate-100 hover:bg-slate-200 dark:bg-white/5 dark:hover:bg-white/10 border border-slate-200 dark:border-white/10 text-slate-700 dark:text-zinc-300 hover:text-slate-900 dark:hover:text-white transition-all cursor-pointer shadow-sm shrink-0"
                 aria-label="Seleccionar Idioma"
               >
                 <Languages className="w-3.5 h-3.5 text-violet-400" />
@@ -247,7 +242,7 @@ export const Navbar: React.FC<NavbarProps> = ({ forceRender = false }) => {
                   />
                   <div
                     id="language-dropdown-menu"
-                    className="absolute right-0 mt-2 w-44 bg-zinc-950/95 border border-zinc-800 rounded-2xl shadow-2xl p-2 z-50 backdrop-blur-xl animate-in fade-in slide-in-from-top-1 duration-150"
+                    className="absolute right-0 mt-2 w-44 bg-white/95 dark:bg-zinc-950/95 border border-slate-200 dark:border-zinc-800 rounded-2xl shadow-2xl p-2 z-50 backdrop-blur-xl animate-in fade-in slide-in-from-top-1 duration-150 text-slate-800 dark:text-zinc-200"
                   >
                     <div className="px-2.5 py-1.5 text-[11px] font-bold uppercase tracking-wider text-zinc-400 border-b border-zinc-800/80 mb-1 flex items-center gap-1.5">
                       <Languages className="w-3.5 h-3.5 text-violet-400" />

@@ -243,7 +243,7 @@ export const ClientDashboardPage: React.FC = () => {
       <div className="min-h-screen text-slate-800 dark:text-white flex flex-col relative">
         {/* Global Toast Notification */}
         {toastMessage && (
-          <div className="fixed top-20 right-4 z-50 max-w-md animate-bounce">
+          <div className="fixed top-24 left-1/2 -translate-x-1/2 z-50 max-w-md w-full px-4 animate-in fade-in slide-in-from-top-4 duration-200">
             <div
               className={`p-4 rounded-xl border shadow-2xl flex items-center gap-3 backdrop-blur-md ${
                 toastMessage.isError
@@ -270,39 +270,43 @@ export const ClientDashboardPage: React.FC = () => {
 
         {/* VIP Paywall Prompt Modal */}
         {showPaywallModal && (
-          <div className="fixed inset-0 z-50 bg-black/85 backdrop-blur-sm flex items-center justify-center p-4">
-            <div className="bg-gradient-to-b from-gray-900 via-gray-850 to-gray-900 border-2 border-amber-500/50 rounded-2xl max-w-lg w-full p-6 md:p-8 shadow-2xl relative text-center">
+          <div className="fixed inset-0 z-50 bg-black/60 dark:bg-black/85 backdrop-blur-md flex items-center justify-center p-4 animate-in fade-in duration-200">
+            <div className="bg-white/95 dark:bg-gradient-to-b dark:from-zinc-900 dark:via-zinc-850 dark:to-zinc-900 border-2 border-amber-500/50 rounded-2xl max-w-lg w-full p-6 md:p-8 shadow-2xl relative text-center text-slate-900 dark:text-white backdrop-blur-xl">
               <button
                 onClick={() => setShowPaywallModal(false)}
-                className="absolute top-4 right-4 text-gray-400 hover:text-white transition"
+                className="absolute top-4 right-4 text-slate-400 hover:text-slate-900 dark:text-zinc-400 dark:hover:text-white transition cursor-pointer p-1 rounded-lg"
                 aria-label="Cerrar modal"
               >
                 <X size={20} />
               </button>
-              <div className="w-16 h-16 rounded-full bg-amber-500/20 border border-amber-500/40 flex items-center justify-center text-amber-400 mx-auto mb-4">
+              <div className="w-16 h-16 rounded-full bg-amber-500/15 border border-amber-500/40 flex items-center justify-center text-amber-500 mx-auto mb-4">
                 <Lock size={32} />
               </div>
-              <span className="px-3 py-1 rounded-full bg-amber-500/20 text-amber-400 border border-amber-500/30 text-xs font-bold uppercase tracking-wider">
-                Función Exclusiva VIP
+              <span className="px-3 py-1 rounded-full bg-amber-500/15 text-amber-700 dark:text-amber-400 border border-amber-500/30 text-xs font-bold uppercase tracking-wider">
+                {lang === 'en' ? 'VIP Exclusive Feature' : 'Función Exclusiva VIP'}
               </span>
-              <h3 className="text-xl md:text-2xl font-black text-white mt-3 mb-2">
-                Desbloquea el Seguimiento de Tatuajes con Cliente VIP por {formatPrice(4.99)}/mes
+              <h3 className="text-xl md:text-2xl font-black text-slate-900 dark:text-white mt-3 mb-2">
+                {lang === 'en'
+                  ? `Unlock Tattoo Healing Progress with VIP for ${formatPrice(4.99)}/mo`
+                  : `Desbloquea el Seguimiento de Tatuajes con Cliente VIP por ${formatPrice(4.99)}/mes`}
               </h3>
-              <p className="text-gray-300 text-sm leading-relaxed mb-6">
-                Registra cada fase de cicatrización de tus tatuajes, sube fotografías de evolución y accede al historial avanzado con soporte prioritario.
+              <p className="text-slate-600 dark:text-zinc-300 text-sm leading-relaxed mb-6">
+                {lang === 'en'
+                  ? 'Record each healing phase of your tattoos, upload photographic evolution records and access your diary with priority artist support.'
+                  : 'Registra cada fase de cicatrización de tus tatuajes, sube fotografías de evolución y accede al historial avanzado con soporte prioritario.'}
               </p>
               <div className="flex flex-col gap-3">
                 <Link
                   to="/subscription/creditcard"
-                  className="w-full inline-flex items-center justify-center gap-2 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-gray-950 font-bold py-3.5 px-6 rounded-xl shadow-lg transition transform hover:scale-105 text-sm"
+                  className="w-full inline-flex items-center justify-center gap-2 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-gray-950 font-bold py-3.5 px-6 rounded-xl shadow-lg transition transform hover:scale-105 text-sm cursor-pointer"
                 >
-                  <Sparkles size={18} /> Desbloquear Cliente VIP ({formatPrice(4.99)}/mes)
+                  <Sparkles size={18} /> {lang === 'en' ? `Unlock VIP Client (${formatPrice(4.99)}/mo)` : `Desbloquear Cliente VIP (${formatPrice(4.99)}/mes)`}
                 </Link>
                 <button
                   onClick={() => setShowPaywallModal(false)}
-                  className="text-xs text-gray-400 hover:text-gray-200 transition py-1"
+                  className="text-xs text-slate-500 hover:text-slate-800 dark:text-zinc-400 dark:hover:text-zinc-200 transition py-1 cursor-pointer"
                 >
-                  Continuar con cuenta gratuita
+                  {lang === 'en' ? 'Continue with free account' : 'Continuar con cuenta gratuita'}
                 </button>
               </div>
             </div>
@@ -312,7 +316,7 @@ export const ClientDashboardPage: React.FC = () => {
         {/* Registered VIP Progress Modal */}
         {showProgressModal && (
           <div className="fixed inset-0 z-50 bg-black/85 backdrop-blur-sm flex items-center justify-center p-4">
-            <div className="bg-gray-900 border border-emerald-500/40 rounded-2xl max-w-lg w-full p-6 md:p-8 shadow-2xl relative">
+            <div className="bg-white dark:bg-zinc-900 border border-emerald-500/40 rounded-2xl max-w-lg w-full p-6 md:p-8 shadow-2xl relative text-slate-900 dark:text-white">
               <button
                 onClick={() => setShowProgressModal(false)}
                 className="absolute top-4 right-4 text-gray-400 hover:text-white transition"
@@ -325,7 +329,7 @@ export const ClientDashboardPage: React.FC = () => {
                   <CheckCircle size={20} />
                 </div>
                 <div>
-                  <h3 className="text-lg font-bold text-white">Registrar Avance de Cicatrización</h3>
+                  <h3 className="text-lg font-bold text-slate-900 dark:text-white">{lang === "en" ? "Log Healing Progress" : "Registrar Avance de Cicatrización"}</h3>
                   <p className="text-xs text-emerald-400 font-semibold">Cliente VIP Activo</p>
                 </div>
               </div>
