@@ -100,25 +100,25 @@ export const AboutPage: React.FC = () => {
       <div className="flex flex-col min-h-screen text-slate-800 dark:text-white selection:bg-purple-500/30 font-sans">
         <main className="flex-grow flex flex-col items-center">
           {/* Header Institucional */}
-          <section className="relative w-full py-20 md:py-28 flex items-center justify-center border-b border-zinc-800/80 overflow-hidden">
+          <section className="relative w-full py-20 md:py-28 flex items-center justify-center border-b border-slate-200 dark:border-zinc-800/80 overflow-hidden">
             <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[700px] h-[350px] bg-purple-600/15 rounded-full blur-[140px] pointer-events-none -z-10" />
 
             <div className="z-10 text-center px-4 max-w-4xl mx-auto">
-              <span className="inline-block text-[10px] font-bold tracking-widest uppercase bg-purple-950/60 border border-purple-500/30 text-purple-300 px-3.5 py-1 rounded-full mb-4">
+              <span className="inline-block text-[10px] font-bold tracking-widest uppercase bg-purple-100 dark:bg-purple-950/60 border border-purple-300 dark:border-purple-500/30 text-purple-700 dark:text-purple-300 px-3.5 py-1 rounded-full mb-4 shadow-sm">
                 TATTOO HUB ATELIER · IDENTIDAD INSTITUCIONAL
               </span>
 
-              <h1 className="text-3xl md:text-5xl font-black text-white tracking-tight mb-4 leading-tight">
+              <h1 className="text-3xl md:text-5xl font-black text-slate-900 dark:text-white tracking-tight mb-4 leading-tight">
                 Sobre Nosotros
               </h1>
-              <p className="text-zinc-400 text-sm md:text-base max-w-2xl mx-auto leading-relaxed">
+              <p className="text-slate-600 dark:text-zinc-400 text-sm md:text-base max-w-2xl mx-auto leading-relaxed">
                 Nuestra identidad, propósito fundacional y la estrategia que redefine la relación entre el arte corporal, los artistas independientes y los coleccionistas.
               </p>
             </div>
           </section>
 
-          {/* Bloque 1: Misión y Visión */}
-          <section className="w-full max-w-5xl mx-auto px-4 py-16 border-b border-zinc-800/80">
+          {/* Bloque 1: Misión y Visión (Homologado a Modo Claro & Oscuro con Hover Zoom) */}
+          <section className="w-full max-w-5xl mx-auto px-4 py-16 border-b border-slate-200 dark:border-zinc-800/80">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
               {/* Misión */}
               <motion.div
@@ -126,13 +126,13 @@ export const AboutPage: React.FC = () => {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.5 }}
-                className="p-8 rounded-3xl bg-zinc-900/50 border border-zinc-800/80 relative overflow-hidden shadow-xl"
+                className="atelier-card atelier-card-hover hover:scale-[1.02] cursor-pointer p-8 rounded-3xl relative overflow-hidden shadow-xl transition-all duration-300"
               >
-                <div className="w-12 h-12 rounded-2xl bg-purple-500/10 border border-purple-500/20 flex items-center justify-center text-purple-400 mb-6 shadow-inner">
+                <div className="w-12 h-12 rounded-2xl bg-purple-500/10 border border-purple-500/20 flex items-center justify-center text-purple-600 dark:text-purple-400 mb-6 shadow-inner">
                   <Target className="w-6 h-6" />
                 </div>
-                <h2 className="text-2xl font-bold text-white mb-3 tracking-tight">Misión</h2>
-                <p className="text-zinc-400 text-sm md:text-base leading-relaxed">
+                <h2 className="text-2xl font-bold text-slate-900 dark:text-white mb-3 tracking-tight">Misión</h2>
+                <p className="text-slate-600 dark:text-zinc-400 text-sm md:text-base leading-relaxed">
                   Dignificar, profesionalizar y empoderar a la comunidad mundial del arte corporal a través de infraestructura tecnológica moderna. Conectamos directamente a los mejores artistas independientes con coleccionistas y clientes que valoran la autenticidad, la precisión técnica y la máxima bioseguridad en cada pieza.
                 </p>
               </motion.div>
@@ -143,31 +143,31 @@ export const AboutPage: React.FC = () => {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.5, delay: 0.1 }}
-                className="p-8 rounded-3xl bg-zinc-900/50 border border-zinc-800/80 relative overflow-hidden shadow-xl"
+                className="atelier-card atelier-card-hover hover:scale-[1.02] cursor-pointer p-8 rounded-3xl relative overflow-hidden shadow-xl transition-all duration-300"
               >
-                <div className="w-12 h-12 rounded-2xl bg-indigo-500/10 border border-indigo-500/20 flex items-center justify-center text-indigo-400 mb-6 shadow-inner">
+                <div className="w-12 h-12 rounded-2xl bg-indigo-500/10 border border-indigo-500/20 flex items-center justify-center text-indigo-600 dark:text-indigo-400 mb-6 shadow-inner">
                   <Eye className="w-6 h-6" />
                 </div>
-                <h2 className="text-2xl font-bold text-white mb-3 tracking-tight">Visión</h2>
-                <p className="text-zinc-400 text-sm md:text-base leading-relaxed">
+                <h2 className="text-2xl font-bold text-slate-900 dark:text-white mb-3 tracking-tight">Visión</h2>
+                <p className="text-slate-600 dark:text-zinc-400 text-sm md:text-base leading-relaxed">
                   Convertirnos en el estándar global de referencia para el arte sobre la piel, constituyendo una red descentralizada donde el talento creativo no esté limitado por fronteras geográficas ni penalizado por intermediarios abusivos, garantizando siempre el respeto por la cultura del tatuaje y la salud de las personas.
                 </p>
               </motion.div>
             </div>
           </section>
 
-          {/* Bloque 2: Estrategia de Mercado */}
-          <section className="w-full max-w-5xl mx-auto px-4 py-16 border-b border-zinc-800/80">
+          {/* Bloque 2: Estrategia de Mercado (Homologado a Modo Claro & Oscuro con Hover Zoom) */}
+          <section className="w-full max-w-5xl mx-auto px-4 py-16 border-b border-slate-200 dark:border-zinc-800/80">
             <div className="text-center mb-12">
-              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-zinc-900 border border-zinc-800 text-zinc-400 text-xs font-semibold mb-3">
-                <TrendingUp className="w-3.5 h-3.5 text-purple-400" />
+              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-slate-100 dark:bg-zinc-900 border border-slate-200 dark:border-zinc-800 text-slate-700 dark:text-zinc-400 text-xs font-semibold mb-3 shadow-sm">
+                <TrendingUp className="w-3.5 h-3.5 text-purple-600 dark:text-purple-400" />
                 <span>Propuesta de Valor & Posicionamiento</span>
               </div>
-              <h2 className="text-3xl font-extrabold text-white mb-3 tracking-tight">
+              <h2 className="text-3xl font-extrabold text-slate-900 dark:text-white mb-3 tracking-tight">
                 Estrategia de Mercado
               </h2>
-              <p className="text-zinc-400 text-sm max-w-xl mx-auto">
-                Los cuatro pilares competitivos con los que Tattoo Hub revoluciona la industria.
+              <p className="text-slate-600 dark:text-zinc-400 text-sm max-w-xl mx-auto">
+                Los cuatro pilares competitivos con los que Tattoo Hub revoluciona la industria: Libertad Artística, Calidad & Higiene Verificada, Comunidad Global Sin Fronteras y Trato Directo & Transparencia.
               </p>
             </div>
 
@@ -181,13 +181,13 @@ export const AboutPage: React.FC = () => {
                     whileInView={{ opacity: 1, y: 0 }}
                     viewport={{ once: true }}
                     transition={{ duration: 0.4, delay: idx * 0.1 }}
-                    className={`p-7 rounded-2xl bg-gradient-to-br ${strat.color} border ${strat.borderColor} backdrop-blur-sm shadow-lg`}
+                    className={`atelier-card atelier-card-hover hover:scale-[1.02] cursor-pointer p-7 rounded-2xl border border-slate-200 dark:border-zinc-800/80 backdrop-blur-sm shadow-lg transition-all duration-300`}
                   >
-                    <div className="w-12 h-12 rounded-xl bg-zinc-950/80 border border-zinc-800 flex items-center justify-center mb-5">
+                    <div className="w-12 h-12 rounded-xl bg-slate-100 dark:bg-zinc-950/80 border border-slate-200 dark:border-zinc-800 flex items-center justify-center mb-5 shadow-sm">
                       <IconComp className={`w-6 h-6 ${strat.iconColor}`} />
                     </div>
-                    <h3 className="text-lg font-bold text-white mb-2">{strat.title}</h3>
-                    <p className="text-zinc-400 text-sm leading-relaxed">{strat.desc}</p>
+                    <h3 className="text-lg font-bold text-slate-900 dark:text-white mb-2">{strat.title}</h3>
+                    <p className="text-slate-600 dark:text-zinc-400 text-sm leading-relaxed">{strat.desc}</p>
                   </motion.div>
                 );
               })}

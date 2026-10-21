@@ -161,7 +161,7 @@ export const BenefitsPage: React.FC = () => {
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              <div className="atelier-card p-6 rounded-2xl flex flex-col justify-between">
+              <div className="atelier-card atelier-card-hover hover:scale-[1.02] cursor-pointer p-6 rounded-2xl flex flex-col justify-between transition-all duration-300 shadow-sm hover:shadow-lg">
                 <div>
                   <div className="w-10 h-10 rounded-xl bg-violet-500/10 border border-violet-500/20 flex items-center justify-center text-violet-600 dark:text-violet-400 mb-4">
                     <CheckCircle2 className="w-5 h-5" />
@@ -176,7 +176,7 @@ export const BenefitsPage: React.FC = () => {
                 </div>
               </div>
 
-              <div className="atelier-card p-6 rounded-2xl flex flex-col justify-between">
+              <div className="atelier-card atelier-card-hover hover:scale-[1.02] cursor-pointer p-6 rounded-2xl flex flex-col justify-between transition-all duration-300 shadow-sm hover:shadow-lg">
                 <div>
                   <div className="w-10 h-10 rounded-xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-emerald-600 dark:text-emerald-400 mb-4">
                     <ShieldCheck className="w-5 h-5" />
@@ -191,7 +191,7 @@ export const BenefitsPage: React.FC = () => {
                 </div>
               </div>
 
-              <div className="atelier-card p-6 rounded-2xl flex flex-col justify-between">
+              <div className="atelier-card atelier-card-hover hover:scale-[1.02] cursor-pointer p-6 rounded-2xl flex flex-col justify-between transition-all duration-300 shadow-sm hover:shadow-lg">
                 <div>
                   <div className="w-10 h-10 rounded-xl bg-indigo-500/10 border border-indigo-500/20 flex items-center justify-center text-indigo-600 dark:text-indigo-400 mb-4">
                     <HeartHandshake className="w-5 h-5" />

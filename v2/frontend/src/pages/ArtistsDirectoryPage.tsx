@@ -564,7 +564,7 @@ export const ArtistsDirectoryPage: React.FC = () => {
                                 {activeResident.flashes.map((flash) => (
                                   <div
                                     key={flash.id}
-                                    className="relative w-20 h-20 rounded-xl overflow-hidden shrink-0 border border-slate-200 dark:border-zinc-800 group"
+                                    className="relative w-20 h-20 rounded-xl overflow-hidden shrink-0 border border-slate-200 dark:border-zinc-800 group transition-all duration-300 hover:scale-105 hover:border-violet-500/60 cursor-pointer shadow-sm hover:shadow-md"
                                   >
                                     <img
                                       src={flash.img}

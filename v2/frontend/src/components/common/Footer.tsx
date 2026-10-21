@@ -45,7 +45,7 @@ export const Footer: React.FC<FooterProps> = ({ forceRender = false }) => {
           {/* Column 1: Brand & Independent Directory */}
           <div className="space-y-4">
             <Link to="/" className="inline-block no-underline">
-              <Logo size="md" />
+              <Logo size="md" variant="full" />
             </Link>
             <p className="text-sm text-slate-600 dark:text-zinc-400 leading-relaxed font-normal">
               Tattoo Hub es un espacio digital concebido para el arte del tatuaje independiente: facilitando el encuentro entre entusiastas, coleccionistas y artistas dedicados a la aguja y la tinta.

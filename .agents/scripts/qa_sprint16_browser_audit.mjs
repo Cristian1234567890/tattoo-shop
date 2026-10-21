@@ -184,6 +184,12 @@ async function run() {
     await page.waitForSelector('nav', { timeout: 5000 });
 
     // Scroll hasta la sección de Estudios con Residentes Verificados
+    await page.evaluate(() => {
+      const target = document.querySelector('#artistas') || Array.from(document.querySelectorAll('h2')).find(h => h.textContent?.includes('Estudios con Residentes'));
+      if (target) target.scrollIntoView({ behavior: 'instant', block: 'center' });
+    });
+    await page.waitForTimeout(400);
+
     const statCardsAudit = await page.evaluate(() => {
       const allCards = Array.from(document.querySelectorAll('.rounded-2xl'));
       const card = allCards.find(d => d.textContent?.includes('100%') && d.textContent?.includes('Contacto Directo'));
@@ -213,11 +219,40 @@ async function run() {
     console.log('📸 Captura guardada: 04_home_verified_studios_light.png');
 
     // -------------------------------------------------------------
-    // 4. Homologación Modo Claro: Buzón de Feedback & Sugerencias
+    // 4. Homologación Modo Claro: Misión, Visión & Buzón en AboutPage
     // -------------------------------------------------------------
-    console.log('\n--- 4. Auditando Buzón de Feedback & Sugerencias en AboutPage ---');
+    console.log('\n--- 4. Auditando Misión, Visión y Buzón de Feedback en AboutPage ---');
     await page.goto('http://localhost:4201/about');
     await page.waitForSelector('#feedback-form, button[type="submit"]', { timeout: 8000 });
+
+    // Auditar tarjetas de Misión y Visión
+    const misionVisionAudit = await page.evaluate(() => {
+      const headings = Array.from(document.querySelectorAll('h2'));
+      const misionHeading = headings.find(h => h.textContent?.trim() === 'Misión');
+      const misionCard = misionHeading?.closest('.atelier-card') || misionHeading?.closest('.rounded-3xl');
+      if (!misionCard) return null;
+      const style = window.getComputedStyle(misionCard);
+      return {
+        cardBg: style.backgroundColor,
+        cardBorder: style.borderColor,
+        hasHoverClass: misionCard.classList.contains('atelier-card-hover')
+      };
+    });
+    console.log('[About Misión/Visión Audit]', misionVisionAudit);
+    if (misionVisionAudit) {
+      const mvBrightness = parseRgbBrightness(misionVisionAudit.cardBg);
+      console.log(`[About Misión/Visión] Brillo de fondo: ${mvBrightness.toFixed(1)} (debe ser > 200 en modo claro)`);
+      await page.screenshot({ path: path.join(artifactsDir, '05a_about_mision_vision_light.png') });
+      console.log('📸 Captura guardada: 05a_about_mision_vision_light.png');
+    }
+
+    // Scroll hasta Buzón de Feedback
+    await page.evaluate(() => {
+      const heading = Array.from(document.querySelectorAll('h2, h3')).find(h => h.textContent?.includes('Buzón de Feedback'));
+      const container = heading ? heading.closest('.rounded-3xl') : document.querySelector('form');
+      if (container) container.scrollIntoView({ behavior: 'instant', block: 'center' });
+    });
+    await page.waitForTimeout(400);
 
     const feedbackAudit = await page.evaluate(() => {
       const heading = Array.from(document.querySelectorAll('h2, h3')).find(h => h.textContent?.includes('Buzón de Feedback'));
@@ -283,32 +318,27 @@ async function run() {
     await page.goto('http://localhost:4201/client-dashboard');
     await page.waitForSelector('main h1', { timeout: 10000 });
 
-    // Click en la pestaña de tatuajes / galería si existe
+    // Scroll hasta el ancla de la galería de evolución
+    await page.evaluate(async () => {
+      const anchor = document.querySelector('#tattoo-progress-anchor') || Array.from(document.querySelectorAll('h3, h2')).find(h => h.textContent?.includes('Galería de Evolución'));
+      if (anchor) anchor.scrollIntoView({ behavior: 'instant', block: 'center' });
+    });
+    await page.waitForTimeout(500);
+
     const timelineAudit = await page.evaluate(async () => {
-      // Buscar botón de tab con texto 'Mis Tatuajes' o similar
-      const tabs = Array.from(document.querySelectorAll('button, [role="tab"]'));
-      const tattoosTab = tabs.find(t => t.textContent?.includes('Mis Tatuajes') || t.textContent?.includes('Tatuajes'));
-      if (tattoosTab) tattoosTab.click();
-
-      // Esperar brevemente
-      await new Promise(r => setTimeout(r, 400));
-
       const timelineHeading = Array.from(document.querySelectorAll('h2, h3, h4')).find(h => h.textContent?.includes('Galería de Evolución') || h.textContent?.includes('Evolución'));
-      const timelineContainer = timelineHeading ? timelineHeading.closest('div.space-y-6, div.space-y-4') : document.querySelector('.space-y-6');
-
-      const toolbar = document.querySelector('.p-1\\.5.rounded-2xl') || document.querySelector('[aria-label="Filter stages"]');
-      const timelineCard = document.querySelector('.hover\\:scale-\\[1\\.01\\], .group.relative.flex');
+      const anchor = document.querySelector('#tattoo-progress-anchor');
+      const timelineToolbar = document.querySelector('.overflow-x-auto') || document.querySelector('.p-4.rounded-2xl');
 
       return {
         foundHeading: !!timelineHeading,
-        toolbarBg: toolbar ? window.getComputedStyle(toolbar).backgroundColor : null,
-        cardBg: timelineCard ? window.getComputedStyle(timelineCard).backgroundColor : null
+        hasAnchor: !!anchor,
+        toolbarClass: timelineToolbar?.className
       };
     });
 
     console.log('[Client Timeline Gallery]', timelineAudit);
-    // Even if empty or populated, check that timeline components have light styling
-    auditResults.clientDashboardTimelineLightHomologated = true; // Confirmed by component analysis & inspection
+    auditResults.clientDashboardTimelineLightHomologated = timelineAudit.foundHeading || timelineAudit.hasAnchor;
 
     await page.screenshot({ path: path.join(artifactsDir, '06_timeline_gallery_light.png') });
     console.log('📸 Captura guardada: 06_timeline_gallery_light.png');
@@ -325,23 +355,15 @@ async function run() {
       if (!card) return null;
 
       const beforeHoverCursor = window.getComputedStyle(card).cursor;
-      const beforeHoverTransform = window.getComputedStyle(card).transform;
-
-      // Dispatch mouseover
-      card.dispatchEvent(new MouseEvent('mouseover', { bubbles: true }));
-      await new Promise(r => setTimeout(r, 200));
-
-      const afterHoverCursor = window.getComputedStyle(card).cursor;
 
       return {
         beforeHoverCursor,
-        afterHoverCursor,
         hasCardHoverClass: card.classList.contains('atelier-card-hover')
       };
     });
 
     console.log('[Card Hover Micro-interactions]', cardHoverAudit);
-    auditResults.cardHoverMicroInteractions = (cardHoverAudit?.afterHoverCursor === 'pointer' || cardHoverAudit?.beforeHoverCursor === 'pointer') && cardHoverAudit?.hasCardHoverClass;
+    auditResults.cardHoverMicroInteractions = (cardHoverAudit?.beforeHoverCursor === 'pointer') && cardHoverAudit?.hasCardHoverClass;
 
     // Hover with Playwright mouse
     const firstCard = await page.locator('.atelier-card-hover').first();
@@ -350,6 +372,19 @@ async function run() {
 
     await page.screenshot({ path: path.join(artifactsDir, '07_card_hover_microinteraction.png') });
     console.log('📸 Captura guardada: 07_card_hover_microinteraction.png');
+
+    // -------------------------------------------------------------
+    // 7. Verificación del Logo Completo en Footer y Login
+    // -------------------------------------------------------------
+    console.log('\n--- 7. Auditando Presencia del Logo Completo en Footer y Login ---');
+    await page.goto('http://localhost:4201/login');
+    await page.waitForSelector('img[src*="logo.png"]', { timeout: 5000 });
+    const fullLogoInLogin = await page.evaluate(() => {
+      const img = document.querySelector('img[src*="logo.png"]');
+      return !!img && img.naturalWidth > 0;
+    });
+    console.log(`[Branding] Logo Completo oficial visible en Login: ${fullLogoInLogin}`);
+    await page.screenshot({ path: path.join(artifactsDir, '08_login_full_logo.png') });
 
   } catch (error) {
     console.error('❌ Excepción durante la auditoría:', error);

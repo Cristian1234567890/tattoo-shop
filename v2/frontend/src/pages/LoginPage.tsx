@@ -242,9 +242,9 @@ export const LoginPage: React.FC = () => {
             <div className="flex flex-col items-center text-center">
               <Link to="/" className="mb-4 inline-block transition-transform hover:scale-105 duration-300" aria-label="Ir a Inicio Tattoo Hub">
                 <img
-                  src="/logo-icon.png"
-                  alt="Tattoo Hub"
-                  className="w-16 h-16 object-contain drop-shadow-[0_4px_16px_rgba(139,92,246,0.4)]"
+                  src="/logo.png"
+                  alt="Tattoo Hub Logo Oficial"
+                  className="h-20 w-auto object-contain drop-shadow-[0_4px_16px_rgba(139,92,246,0.4)]"
                 />
               </Link>
               {/* Headings */}

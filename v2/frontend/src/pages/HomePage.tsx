@@ -68,21 +68,21 @@ export const HomePage: React.FC = () => {
       {/* 2. Hoja de Ruta (Normalized id="beneficios") */}
       <section
         id="beneficios"
-        className="scroll-mt-20 px-8 py-20 max-w-7xl mx-auto border-t border-zinc-900 w-full"
+        className="scroll-mt-20 px-8 py-20 max-w-7xl mx-auto border-t border-slate-200 dark:border-zinc-900 w-full"
       >
         <div className="flex flex-col md:flex-row gap-12 items-start">
           <div className="md:w-1/3">
-            <div className="inline-flex items-center gap-2 text-xs font-bold tracking-widest uppercase text-violet-400 mb-4 bg-violet-600/10 px-3 py-1 rounded-full border border-violet-500/20">
+            <div className="inline-flex items-center gap-2 text-xs font-bold tracking-widest uppercase text-violet-600 dark:text-violet-400 mb-4 bg-violet-600/10 px-3 py-1 rounded-full border border-violet-500/20 shadow-sm">
               <ShieldCheck className="w-4 h-4" /> TRABAJANDO CON ESTILO
             </div>
-            <h2 className="text-3xl font-bold text-white mb-4">Nuestra Hoja de Ruta & Estándares</h2>
-            <p className="text-zinc-400 text-sm leading-relaxed mb-6">
+            <h2 className="text-3xl font-bold text-slate-900 dark:text-white mb-4">Nuestra Hoja de Ruta & Estándares</h2>
+            <p className="text-slate-600 dark:text-zinc-400 text-sm leading-relaxed mb-6">
               Construimos este ecosistema de forma transparente para nuestra comunidad. Sin filtros confusos,
               solo características que estamos desarrollando, probando y escalando.
             </p>
             <Link
               to="/beneficios"
-              className="text-sm font-semibold text-violet-400 hover:text-violet-300 inline-flex items-center gap-1.5"
+              className="text-sm font-semibold text-violet-600 dark:text-violet-400 hover:text-violet-500 dark:hover:text-violet-300 inline-flex items-center gap-1.5"
             >
               Conoce nuestro manifiesto completo <ChevronRight className="w-4 h-4" />
             </Link>
@@ -117,25 +117,25 @@ export const HomePage: React.FC = () => {
             ].map((item, i) => (
               <div
                 key={i}
-                className={`p-6 rounded-2xl border transition-all ${
+                className={`atelier-card atelier-card-hover hover:scale-[1.02] cursor-pointer p-6 rounded-2xl border transition-all duration-300 ${
                   item.active
-                    ? 'atelier-card border-violet-500/40 shadow-[0_0_20px_rgba(124,58,237,0.15)]'
-                    : 'bg-zinc-900/40 border-zinc-800/60'
+                    ? 'border-violet-500/40 shadow-[0_0_20px_rgba(124,58,237,0.15)]'
+                    : 'border-slate-200 dark:border-zinc-800/60 shadow-sm'
                 } flex flex-col`}
               >
                 <span
                   className={`text-[10px] font-bold tracking-wider px-2.5 py-1 rounded-full w-max mb-4 ${
                     item.active
-                      ? 'bg-violet-600/20 text-violet-300 border border-violet-500/30'
-                      : 'bg-zinc-800 text-zinc-500'
+                      ? 'bg-violet-600/20 text-violet-700 dark:text-violet-300 border border-violet-500/30'
+                      : 'bg-slate-100 dark:bg-zinc-800 text-slate-600 dark:text-zinc-400 border border-slate-200 dark:border-transparent'
                   }`}
                 >
                   {item.status}
                 </span>
-                <h3 className="text-lg font-semibold text-white mb-2">{item.title}</h3>
-                <p className="text-zinc-400 text-sm flex-1 leading-relaxed">{item.desc}</p>
+                <h3 className="text-lg font-semibold text-slate-900 dark:text-white mb-2">{item.title}</h3>
+                <p className="text-slate-600 dark:text-zinc-400 text-sm flex-1 leading-relaxed">{item.desc}</p>
                 {item.active && (
-                  <div className="mt-4 text-xs font-medium text-violet-400 flex items-center gap-1">
+                  <div className="mt-4 text-xs font-medium text-violet-600 dark:text-violet-400 flex items-center gap-1">
                     <CheckCircle2 className="w-3.5 h-3.5" /> Activo en plataforma
                   </div>
                 )}
@@ -146,51 +146,51 @@ export const HomePage: React.FC = () => {
       </section>
 
       {/* 3. Herramientas Reales de Taller */}
-      <section className="px-8 py-20 max-w-7xl mx-auto border-t border-zinc-900 text-center w-full">
-        <div className="inline-flex items-center justify-center px-3 py-1 rounded-full bg-zinc-900 border border-zinc-800 text-xs font-bold tracking-widest uppercase text-zinc-400 mb-6">
+      <section className="px-8 py-20 max-w-7xl mx-auto border-t border-slate-200 dark:border-zinc-900 text-center w-full">
+        <div className="inline-flex items-center justify-center px-3 py-1 rounded-full bg-slate-100 dark:bg-zinc-900 border border-slate-200 dark:border-zinc-800 text-xs font-bold tracking-widest uppercase text-slate-700 dark:text-zinc-400 mb-6 shadow-sm">
           HERRAMIENTAS REALES DE TALLER
         </div>
-        <h2 className="text-4xl font-bold text-white mb-4">Hecho para el ritmo diario de un estudio</h2>
-        <p className="text-zinc-400 max-w-2xl mx-auto mb-16 text-base">
+        <h2 className="text-4xl font-bold text-slate-900 dark:text-white mb-4">Hecho para el ritmo diario de un estudio</h2>
+        <p className="text-slate-600 dark:text-zinc-400 max-w-2xl mx-auto mb-16 text-base">
           Menos tiempo gestionando mensajes caóticos en redes sociales y más tiempo con la máquina en mano.
         </p>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 text-left">
           <div className="atelier-card atelier-card-hover p-8 rounded-2xl">
-            <div className="w-12 h-12 bg-violet-500/10 border border-violet-500/20 rounded-xl flex items-center justify-center mb-6 text-violet-400">
+            <div className="w-12 h-12 bg-violet-500/10 border border-violet-500/20 rounded-xl flex items-center justify-center mb-6 text-violet-600 dark:text-violet-400 shadow-sm">
               <Layers className="w-6 h-6" />
             </div>
-            <h3 className="text-xl font-bold text-white mb-3">Flash Books & Grandes Piezas</h3>
-            <p className="text-zinc-400 text-sm leading-relaxed mb-6">
+            <h3 className="text-xl font-bold text-slate-900 dark:text-white mb-3">Flash Books & Grandes Piezas</h3>
+            <p className="text-slate-600 dark:text-zinc-400 text-sm leading-relaxed mb-6">
               Publica stencils listos con medidas recomendadas, tarifas cerradas y reserva directa por WhatsApp sin rodeos.
             </p>
-            <span className="text-xs font-bold tracking-widest text-zinc-500 uppercase">
+            <span className="text-xs font-bold tracking-widest text-slate-500 dark:text-zinc-500 uppercase">
               01 • CATÁLOGO ORDENADO
             </span>
           </div>
 
           <div className="atelier-card atelier-card-hover p-8 rounded-2xl">
-            <div className="w-12 h-12 bg-indigo-500/10 border border-indigo-500/20 rounded-xl flex items-center justify-center mb-6 text-indigo-400">
+            <div className="w-12 h-12 bg-indigo-500/10 border border-indigo-500/20 rounded-xl flex items-center justify-center mb-6 text-indigo-600 dark:text-indigo-400 shadow-sm">
               <Palette className="w-6 h-6" />
             </div>
-            <h3 className="text-xl font-bold text-white mb-3">Cotizaciones con Medidas y Zona</h3>
-            <p className="text-zinc-400 text-sm leading-relaxed mb-6">
+            <h3 className="text-xl font-bold text-slate-900 dark:text-white mb-3">Cotizaciones con Medidas y Zona</h3>
+            <p className="text-slate-600 dark:text-zinc-400 text-sm leading-relaxed mb-6">
               El cliente envía solicitudes estructuradas: referencia visual, zona anatómica del cuerpo, centímetros y fechas tentativas.
             </p>
-            <span className="text-xs font-bold tracking-widest text-zinc-500 uppercase">
+            <span className="text-xs font-bold tracking-widest text-slate-500 dark:text-zinc-500 uppercase">
               02 • FIN DE MENSAJES VAGOS
             </span>
           </div>
 
           <div className="atelier-card atelier-card-hover p-8 rounded-2xl">
-            <div className="w-12 h-12 bg-emerald-500/10 border border-emerald-500/20 rounded-xl flex items-center justify-center mb-6 text-emerald-400">
+            <div className="w-12 h-12 bg-emerald-500/10 border border-emerald-500/20 rounded-xl flex items-center justify-center mb-6 text-emerald-600 dark:text-emerald-400 shadow-sm">
               <Navigation className="w-6 h-6" />
             </div>
-            <h3 className="text-xl font-bold text-white mb-3">Mapa de Estudios y Residentes</h3>
-            <p className="text-zinc-400 text-sm leading-relaxed mb-6">
+            <h3 className="text-xl font-bold text-slate-900 dark:text-white mb-3">Mapa de Estudios y Residentes</h3>
+            <p className="text-slate-600 dark:text-zinc-400 text-sm leading-relaxed mb-6">
               Localiza talleres por ciudad y explora los artistas que residen en cada local. Contacta directamente a quien prefieras.
             </p>
-            <span className="text-xs font-bold tracking-widest text-zinc-500 uppercase">
+            <span className="text-xs font-bold tracking-widest text-slate-500 dark:text-zinc-500 uppercase">
               03 • GEOLOCALIZACIÓN DIRECTA
             </span>
           </div>
@@ -198,17 +198,17 @@ export const HomePage: React.FC = () => {
       </section>
 
       {/* 4. Flash Gallery Preview */}
-      <section className="px-8 py-20 max-w-7xl mx-auto border-t border-zinc-900 w-full">
+      <section className="px-8 py-20 max-w-7xl mx-auto border-t border-slate-200 dark:border-zinc-900 w-full">
         <div className="flex justify-between items-end mb-10">
           <div>
-            <div className="text-xs font-bold tracking-widest uppercase text-violet-400 mb-2">
+            <div className="text-xs font-bold tracking-widest uppercase text-violet-600 dark:text-violet-400 mb-2">
               GALERÍA FLASH DISPONIBLE
             </div>
-            <h2 className="text-3xl font-bold text-white">Piezas Listas para Tinta</h2>
+            <h2 className="text-3xl font-bold text-slate-900 dark:text-white">Piezas Listas para Tinta</h2>
           </div>
           <Link
             to="/hub"
-            className="text-sm font-semibold text-violet-400 hover:text-violet-300 flex items-center gap-1"
+            className="text-sm font-semibold text-violet-600 dark:text-violet-400 hover:text-violet-500 dark:hover:text-violet-300 flex items-center gap-1"
           >
             Ver catálogo interactivo <ChevronRight className="w-4 h-4" />
           </Link>
@@ -255,7 +255,7 @@ export const HomePage: React.FC = () => {
                   }
                 )
               }
-              className="atelier-card rounded-2xl overflow-hidden group cursor-pointer border border-zinc-800 hover:border-violet-500/60 transition-all"
+              className="atelier-card atelier-card-hover hover:scale-[1.02] rounded-2xl overflow-hidden group cursor-pointer border border-slate-200 dark:border-zinc-800 hover:border-violet-500/60 transition-all duration-300 shadow-sm hover:shadow-lg"
             >
               <div className="relative h-48 w-full overflow-hidden">
                 <img
@@ -268,8 +268,8 @@ export const HomePage: React.FC = () => {
                 </div>
               </div>
               <div className="p-4">
-                <h4 className="text-sm font-bold text-white truncate">{item.title}</h4>
-                <p className="text-xs text-zinc-400 mt-1 truncate">{item.artist}</p>
+                <h4 className="text-sm font-bold text-slate-900 dark:text-white truncate">{item.title}</h4>
+                <p className="text-xs text-slate-500 dark:text-zinc-400 mt-1 truncate">{item.artist}</p>
               </div>
             </div>
           ))}
@@ -439,7 +439,7 @@ export const HomePage: React.FC = () => {
           <div className="flex flex-col sm:flex-row justify-center gap-4">
             <Link
               to="/register?role=Cliente"
-              className="bg-white hover:bg-zinc-200 text-black px-8 py-3.5 rounded-xl font-bold transition-colors cursor-pointer"
+              className="btn-atelier-primary px-8 py-3.5 rounded-xl font-bold transition-all cursor-pointer shadow-lg hover:shadow-violet-500/25"
             >
               Crear Cuenta Gratis
             </Link>

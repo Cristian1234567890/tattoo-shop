@@ -198,7 +198,7 @@ export const TattoosOverviewTab: React.FC<TattoosOverviewTabProps> = ({
         </h2>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {/* Card 1: Explorar Artistas & Mapa */}
-          <div className="backdrop-blur-xl bg-white/75 dark:bg-zinc-900/60 border border-slate-200/80 dark:border-white/10 rounded-xl p-6 hover:border-primary/50 transition-all shadow-sm hover:shadow-md dark:shadow-none flex flex-col justify-between">
+          <div className="atelier-card-hover hover:scale-[1.02] cursor-pointer backdrop-blur-xl bg-white/75 dark:bg-zinc-900/60 border border-slate-200/80 dark:border-white/10 rounded-xl p-6 hover:border-primary/50 transition-all duration-300 shadow-sm hover:shadow-lg flex flex-col justify-between">
             <div>
               <div className="w-12 h-12 rounded-xl bg-purple-500/10 border border-purple-500/30 flex items-center justify-center text-purple-400 mb-4">
                 <Compass size={24} />
@@ -217,7 +217,7 @@ export const TattoosOverviewTab: React.FC<TattoosOverviewTabProps> = ({
           </div>
 
           {/* Card 2: Mis Citas / Mensajes */}
-          <div className="backdrop-blur-xl bg-white/75 dark:bg-zinc-900/60 border border-slate-200/80 dark:border-white/10 rounded-xl p-6 hover:border-primary/50 transition-all shadow-sm hover:shadow-md dark:shadow-none flex flex-col justify-between">
+          <div className="atelier-card-hover hover:scale-[1.02] cursor-pointer backdrop-blur-xl bg-white/75 dark:bg-zinc-900/60 border border-slate-200/80 dark:border-white/10 rounded-xl p-6 hover:border-primary/50 transition-all duration-300 shadow-sm hover:shadow-lg flex flex-col justify-between">
             <div>
               <div className="w-12 h-12 rounded-xl bg-blue-500/10 border border-blue-500/30 flex items-center justify-center text-blue-400 mb-4">
                 <MessageCircle size={24} />
@@ -236,7 +236,7 @@ export const TattoosOverviewTab: React.FC<TattoosOverviewTabProps> = ({
           </div>
 
           {/* Card 3: Catálogo General */}
-          <div className="backdrop-blur-xl bg-white/75 dark:bg-zinc-900/60 border border-slate-200/80 dark:border-white/10 rounded-xl p-6 hover:border-primary/50 transition-all shadow-sm hover:shadow-md dark:shadow-none flex flex-col justify-between">
+          <div className="atelier-card-hover hover:scale-[1.02] cursor-pointer backdrop-blur-xl bg-white/75 dark:bg-zinc-900/60 border border-slate-200/80 dark:border-white/10 rounded-xl p-6 hover:border-primary/50 transition-all duration-300 shadow-sm hover:shadow-lg flex flex-col justify-between">
             <div>
               <div className="w-12 h-12 rounded-xl bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center text-emerald-400 mb-4">
                 <Sparkles size={24} />
@@ -302,7 +302,7 @@ export const TattoosOverviewTab: React.FC<TattoosOverviewTabProps> = ({
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
           <div
             onClick={() => onOpenTracking('Fase 1: Limpieza & Primer Vendaje')}
-            className="backdrop-blur-md bg-white/70 dark:bg-zinc-950/60 border border-slate-200/80 dark:border-white/10 hover:border-primary/50 cursor-pointer rounded-xl p-4 transition hover:bg-white/95 dark:hover:bg-zinc-900/80 shadow-sm"
+            className="atelier-card-hover hover:scale-[1.02] cursor-pointer backdrop-blur-md bg-white/70 dark:bg-zinc-950/60 border border-slate-200/80 dark:border-white/10 hover:border-primary/50 rounded-xl p-4 transition-all duration-300 hover:bg-white/95 dark:hover:bg-zinc-900/80 shadow-sm hover:shadow-lg"
           >
             <div className="flex items-center justify-between mb-2">
               <span className="text-xs font-semibold text-primary uppercase tracking-wide">
@@ -316,7 +316,7 @@ export const TattoosOverviewTab: React.FC<TattoosOverviewTabProps> = ({
 
           <div
             onClick={() => onOpenTracking('Fase 2: Descamación & Hidratación')}
-            className="backdrop-blur-md bg-white/70 dark:bg-zinc-950/60 border border-slate-200/80 dark:border-white/10 hover:border-primary/50 cursor-pointer rounded-xl p-4 transition hover:bg-white/95 dark:hover:bg-zinc-900/80 shadow-sm"
+            className="atelier-card-hover hover:scale-[1.02] cursor-pointer backdrop-blur-md bg-white/70 dark:bg-zinc-950/60 border border-slate-200/80 dark:border-white/10 hover:border-primary/50 rounded-xl p-4 transition-all duration-300 hover:bg-white/95 dark:hover:bg-zinc-900/80 shadow-sm hover:shadow-lg"
           >
             <div className="flex items-center justify-between mb-2">
               <span className="text-xs font-semibold text-primary uppercase tracking-wide">
@@ -330,7 +330,7 @@ export const TattoosOverviewTab: React.FC<TattoosOverviewTabProps> = ({
 
           <div
             onClick={() => onOpenTracking('Fase 3: Cicatrización & Protección')}
-            className="backdrop-blur-md bg-white/70 dark:bg-zinc-950/60 border border-slate-200/80 dark:border-white/10 hover:border-primary/50 cursor-pointer rounded-xl p-4 transition hover:bg-white/95 dark:hover:bg-zinc-900/80 shadow-sm"
+            className="atelier-card-hover hover:scale-[1.02] cursor-pointer backdrop-blur-md bg-white/70 dark:bg-zinc-950/60 border border-slate-200/80 dark:border-white/10 hover:border-primary/50 rounded-xl p-4 transition-all duration-300 hover:bg-white/95 dark:hover:bg-zinc-900/80 shadow-sm hover:shadow-lg"
           >
             <div className="flex items-center justify-between mb-2">
               <span className="text-xs font-semibold text-primary uppercase tracking-wide">

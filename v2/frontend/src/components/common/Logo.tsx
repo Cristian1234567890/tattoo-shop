@@ -4,32 +4,50 @@ export interface LogoProps {
   className?: string;
   showText?: boolean;
   size?: 'sm' | 'md' | 'lg';
+  variant?: 'icon' | 'full';
 }
 
 export const Logo: React.FC<LogoProps> = ({
   className = '',
   showText = true,
   size = 'md',
+  variant = 'icon',
 }) => {
   const sizeMap = {
     sm: {
       icon: 'w-7 h-7',
       text: 'text-lg',
       subtext: 'text-[9px]',
+      full: 'h-9',
     },
     md: {
       icon: 'w-10 h-10',
       text: 'text-2xl',
       subtext: 'text-[11px]',
+      full: 'h-12',
     },
     lg: {
       icon: 'w-14 h-14',
       text: 'text-3xl',
       subtext: 'text-xs',
+      full: 'h-16',
     },
   };
 
   const currentSize = sizeMap[size] || sizeMap.md;
+
+  if (variant === 'full') {
+    return (
+      <div className={`inline-flex items-center gap-3 select-none ${className}`}>
+        {/* Official Tattoo Hub Full Brandmark (Icon + Typography) */}
+        <img
+          src="/logo.png"
+          alt="Tattoo Hub Logo"
+          className={`${currentSize.full} w-auto shrink-0 object-contain drop-shadow-[0_2px_12px_rgba(139,92,246,0.45)] transition-transform hover:scale-105 duration-300`}
+        />
+      </div>
+    );
+  }
 
   return (
     <div className={`inline-flex items-center gap-3 select-none ${className}`}>
