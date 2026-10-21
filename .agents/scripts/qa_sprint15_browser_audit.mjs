@@ -63,10 +63,13 @@ async function run() {
   const auditResults = {
     navbarWhiteButtonLight: false,
     navbarWhiteButtonDark: false,
+    navbarMobileWhiteButtonLight: false,
     navbarSymmetryThreeSections: false,
     loginWhiteSubmitButton: false,
     loginCustomValidationInline: false,
     loginNoNativeTooltips: false,
+    registerCustomValidationInline: false,
+    registerNoNativeTooltips: false,
     fontOutfitOnHeadings: false,
     fontJakartaOnBody: false,
     clientDashboardSlateContrast: false,
@@ -159,6 +162,33 @@ async function run() {
     console.log('📸 Captura guardada: 06_navbar_symmetry_dark.png');
 
     // -------------------------------------------------------------
+    // 1.1 Auditoría de Navbar en Mobile: Botón Registrarse en Drawer
+    // -------------------------------------------------------------
+    console.log('\n--- 1.1 Auditando Navbar en Mobile: Botón Registrarse en Drawer ---');
+    const mobilePage = await context.newPage();
+    await mobilePage.setViewportSize({ width: 390, height: 844 });
+    await mobilePage.goto('http://localhost:4200/');
+    await mobilePage.evaluate(() => {
+      localStorage.removeItem('user');
+      localStorage.setItem('tattoo_hub_theme', 'light');
+      document.documentElement.classList.remove('dark');
+      document.documentElement.classList.add('light');
+    });
+    await mobilePage.reload();
+    await mobilePage.waitForSelector('button[aria-label="Abrir menú"]', { timeout: 5000 });
+    await mobilePage.click('button[aria-label="Abrir menú"]');
+    await mobilePage.waitForSelector('#mobile-nav-register', { timeout: 5000 });
+
+    const mobileRegisterBtnColor = await mobilePage.evaluate(() => {
+      const el = document.getElementById('mobile-nav-register');
+      return el ? window.getComputedStyle(el).color : null;
+    });
+    console.log(`[Mobile Navbar Light] Color computado de #mobile-nav-register: ${mobileRegisterBtnColor}`);
+    auditResults.navbarMobileWhiteButtonLight = mobileRegisterBtnColor === 'rgb(255, 255, 255)';
+    await mobilePage.screenshot({ path: path.join(artifactsDir, '01_mobile_navbar_drawer_light.png') });
+    await mobilePage.close();
+
+    // -------------------------------------------------------------
     // 2. Auditoría de /login: Botón Blanco, noValidate & Validación Personalizada
     // -------------------------------------------------------------
     console.log('\n--- 2. Auditando /login: Botón Iniciar Sesión Blanco y Validaciones en Línea ---');
@@ -225,6 +255,55 @@ async function run() {
     console.log('📸 Captura guardada: 02_login_custom_validation_light.png');
 
     // -------------------------------------------------------------
+    // 2.1 Auditoría de /register: noValidate & Validaciones Personalizadas Inline
+    // -------------------------------------------------------------
+    console.log('\n--- 2.1 Auditando /register: Validaciones Personalizadas Inline ---');
+    await page.goto('http://localhost:4200/register');
+    await page.evaluate(() => {
+      localStorage.setItem('tattoo_hub_theme', 'light');
+      document.documentElement.classList.remove('dark');
+      document.documentElement.classList.add('light');
+    });
+    await page.reload();
+    await page.waitForSelector('#btn-register-submit', { timeout: 5000 });
+
+    const registerNoValidate = await page.evaluate(() => {
+      const form = document.querySelector('form');
+      return form ? form.noValidate : false;
+    });
+    console.log(`[Register] Formulario con noValidate activo: ${registerNoValidate}`);
+    auditResults.registerNoNativeTooltips = registerNoValidate;
+
+    console.log('[Register] Haciendo clic en submit con campos vacíos...');
+    await page.click('#btn-register-submit');
+    await page.waitForTimeout(500);
+
+    const regValidationAlerts = await page.evaluate(() => {
+      const nameError = document.getElementById('reg-nombre-error');
+      const emailError = document.getElementById('reg-email-error');
+      const passError = document.getElementById('reg-password-error');
+      const nameInput = document.getElementById('reg-nombre');
+
+      return {
+        hasNameError: Boolean(nameError && nameError.innerText.includes('nombre')),
+        hasEmailError: Boolean(emailError && emailError.innerText.includes('correo')),
+        hasPassError: Boolean(passError && passError.innerText.includes('contraseña')),
+        nameAriaInvalid: nameInput?.getAttribute('aria-invalid') === 'true',
+        nameErrorText: nameError?.innerText || ''
+      };
+    });
+
+    console.log(`[Register Validation] Error Nombre: "${regValidationAlerts.nameErrorText}" (aria-invalid: ${regValidationAlerts.nameAriaInvalid})`);
+    auditResults.registerCustomValidationInline = 
+      regValidationAlerts.hasNameError &&
+      regValidationAlerts.hasEmailError &&
+      regValidationAlerts.hasPassError &&
+      regValidationAlerts.nameAriaInvalid;
+
+    await page.screenshot({ path: path.join(artifactsDir, '07_register_custom_validation_light.png') });
+    console.log('📸 Captura guardada: 07_register_custom_validation_light.png');
+
+    // -------------------------------------------------------------
     // 3. Auditoría Tipográfica: Outfit (Títulos) & Plus Jakarta Sans (Cuerpo)
     // -------------------------------------------------------------
     console.log('\n--- 3. Auditando Jerarquía Tipográfica y Familias de Fuente ---');
@@ -257,9 +336,9 @@ async function run() {
     // 4. Auditoría Dashboards: Client & Artist Slate Contrast
     // -------------------------------------------------------------
     console.log('\n--- 4. Auditando Dashboards de Cliente y Artista en Modo Claro ---');
-    // Inyectar usuario cliente
+    // Inyectar usuario cliente en sessionStorage y localStorage
     await page.evaluate(() => {
-      localStorage.setItem('user', JSON.stringify({
+      const clientSession = {
         user: {
           id: 'test-client-id',
           email: 'alex@tattoohub.test',
@@ -274,25 +353,30 @@ async function run() {
           }
         },
         session: { access_token: 'fake-token' }
-      }));
+      };
+      sessionStorage.setItem('user', JSON.stringify(clientSession));
+      localStorage.setItem('user', JSON.stringify(clientSession));
+      localStorage.setItem('tattoo_hub_theme', 'light');
+      document.documentElement.classList.remove('dark');
+      document.documentElement.classList.add('light');
     });
     await page.goto('http://localhost:4200/client-dashboard');
-    await page.waitForTimeout(1000);
+    await page.waitForSelector('main h1', { timeout: 10000 });
 
     const clientHeadingColor = await page.evaluate(() => {
       const h1 = document.querySelector('h1') || document.querySelector('h2');
       return h1 ? window.getComputedStyle(h1).color : null;
     });
     console.log(`[Client Dashboard] Color computado de titular: ${clientHeadingColor}`);
-    // No debe ser rgb(0, 0, 0), debe ser slate refinado (#1e293b = rgb(30, 41, 59) o #0f172a = rgb(15, 23, 42))
-    auditResults.clientDashboardSlateContrast = clientHeadingColor !== 'rgb(0, 0, 0)';
+    // Slate-800 (#1e293b = rgb(30, 41, 59))
+    auditResults.clientDashboardSlateContrast = clientHeadingColor === 'rgb(30, 41, 59)' || clientHeadingColor === 'rgb(15, 23, 42)';
 
     await page.screenshot({ path: path.join(artifactsDir, '04_client_dashboard_typography_light.png') });
     console.log('📸 Captura guardada: 04_client_dashboard_typography_light.png');
 
-    // Inyectar usuario artista
+    // Inyectar usuario artista en sessionStorage y localStorage
     await page.evaluate(() => {
-      localStorage.setItem('user', JSON.stringify({
+      const artistSession = {
         user: {
           id: 'test-artist-id',
           email: 'elena@tattoohub.test',
@@ -307,17 +391,23 @@ async function run() {
           }
         },
         session: { access_token: 'fake-token' }
-      }));
+      };
+      sessionStorage.setItem('user', JSON.stringify(artistSession));
+      localStorage.setItem('user', JSON.stringify(artistSession));
+      localStorage.setItem('tattoo_hub_theme', 'light');
+      document.documentElement.classList.remove('dark');
+      document.documentElement.classList.add('light');
     });
     await page.goto('http://localhost:4200/artist-dashboard');
-    await page.waitForTimeout(1000);
+    await page.waitForSelector('main section:not(.dark-banner) h2, main section:not(.dark-banner) h3', { timeout: 10000 });
 
-    const artistHeadingColor = await page.evaluate(() => {
-      const h1 = document.querySelector('h1') || document.querySelector('h2');
-      return h1 ? window.getComputedStyle(h1).color : null;
+    const artistContentHeadingColor = await page.evaluate(() => {
+      // Tomamos un h2 o h3 fuera del banner oscuro (.dark-banner)
+      const nonBannerHeading = document.querySelector('main section:not(.dark-banner) h2, main section:not(.dark-banner) h3, .card-atelier h3, h2.text-slate-800');
+      return nonBannerHeading ? window.getComputedStyle(nonBannerHeading).color : null;
     });
-    console.log(`[Artist Dashboard] Color computado de titular: ${artistHeadingColor}`);
-    auditResults.artistDashboardSlateContrast = artistHeadingColor !== 'rgb(0, 0, 0)';
+    console.log(`[Artist Dashboard Card Heading] Color computado de titular de tarjeta: ${artistContentHeadingColor}`);
+    auditResults.artistDashboardSlateContrast = artistContentHeadingColor === 'rgb(30, 41, 59)' || artistContentHeadingColor === 'rgb(15, 23, 42)';
 
     await page.screenshot({ path: path.join(artifactsDir, '05_artist_dashboard_typography_light.png') });
     console.log('📸 Captura guardada: 05_artist_dashboard_typography_light.png');
@@ -332,16 +422,19 @@ async function run() {
   console.log('\n========================================');
   console.log('📊 RESUMEN FINAL AUDITORÍA BROWSER SPRINT 15');
   console.log('========================================');
-  console.log(`1. Navbar Botón Registrarse Blanco (Light Mode): ${auditResults.navbarWhiteButtonLight ? '✅ PASÓ' : '❌ FALLÓ'}`);
-  console.log(`2. Navbar Botón Registrarse Blanco (Dark Mode):  ${auditResults.navbarWhiteButtonDark ? '✅ PASÓ' : '❌ FALLÓ'}`);
-  console.log(`3. Navbar Simetría 3 Secciones (Logo/Centro/Acciones): ${auditResults.navbarSymmetryThreeSections ? '✅ PASÓ' : '❌ FALLÓ'}`);
-  console.log(`4. Login Botón Submit Blanco:                    ${auditResults.loginWhiteSubmitButton ? '✅ PASÓ' : '❌ FALLÓ'}`);
-  console.log(`5. Login Validaciones Personalizadas Inline:     ${auditResults.loginCustomValidationInline ? '✅ PASÓ' : '❌ FALLÓ'}`);
-  console.log(`6. Login Supresión de Tooltips Nativos:          ${auditResults.loginNoNativeTooltips ? '✅ PASÓ' : '❌ FALLÓ'}`);
-  console.log(`7. Tipografía Outfit en Títulos:                 ${auditResults.fontOutfitOnHeadings ? '✅ PASÓ' : '❌ FALLÓ'}`);
-  console.log(`8. Tipografía Plus Jakarta Sans en Cuerpo:       ${auditResults.fontJakartaOnBody ? '✅ PASÓ' : '❌ FALLÓ'}`);
-  console.log(`9. Client Dashboard Contraste Refinado:          ${auditResults.clientDashboardSlateContrast ? '✅ PASÓ' : '❌ FALLÓ'}`);
-  console.log(`10. Artist Dashboard Contraste Refinado:         ${auditResults.artistDashboardSlateContrast ? '✅ PASÓ' : '❌ FALLÓ'}`);
+  console.log(`1. Navbar Botón Registrarse Blanco (Light Mode):        ${auditResults.navbarWhiteButtonLight ? '✅ PASÓ' : '❌ FALLÓ'}`);
+  console.log(`2. Navbar Botón Registrarse Blanco (Dark Mode):         ${auditResults.navbarWhiteButtonDark ? '✅ PASÓ' : '❌ FALLÓ'}`);
+  console.log(`3. Navbar Mobile Botón Registrarse Blanco (Light Mode):  ${auditResults.navbarMobileWhiteButtonLight ? '✅ PASÓ' : '❌ FALLÓ'}`);
+  console.log(`4. Navbar Simetría 3 Secciones (Logo/Centro/Acciones):  ${auditResults.navbarSymmetryThreeSections ? '✅ PASÓ' : '❌ FALLÓ'}`);
+  console.log(`5. Login Botón Submit Blanco:                           ${auditResults.loginWhiteSubmitButton ? '✅ PASÓ' : '❌ FALLÓ'}`);
+  console.log(`6. Login Validaciones Personalizadas Inline:            ${auditResults.loginCustomValidationInline ? '✅ PASÓ' : '❌ FALLÓ'}`);
+  console.log(`7. Login Supresión de Tooltips Nativos:                 ${auditResults.loginNoNativeTooltips ? '✅ PASÓ' : '❌ FALLÓ'}`);
+  console.log(`8. Register Validaciones Personalizadas Inline:         ${auditResults.registerCustomValidationInline ? '✅ PASÓ' : '❌ FALLÓ'}`);
+  console.log(`9. Register Supresión de Tooltips Nativos:              ${auditResults.registerNoNativeTooltips ? '✅ PASÓ' : '❌ FALLÓ'}`);
+  console.log(`10. Tipografía Outfit en Títulos:                       ${auditResults.fontOutfitOnHeadings ? '✅ PASÓ' : '❌ FALLÓ'}`);
+  console.log(`11. Tipografía Plus Jakarta Sans en Cuerpo:              ${auditResults.fontJakartaOnBody ? '✅ PASÓ' : '❌ FALLÓ'}`);
+  console.log(`12. Client Dashboard Contraste Refinado (Slate-800):    ${auditResults.clientDashboardSlateContrast ? '✅ PASÓ' : '❌ FALLÓ'}`);
+  console.log(`13. Artist Dashboard Contraste Refinado (Slate-800):    ${auditResults.artistDashboardSlateContrast ? '✅ PASÓ' : '❌ FALLÓ'}`);
 
   const allPassed = Object.values(auditResults).every(Boolean);
   if (!allPassed) {

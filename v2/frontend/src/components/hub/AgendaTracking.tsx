@@ -157,7 +157,7 @@ export const AgendaTracking: React.FC = () => {
             >
               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
                 <div>
-                  <h4 className="font-semibold text-slate-900 dark:text-white text-base">
+                  <h4 className="font-semibold text-slate-800 dark:text-white text-base font-heading">
                     {appt.service_title || 'Sesión en Atelier'}
                   </h4>
                   <p className="text-xs text-violet-300 flex items-center gap-1.5 mt-0.5">

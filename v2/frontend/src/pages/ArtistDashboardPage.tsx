@@ -71,14 +71,14 @@ export const ArtistDashboardPage: React.FC = () => {
       {/* Trial Expired Blocking Lockout Modal */}
       {isTrialExpired && (
         <div className="fixed inset-0 z-50 bg-black/85 backdrop-blur-md flex items-center justify-center p-4">
-          <div className="bg-white dark:bg-gradient-to-b dark:from-gray-900 dark:via-gray-850 dark:to-gray-900 border-2 border-red-500/50 rounded-2xl max-w-lg w-full p-8 shadow-2xl text-center text-slate-900 dark:text-white">
+          <div className="bg-white dark:bg-gradient-to-b dark:from-gray-900 dark:via-gray-850 dark:to-gray-900 border-2 border-red-500/50 rounded-2xl max-w-lg w-full p-8 shadow-2xl text-center text-slate-800 dark:text-white">
             <div className="w-16 h-16 rounded-full bg-red-100 dark:bg-red-500/20 border border-red-200 dark:border-red-500/40 flex items-center justify-center text-red-600 dark:text-red-400 mx-auto mb-5">
               <Lock size={32} />
             </div>
             <span className="px-3.5 py-1 rounded-full bg-red-100 dark:bg-red-500/20 border border-red-200 dark:border-red-500/40 text-red-700 dark:text-red-400 text-xs font-bold uppercase tracking-wider">
               Acceso Comercial Bloqueado
             </span>
-            <h2 className="text-2xl font-black text-slate-900 dark:text-white mt-4 mb-2">
+            <h2 className="text-2xl font-black text-slate-800 dark:text-white mt-4 mb-2 font-heading">
               Tu Período de Prueba de 90 Días ha Expirado
             </h2>
             <p className="text-slate-600 dark:text-gray-300 text-sm leading-relaxed mb-6">

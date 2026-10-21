@@ -193,7 +193,7 @@ export const TattoosOverviewTab: React.FC<TattoosOverviewTabProps> = ({
     <div className="space-y-10">
       {/* Quick Actions Grid */}
       <section>
-        <h2 className="text-xl font-bold text-slate-900 dark:text-white mb-4 flex items-center gap-2">
+        <h2 className="text-xl font-bold text-slate-800 dark:text-white mb-4 flex items-center gap-2 font-heading">
           <Activity className="text-primary" size={20} /> {t.quickActions}
         </h2>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -203,8 +203,8 @@ export const TattoosOverviewTab: React.FC<TattoosOverviewTabProps> = ({
               <div className="w-12 h-12 rounded-xl bg-purple-500/10 border border-purple-500/30 flex items-center justify-center text-purple-400 mb-4">
                 <Compass size={24} />
               </div>
-              <h3 className="text-lg font-bold text-slate-900 dark:text-white mb-2">{t.exploreArtists}</h3>
-              <p className="text-slate-600 dark:text-zinc-300 text-sm leading-relaxed mb-4">
+              <h3 className="text-lg font-bold text-slate-800 dark:text-white mb-2 font-heading">{t.exploreArtists}</h3>
+              <p className="text-slate-600 dark:text-zinc-300 text-sm leading-relaxed mb-4 font-body">
                 {t.exploreArtistsDesc}
               </p>
             </div>
@@ -222,8 +222,8 @@ export const TattoosOverviewTab: React.FC<TattoosOverviewTabProps> = ({
               <div className="w-12 h-12 rounded-xl bg-blue-500/10 border border-blue-500/30 flex items-center justify-center text-blue-400 mb-4">
                 <MessageCircle size={24} />
               </div>
-              <h3 className="text-lg font-bold text-slate-900 dark:text-white mb-2">{t.myMessages}</h3>
-              <p className="text-slate-600 dark:text-zinc-300 text-sm leading-relaxed mb-4">
+              <h3 className="text-lg font-bold text-slate-800 dark:text-white mb-2 font-heading">{t.myMessages}</h3>
+              <p className="text-slate-600 dark:text-zinc-300 text-sm leading-relaxed mb-4 font-body">
                 {t.myMessagesDesc}
               </p>
             </div>
@@ -241,8 +241,8 @@ export const TattoosOverviewTab: React.FC<TattoosOverviewTabProps> = ({
               <div className="w-12 h-12 rounded-xl bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center text-emerald-400 mb-4">
                 <Sparkles size={24} />
               </div>
-              <h3 className="text-lg font-bold text-slate-900 dark:text-white mb-2">{t.catalogStyles}</h3>
-              <p className="text-slate-600 dark:text-zinc-300 text-sm leading-relaxed mb-4">
+              <h3 className="text-lg font-bold text-slate-800 dark:text-white mb-2 font-heading">{t.catalogStyles}</h3>
+              <p className="text-slate-600 dark:text-zinc-300 text-sm leading-relaxed mb-4 font-body">
                 {t.catalogStylesDesc}
               </p>
             </div>
@@ -261,7 +261,7 @@ export const TattoosOverviewTab: React.FC<TattoosOverviewTabProps> = ({
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6 pb-4 border-b border-slate-200/80 dark:border-gray-700">
           <div>
             <div className="flex items-center gap-3">
-              <h2 className="text-xl md:text-2xl font-bold text-slate-900 dark:text-white">
+              <h2 className="text-xl md:text-2xl font-bold text-slate-800 dark:text-white font-heading">
                 {t.trackingTitle}
               </h2>
               {isVip ? (
@@ -274,7 +274,7 @@ export const TattoosOverviewTab: React.FC<TattoosOverviewTabProps> = ({
                 </span>
               )}
             </div>
-            <p className="text-slate-600 dark:text-gray-400 text-sm mt-1">{t.trackingDesc}</p>
+            <p className="text-slate-600 dark:text-gray-400 text-sm mt-1 font-body">{t.trackingDesc}</p>
           </div>
 
           <div className="flex items-center gap-3">
@@ -310,8 +310,8 @@ export const TattoosOverviewTab: React.FC<TattoosOverviewTabProps> = ({
               </span>
               <span className="text-xs text-gray-400">{t.phase1Days}</span>
             </div>
-            <h4 className="font-bold text-slate-900 dark:text-white text-base mb-1">{t.phase1}</h4>
-            <p className="text-xs text-slate-600 dark:text-zinc-300 leading-relaxed">{t.phase1Desc}</p>
+            <h4 className="font-bold text-slate-800 dark:text-white text-base mb-1 font-heading">{t.phase1}</h4>
+            <p className="text-xs text-slate-600 dark:text-zinc-300 leading-relaxed font-body">{t.phase1Desc}</p>
           </div>
 
           <div
@@ -324,8 +324,8 @@ export const TattoosOverviewTab: React.FC<TattoosOverviewTabProps> = ({
               </span>
               <span className="text-xs text-gray-400">{t.phase2Days}</span>
             </div>
-            <h4 className="font-bold text-slate-900 dark:text-white text-base mb-1">{t.phase2}</h4>
-            <p className="text-xs text-slate-600 dark:text-zinc-300 leading-relaxed">{t.phase2Desc}</p>
+            <h4 className="font-bold text-slate-800 dark:text-white text-base mb-1 font-heading">{t.phase2}</h4>
+            <p className="text-xs text-slate-600 dark:text-zinc-300 leading-relaxed font-body">{t.phase2Desc}</p>
           </div>
 
           <div
@@ -338,8 +338,8 @@ export const TattoosOverviewTab: React.FC<TattoosOverviewTabProps> = ({
               </span>
               <span className="text-xs text-gray-400">{t.phase3Days}</span>
             </div>
-            <h4 className="font-bold text-slate-900 dark:text-white text-base mb-1">{t.phase3}</h4>
-            <p className="text-xs text-slate-600 dark:text-zinc-300 leading-relaxed">{t.phase3Desc}</p>
+            <h4 className="font-bold text-slate-800 dark:text-white text-base mb-1 font-heading">{t.phase3}</h4>
+            <p className="text-xs text-slate-600 dark:text-zinc-300 leading-relaxed font-body">{t.phase3Desc}</p>
           </div>
         </div>
 
@@ -350,10 +350,10 @@ export const TattoosOverviewTab: React.FC<TattoosOverviewTabProps> = ({
               <Heart size={22} />
             </div>
             <div>
-              <h4 className="font-bold text-slate-900 dark:text-white text-sm md:text-base">
+              <h4 className="font-bold text-slate-800 dark:text-white text-sm md:text-base font-heading">
                 {t.vipBannerTitle}
               </h4>
-              <p className="text-xs md:text-sm text-slate-600 dark:text-gray-400">
+              <p className="text-xs md:text-sm text-slate-600 dark:text-gray-400 font-body">
                 {t.vipBannerDesc}
               </p>
             </div>
@@ -417,10 +417,10 @@ export const TattoosOverviewTab: React.FC<TattoosOverviewTabProps> = ({
               <Camera size={20} />
             </div>
             <div>
-              <h3 className="text-lg md:text-xl font-bold text-slate-900 dark:text-white">
+              <h3 className="text-lg md:text-xl font-bold text-slate-800 dark:text-white font-heading">
                 {t.galleryAnchorTitle}
               </h3>
-              <p className="text-xs md:text-sm text-slate-600 dark:text-gray-400">
+              <p className="text-xs md:text-sm text-slate-600 dark:text-gray-400 font-body">
                 {t.galleryAnchorSubtitle}
               </p>
             </div>

@@ -13,7 +13,8 @@ import {
   Sparkles,
   AlertTriangle,
   Calendar,
-  ShieldAlert
+  ShieldAlert,
+  AlertCircle
 } from 'lucide-react';
 import { isQaEnvironment } from '../api/supabase';
 import { useAuth } from '../context/AuthContext';
@@ -56,6 +57,19 @@ export const RegisterPage: React.FC = () => {
 
   const [loading, setLoading] = useState(false);
   const [errorMsg, setErrorMsg] = useState('');
+  const [fieldErrors, setFieldErrors] = useState<{
+    nombre?: string;
+    apellido?: string;
+    email?: string;
+    phoneLocal?: string;
+    birthdate?: string;
+    address?: string;
+    city?: string;
+    postalCode?: string;
+    password?: string;
+    confirmPassword?: string;
+    termsAccepted?: string;
+  }>({});
   const navigate = useNavigate();
   const { login } = useAuth();
 
@@ -84,35 +98,76 @@ export const RegisterPage: React.FC = () => {
   const currentAge = calculateAge(birthdate);
   const isUnderage = currentAge !== null && currentAge < 18;
 
-  // Paso 1: Validación previa y apertura del modal de verificación
+  // Paso 1: Validación previa personalizada y apertura del modal de verificación
   const handlePreRegister = (e: React.FormEvent) => {
     e.preventDefault();
-    if (password !== confirmPassword) {
-      setErrorMsg('Las contraseñas no coinciden.');
-      return;
+    setErrorMsg('');
+
+    const errors: typeof fieldErrors = {};
+
+    if (!nombre.trim()) {
+      errors.nombre = 'Por favor ingresa tu nombre.';
     }
-    if (!birthdate) {
-      setErrorMsg('La fecha de nacimiento es obligatoria para verificar la mayoría de edad.');
-      return;
+    if (!apellido.trim()) {
+      errors.apellido = 'Por favor ingresa tu apellido.';
     }
-    if (isUnderage) {
-      setErrorMsg('Debes ser mayor de 18 años para registrarte en Tattoo Hub conforme a las normativas sanitarias y legales de arte corporal.');
-      return;
+    if (!email.trim()) {
+      errors.email = 'Por favor ingresa tu correo electrónico.';
+    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim())) {
+      errors.email = 'El formato del correo electrónico es inválido.';
     }
     if (!phoneLocal.trim()) {
-      setErrorMsg('Por favor ingresa tu número de teléfono móvil.');
-      return;
+      errors.phoneLocal = 'Por favor ingresa tu número de teléfono móvil.';
     }
+    if (!birthdate) {
+      errors.birthdate = 'La fecha de nacimiento es obligatoria para verificar la mayoría de edad.';
+    } else if (isUnderage) {
+      errors.birthdate = 'Debes ser mayor de 18 años para registrarte en Tattoo Hub.';
+    }
+
+    if (tipo === 'Tatuador') {
+      if (!address.trim()) {
+        errors.address = 'Por favor ingresa la dirección de tu estudio.';
+      }
+      if (!city.trim()) {
+        errors.city = 'Por favor ingresa tu ciudad.';
+      }
+      if (!postalCode.trim()) {
+        errors.postalCode = 'Por favor ingresa tu código postal.';
+      }
+    }
+
+    if (!password) {
+      errors.password = 'Por favor ingresa una contraseña.';
+    } else if (password.length < 6) {
+      errors.password = 'La contraseña debe tener al menos 6 caracteres.';
+    }
+
+    if (!confirmPassword) {
+      errors.confirmPassword = 'Por favor confirma tu contraseña.';
+    } else if (password !== confirmPassword) {
+      errors.confirmPassword = 'Las contraseñas no coinciden.';
+    }
+
     if (!termsAccepted) {
-      setErrorMsg('Debes leer y aceptar los Términos y la Política de Privacidad.');
+      errors.termsAccepted = 'Debes leer y aceptar los Términos y la Política de Privacidad.';
+    }
+
+    if (Object.keys(errors).length > 0) {
+      setFieldErrors(errors);
+      const firstKey = Object.keys(errors)[0];
+      const targetId = `reg-${firstKey}`;
+      document.getElementById(targetId)?.focus();
       return;
     }
+
+    setFieldErrors({});
+
     if (!turnstileToken) {
       setErrorMsg('Por favor completa la verificación de seguridad anti-bots.');
       return;
     }
 
-    setErrorMsg('');
     setIsVerificationModalOpen(true);
   };
 
@@ -293,39 +348,102 @@ export const RegisterPage: React.FC = () => {
           <form onSubmit={handlePreRegister} noValidate className="space-y-6 mt-6">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
-                <label className="block text-sm font-medium text-slate-900 dark:text-white mb-2">Nombre(s)</label>
+                <label className="block text-sm font-medium text-slate-800 dark:text-white mb-2">Nombre(s)</label>
                 <input
+                  id="reg-nombre"
                   type="text"
-                  required
                   value={nombre}
-                  onChange={(e) => setNombre(e.target.value)}
+                  aria-invalid={Boolean(fieldErrors.nombre)}
+                  aria-describedby={fieldErrors.nombre ? 'reg-nombre-error' : undefined}
+                  onChange={(e) => {
+                    setNombre(e.target.value);
+                    if (fieldErrors.nombre) setFieldErrors((prev) => ({ ...prev, nombre: undefined }));
+                  }}
                   placeholder="Ej: Mateo o Carlos"
-                  className="input-atelier w-full"
+                  className={`input-atelier w-full transition ${
+                    fieldErrors.nombre
+                      ? 'border-rose-500 ring-2 ring-rose-500/20 bg-rose-50/20 dark:bg-rose-950/20 focus:border-rose-500'
+                      : ''
+                  }`}
                 />
+                {fieldErrors.nombre && (
+                  <motion.div
+                    initial={{ opacity: 0, y: -4 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    id="reg-nombre-error"
+                    role="alert"
+                    className="flex items-center gap-1.5 text-xs text-rose-600 dark:text-rose-400 font-medium mt-1 pl-1"
+                  >
+                    <AlertCircle className="w-3.5 h-3.5 shrink-0 text-rose-500" />
+                    <span>{fieldErrors.nombre}</span>
+                  </motion.div>
+                )}
               </div>
               <div>
-                <label className="block text-sm font-medium text-slate-900 dark:text-white mb-2">Apellido(s)</label>
+                <label className="block text-sm font-medium text-slate-800 dark:text-white mb-2">Apellido(s)</label>
                 <input
+                  id="reg-apellido"
                   type="text"
-                  required
                   value={apellido}
-                  onChange={(e) => setApellido(e.target.value)}
+                  aria-invalid={Boolean(fieldErrors.apellido)}
+                  aria-describedby={fieldErrors.apellido ? 'reg-apellido-error' : undefined}
+                  onChange={(e) => {
+                    setApellido(e.target.value);
+                    if (fieldErrors.apellido) setFieldErrors((prev) => ({ ...prev, apellido: undefined }));
+                  }}
                   placeholder="Ej: Valenzuela o Restrepo"
-                  className="input-atelier w-full"
+                  className={`input-atelier w-full transition ${
+                    fieldErrors.apellido
+                      ? 'border-rose-500 ring-2 ring-rose-500/20 bg-rose-50/20 dark:bg-rose-950/20 focus:border-rose-500'
+                      : ''
+                  }`}
                 />
+                {fieldErrors.apellido && (
+                  <motion.div
+                    initial={{ opacity: 0, y: -4 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    id="reg-apellido-error"
+                    role="alert"
+                    className="flex items-center gap-1.5 text-xs text-rose-600 dark:text-rose-400 font-medium mt-1 pl-1"
+                  >
+                    <AlertCircle className="w-3.5 h-3.5 shrink-0 text-rose-500" />
+                    <span>{fieldErrors.apellido}</span>
+                  </motion.div>
+                )}
               </div>
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-slate-900 dark:text-white mb-2">Correo electrónico</label>
+              <label className="block text-sm font-medium text-slate-800 dark:text-white mb-2">Correo electrónico</label>
               <input
+                id="reg-email"
                 type="email"
-                required
                 value={email}
-                onChange={(e) => setEmail(e.target.value)}
+                aria-invalid={Boolean(fieldErrors.email)}
+                aria-describedby={fieldErrors.email ? 'reg-email-error' : undefined}
+                onChange={(e) => {
+                  setEmail(e.target.value);
+                  if (fieldErrors.email) setFieldErrors((prev) => ({ ...prev, email: undefined }));
+                }}
                 placeholder="estudio@tattoohub.art"
-                className="input-atelier w-full"
+                className={`input-atelier w-full transition ${
+                  fieldErrors.email
+                    ? 'border-rose-500 ring-2 ring-rose-500/20 bg-rose-50/20 dark:bg-rose-950/20 focus:border-rose-500'
+                    : ''
+                }`}
               />
+              {fieldErrors.email && (
+                <motion.div
+                  initial={{ opacity: 0, y: -4 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  id="reg-email-error"
+                  role="alert"
+                  className="flex items-center gap-1.5 text-xs text-rose-600 dark:text-rose-400 font-medium mt-1 pl-1"
+                >
+                  <AlertCircle className="w-3.5 h-3.5 shrink-0 text-rose-500" />
+                  <span>{fieldErrors.email}</span>
+                </motion.div>
+              )}
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -338,21 +456,44 @@ export const RegisterPage: React.FC = () => {
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-slate-900 dark:text-white mb-2">Número de teléfono móvil</label>
-                <div className="flex rounded-xl overflow-hidden border border-slate-300 dark:border-zinc-800 bg-slate-50 dark:bg-[#121217] focus-within:border-violet-500 focus-within:ring-1 focus-within:ring-violet-500 transition-all">
+                <label className="block text-sm font-medium text-slate-800 dark:text-white mb-2">Número de teléfono móvil</label>
+                <div
+                  className={`flex rounded-xl overflow-hidden border bg-slate-50 dark:bg-[#121217] transition-all ${
+                    fieldErrors.phoneLocal
+                      ? 'border-rose-500 ring-2 ring-rose-500/20 bg-rose-50/20 dark:bg-rose-950/20'
+                      : 'border-slate-300 dark:border-zinc-800 focus-within:border-violet-500 focus-within:ring-1 focus-within:ring-violet-500'
+                  }`}
+                >
                   <div className="bg-slate-100 dark:bg-zinc-900/90 px-3.5 py-3 border-r border-slate-300 dark:border-zinc-800 flex items-center gap-1.5 text-sm font-semibold text-violet-700 dark:text-violet-300 shrink-0 select-none">
                     <span className="text-base">{selectedCountryData.flag}</span>
                     <span className="font-mono">{selectedCountryData.dialCode}</span>
                   </div>
                   <input
+                    id="reg-phoneLocal"
                     type="tel"
-                    required
                     value={phoneLocal}
-                    onChange={(e) => setPhoneLocal(e.target.value)}
+                    aria-invalid={Boolean(fieldErrors.phoneLocal)}
+                    aria-describedby={fieldErrors.phoneLocal ? 'reg-phoneLocal-error' : undefined}
+                    onChange={(e) => {
+                      setPhoneLocal(e.target.value);
+                      if (fieldErrors.phoneLocal) setFieldErrors((prev) => ({ ...prev, phoneLocal: undefined }));
+                    }}
                     placeholder={selectedCountryData.placeholder}
-                    className="bg-transparent px-4 py-3 text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-zinc-600 text-sm focus:outline-none w-full"
+                    className="bg-transparent px-4 py-3 text-slate-800 dark:text-white placeholder-slate-400 dark:placeholder-zinc-600 text-sm focus:outline-none w-full"
                   />
                 </div>
+                {fieldErrors.phoneLocal && (
+                  <motion.div
+                    initial={{ opacity: 0, y: -4 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    id="reg-phoneLocal-error"
+                    role="alert"
+                    className="flex items-center gap-1.5 text-xs text-rose-600 dark:text-rose-400 font-medium mt-1 pl-1"
+                  >
+                    <AlertCircle className="w-3.5 h-3.5 shrink-0 text-rose-500" />
+                    <span>{fieldErrors.phoneLocal}</span>
+                  </motion.div>
+                )}
                 <p className="text-[11px] text-slate-500 dark:text-zinc-500 mt-1">
                   Prefijo reactivo {selectedCountryData.dialCode} ({selectedCountryData.label}).
                 </p>
@@ -362,14 +503,14 @@ export const RegisterPage: React.FC = () => {
             {/* Fecha de Nacimiento con Validación 18+ */}
             <div>
               <div className="flex items-center justify-between mb-2">
-                <label className="flex items-center gap-2 text-sm font-medium text-slate-900 dark:text-white">
+                <label className="flex items-center gap-2 text-sm font-medium text-slate-800 dark:text-white">
                   <Calendar className="w-4 h-4 text-violet-600 dark:text-violet-400" /> Fecha de Nacimiento
                 </label>
                 {currentAge !== null && (
                   <span
                     className={`text-xs font-bold px-2.5 py-0.5 rounded-full border ${
                       isUnderage
-                        ? 'bg-red-500/10 text-red-400 border-red-500/30'
+                        ? 'bg-rose-500/10 text-rose-400 border-rose-500/30'
                         : 'bg-emerald-500/10 text-emerald-400 border-emerald-500/30'
                     }`}
                   >
@@ -378,15 +519,34 @@ export const RegisterPage: React.FC = () => {
                 )}
               </div>
               <input
+                id="reg-birthdate"
                 type="date"
-                required
                 max={new Date().toISOString().split('T')[0]}
                 value={birthdate}
-                onChange={(e) => setBirthdate(e.target.value)}
-                className={`input-atelier w-full cursor-pointer ${
-                  isUnderage ? 'border-red-500/80 focus:border-red-500 ring-1 ring-red-500/50' : ''
+                aria-invalid={Boolean(fieldErrors.birthdate || isUnderage)}
+                aria-describedby={fieldErrors.birthdate ? 'reg-birthdate-error' : undefined}
+                onChange={(e) => {
+                  setBirthdate(e.target.value);
+                  if (fieldErrors.birthdate) setFieldErrors((prev) => ({ ...prev, birthdate: undefined }));
+                }}
+                className={`input-atelier w-full cursor-pointer transition ${
+                  fieldErrors.birthdate || isUnderage
+                    ? 'border-rose-500 ring-2 ring-rose-500/20 bg-rose-50/20 dark:bg-rose-950/20 focus:border-rose-500'
+                    : ''
                 }`}
               />
+              {fieldErrors.birthdate && (
+                <motion.div
+                  initial={{ opacity: 0, y: -4 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  id="reg-birthdate-error"
+                  role="alert"
+                  className="flex items-center gap-1.5 text-xs text-rose-600 dark:text-rose-400 font-medium mt-1 pl-1"
+                >
+                  <AlertCircle className="w-3.5 h-3.5 shrink-0 text-rose-500" />
+                  <span>{fieldErrors.birthdate}</span>
+                </motion.div>
+              )}
               {isUnderage && (
                 <div className="mt-2.5 p-3 rounded-xl bg-red-950/30 border border-red-500/40 flex items-start gap-2.5 text-xs text-red-300 animate-in fade-in duration-200">
                   <AlertTriangle className="w-4 h-4 text-red-400 shrink-0 mt-0.5" />
@@ -406,7 +566,7 @@ export const RegisterPage: React.FC = () => {
                   className="space-y-6 overflow-hidden"
                 >
                   <div className="flex items-center justify-between">
-                    <label className="block text-sm font-medium text-slate-900 dark:text-white">
+                    <label className="block text-sm font-medium text-slate-800 dark:text-white">
                       Ubicación para el Mapa de Estudios
                     </label>
                     <span className="text-[10px] text-emerald-400 font-bold bg-emerald-500/10 px-2 py-1 rounded-full border border-emerald-500/30">
@@ -415,30 +575,97 @@ export const RegisterPage: React.FC = () => {
                   </div>
                   <div>
                     <input
+                      id="reg-address"
                       type="text"
-                      required
                       value={address}
-                      onChange={(e) => setAddress(e.target.value)}
+                      aria-invalid={Boolean(fieldErrors.address)}
+                      aria-describedby={fieldErrors.address ? 'reg-address-error' : undefined}
+                      onChange={(e) => {
+                        setAddress(e.target.value);
+                        if (fieldErrors.address) setFieldErrors((prev) => ({ ...prev, address: undefined }));
+                      }}
                       placeholder="Dirección del estudio o calle (ej. Calle del Pez 28, Local B)"
-                      className="input-atelier w-full mb-4"
+                      className={`input-atelier w-full mb-4 transition ${
+                        fieldErrors.address
+                          ? 'border-rose-500 ring-2 ring-rose-500/20 bg-rose-50/20 dark:bg-rose-950/20 focus:border-rose-500'
+                          : ''
+                      }`}
                     />
+                    {fieldErrors.address && (
+                      <motion.div
+                        initial={{ opacity: 0, y: -4 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        id="reg-address-error"
+                        role="alert"
+                        className="flex items-center gap-1.5 text-xs text-rose-600 dark:text-rose-400 font-medium mb-4 pl-1"
+                      >
+                        <AlertCircle className="w-3.5 h-3.5 shrink-0 text-rose-500" />
+                        <span>{fieldErrors.address}</span>
+                      </motion.div>
+                    )}
                     <div className="grid grid-cols-2 gap-4">
-                      <input
-                        type="text"
-                        required
-                        value={city}
-                        onChange={(e) => setCity(e.target.value)}
-                        placeholder="Ciudad / Localidad (ej. Madrid)"
-                        className="input-atelier w-full"
-                      />
-                      <input
-                        type="text"
-                        required
-                        value={postalCode}
-                        onChange={(e) => setPostalCode(e.target.value)}
-                        placeholder="Código Postal (ej. 28004)"
-                        className="input-atelier w-full"
-                      />
+                      <div>
+                        <input
+                          id="reg-city"
+                          type="text"
+                          value={city}
+                          aria-invalid={Boolean(fieldErrors.city)}
+                          aria-describedby={fieldErrors.city ? 'reg-city-error' : undefined}
+                          onChange={(e) => {
+                            setCity(e.target.value);
+                            if (fieldErrors.city) setFieldErrors((prev) => ({ ...prev, city: undefined }));
+                          }}
+                          placeholder="Ciudad / Localidad (ej. Madrid)"
+                          className={`input-atelier w-full transition ${
+                            fieldErrors.city
+                              ? 'border-rose-500 ring-2 ring-rose-500/20 bg-rose-50/20 dark:bg-rose-950/20 focus:border-rose-500'
+                              : ''
+                          }`}
+                        />
+                        {fieldErrors.city && (
+                          <motion.div
+                            initial={{ opacity: 0, y: -4 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            id="reg-city-error"
+                            role="alert"
+                            className="flex items-center gap-1.5 text-xs text-rose-600 dark:text-rose-400 font-medium mt-1 pl-1"
+                          >
+                            <AlertCircle className="w-3.5 h-3.5 shrink-0 text-rose-500" />
+                            <span>{fieldErrors.city}</span>
+                          </motion.div>
+                        )}
+                      </div>
+                      <div>
+                        <input
+                          id="reg-postalCode"
+                          type="text"
+                          value={postalCode}
+                          aria-invalid={Boolean(fieldErrors.postalCode)}
+                          aria-describedby={fieldErrors.postalCode ? 'reg-postalCode-error' : undefined}
+                          onChange={(e) => {
+                            setPostalCode(e.target.value);
+                            if (fieldErrors.postalCode) setFieldErrors((prev) => ({ ...prev, postalCode: undefined }));
+                          }}
+                          placeholder="Código Postal (ej. 28004)"
+                          className={`input-atelier w-full transition ${
+                            fieldErrors.postalCode
+                              ? 'border-rose-500 ring-2 ring-rose-500/20 bg-rose-50/20 dark:bg-rose-950/20 focus:border-rose-500'
+                              : ''
+                          }`}
+                        />
+                        {fieldErrors.postalCode && (
+                          <motion.div
+                            initial={{ opacity: 0, y: -4 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            id="reg-postalCode-error"
+                            role="alert"
+                            className="flex items-center gap-1.5 text-xs text-rose-600 dark:text-rose-400 font-medium mt-1 pl-1"
+                          >
+                            <AlertCircle className="w-3.5 h-3.5 shrink-0 text-rose-500" />
+                            <span>{fieldErrors.postalCode}</span>
+                          </motion.div>
+                        )}
+                      </div>
                     </div>
                   </div>
                 </motion.div>
@@ -447,18 +674,27 @@ export const RegisterPage: React.FC = () => {
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
-                <label className="flex items-center justify-between text-sm font-medium text-slate-900 dark:text-white mb-2">
+                <label className="flex items-center justify-between text-sm font-medium text-slate-800 dark:text-white mb-2">
                   Contraseña segura
                   {password.length > 0 && <span className="text-[10px] text-emerald-400 font-bold">MEDIA</span>}
                 </label>
                 <div className="relative">
                   <input
+                    id="reg-password"
                     type={showPassword ? 'text' : 'password'}
-                    required
                     value={password}
-                    onChange={(e) => setPassword(e.target.value)}
+                    aria-invalid={Boolean(fieldErrors.password)}
+                    aria-describedby={fieldErrors.password ? 'reg-password-error' : undefined}
+                    onChange={(e) => {
+                      setPassword(e.target.value);
+                      if (fieldErrors.password) setFieldErrors((prev) => ({ ...prev, password: undefined }));
+                    }}
                     placeholder="••••••••••••"
-                    className="input-atelier w-full pr-12"
+                    className={`input-atelier w-full pr-12 transition ${
+                      fieldErrors.password
+                        ? 'border-rose-500 ring-2 ring-rose-500/20 bg-rose-50/20 dark:bg-rose-950/20 focus:border-rose-500'
+                        : ''
+                    }`}
                   />
                   <button
                     type="button"
@@ -468,9 +704,21 @@ export const RegisterPage: React.FC = () => {
                     {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
                   </button>
                 </div>
+                {fieldErrors.password && (
+                  <motion.div
+                    initial={{ opacity: 0, y: -4 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    id="reg-password-error"
+                    role="alert"
+                    className="flex items-center gap-1.5 text-xs text-rose-600 dark:text-rose-400 font-medium mt-1 pl-1"
+                  >
+                    <AlertCircle className="w-3.5 h-3.5 shrink-0 text-rose-500" />
+                    <span>{fieldErrors.password}</span>
+                  </motion.div>
+                )}
               </div>
               <div>
-                <label className="flex items-center justify-between text-sm font-medium text-slate-900 dark:text-white mb-2">
+                <label className="flex items-center justify-between text-sm font-medium text-slate-800 dark:text-white mb-2">
                   Confirmar contraseña
                   {confirmPassword.length > 0 && confirmPassword === password && (
                     <span className="text-[10px] text-emerald-400 font-bold">COINCIDE</span>
@@ -478,14 +726,35 @@ export const RegisterPage: React.FC = () => {
                 </label>
                 <div className="relative">
                   <input
+                    id="reg-confirmPassword"
                     type={showPassword ? 'text' : 'password'}
-                    required
                     value={confirmPassword}
-                    onChange={(e) => setConfirmPassword(e.target.value)}
+                    aria-invalid={Boolean(fieldErrors.confirmPassword)}
+                    aria-describedby={fieldErrors.confirmPassword ? 'reg-confirmPassword-error' : undefined}
+                    onChange={(e) => {
+                      setConfirmPassword(e.target.value);
+                      if (fieldErrors.confirmPassword) setFieldErrors((prev) => ({ ...prev, confirmPassword: undefined }));
+                    }}
                     placeholder="••••••••••••"
-                    className="input-atelier w-full"
+                    className={`input-atelier w-full transition ${
+                      fieldErrors.confirmPassword
+                        ? 'border-rose-500 ring-2 ring-rose-500/20 bg-rose-50/20 dark:bg-rose-950/20 focus:border-rose-500'
+                        : ''
+                    }`}
                   />
                 </div>
+                {fieldErrors.confirmPassword && (
+                  <motion.div
+                    initial={{ opacity: 0, y: -4 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    id="reg-confirmPassword-error"
+                    role="alert"
+                    className="flex items-center gap-1.5 text-xs text-rose-600 dark:text-rose-400 font-medium mt-1 pl-1"
+                  >
+                    <AlertCircle className="w-3.5 h-3.5 shrink-0 text-rose-500" />
+                    <span>{fieldErrors.confirmPassword}</span>
+                  </motion.div>
+                )}
               </div>
             </div>
 
@@ -496,7 +765,9 @@ export const RegisterPage: React.FC = () => {
             )}
 
             {/* Terms and Privacy Agreement with Forced Scroll Modal */}
-            <div className="flex items-start gap-3 mt-6 p-4 rounded-2xl bg-slate-50 dark:bg-[#121217] border border-slate-200 dark:border-zinc-800">
+            <div className={`flex items-start gap-3 mt-6 p-4 rounded-2xl bg-slate-50 dark:bg-[#121217] border transition-all ${
+              fieldErrors.termsAccepted ? 'border-rose-500 ring-2 ring-rose-500/20 bg-rose-50/20 dark:bg-rose-950/20' : 'border-slate-200 dark:border-zinc-800'
+            }`}>
               <input
                 type="checkbox"
                 id="terms"
@@ -506,7 +777,9 @@ export const RegisterPage: React.FC = () => {
                   if (!hasRead) {
                     setIsTermsModalOpen(true);
                   } else {
-                    setTermsAccepted(!termsAccepted);
+                    const nextVal = !termsAccepted;
+                    setTermsAccepted(nextVal);
+                    if (nextVal && fieldErrors.termsAccepted) setFieldErrors((prev) => ({ ...prev, termsAccepted: undefined }));
                   }
                 }}
                 className="mt-1 w-5 h-5 rounded border-slate-300 dark:border-zinc-700 bg-white dark:bg-zinc-900 text-violet-600 focus:ring-violet-500 focus:ring-offset-slate-100 dark:focus:ring-offset-zinc-900 cursor-pointer"
@@ -527,6 +800,18 @@ export const RegisterPage: React.FC = () => {
                     * Debes abrir la ventana emergente y desplazarte hasta el final para habilitar esta casilla.
                   </p>
                 )}
+                {fieldErrors.termsAccepted && (
+                  <motion.div
+                    initial={{ opacity: 0, y: -4 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    id="reg-terms-error"
+                    role="alert"
+                    className="flex items-center gap-1.5 text-xs text-rose-600 dark:text-rose-400 font-medium mt-2 pl-1"
+                  >
+                    <AlertCircle className="w-3.5 h-3.5 shrink-0 text-rose-500" />
+                    <span>{fieldErrors.termsAccepted}</span>
+                  </motion.div>
+                )}
               </div>
             </div>
 
@@ -542,22 +827,21 @@ export const RegisterPage: React.FC = () => {
             </div>
 
             <button
-              disabled={loading || isUnderage || !termsAccepted || !birthdate || !turnstileToken}
+              id="btn-register-submit"
+              disabled={loading}
               type="submit"
-              className="btn-atelier-primary w-full mt-8 py-4 rounded-xl font-bold text-lg cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed shadow-[0_0_25px_rgba(124,58,237,0.3)]"
+              className="btn-atelier-primary keep-white-text !text-white w-full mt-8 py-4 rounded-xl font-bold text-lg cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed shadow-[0_0_25px_rgba(124,58,237,0.3)] transition"
             >
-              {loading
-                ? 'Creando cuenta...'
-                : isUnderage
-                ? '🔞 Registro Bloqueado: Menor de Edad'
-                : !termsAccepted
-                ? 'Lectura de Términos Requerida'
-                : !turnstileToken
-                ? '🛡️ Verificación Humana Requerida'
-                : 'Crear mi Cuenta - Empezar Ahora'}
+              <span className="!text-white keep-white-text font-bold">
+                {loading
+                  ? 'Creando cuenta...'
+                  : isUnderage
+                  ? '🔞 Registro Bloqueado: Menor de Edad'
+                  : 'Crear mi Cuenta - Empezar Ahora'}
+              </span>
             </button>
 
-            <p className="text-center text-sm text-slate-500 dark:text-zinc-500 mt-6">
+            <p className="text-center text-sm text-slate-500 dark:text-zinc-500 mt-6 font-body">
               ¿Ya tienes cuenta en Tattoo Hub?{' '}
               <Link to={loginLink} className="text-violet-600 dark:text-white font-medium hover:underline">
                 Iniciar Sesión

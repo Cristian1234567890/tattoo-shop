@@ -120,7 +120,7 @@ export const Navbar: React.FC<NavbarProps> = ({ forceRender = false }) => {
   return (
     <nav className="bg-white/90 dark:bg-gray-950/40 backdrop-blur-xl border-b border-slate-200 dark:border-white/10 sticky top-0 z-50 transition-all font-sans text-slate-900 dark:text-white">
       <div className="w-full max-w-[1720px] mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between h-16 w-full">
+        <div className="flex items-center justify-between h-16 w-full gap-4 xl:gap-8">
           {/* Brand Logo (Left Section) */}
           <div className="flex items-center justify-start flex-1 min-w-[180px]">
             <Link to="/" id="logo" onClick={closeMenu} className="flex items-center gap-2 no-underline">
@@ -502,7 +502,7 @@ export const Navbar: React.FC<NavbarProps> = ({ forceRender = false }) => {
             <button
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
               aria-label="Abrir menú"
-              className="p-2 rounded-lg text-gray-300 hover:text-white hover:bg-white/10 focus:outline-none transition-colors"
+              className="p-2 rounded-lg text-slate-700 hover:text-slate-900 hover:bg-slate-100 dark:text-gray-300 dark:hover:text-white dark:hover:bg-white/10 focus:outline-none transition-colors"
             >
               {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
             </button>
@@ -709,18 +709,20 @@ export const Navbar: React.FC<NavbarProps> = ({ forceRender = false }) => {
               <div className="grid grid-cols-2 gap-3 pt-1">
                 <Link to="/login" onClick={closeMenu} className="w-full">
                   <button
-                    className="w-full py-2.5 px-4 rounded-full text-sm font-medium text-gray-200 bg-white/5 hover:bg-white/10 border border-white/10 flex items-center justify-center gap-2"
+                    id="mobile-nav-login"
+                    className="w-full py-2.5 px-4 rounded-full text-xs sm:text-sm font-semibold text-slate-700 hover:text-slate-900 bg-slate-100 hover:bg-slate-200 dark:text-gray-200 dark:hover:text-white dark:bg-white/5 dark:hover:bg-white/10 border border-slate-200 dark:border-white/10 flex items-center justify-center gap-2 transition-all cursor-pointer shadow-sm"
                   >
-                    <LogIn className="w-4 h-4" />
-                    {t('nav.login')}
+                    <LogIn className="w-4 h-4 text-slate-600 dark:text-gray-300" />
+                    <span>{t('nav.login')}</span>
                   </button>
                 </Link>
                 <Link to="/register" onClick={closeMenu} className="w-full">
                   <button
-                    className="w-full py-2.5 px-4 rounded-full text-sm font-semibold text-white bg-gradient-to-r from-violet-600 to-indigo-600 hover:from-violet-500 hover:to-indigo-500 shadow-md shadow-violet-500/20 flex items-center justify-center gap-2"
+                    id="mobile-nav-register"
+                    className="keep-white-text w-full py-2.5 px-4 rounded-full text-xs sm:text-sm font-semibold !text-white bg-gradient-to-r from-violet-600 to-indigo-600 hover:from-violet-500 hover:to-indigo-500 shadow-md shadow-violet-500/20 flex items-center justify-center gap-2 transition-all cursor-pointer border border-violet-400/30"
                   >
-                    <UserPlus className="w-4 h-4" />
-                    {t('nav.register')}
+                    <UserPlus className="w-4 h-4 !text-white keep-white-text" />
+                    <span className="!text-white keep-white-text font-semibold">{t('nav.register')}</span>
                   </button>
                 </Link>
               </div>

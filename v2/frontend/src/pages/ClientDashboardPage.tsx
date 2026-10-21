@@ -271,7 +271,7 @@ export const ClientDashboardPage: React.FC = () => {
         {/* VIP Paywall Prompt Modal */}
         {showPaywallModal && (
           <div className="fixed inset-0 z-50 bg-black/60 dark:bg-black/85 backdrop-blur-md flex items-center justify-center p-4 animate-in fade-in duration-200">
-            <div className="bg-white/95 dark:bg-gradient-to-b dark:from-zinc-900 dark:via-zinc-850 dark:to-zinc-900 border-2 border-amber-500/50 rounded-2xl max-w-lg w-full p-6 md:p-8 shadow-2xl relative text-center text-slate-900 dark:text-white backdrop-blur-xl">
+            <div className="bg-white/95 dark:bg-gradient-to-b dark:from-zinc-900 dark:via-zinc-850 dark:to-zinc-900 border-2 border-amber-500/50 rounded-2xl max-w-lg w-full p-6 md:p-8 shadow-2xl relative text-center text-slate-800 dark:text-white backdrop-blur-xl">
               <button
                 onClick={() => setShowPaywallModal(false)}
                 className="absolute top-4 right-4 text-slate-400 hover:text-slate-900 dark:text-zinc-400 dark:hover:text-white transition cursor-pointer p-1 rounded-lg"
@@ -285,7 +285,7 @@ export const ClientDashboardPage: React.FC = () => {
               <span className="px-3 py-1 rounded-full bg-amber-500/15 text-amber-700 dark:text-amber-400 border border-amber-500/30 text-xs font-bold uppercase tracking-wider">
                 {lang === 'en' ? 'VIP Exclusive Feature' : 'Función Exclusiva VIP'}
               </span>
-              <h3 className="text-xl md:text-2xl font-black text-slate-900 dark:text-white mt-3 mb-2">
+              <h3 className="text-xl md:text-2xl font-black text-slate-800 dark:text-white mt-3 mb-2 font-heading">
                 {lang === 'en'
                   ? `Unlock Tattoo Healing Progress with VIP for ${formatPrice(4.99)}/mo`
                   : `Desbloquea el Seguimiento de Tatuajes con Cliente VIP por ${formatPrice(4.99)}/mes`}
@@ -316,7 +316,7 @@ export const ClientDashboardPage: React.FC = () => {
         {/* Registered VIP Progress Modal */}
         {showProgressModal && (
           <div className="fixed inset-0 z-50 bg-black/85 backdrop-blur-sm flex items-center justify-center p-4">
-            <div className="bg-white dark:bg-zinc-900 border border-emerald-500/40 rounded-2xl max-w-lg w-full p-6 md:p-8 shadow-2xl relative text-slate-900 dark:text-white">
+            <div className="bg-white dark:bg-zinc-900 border border-emerald-500/40 rounded-2xl max-w-lg w-full p-6 md:p-8 shadow-2xl relative text-slate-800 dark:text-white">
               <button
                 onClick={() => setShowProgressModal(false)}
                 className="absolute top-4 right-4 text-slate-400 hover:text-slate-700 dark:text-gray-400 dark:hover:text-white transition cursor-pointer"
@@ -329,8 +329,8 @@ export const ClientDashboardPage: React.FC = () => {
                   <CheckCircle size={20} />
                 </div>
                 <div>
-                  <h3 className="text-lg font-bold text-slate-900 dark:text-white">{lang === "en" ? "Log Healing Progress" : "Registrar Avance de Cicatrización"}</h3>
-                  <p className="text-xs text-emerald-600 dark:text-emerald-400 font-semibold">Cliente VIP Activo</p>
+                  <h3 className="text-lg font-bold text-slate-800 dark:text-white font-heading">{lang === "en" ? "Log Healing Progress" : "Registrar Avance de Cicatrización"}</h3>
+                  <p className="text-xs text-emerald-600 dark:text-emerald-400 font-semibold font-body">Cliente VIP Activo</p>
                 </div>
               </div>
 

@@ -155,10 +155,10 @@ export const ClientHeroHeader: React.FC<ClientHeroHeaderProps> = ({
               )}
             </div>
 
-            <h1 className="text-2xl md:text-3xl lg:text-4xl font-black text-slate-900 dark:text-white tracking-tight">
+            <h1 className="text-2xl md:text-3xl lg:text-4xl font-black text-slate-800 dark:text-white tracking-tight font-heading">
               {t.greeting}
             </h1>
-            <p className="text-slate-600 dark:text-gray-300 text-xs md:text-sm max-w-xl leading-relaxed">
+            <p className="text-slate-600 dark:text-gray-300 text-xs md:text-sm max-w-xl leading-relaxed font-body">
               {t.subtitle}
             </p>
           </div>
@@ -188,7 +188,7 @@ export const ClientHeroHeader: React.FC<ClientHeroHeaderProps> = ({
             <Activity size={18} />
           </div>
           <div>
-            <div className="text-lg md:text-xl font-bold text-slate-900 dark:text-white">{tattoosCount}</div>
+            <div className="text-lg md:text-xl font-bold text-slate-800 dark:text-white">{tattoosCount}</div>
             <div className="text-xs text-slate-500 dark:text-gray-400">{t.statTattoos}</div>
           </div>
         </div>
@@ -198,7 +198,7 @@ export const ClientHeroHeader: React.FC<ClientHeroHeaderProps> = ({
             <Calendar size={18} />
           </div>
           <div>
-            <div className="text-lg md:text-xl font-bold text-slate-900 dark:text-white">{appointmentsCount}</div>
+            <div className="text-lg md:text-xl font-bold text-slate-800 dark:text-white">{appointmentsCount}</div>
             <div className="text-xs text-slate-500 dark:text-gray-400">{t.statAppointments}</div>
           </div>
         </div>

@@ -27,6 +27,10 @@ h1, h2, h3, h4, h5, h6, .font-heading {
   letter-spacing: -0.02em;
 }
 
+p, .font-body {
+  font-family: 'Plus Jakarta Sans', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+}
+
 /* ==========================================================================
    THEME STYLES: DARK ATELIER (DEFAULT)
    ========================================================================== */
@@ -299,13 +303,15 @@ html.light .atelier-card-hover:hover {
 }
 
 /* Text white overrides in light mode: refined slate-700/600, exempting all button and banner elements */
-html.light .text-white:not(.bg-primary):not(.bg-violet-600):not(.bg-amber-600):not([class*="bg-primary"]):not([class*="bg-violet"]):not([class*="bg-amber"]):not([class*="bg-emerald"]):not([class*="from-violet"]):not([class*="from-purple"]):not([class*="from-indigo"]):not([class*="bg-purple"]):not(.keep-white-text):not(.keep-white-text *):not(.dark-banner *):not(#nav-register):not(#nav-register *):not(#btn-login-submit):not(#btn-login-submit *):not(.btn-atelier-primary):not(.btn-atelier-primary *) {
+html.light .text-white:not(.bg-primary):not(.bg-violet-600):not(.bg-amber-600):not([class*="bg-primary"]):not([class*="bg-violet"]):not([class*="bg-amber"]):not([class*="bg-emerald"]):not([class*="from-violet"]):not([class*="from-purple"]):not([class*="from-indigo"]):not([class*="bg-purple"]):not(.keep-white-text):not(.keep-white-text *):not(.dark-banner *):not(#nav-register):not(#nav-register *):not(#mobile-nav-register):not(#mobile-nav-register *):not(#btn-login-submit):not(#btn-login-submit *):not(.btn-atelier-primary):not(.btn-atelier-primary *) {
   color: #334155 !important;
 }
 
 /* Primary, Gradient & Call-To-Action buttons MUST ALWAYS retain pure white text in Light Mode */
 html.light #nav-register,
 html.light #nav-register *,
+html.light #mobile-nav-register,
+html.light #mobile-nav-register *,
 html.light #btn-login-submit,
 html.light #btn-login-submit *,
 html.light .btn-atelier-primary,
@@ -320,6 +326,10 @@ html.light button[class*="bg-amber-600"],
 html.light button[class*="bg-amber-600"] *,
 html.light button[class*="bg-violet-600"],
 html.light button[class*="bg-violet-600"] *,
+html.light button[class*="bg-purple"],
+html.light button[class*="bg-purple"] *,
+html.light a[class*="bg-purple"],
+html.light a[class*="bg-purple"] *,
 html.light button[class*="from-violet"],
 html.light button[class*="from-violet"] *,
 html.light button[class*="from-purple"],
@@ -331,6 +341,29 @@ html.light a.bg-gradient-to-r *,
 html.light .keep-white-text,
 html.light .keep-white-text * {
   color: #ffffff !important;
+}
+
+/* Refined text contrast in light mode: eliminate harsh blacks (#000000 / #0f172a) */
+html.light .text-black,
+html.light .text-slate-950,
+html.light .text-zinc-950,
+html.light .text-gray-950:not([class*="bg-amber"]):not([class*="bg-yellow"]):not([class*="from-amber"]):not([class*="to-amber"]) {
+  color: #1e293b !important;
+}
+
+html.light .text-slate-900,
+html.light .text-zinc-900 {
+  color: #1e293b !important;
+}
+
+html.light .text-slate-700,
+html.light .text-zinc-700 {
+  color: #334155 !important;
+}
+
+html.light .text-slate-600,
+html.light .text-zinc-600 {
+  color: #475569 !important;
 }
 
 html.light .text-gray-200,
@@ -363,8 +396,10 @@ html.light h1:not([class*="text-violet"]):not([class*="text-emerald"]):not([clas
 html.light h2:not([class*="text-violet"]):not([class*="text-emerald"]):not([class*="text-amber"]):not([class*="text-red"]):not(.dark-banner *):not(.keep-white-text *),
 html.light h3:not([class*="text-violet"]):not([class*="text-emerald"]):not([class*="text-amber"]):not([class*="text-red"]):not(.dark-banner *):not(.keep-white-text *),
 html.light h4:not([class*="text-violet"]):not([class*="text-emerald"]):not([class*="text-amber"]):not([class*="text-red"]):not(.dark-banner *):not(.keep-white-text *),
+html.light h5:not([class*="text-violet"]):not([class*="text-emerald"]):not([class*="text-amber"]):not([class*="text-red"]):not(.dark-banner *):not(.keep-white-text *),
+html.light h6:not([class*="text-violet"]):not([class*="text-emerald"]):not([class*="text-amber"]):not([class*="text-red"]):not(.dark-banner *):not(.keep-white-text *),
 html.light label:not([class*="text-violet"]):not([class*="text-emerald"]):not([class*="text-amber"]):not([class*="text-red"]):not(.dark-banner *):not(.keep-white-text *) {
-  color: #1e293b;
+  color: #1e293b !important;
 }
 
 html.light main h1.text-white:not(.dark-banner *):not(.keep-white-text *),

@@ -182,6 +182,12 @@ export const LoginPage: React.FC = () => {
   const handleVerifyOtp = async (e: React.FormEvent) => {
     e.preventDefault();
     setErrorMsg('');
+
+    if (!otpCode.trim()) {
+      setErrorMsg('Por favor ingresa el código de 6 dígitos.');
+      return;
+    }
+
     setVerifyLoading(true);
 
     try {
@@ -459,17 +465,16 @@ export const LoginPage: React.FC = () => {
             {/* MFA Enroll Phase */}
             {mfaPhase === 'ENROLL' && (
               <div className="text-center py-4">
-                <h2 className="text-xl font-bold mb-3 text-slate-900 dark:text-white">Configurar Autenticador</h2>
-                <p className="text-slate-600 dark:text-zinc-400 text-xs mb-4">
+                <h2 className="text-xl font-bold mb-3 text-slate-800 dark:text-white font-heading">Configurar Autenticador</h2>
+                <p className="text-slate-600 dark:text-zinc-400 text-xs mb-4 font-body">
                   Escanea este código QR con Google Authenticator o Authy.
                 </p>
                 <div className="flex justify-center mb-5 p-3 bg-white rounded-xl w-fit mx-auto border border-slate-200 shadow-sm">
                   <QRCodeSVG value={totpUri} size={160} />
                 </div>
-                <form onSubmit={handleVerifyOtp} className="space-y-4 max-w-xs mx-auto">
+                <form onSubmit={handleVerifyOtp} noValidate className="space-y-4 max-w-xs mx-auto">
                   <input
                     type="text"
-                    required
                     placeholder="Código 6 dígitos"
                     value={otpCode}
                     onChange={(e) => setOtpCode(e.target.value)}
@@ -478,9 +483,9 @@ export const LoginPage: React.FC = () => {
                   <button
                     type="submit"
                     disabled={verifyLoading}
-                    className="w-full py-3 bg-purple-600 hover:bg-purple-500 text-white font-bold rounded-xl text-sm transition"
+                    className="keep-white-text w-full py-3 bg-purple-600 hover:bg-purple-500 !text-white font-bold rounded-xl text-sm transition cursor-pointer"
                   >
-                    {verifyLoading ? 'Verificando...' : 'Verificar y Entrar'}
+                    <span className="!text-white keep-white-text font-bold">{verifyLoading ? 'Verificando...' : 'Verificar y Entrar'}</span>
                   </button>
                 </form>
               </div>
@@ -489,14 +494,13 @@ export const LoginPage: React.FC = () => {
             {/* MFA Verify Phase */}
             {mfaPhase === 'VERIFY' && (
               <div className="text-center py-4">
-                <h2 className="text-xl font-bold mb-3 text-slate-900 dark:text-white">Verificación en Dos Pasos</h2>
-                <p className="text-slate-600 dark:text-zinc-400 text-xs mb-4">
+                <h2 className="text-xl font-bold mb-3 text-slate-800 dark:text-white font-heading">Verificación en Dos Pasos</h2>
+                <p className="text-slate-600 dark:text-zinc-400 text-xs mb-4 font-body">
                   Ingresa el código de 6 dígitos de tu aplicación autenticadora.
                 </p>
-                <form onSubmit={handleVerifyOtp} className="space-y-4 max-w-xs mx-auto">
+                <form onSubmit={handleVerifyOtp} noValidate className="space-y-4 max-w-xs mx-auto">
                   <input
                     type="text"
-                    required
                     placeholder="000 000"
                     value={otpCode}
                     onChange={(e) => setOtpCode(e.target.value)}
@@ -505,9 +509,9 @@ export const LoginPage: React.FC = () => {
                   <button
                     type="submit"
                     disabled={verifyLoading}
-                    className="w-full py-3 bg-purple-600 hover:bg-purple-500 text-white font-bold rounded-xl text-sm transition"
+                    className="keep-white-text w-full py-3 bg-purple-600 hover:bg-purple-500 !text-white font-bold rounded-xl text-sm transition cursor-pointer"
                   >
-                    {verifyLoading ? 'Validando...' : 'Acceder'}
+                    <span className="!text-white keep-white-text font-bold">{verifyLoading ? 'Validando...' : 'Acceder'}</span>
                   </button>
                 </form>
               </div>
