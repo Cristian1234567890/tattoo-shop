@@ -174,6 +174,16 @@ export const Navbar: React.FC<NavbarProps> = ({ forceRender = false }) => {
               {t('nav.explore_map')}
             </Link>
 
+            {isAuthenticated && !isArtist && (
+              <Link
+                id="desktop-direct-become-artist-btn"
+                to="/unete-como-tatuador"
+                className="hidden xl:inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold text-violet-700 dark:text-violet-300 bg-violet-500/10 hover:bg-violet-500/20 border border-violet-500/30 transition-all cursor-pointer shadow-sm no-underline shrink-0"
+              >
+                <Sparkles className="w-3.5 h-3.5 text-violet-500 animate-pulse" />
+                <span>Quiero ser Tatuador</span>
+              </Link>
+            )}
           </div>
 
           {/* Desktop Right Actions: Consolidated Preferences Dropdown (Guest) or User Menu with embedded preferences (Authenticated) */}

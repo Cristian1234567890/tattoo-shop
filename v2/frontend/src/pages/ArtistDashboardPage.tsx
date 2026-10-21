@@ -39,6 +39,7 @@ export const ArtistDashboardPage: React.FC = () => {
   const [studios, setStudios] = useState<any[]>([]);
   const [, setIsLoadingStudios] = useState(false);
   const [showStudioModal, setShowStudioModal] = useState(false);
+  const [dismissLockout, setDismissLockout] = useState(false);
   const [newStudioName, setNewStudioName] = useState('');
   const [newStudioAddress, setNewStudioAddress] = useState('Bella Vista, Calle 50, Ciudad de Panamá');
   const [newStudioTagline, setNewStudioTagline] = useState('Colectivo de Arte & Flash Lab');
@@ -136,6 +137,11 @@ export const ArtistDashboardPage: React.FC = () => {
 
   const handleCreateStudio = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!hasActiveSubscription && (isTrialExpired || meta.subscription_status === 'canceled')) {
+      setStudioError('Para registrar un nuevo estudio debes contar con una suscripción comercial activa. Tu cuenta se encuentra actualmente en modo gratuito.');
+      return;
+    }
+
     if (isNameDuplicate) {
       setStudioError('Ya existe un estudio registrado con este nombre. Elige un nombre distintivo.');
       return;
@@ -289,32 +295,40 @@ export const ArtistDashboardPage: React.FC = () => {
       <div className="min-h-screen bg-slate-50 dark:bg-gray-900 text-slate-800 dark:text-white flex flex-col relative">
         <Navbar />
 
-      {/* Trial Expired Blocking Lockout Modal */}
-      {isTrialExpired && (
+      {/* Trial Expired / Subscription Ended Modal */}
+      {isTrialExpired && !dismissLockout && (
         <div className="fixed inset-0 z-50 bg-black/85 backdrop-blur-md flex items-center justify-center p-4">
-          <div className="bg-white dark:bg-gradient-to-b dark:from-gray-900 dark:via-gray-850 dark:to-gray-900 border-2 border-red-500/50 rounded-2xl max-w-lg w-full p-8 shadow-2xl text-center text-slate-800 dark:text-white">
-            <div className="w-16 h-16 rounded-full bg-red-100 dark:bg-red-500/20 border border-red-200 dark:border-red-500/40 flex items-center justify-center text-red-600 dark:text-red-400 mx-auto mb-5">
+          <div className="bg-white dark:bg-gradient-to-b dark:from-gray-900 dark:via-gray-850 dark:to-gray-900 border-2 border-amber-500/50 rounded-2xl max-w-lg w-full p-8 shadow-2xl text-center text-slate-800 dark:text-white">
+            <div className="w-16 h-16 rounded-full bg-amber-100 dark:bg-amber-500/20 border border-amber-200 dark:border-amber-500/40 flex items-center justify-center text-amber-600 dark:text-amber-400 mx-auto mb-5">
               <Lock size={32} />
             </div>
-            <span className="px-3.5 py-1 rounded-full bg-red-100 dark:bg-red-500/20 border border-red-200 dark:border-red-500/40 text-red-700 dark:text-red-400 text-xs font-bold uppercase tracking-wider">
-              Acceso Comercial Bloqueado
+            <span className="px-3.5 py-1 rounded-full bg-amber-100 dark:bg-amber-500/20 border border-amber-200 dark:border-amber-500/40 text-amber-700 dark:text-amber-400 text-xs font-bold uppercase tracking-wider">
+              Modo Gratuito Disponible
             </span>
             <h2 className="text-2xl font-black text-slate-800 dark:text-white mt-4 mb-2 font-heading">
-              Tu Período de Prueba de 90 Días ha Expirado
+              Período de Membresía Comercial Expirado
             </h2>
             <p className="text-slate-600 dark:text-gray-300 text-sm leading-relaxed mb-6">
-              Han transcurrido {trialDay} días desde tu registro. Para continuar publicando en tu catálogo, recibiendo cotizaciones y apareciendo en el mapa de artistas, adquiere tu membresía comercial por {formatPrice(4.99)}/mes.
+              Tu información histórica y estudios registrados se mantienen resguardados. Puedes optar por continuar en la versión gratuita en <strong>Modo Lectura</strong> o reactivar tu membresía comercial por {formatPrice(4.99)}/mes para registrar nuevos estudios y recibir cotizaciones.
             </p>
             <div className="space-y-3">
               <Link
                 to="/subscription/creditcard"
-                className="w-full inline-flex items-center justify-center gap-2 bg-gradient-to-r from-red-600 to-primary hover:opacity-90 text-white font-bold py-3.5 px-6 rounded-xl shadow-lg transition transform hover:scale-105"
+                className="w-full inline-flex items-center justify-center gap-2 bg-gradient-to-r from-violet-600 to-indigo-600 hover:from-violet-500 hover:to-indigo-500 text-white font-bold py-3.5 px-6 rounded-xl shadow-lg transition transform hover:scale-[1.01]"
               >
-                <CreditCard size={18} /> Adquirir Membresía ({formatPrice(4.99)}/mes)
+                <CreditCard size={18} /> Adquirir Membresía Pro ({formatPrice(4.99)}/mes)
               </Link>
               <button
+                id="btn-continue-free-artist"
+                type="button"
+                onClick={() => setDismissLockout(true)}
+                className="w-full py-3 px-4 rounded-xl text-xs font-bold bg-slate-100 hover:bg-slate-200 dark:bg-zinc-800 dark:hover:bg-zinc-700 text-slate-800 dark:text-zinc-200 border border-slate-300 dark:border-zinc-700 transition cursor-pointer"
+              >
+                Continuar en Versión Gratuita (Modo Lectura)
+              </button>
+              <button
                 onClick={() => logout()}
-                className="w-full text-xs text-slate-500 dark:text-gray-400 hover:text-slate-800 dark:hover:text-gray-200 transition py-2"
+                className="w-full text-xs text-slate-500 dark:text-gray-400 hover:text-slate-800 dark:hover:text-gray-200 transition py-1"
               >
                 Cerrar sesión
               </button>
@@ -324,6 +338,24 @@ export const ArtistDashboardPage: React.FC = () => {
       )}
 
       <main className="flex-1 container mx-auto px-4 py-8 max-w-6xl">
+        {/* Read-Only Mode Banner for Free / Canceled / Expired Tier */}
+        {(!hasActiveSubscription && (isTrialExpired || meta.subscription_status === 'canceled')) && (
+          <div className="mb-6 p-4 rounded-2xl bg-amber-500/10 border border-amber-500/30 text-amber-900 dark:text-amber-300 text-xs flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+            <div className="flex items-center gap-3">
+              <Lock className="w-5 h-5 text-amber-600 dark:text-amber-400 shrink-0" />
+              <div>
+                <strong className="block font-bold">Versión Gratuita (Modo Lectura)</strong>
+                <span>Toda tu información previa y estudios registrados se mantienen intactos. Las interacciones comerciales (registrar nuevos estudios o publicar en el mapa) requieren membresía activa.</span>
+              </div>
+            </div>
+            <Link
+              to="/subscription/creditcard"
+              className="px-4 py-2 rounded-xl bg-gradient-to-r from-violet-600 to-indigo-600 hover:from-violet-500 hover:to-indigo-500 text-white font-bold text-xs whitespace-nowrap shadow-sm shrink-0"
+            >
+              Reactivar Membresía Pro
+            </Link>
+          </div>
+        )}
         {/* Trial Status Banner */}
         <section className="dark-banner bg-gradient-to-r from-violet-700 via-indigo-700 to-purple-800 dark:from-indigo-950 dark:via-purple-950 dark:to-gray-900 border border-violet-400/30 dark:border-primary/40 rounded-2xl p-6 md:p-8 mb-8 shadow-2xl relative overflow-hidden text-white">
           <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 relative z-10">

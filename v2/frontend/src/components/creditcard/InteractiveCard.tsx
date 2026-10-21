@@ -142,6 +142,16 @@ export const InteractiveCard: React.FC<InteractiveCardProps> = ({
       return;
     }
 
+    const now = new Date();
+    const currentFullYear = now.getFullYear();
+    const currentMonth = now.getMonth() + 1;
+    const selectedYear = parseInt(expYear, 10);
+    const selectedMonth = parseInt(expMonth, 10);
+    if (selectedYear < currentFullYear || (selectedYear === currentFullYear && selectedMonth < currentMonth)) {
+      setErrorMessage('La tarjeta seleccionada está vencida. Selecciona una fecha válida.');
+      return;
+    }
+
     if (ccv.length < 3) {
       setErrorMessage('Ingresa un código de seguridad CVV válido.');
       return;

@@ -133,7 +133,6 @@ export const TattoosOverviewTab: React.FC<TattoosOverviewTabProps> = ({
   }, [user]);
 
   const fetchProgress = useCallback(async () => {
-    if (!isVip) return;
     setIsLoadingProgress(true);
     try {
       const res = await api.getClientProgress();
@@ -145,7 +144,7 @@ export const TattoosOverviewTab: React.FC<TattoosOverviewTabProps> = ({
     } finally {
       setIsLoadingProgress(false);
     }
-  }, [isVip]);
+  }, []);
 
   useEffect(() => {
     fetchProgress();
@@ -380,12 +379,19 @@ export const TattoosOverviewTab: React.FC<TattoosOverviewTabProps> = ({
           </div>
         </div>
 
-        {/* Saved VIP History Records */}
-        {isVip && savedEntries.length > 0 && (
+        {/* Saved VIP History Records (Preserved in Read-Only Mode) */}
+        {savedEntries.length > 0 && (
           <div className="mt-6 pt-6 border-t border-slate-200/80 dark:border-gray-700/80">
-            <h3 className="text-sm font-bold text-slate-700 dark:text-gray-300 mb-3 uppercase tracking-wider">
-              {t.recentHistory}
-            </h3>
+            <div className="flex items-center justify-between mb-3">
+              <h3 className="text-sm font-bold text-slate-700 dark:text-gray-300 uppercase tracking-wider">
+                {t.recentHistory}
+              </h3>
+              {!isVip && (
+                <span className="text-[10px] font-bold px-2.5 py-0.5 rounded-full bg-slate-100 dark:bg-zinc-800 text-slate-600 dark:text-zinc-400 border border-slate-300 dark:border-zinc-700">
+                  Modo Lectura
+                </span>
+              )}
+            </div>
             <div className="space-y-3">
               {savedEntries.map((entry, idx) => (
                 <div

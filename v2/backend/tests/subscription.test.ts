@@ -113,6 +113,26 @@ describe('Subscription Cancellation & Legacy Card Affiliation Vault Tests', () =
       assert.equal(body.success, false);
       assert.ok(body.error.toLowerCase().includes('mes de expiración'));
     });
+
+    it('2.4 should reject affiliation with an expired card', async () => {
+      const res = await fetch(`${baseUrl}/subscription/affiliate-card`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          user_id: 'test_client_vip_4',
+          holder_name: 'Alejandro Cruz',
+          card_number: '4111 1111 1111 1111',
+          expiration: '01/22',
+          cvv: '123',
+          agreement_accepted: true,
+        }),
+      });
+
+      assert.equal(res.status, 400);
+      const body = await res.json() as any;
+      assert.equal(body.success, false);
+      assert.ok(body.error.toLowerCase().includes('vencida'));
+    });
   });
 
   describe('3. Subscription Cancellation with 30-day Grace Period (POST /subscription/cancel)', () => {

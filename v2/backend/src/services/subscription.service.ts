@@ -173,6 +173,18 @@ export class SubscriptionService {
     if (isNaN(expMonth) || expMonth < 1 || expMonth > 12) {
       return { success: false, error: 'El mes de expiración debe estar entre 01 y 12.' };
     }
+    if (isNaN(expYear)) {
+      return { success: false, error: 'El año de expiración no es válido.' };
+    }
+
+    const now = new Date();
+    const currentFullYear = now.getFullYear();
+    const currentMonth = now.getMonth() + 1;
+    const fullExpYear = expYear < 100 ? 2000 + expYear : expYear;
+
+    if (fullExpYear < currentFullYear || (fullExpYear === currentFullYear && expMonth < currentMonth)) {
+      return { success: false, error: 'La tarjeta indicada se encuentra vencida.' };
+    }
 
     // CVV validation
     const cleanCvv = (cvv || '').replace(/\D/g, '');
