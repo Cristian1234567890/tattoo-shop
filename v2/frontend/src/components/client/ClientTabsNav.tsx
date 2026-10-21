@@ -1,7 +1,7 @@
 import React from 'react';
 import { Sparkles, Settings, ShieldCheck, CalendarDays, CreditCard } from 'lucide-react';
 
-export type ClientTabId = 'overview' | 'citas' | 'pagos' | 'configuracion' | 'seguridad';
+export type ClientTabId = 'overview' | 'citas' | 'pagos' | 'suscripciones' | 'configuracion' | 'seguridad';
 
 interface ClientTabsNavProps {
   activeTab: ClientTabId;
@@ -36,6 +36,11 @@ export const ClientTabsNav: React.FC<ClientTabsNavProps> = ({
       icon: <CreditCard size={18} />,
     },
     {
+      id: 'suscripciones',
+      label: lang === 'en' ? 'Subscriptions' : 'Suscripciones',
+      icon: <Sparkles size={18} />,
+    },
+    {
       id: 'configuracion',
       label: lang === 'en' ? 'Settings' : 'Configuración',
       icon: <Settings size={18} />,
@@ -58,6 +63,8 @@ export const ClientTabsNav: React.FC<ClientTabsNavProps> = ({
           <button
             key={tab.id}
             type="button"
+            id={`tab-btn-${tab.id}`}
+            data-testid={`tab-btn-${tab.id}`}
             onClick={() => onTabChange(tab.id)}
             className={`flex items-center gap-2 px-4 md:px-6 py-2.5 rounded-xl font-bold text-xs md:text-sm whitespace-nowrap transition-all duration-200 cursor-pointer ${
               isActive

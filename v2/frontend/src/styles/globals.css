@@ -470,11 +470,13 @@ body {
 .credit-card-box {
   perspective: 1000px;
   width: 380px;
+  max-width: 100%;
   height: 240px;
   position: absolute;
   top: -100px;
   left: 50%;
   transform: translateX(-50%);
+  box-sizing: border-box;
 }
 
 .credit-card-box.hover .flip,
@@ -492,7 +494,8 @@ body {
 
 .credit-card-box .front,
 .credit-card-box .back {
-  width: 380px;
+  width: 100%;
+  max-width: 380px;
   height: 240px;
   border-radius: 15px;
   backface-visibility: hidden;
@@ -507,6 +510,7 @@ body {
   text-shadow: 0 1px 1px rgba(0, 0, 0, 0.5);
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
   padding: 20px;
+  box-sizing: border-box;
 }
 
 .credit-card-box .front {
@@ -541,9 +545,14 @@ body {
   position: absolute;
   top: 100px;
   left: 25px;
-  font-size: 22px;
-  letter-spacing: 2.5px;
+  right: 25px;
+  max-width: calc(100% - 50px);
+  font-size: clamp(14px, 4.2vw, 21px);
+  letter-spacing: 2px;
   font-weight: 700;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .credit-card-box .card-holder {

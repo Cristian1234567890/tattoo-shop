@@ -1,3 +1,4 @@
+import { motion } from 'framer-motion';
 import React, { useState, useMemo } from 'react';
 import {
   Search,
@@ -406,13 +407,17 @@ export const ArtistsDirectoryPage: React.FC = () => {
                 studio.residents?.[0];
 
               return (
-                <div
+                <motion.div
                   key={studio.id}
+                  initial={{ opacity: 0, y: 24 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: false, amount: 0.1 }}
+                  transition={{ duration: 0.4, ease: 'easeOut' }}
                   className="atelier-card atelier-card-hover hover:scale-[1.02] cursor-pointer rounded-3xl overflow-hidden flex flex-col justify-between shadow-xl transition-all duration-300"
                 >
                   <div>
                     {/* Banner & Header */}
-                    <div className="relative h-44 w-full">
+                    <div className="relative h-44 w-full dark-banner keep-white-text">
                       <img
                         src={studio.banner}
                         alt={studio.name}
@@ -436,22 +441,22 @@ export const ArtistsDirectoryPage: React.FC = () => {
                       </div>
 
                       {/* Header Info */}
-                      <div className="absolute bottom-4 left-4 right-4 flex justify-between items-end">
+                      <div className="absolute bottom-4 left-4 right-4 flex justify-between items-end dark-banner keep-white-text">
                         <div>
                           <div className="flex items-center gap-2">
-                            <h3 className="text-xl font-bold text-white leading-tight">
+                            <h3 className="text-xl font-bold text-white leading-tight keep-white-text">
                               {studio.name}
                             </h3>
                             {studio.verified && (
                               <CheckCircle2 className="w-4 h-4 text-violet-400 fill-violet-400/20" />
                             )}
                           </div>
-                          <p className="text-xs text-zinc-400 mt-1 flex items-center gap-1">
+                          <p className="text-xs text-zinc-200 mt-1 flex items-center gap-1 keep-white-text">
                             <MapPin className="w-3 h-3 text-violet-400" />
                             {studio.address} • {studio.distance}
                           </p>
                         </div>
-                        <div className="flex items-center gap-1 bg-zinc-900/90 px-2.5 py-1 rounded-md text-xs font-bold text-white border border-zinc-800 backdrop-blur-md">
+                        <div className="flex items-center gap-1 bg-zinc-900/90 px-2.5 py-1 rounded-md text-xs font-bold text-white border border-zinc-800 backdrop-blur-md keep-white-text">
                           <Star className="w-3.5 h-3.5 text-violet-400 fill-violet-400" />
                           {studio.rating}
                         </div>
@@ -610,7 +615,7 @@ export const ArtistsDirectoryPage: React.FC = () => {
                       </div>
                     </div>
                   )}
-                </div>
+                </motion.div>
               );
             })}
           </div>

@@ -37,9 +37,9 @@ export const ClientDashboardPage: React.FC = () => {
   const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
 
-  // Tab synchronization via URL Query Param (?tab=overview|citas|pagos|configuracion|seguridad)
+  // Tab synchronization via URL Query Param (?tab=overview|citas|pagos|suscripciones|configuracion|seguridad)
   const tabParam = (searchParams.get('tab') || 'overview').toLowerCase();
-  const validTabs: ClientTabId[] = ['overview', 'citas', 'pagos', 'configuracion', 'seguridad'];
+  const validTabs: ClientTabId[] = ['overview', 'citas', 'pagos', 'suscripciones', 'configuracion', 'seguridad'];
   const activeTab: ClientTabId = validTabs.includes(tabParam as ClientTabId)
     ? (tabParam as ClientTabId)
     : 'overview';
@@ -437,6 +437,12 @@ export const ClientDashboardPage: React.FC = () => {
                 <div className="space-y-8">
                   <SubscriptionBillingSection userRole="cliente" />
                   <PaymentTracking />
+                </div>
+              )}
+
+              {activeTab === 'suscripciones' && (
+                <div className="space-y-8">
+                  <SubscriptionBillingSection userRole="cliente" />
                 </div>
               )}
 

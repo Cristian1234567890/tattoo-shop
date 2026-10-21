@@ -63,6 +63,8 @@ export const OnboardingGate: React.FC = () => {
       '/chat',
       '/user',
       '/onboarding',
+      '/subscription',
+      '/unete-como-tatuador',
     ];
     if (exemptPaths.some((p) => location.pathname.startsWith(p))) {
       return;
@@ -224,7 +226,7 @@ export const AnimatedAppRoutes: React.FC = () => {
           </div>
 
           {/* Persistent global Navbar: stays mounted across all routes without re-mounting flickering */}
-          <div className="relative z-40">
+          <div className="sticky top-0 z-50">
             <Navbar forceRender={true} />
           </div>
 

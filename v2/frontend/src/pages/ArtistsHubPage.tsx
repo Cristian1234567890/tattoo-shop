@@ -914,7 +914,7 @@ export default function ArtistsHubPage() {
             style={{ width: '100%', height: '100%', minHeight: '400px' }}
           >
             {/* Zoom Controls */}
-            <ZoomControl position="bottomright" />
+            <ZoomControl position="topright" />
 
             {/* Dynamic Re-centering, A11y and Theme transition controllers */}
             <MapRecenter center={mapCenter} zoom={mapZoom} />

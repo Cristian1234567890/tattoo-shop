@@ -4,25 +4,22 @@ import { motion, Variants, useReducedMotion } from 'framer-motion';
 const defaultPageVariants: Variants = {
   initial: {
     opacity: 0,
-    y: 10,
-    filter: 'blur(4px)',
+    y: 8,
   },
   animate: {
     opacity: 1,
     y: 0,
-    filter: 'blur(0px)',
     transition: {
-      duration: 0.35,
-      ease: [0.22, 1, 0.36, 1],
+      duration: 0.28,
+      ease: [0.16, 1, 0.3, 1],
     },
   },
   exit: {
     opacity: 0,
-    y: -8,
-    filter: 'blur(2px)',
+    y: -6,
     transition: {
-      duration: 0.25,
-      ease: [0.22, 1, 0.36, 1],
+      duration: 0.18,
+      ease: [0.16, 1, 0.3, 1],
     },
   },
 };
@@ -63,6 +60,7 @@ export const PageTransition: React.FC<PageTransitionProps> = ({
       initial="initial"
       animate="animate"
       exit="exit"
+      style={{ willChange: 'transform, opacity' }}
       className={`w-full flex-1 flex flex-col min-h-0 ${className}`}
     >
       {children}

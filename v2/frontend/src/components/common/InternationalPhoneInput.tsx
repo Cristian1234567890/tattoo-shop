@@ -79,7 +79,7 @@ export const InternationalPhoneInput: React.FC<InternationalPhoneInputProps> = (
   return (
     <div
       ref={containerRef}
-      className={`relative flex items-center rounded-xl border border-zinc-800 bg-[#121217] focus-within:border-violet-500 focus-within:ring-1 focus-within:ring-violet-500 transition overflow-visible ${className}`}
+      className={`relative flex items-center rounded-xl border border-slate-300 dark:border-zinc-800 bg-white dark:bg-[#121217] focus-within:border-violet-500 focus-within:ring-1 focus-within:ring-violet-500 transition overflow-visible shadow-sm ${className}`}
     >
       {/* Custom Prefix Dropdown Trigger */}
       <div className="relative">
@@ -89,13 +89,13 @@ export const InternationalPhoneInput: React.FC<InternationalPhoneInputProps> = (
           onClick={() => setIsOpen(!isOpen)}
           aria-haspopup="listbox"
           aria-expanded={isOpen}
-          className="flex items-center gap-1.5 px-3 py-3 bg-zinc-900/90 border-r border-zinc-800 text-sm font-semibold text-violet-300 hover:text-white transition cursor-pointer select-none rounded-l-xl disabled:cursor-not-allowed"
+          className="flex items-center gap-1.5 px-3 py-3 bg-slate-100 hover:bg-slate-200 border-r border-slate-300 text-sm font-semibold text-slate-800 dark:bg-zinc-900/90 dark:border-zinc-800 dark:text-violet-300 dark:hover:text-white transition cursor-pointer select-none rounded-l-xl disabled:cursor-not-allowed"
         >
           <span className="text-base shrink-0">{selectedCountry.flag}</span>
-          <span className="font-mono text-xs">{selectedCountry.code}</span>
+          <span className="font-mono text-xs font-bold text-slate-800 dark:text-zinc-200">{selectedCountry.code}</span>
           <ChevronDown
-            className={`w-3.5 h-3.5 text-zinc-400 transition-transform duration-200 ${
-              isOpen ? 'rotate-180 text-violet-400' : ''
+            className={`w-3.5 h-3.5 text-slate-500 dark:text-zinc-400 transition-transform duration-200 ${
+              isOpen ? 'rotate-180 text-violet-600 dark:text-violet-400' : ''
             }`}
           />
         </button>
@@ -105,7 +105,7 @@ export const InternationalPhoneInput: React.FC<InternationalPhoneInputProps> = (
           <div
             role="listbox"
             tabIndex={-1}
-            className="absolute top-full left-0 z-50 w-60 mt-1 bg-[#121217] border border-zinc-800/90 rounded-2xl shadow-[0_10px_35px_rgba(0,0,0,0.8)] backdrop-blur-xl overflow-hidden py-1 max-h-60 overflow-y-auto animate-in fade-in zoom-in-95 duration-150 scrollbar-thin scrollbar-thumb-zinc-700"
+            className="absolute top-full left-0 z-50 w-60 mt-1 bg-white dark:bg-[#121217] border border-slate-200 dark:border-zinc-800/90 rounded-2xl shadow-[0_10px_35px_rgba(0,0,0,0.2)] dark:shadow-[0_10px_35px_rgba(0,0,0,0.8)] backdrop-blur-xl overflow-hidden py-1 max-h-60 overflow-y-auto animate-in fade-in zoom-in-95 duration-150 scrollbar-thin scrollbar-thumb-slate-300 dark:scrollbar-thumb-zinc-700"
           >
             {COUNTRY_PREFIXES.map((country) => {
               const isSelected = country.code === normalizedPrefix;
@@ -117,16 +117,16 @@ export const InternationalPhoneInput: React.FC<InternationalPhoneInputProps> = (
                   onClick={() => handleSelectPrefix(country.code)}
                   className={`flex items-center justify-between px-3.5 py-2.5 text-xs cursor-pointer transition-colors ${
                     isSelected
-                      ? 'bg-violet-600/20 text-violet-300 font-semibold'
-                      : 'text-zinc-300 hover:bg-zinc-800/80 hover:text-white'
+                      ? 'bg-violet-600/15 text-violet-700 dark:text-violet-300 font-semibold'
+                      : 'text-slate-700 hover:bg-slate-100 hover:text-slate-900 dark:text-zinc-300 dark:hover:bg-zinc-800/80 dark:hover:text-white'
                   }`}
                 >
                   <div className="flex items-center gap-2 truncate">
                     <span className="text-base shrink-0">{country.flag}</span>
                     <span className="truncate">{country.name}</span>
-                    <span className="font-mono text-zinc-500">({country.code})</span>
+                    <span className="font-mono text-slate-400 dark:text-zinc-500">({country.code})</span>
                   </div>
-                  {isSelected && <Check className="w-3.5 h-3.5 text-violet-400 shrink-0 ml-2" />}
+                  {isSelected && <Check className="w-3.5 h-3.5 text-violet-600 dark:text-violet-400 shrink-0 ml-2" />}
                 </div>
               );
             })}
@@ -144,7 +144,7 @@ export const InternationalPhoneInput: React.FC<InternationalPhoneInputProps> = (
         disabled={disabled}
         required={required}
         placeholder={placeholder}
-        className="w-full px-4 py-3 bg-transparent text-white placeholder-zinc-600 focus:outline-none text-sm"
+        className="w-full px-4 py-3 bg-transparent text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-zinc-600 focus:outline-none text-sm"
       />
     </div>
   );

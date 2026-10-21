@@ -1,3 +1,4 @@
+import { motion } from 'framer-motion';
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import {
@@ -212,7 +213,13 @@ export const PricingPage: React.FC = () => {
           {/* Pricing Cards Grid */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-20">
             {/* 1. Explorador */}
-            <div className="atelier-card p-8 rounded-3xl flex flex-col justify-between">
+            <motion.div
+              initial={{ opacity: 0, y: 24 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: false, amount: 0.15 }}
+              transition={{ duration: 0.45, ease: 'easeOut' }}
+              className="atelier-card p-8 rounded-3xl flex flex-col justify-between"
+            >
               <div>
                 <div className="flex items-center justify-between mb-2">
                   <span className="text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-zinc-400">
@@ -272,10 +279,16 @@ export const PricingPage: React.FC = () => {
                   Empezar Gratis
                 </Link>
               )}
-            </div>
+            </motion.div>
 
             {/* 2. Coleccionista VIP */}
-            <div className="atelier-card p-8 rounded-3xl flex flex-col justify-between">
+            <motion.div
+              initial={{ opacity: 0, y: 24 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: false, amount: 0.15 }}
+              transition={{ duration: 0.45, ease: 'easeOut', delay: 0.08 }}
+              className="atelier-card p-8 rounded-3xl flex flex-col justify-between"
+            >
               <div>
                 <span className="text-xs font-bold uppercase tracking-wider text-violet-600 dark:text-violet-400 mb-2 block">
                   COLECCIONISTA
@@ -316,10 +329,16 @@ export const PricingPage: React.FC = () => {
               >
                 Elegir Coleccionista VIP
               </Link>
-            </div>
+            </motion.div>
 
             {/* 3. Estudio Profesional */}
-            <div className="atelier-card border-2 border-violet-600 p-8 rounded-3xl flex flex-col justify-between relative shadow-[0_0_40px_rgba(124,58,237,0.25)]">
+            <motion.div
+              initial={{ opacity: 0, y: 24 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: false, amount: 0.15 }}
+              transition={{ duration: 0.45, ease: 'easeOut', delay: 0.16 }}
+              className="atelier-card border-2 border-violet-600 p-8 rounded-3xl flex flex-col justify-between relative shadow-[0_0_40px_rgba(124,58,237,0.25)]"
+            >
               <div className="absolute -top-3.5 right-6 bg-gradient-to-r from-violet-600 to-indigo-600 text-white text-[10px] font-extrabold px-3 py-1 rounded-full uppercase tracking-wider shadow-lg">
                 MÁS POPULAR • 30 DÍAS GRATIS
               </div>
@@ -369,7 +388,7 @@ export const PricingPage: React.FC = () => {
               >
                 Iniciar Prueba de 30 Días
               </Link>
-            </div>
+            </motion.div>
           </div>
 
           {/* Feature Comparison Matrix */}

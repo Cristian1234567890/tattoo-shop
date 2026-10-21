@@ -456,16 +456,16 @@ export const ClientSecurityTab: React.FC<ClientSecurityTabProps> = ({
 
           {/* Password Strength Meter */}
           {newPassword && (
-            <div className="bg-gray-900/60 border border-white/5 rounded-xl p-4 space-y-2">
+            <div className="bg-slate-50 dark:bg-gray-900/60 border border-slate-200 dark:border-white/5 rounded-xl p-4 space-y-2">
               <div className="flex items-center justify-between text-xs">
-                <span className="text-gray-300 font-semibold">{t.strengthTitle}</span>
+                <span className="text-slate-700 dark:text-gray-300 font-semibold">{t.strengthTitle}</span>
                 <span
                   className={`font-bold px-2 py-0.5 rounded text-[11px] ${
                     strength >= 3
-                      ? 'text-emerald-400 bg-emerald-500/15'
+                      ? 'text-emerald-500 dark:text-emerald-400 bg-emerald-500/15'
                       : strength === 2
-                      ? 'text-yellow-400 bg-yellow-500/15'
-                      : 'text-red-400 bg-red-500/15'
+                      ? 'text-yellow-600 dark:text-yellow-400 bg-yellow-500/15'
+                      : 'text-red-500 dark:text-red-400 bg-red-500/15'
                   }`}
                 >
                   {getStrengthLabel(strength).label}
@@ -476,27 +476,27 @@ export const ClientSecurityTab: React.FC<ClientSecurityTabProps> = ({
               <div className="grid grid-cols-4 gap-1.5 h-1.5 w-full">
                 <div
                   className={`rounded-full transition-all duration-300 ${
-                    strength >= 1 ? getStrengthLabel(strength).color : 'bg-gray-700'
+                    strength >= 1 ? getStrengthLabel(strength).color : 'bg-slate-200 dark:bg-gray-700'
                   }`}
                 />
                 <div
                   className={`rounded-full transition-all duration-300 ${
-                    strength >= 2 ? getStrengthLabel(strength).color : 'bg-gray-700'
+                    strength >= 2 ? getStrengthLabel(strength).color : 'bg-slate-200 dark:bg-gray-700'
                   }`}
                 />
                 <div
                   className={`rounded-full transition-all duration-300 ${
-                    strength >= 3 ? getStrengthLabel(strength).color : 'bg-gray-700'
+                    strength >= 3 ? getStrengthLabel(strength).color : 'bg-slate-200 dark:bg-gray-700'
                   }`}
                 />
                 <div
                   className={`rounded-full transition-all duration-300 ${
-                    strength >= 4 ? getStrengthLabel(strength).color : 'bg-gray-700'
+                    strength >= 4 ? getStrengthLabel(strength).color : 'bg-slate-200 dark:bg-gray-700'
                   }`}
                 />
               </div>
 
-              <p className="text-[11px] text-gray-400">{t.strengthHint}</p>
+              <p className="text-[11px] text-slate-500 dark:text-gray-400">{t.strengthHint}</p>
             </div>
           )}
 
@@ -514,15 +514,15 @@ export const ClientSecurityTab: React.FC<ClientSecurityTabProps> = ({
       </section>
 
       {/* 2. Revisión y Control de Sesiones Activas */}
-      <section className="bg-gray-850/90 border border-white/10 rounded-2xl p-6 md:p-8 shadow-xl backdrop-blur-md">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6 pb-4 border-b border-white/10">
+      <section className="bg-white dark:bg-gray-850/90 border border-slate-200 dark:border-white/10 rounded-2xl p-6 md:p-8 shadow-xl backdrop-blur-md">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6 pb-4 border-b border-slate-200 dark:border-white/10">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-emerald-500/15 border border-emerald-500/30 flex items-center justify-center text-emerald-400">
+            <div className="w-10 h-10 rounded-xl bg-emerald-500/15 border border-emerald-500/30 flex items-center justify-center text-emerald-600 dark:text-emerald-400">
               <Monitor size={20} />
             </div>
             <div>
-              <h2 className="text-xl font-bold text-white">{t.sessionsTitle}</h2>
-              <p className="text-xs md:text-sm text-gray-400">{t.sessionsSubtitle}</p>
+              <h2 className="text-xl font-bold text-slate-800 dark:text-white">{t.sessionsTitle}</h2>
+              <p className="text-xs md:text-sm text-slate-500 dark:text-gray-400">{t.sessionsSubtitle}</p>
             </div>
           </div>
 
@@ -530,7 +530,7 @@ export const ClientSecurityTab: React.FC<ClientSecurityTabProps> = ({
             <button
               type="button"
               onClick={() => setShowRevokeAllModal(true)}
-              className="inline-flex items-center gap-2 px-4 py-2 bg-red-500/10 hover:bg-red-500/20 text-red-400 border border-red-500/30 rounded-xl text-xs font-bold transition cursor-pointer self-start sm:self-auto"
+              className="inline-flex items-center gap-2 px-4 py-2 bg-red-500/10 hover:bg-red-500/20 text-red-600 dark:text-red-400 border border-red-500/30 rounded-xl text-xs font-bold transition cursor-pointer self-start sm:self-auto"
             >
               <LogOut size={14} /> {t.closeAllBtn}
             </button>
@@ -540,25 +540,25 @@ export const ClientSecurityTab: React.FC<ClientSecurityTabProps> = ({
         <div className="space-y-6">
           {/* Current Device Card */}
           <div>
-            <h3 className="text-xs font-bold text-gray-300 uppercase tracking-wider mb-3">
+            <h3 className="text-xs font-bold text-slate-600 dark:text-gray-300 uppercase tracking-wider mb-3">
               {t.currentDeviceTitle}
             </h3>
-            <div className="p-4 rounded-xl bg-gray-900/80 border border-emerald-500/30 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+            <div className="p-4 rounded-xl bg-slate-50 dark:bg-gray-900/80 border border-emerald-500/30 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
               <div className="flex items-center gap-4">
-                <div className="w-12 h-12 rounded-xl bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center text-emerald-400 shrink-0">
+                <div className="w-12 h-12 rounded-xl bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center text-emerald-600 dark:text-emerald-400 shrink-0">
                   {currentDevice.isMobile ? <Smartphone size={22} /> : <Laptop size={22} />}
                 </div>
                 <div>
                   <div className="flex items-center gap-2">
-                    <span className="text-sm font-bold text-white">
+                    <span className="text-sm font-bold text-slate-800 dark:text-white">
                       {currentDevice.os}
                     </span>
-                    <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-400 text-[10px] font-bold">
-                      <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+                    <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-600 dark:text-emerald-400 text-[10px] font-bold">
+                      <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 dark:bg-emerald-400 animate-pulse" />
                       {t.currentBadge}
                     </span>
                   </div>
-                  <div className="text-xs text-gray-400 mt-0.5">
+                  <div className="text-xs text-slate-500 dark:text-gray-400 mt-0.5">
                     {currentDevice.browser} • {t.activeNow}
                   </div>
                 </div>
@@ -568,11 +568,11 @@ export const ClientSecurityTab: React.FC<ClientSecurityTabProps> = ({
 
           {/* Remote Sessions List */}
           <div>
-            <h3 className="text-xs font-bold text-gray-300 uppercase tracking-wider mb-3">
+            <h3 className="text-xs font-bold text-slate-600 dark:text-gray-300 uppercase tracking-wider mb-3">
               {t.remoteSessionsTitle}
             </h3>
             {remoteSessions.length === 0 ? (
-              <div className="p-6 rounded-xl bg-gray-900/40 border border-white/5 text-center text-xs text-gray-400">
+              <div className="p-6 rounded-xl bg-slate-50 dark:bg-gray-900/40 border border-slate-200 dark:border-white/5 text-center text-xs text-slate-500 dark:text-gray-400">
                 {t.noRemoteSessions}
               </div>
             ) : (
@@ -580,10 +580,10 @@ export const ClientSecurityTab: React.FC<ClientSecurityTabProps> = ({
                 {remoteSessions.map((session) => (
                   <div
                     key={session.id}
-                    className="p-4 rounded-xl bg-gray-900/60 border border-white/5 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 hover:border-white/15 transition"
+                    className="p-4 rounded-xl bg-slate-50 hover:bg-slate-100 dark:bg-zinc-800/80 dark:hover:bg-zinc-800 border border-slate-200 dark:border-zinc-700 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 transition text-slate-800 dark:text-zinc-200"
                   >
                     <div className="flex items-center gap-4">
-                      <div className="w-10 h-10 rounded-xl bg-gray-800 border border-gray-700 flex items-center justify-center text-gray-400 shrink-0">
+                      <div className="w-10 h-10 rounded-xl bg-slate-200 dark:bg-gray-800 border border-slate-300 dark:border-gray-700 flex items-center justify-center text-slate-600 dark:text-gray-400 shrink-0">
                         {session.device.includes('iPhone') || session.device.includes('Android') ? (
                           <Smartphone size={18} />
                         ) : (
@@ -591,8 +591,8 @@ export const ClientSecurityTab: React.FC<ClientSecurityTabProps> = ({
                         )}
                       </div>
                       <div>
-                        <div className="text-sm font-bold text-white">{session.device}</div>
-                        <div className="text-xs text-gray-400">
+                        <div className="text-sm font-bold text-slate-800 dark:text-white">{session.device}</div>
+                        <div className="text-xs text-slate-500 dark:text-gray-400">
                           {session.browser} • {session.location} • {session.lastActive}
                         </div>
                       </div>
@@ -601,7 +601,7 @@ export const ClientSecurityTab: React.FC<ClientSecurityTabProps> = ({
                     <button
                       type="button"
                       onClick={() => handleRevokeSingle(session)}
-                      className="px-3 py-1.5 bg-gray-800 hover:bg-red-500/20 text-gray-300 hover:text-red-300 border border-gray-700 hover:border-red-500/30 rounded-lg text-xs font-semibold transition cursor-pointer self-end sm:self-auto"
+                      className="px-3 py-1.5 bg-slate-100 hover:bg-red-50 text-slate-700 hover:text-red-600 border border-slate-300 hover:border-red-300 dark:bg-gray-800 dark:hover:bg-red-500/20 dark:text-gray-300 dark:hover:text-red-300 dark:border-gray-700 dark:hover:border-red-500/30 rounded-lg text-xs font-semibold transition cursor-pointer self-end sm:self-auto"
                     >
                       {t.revokeBtn}
                     </button>
@@ -614,25 +614,25 @@ export const ClientSecurityTab: React.FC<ClientSecurityTabProps> = ({
       </section>
 
       {/* 3. Privacidad de la Cuenta */}
-      <section className="bg-gray-850/90 border border-white/10 rounded-2xl p-6 md:p-8 shadow-xl backdrop-blur-md">
-        <div className="flex items-center gap-3 mb-6 pb-4 border-b border-white/10">
-          <div className="w-10 h-10 rounded-xl bg-purple-500/15 border border-purple-500/30 flex items-center justify-center text-purple-400">
+      <section className="bg-white dark:bg-gray-850/90 border border-slate-200 dark:border-white/10 rounded-2xl p-6 md:p-8 shadow-xl backdrop-blur-md">
+        <div className="flex items-center gap-3 mb-6 pb-4 border-b border-slate-200 dark:border-white/10">
+          <div className="w-10 h-10 rounded-xl bg-purple-500/15 border border-purple-500/30 flex items-center justify-center text-purple-600 dark:text-purple-400">
             <Globe size={20} />
           </div>
           <div>
-            <h2 className="text-xl font-bold text-white">{t.privacyTitle}</h2>
-            <p className="text-xs md:text-sm text-gray-400">{t.privacySubtitle}</p>
+            <h2 className="text-xl font-bold text-slate-800 dark:text-white">{t.privacyTitle}</h2>
+            <p className="text-xs md:text-sm text-slate-500 dark:text-gray-400">{t.privacySubtitle}</p>
           </div>
         </div>
 
         <div className="space-y-4">
           {/* Public Profile */}
-          <div className="flex items-center justify-between p-4 bg-gray-900/60 border border-white/5 rounded-xl">
+          <div className="flex items-center justify-between p-4 bg-slate-50 hover:bg-slate-100 dark:bg-zinc-800/80 dark:hover:bg-zinc-800 border border-slate-200 dark:border-zinc-700 rounded-xl transition text-slate-800 dark:text-zinc-200">
             <div className="space-y-0.5">
-              <div className="text-sm font-bold text-white flex items-center gap-2">
+              <div className="text-sm font-bold text-slate-800 dark:text-white flex items-center gap-2">
                 <Users size={16} className="text-primary" /> {t.publicProfile}
               </div>
-              <div className="text-xs text-gray-400 max-w-xl">{t.publicProfileDesc}</div>
+              <div className="text-xs text-slate-500 dark:text-gray-400 max-w-xl">{t.publicProfileDesc}</div>
             </div>
             <button
               type="button"
@@ -643,7 +643,7 @@ export const ClientSecurityTab: React.FC<ClientSecurityTabProps> = ({
                 }))
               }
               className={`w-12 h-6 flex items-center rounded-full p-1 cursor-pointer transition duration-300 shrink-0 ml-4 ${
-                privacy.profile_public ? 'bg-primary' : 'bg-gray-700'
+                privacy.profile_public ? 'bg-primary' : 'bg-slate-300 dark:bg-gray-700'
               }`}
             >
               <div
@@ -655,12 +655,12 @@ export const ClientSecurityTab: React.FC<ClientSecurityTabProps> = ({
           </div>
 
           {/* Share Progress with Artists */}
-          <div className="flex items-center justify-between p-4 bg-gray-900/60 border border-white/5 rounded-xl">
+          <div className="flex items-center justify-between p-4 bg-slate-50 hover:bg-slate-100 dark:bg-zinc-800/80 dark:hover:bg-zinc-800 border border-slate-200 dark:border-zinc-700 rounded-xl transition text-slate-800 dark:text-zinc-200">
             <div className="space-y-0.5">
-              <div className="text-sm font-bold text-white flex items-center gap-2">
-                <ShieldCheck size={16} className="text-emerald-400" /> {t.shareWithArtists}
+              <div className="text-sm font-bold text-slate-800 dark:text-white flex items-center gap-2">
+                <ShieldCheck size={16} className="text-emerald-500 dark:text-emerald-400" /> {t.shareWithArtists}
               </div>
-              <div className="text-xs text-gray-400 max-w-xl">{t.shareWithArtistsDesc}</div>
+              <div className="text-xs text-slate-500 dark:text-gray-400 max-w-xl">{t.shareWithArtistsDesc}</div>
             </div>
             <button
               type="button"
@@ -671,7 +671,7 @@ export const ClientSecurityTab: React.FC<ClientSecurityTabProps> = ({
                 }))
               }
               className={`w-12 h-6 flex items-center rounded-full p-1 cursor-pointer transition duration-300 shrink-0 ml-4 ${
-                privacy.share_progress_with_artists ? 'bg-primary' : 'bg-gray-700'
+                privacy.share_progress_with_artists ? 'bg-primary' : 'bg-slate-300 dark:bg-gray-700'
               }`}
             >
               <div
@@ -683,12 +683,12 @@ export const ClientSecurityTab: React.FC<ClientSecurityTabProps> = ({
           </div>
 
           {/* Analytics Consent */}
-          <div className="flex items-center justify-between p-4 bg-gray-900/60 border border-white/5 rounded-xl">
+          <div className="flex items-center justify-between p-4 bg-slate-50 hover:bg-slate-100 dark:bg-zinc-800/80 dark:hover:bg-zinc-800 border border-slate-200 dark:border-zinc-700 rounded-xl transition text-slate-800 dark:text-zinc-200">
             <div className="space-y-0.5">
-              <div className="text-sm font-bold text-white flex items-center gap-2">
-                <BarChart3 size={16} className="text-blue-400" /> {t.analyticsConsent}
+              <div className="text-sm font-bold text-slate-800 dark:text-white flex items-center gap-2">
+                <BarChart3 size={16} className="text-blue-500 dark:text-blue-400" /> {t.analyticsConsent}
               </div>
-              <div className="text-xs text-gray-400 max-w-xl">{t.analyticsConsentDesc}</div>
+              <div className="text-xs text-slate-500 dark:text-gray-400 max-w-xl">{t.analyticsConsentDesc}</div>
             </div>
             <button
               type="button"
@@ -699,7 +699,7 @@ export const ClientSecurityTab: React.FC<ClientSecurityTabProps> = ({
                 }))
               }
               className={`w-12 h-6 flex items-center rounded-full p-1 cursor-pointer transition duration-300 shrink-0 ml-4 ${
-                privacy.allow_marketing_analytics ? 'bg-primary' : 'bg-gray-700'
+                privacy.allow_marketing_analytics ? 'bg-primary' : 'bg-slate-300 dark:bg-gray-700'
               }`}
             >
               <div
@@ -725,43 +725,43 @@ export const ClientSecurityTab: React.FC<ClientSecurityTabProps> = ({
       </section>
 
       {/* 4. Zona de Riesgo (Danger Zone) */}
-      <section className="bg-red-950/20 border border-red-500/30 rounded-2xl p-6 md:p-8 shadow-xl">
-        <div className="flex items-center gap-3 mb-6 pb-4 border-b border-red-500/20">
-          <div className="w-10 h-10 rounded-xl bg-red-500/15 border border-red-500/30 flex items-center justify-center text-red-400">
+      <section className="bg-rose-50/70 border border-rose-200 text-rose-800 dark:bg-rose-950/30 dark:border-rose-900/50 dark:text-rose-300 rounded-2xl p-6 md:p-8 shadow-xl">
+        <div className="flex items-center gap-3 mb-6 pb-4 border-b border-rose-200 dark:border-red-500/20">
+          <div className="w-10 h-10 rounded-xl bg-red-500/15 border border-red-500/30 flex items-center justify-center text-red-500 dark:text-red-400">
             <AlertTriangle size={20} />
           </div>
           <div>
-            <h2 className="text-xl font-bold text-white">{t.dangerTitle}</h2>
-            <p className="text-xs md:text-sm text-red-300/70">{t.dangerSubtitle}</p>
+            <h2 className="text-xl font-bold text-rose-900 dark:text-white">{t.dangerTitle}</h2>
+            <p className="text-xs md:text-sm text-rose-700/80 dark:text-red-300/70">{t.dangerSubtitle}</p>
           </div>
         </div>
 
         <div className="space-y-4">
           {/* Global Sign Out */}
-          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between p-4 bg-gray-900/60 border border-red-500/20 rounded-xl gap-4">
+          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between p-4 bg-white/80 dark:bg-rose-950/40 border border-rose-200 dark:border-rose-900/40 rounded-xl gap-4 text-slate-800 dark:text-rose-200">
             <div>
-              <div className="text-sm font-bold text-white">{t.logoutAllDevices}</div>
-              <div className="text-xs text-gray-400">{t.logoutAllDevicesDesc}</div>
+              <div className="text-sm font-bold text-slate-800 dark:text-white">{t.logoutAllDevices}</div>
+              <div className="text-xs text-slate-600 dark:text-gray-400">{t.logoutAllDevicesDesc}</div>
             </div>
             <button
               type="button"
               onClick={handleGlobalSignOut}
-              className="px-4 py-2 bg-gray-800 hover:bg-red-600 text-white rounded-xl text-xs font-bold transition cursor-pointer self-end sm:self-auto flex items-center gap-1.5"
+              className="px-4 py-2 bg-slate-100 hover:bg-rose-600 text-slate-700 hover:text-white border border-slate-300 hover:border-rose-600 dark:bg-gray-800 dark:hover:bg-red-600 dark:text-white dark:border-transparent rounded-xl text-xs font-bold transition cursor-pointer self-end sm:self-auto flex items-center gap-1.5"
             >
               <LogOut size={14} /> Cerrar Sesión Global
             </button>
           </div>
 
           {/* Delete Account */}
-          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between p-4 bg-gray-900/60 border border-red-500/20 rounded-xl gap-4">
+          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between p-4 bg-white/80 dark:bg-rose-950/40 border border-rose-200 dark:border-rose-900/40 rounded-xl gap-4 text-slate-800 dark:text-rose-200">
             <div>
-              <div className="text-sm font-bold text-red-400">{t.deleteAccount}</div>
-              <div className="text-xs text-gray-400">{t.deleteAccountDesc}</div>
+              <div className="text-sm font-bold text-red-600 dark:text-red-400">{t.deleteAccount}</div>
+              <div className="text-xs text-slate-600 dark:text-gray-400">{t.deleteAccountDesc}</div>
             </div>
             <button
               type="button"
               onClick={() => setShowDeleteModal(true)}
-              className="px-4 py-2 bg-red-600/80 hover:bg-red-600 text-white rounded-xl text-xs font-bold transition cursor-pointer self-end sm:self-auto flex items-center gap-1.5"
+              className="px-4 py-2 bg-red-600/90 hover:bg-red-600 text-white rounded-xl text-xs font-bold transition cursor-pointer self-end sm:self-auto flex items-center gap-1.5 shadow-sm"
             >
               <Trash2 size={14} /> {t.deleteAccount}
             </button>
@@ -771,19 +771,19 @@ export const ClientSecurityTab: React.FC<ClientSecurityTabProps> = ({
 
       {/* Confirmation Modal: Revoke All Other Sessions */}
       {showRevokeAllModal && (
-        <div className="fixed inset-0 z-50 bg-black/85 backdrop-blur-sm flex items-center justify-center p-4">
-          <div className="bg-gray-900 border border-red-500/40 rounded-2xl max-w-md w-full p-6 text-center space-y-4 shadow-2xl relative">
+        <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
+          <div className="bg-white dark:bg-gray-900 border border-slate-300 dark:border-red-500/40 rounded-2xl max-w-md w-full p-6 text-center space-y-4 shadow-2xl relative">
             <button
               onClick={() => setShowRevokeAllModal(false)}
-              className="absolute top-4 right-4 text-gray-400 hover:text-white"
+              className="absolute top-4 right-4 text-slate-400 hover:text-slate-600 dark:text-gray-400 dark:hover:text-white"
             >
               <X size={18} />
             </button>
-            <div className="w-14 h-14 rounded-full bg-red-500/10 border border-red-500/30 flex items-center justify-center text-red-400 mx-auto">
+            <div className="w-14 h-14 rounded-full bg-red-500/10 border border-red-500/30 flex items-center justify-center text-red-500 dark:text-red-400 mx-auto">
               <LogOut size={28} />
             </div>
-            <h3 className="text-lg font-bold text-white">¿Cerrar todas las demás sesiones?</h3>
-            <p className="text-xs text-gray-300 leading-relaxed">
+            <h3 className="text-lg font-bold text-slate-800 dark:text-white">¿Cerrar todas las demás sesiones?</h3>
+            <p className="text-xs text-slate-600 dark:text-gray-300 leading-relaxed">
               Esta acción invalidará de inmediato los tokens en todos tus otros dispositivos
               (móviles, laptops y tablets). Solo este navegador permanecerá conectado.
             </p>
@@ -791,7 +791,7 @@ export const ClientSecurityTab: React.FC<ClientSecurityTabProps> = ({
               <button
                 type="button"
                 onClick={() => setShowRevokeAllModal(false)}
-                className="px-4 py-2 text-xs font-semibold text-gray-400 hover:text-white"
+                className="px-4 py-2 text-xs font-semibold text-slate-500 hover:text-slate-800 dark:text-gray-400 dark:hover:text-white"
               >
                 Cancelar
               </button>
@@ -810,28 +810,28 @@ export const ClientSecurityTab: React.FC<ClientSecurityTabProps> = ({
 
       {/* Confirmation Modal: Delete Account */}
       {showDeleteModal && (
-        <div className="fixed inset-0 z-50 bg-black/85 backdrop-blur-sm flex items-center justify-center p-4">
-          <div className="bg-gray-900 border border-red-500/50 rounded-2xl max-w-md w-full p-6 space-y-4 shadow-2xl relative">
+        <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
+          <div className="bg-white dark:bg-gray-900 border border-slate-300 dark:border-red-500/50 rounded-2xl max-w-md w-full p-6 space-y-4 shadow-2xl relative">
             <button
               onClick={() => setShowDeleteModal(false)}
-              className="absolute top-4 right-4 text-gray-400 hover:text-white"
+              className="absolute top-4 right-4 text-slate-400 hover:text-slate-600 dark:text-gray-400 dark:hover:text-white"
             >
               <X size={18} />
             </button>
-            <div className="w-14 h-14 rounded-full bg-red-500/15 border border-red-500/30 flex items-center justify-center text-red-400 mx-auto">
+            <div className="w-14 h-14 rounded-full bg-red-500/15 border border-red-500/30 flex items-center justify-center text-red-500 dark:text-red-400 mx-auto">
               <AlertTriangle size={28} />
             </div>
-            <h3 className="text-lg font-bold text-white text-center">Eliminación de Cuenta</h3>
-            <p className="text-xs text-gray-300 leading-relaxed text-center">
+            <h3 className="text-lg font-bold text-slate-800 dark:text-white text-center">Eliminación de Cuenta</h3>
+            <p className="text-xs text-slate-600 dark:text-gray-300 leading-relaxed text-center">
               Para confirmar la solicitud de eliminación de todos tus datos, escribe la palabra{' '}
-              <strong className="text-red-400">ELIMINAR</strong> a continuación:
+              <strong className="text-red-500 dark:text-red-400">ELIMINAR</strong> a continuación:
             </p>
             <input
               type="text"
               value={deleteConfirmText}
               onChange={(e) => setDeleteConfirmText(e.target.value)}
               placeholder="ELIMINAR"
-              className="w-full bg-gray-800 border border-gray-700 rounded-xl px-4 py-2 text-white text-sm text-center uppercase tracking-wider focus:outline-none focus:border-red-500"
+              className="w-full bg-slate-50 dark:bg-gray-800 border border-slate-300 dark:border-gray-700 rounded-xl px-4 py-2 text-slate-900 dark:text-white text-sm text-center uppercase tracking-wider focus:outline-none focus:border-red-500"
             />
             <div className="flex items-center justify-end gap-3 pt-2">
               <button
@@ -840,7 +840,7 @@ export const ClientSecurityTab: React.FC<ClientSecurityTabProps> = ({
                   setShowDeleteModal(false);
                   setDeleteConfirmText('');
                 }}
-                className="px-4 py-2 text-xs font-semibold text-gray-400 hover:text-white"
+                className="px-4 py-2 text-xs font-semibold text-slate-500 hover:text-slate-800 dark:text-gray-400 dark:hover:text-white"
               >
                 Cancelar
               </button>

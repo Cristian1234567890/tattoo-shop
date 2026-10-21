@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useMemo } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { Navbar } from '../components/common/Navbar';
 import { PageTransition } from '../components/common/PageTransition';
@@ -34,6 +34,11 @@ export const ArtistDashboardPage: React.FC = () => {
   const { user, isAuthenticated, isLoading, logout } = useAuth();
   const { formatPrice } = useCurrency();
   const navigate = useNavigate();
+  const [searchParams, setSearchParams] = useSearchParams();
+
+  // Tab synchronization via URL Query Param (?tab=general|suscripciones)
+  const tabParam = (searchParams.get('tab') || 'general').toLowerCase();
+  const activeTab = tabParam === 'suscripciones' ? 'suscripciones' : 'general';
 
   // Studio management states
   const [studios, setStudios] = useState<any[]>([]);
@@ -338,6 +343,49 @@ export const ArtistDashboardPage: React.FC = () => {
       )}
 
       <main className="flex-1 container mx-auto px-4 py-8 max-w-6xl">
+        {/* Navigation Tabs (General vs Suscripciones) */}
+        <nav
+          className="flex items-center gap-2 p-1.5 bg-slate-100 dark:bg-gray-900/90 border border-slate-200 dark:border-white/10 rounded-2xl mb-8 backdrop-blur-md overflow-x-auto shadow-sm dark:shadow-xl"
+          aria-label="Navegación del panel de artista"
+        >
+          <button
+            type="button"
+            id="tab-btn-general"
+            data-testid="tab-btn-general"
+            onClick={() => setSearchParams({ tab: 'general' })}
+            className={`flex items-center gap-2 px-5 py-2.5 rounded-xl font-bold text-xs md:text-sm whitespace-nowrap transition-all duration-200 cursor-pointer ${
+              activeTab === 'general'
+                ? 'bg-gradient-to-r from-primary to-[#ff7a29] !text-white keep-white-text shadow-[0_0_20px_rgba(230,81,0,0.45)] ring-1 ring-white/20'
+                : 'text-slate-600 hover:text-slate-900 hover:bg-slate-200/60 dark:text-gray-400 dark:hover:text-white dark:hover:bg-white/5'
+            }`}
+          >
+            <Building2 size={18} />
+            <span>Mi Estudio &amp; Catálogo</span>
+          </button>
+
+          <button
+            type="button"
+            id="tab-btn-suscripciones"
+            data-testid="tab-btn-suscripciones"
+            onClick={() => setSearchParams({ tab: 'suscripciones' })}
+            className={`flex items-center gap-2 px-5 py-2.5 rounded-xl font-bold text-xs md:text-sm whitespace-nowrap transition-all duration-200 cursor-pointer ${
+              activeTab === 'suscripciones'
+                ? 'bg-gradient-to-r from-primary to-[#ff7a29] !text-white keep-white-text shadow-[0_0_20px_rgba(230,81,0,0.45)] ring-1 ring-white/20'
+                : 'text-slate-600 hover:text-slate-900 hover:bg-slate-200/60 dark:text-gray-400 dark:hover:text-white dark:hover:bg-white/5'
+            }`}
+          >
+            <Sparkles size={18} />
+            <span>Suscripciones &amp; Facturación</span>
+          </button>
+        </nav>
+
+        {/* Suscripciones Dedicated Tab View */}
+        {activeTab === 'suscripciones' ? (
+          <section className="mb-8 space-y-6">
+            <SubscriptionBillingSection userRole="tatuador" />
+          </section>
+        ) : (
+          <>
         {/* Read-Only Mode Banner for Free / Canceled / Expired Tier */}
         {(!hasActiveSubscription && (isTrialExpired || meta.subscription_status === 'canceled')) && (
           <div className="mb-6 p-4 rounded-2xl bg-amber-500/10 border border-amber-500/30 text-amber-900 dark:text-amber-300 text-xs flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
@@ -730,6 +778,8 @@ export const ArtistDashboardPage: React.FC = () => {
             </div>
           </div>
         </section>
+        </>
+        )}
       </main>
 
       {/* Studio Registration Modal */}

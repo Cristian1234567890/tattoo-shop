@@ -45,6 +45,11 @@ export const SubscriptionBillingSection: React.FC<SubscriptionBillingSectionProp
     return d.toISOString();
   });
 
+  const daysRemainingInCycle = Math.max(
+    0,
+    Math.ceil((new Date(periodEnd).getTime() - Date.now()) / (1000 * 60 * 60 * 24))
+  );
+
   const [cardInfo, setCardInfo] = useState<{
     last4: string;
     brand: string;
@@ -264,9 +269,15 @@ export const SubscriptionBillingSection: React.FC<SubscriptionBillingSectionProp
                 Plan Contratado
               </span>
               <h4 className="text-base font-bold text-slate-900 dark:text-white mb-1">{planName}</h4>
-              <p className="text-xs text-slate-500 dark:text-zinc-400 mb-3">
+              <p className="text-xs text-slate-500 dark:text-zinc-400 mb-2">
                 Tarifa recurrente: <strong>{formatPrice(planFee)}/mes</strong>
               </p>
+
+              <div className="flex items-center gap-2 mb-3">
+                <span className="text-[11px] px-2 py-0.5 rounded bg-violet-500/10 text-violet-700 dark:text-violet-300 font-semibold border border-violet-500/20">
+                  {daysRemainingInCycle} días restantes del ciclo
+                </span>
+              </div>
 
               <div className="pt-3 border-t border-slate-200 dark:border-zinc-800 text-xs">
                 {cancelAtPeriodEnd ? (
@@ -275,13 +286,13 @@ export const SubscriptionBillingSection: React.FC<SubscriptionBillingSectionProp
                       Cancelación programada para el {formatDateDisplay(periodEnd)}
                     </span>
                     <p className="text-[11px] text-slate-500 dark:text-zinc-400">
-                      Tus beneficios continuarán vigentes hasta esta fecha. Después, pasarás automáticamente a la versión gratuita sin cargos adicionales.
+                      Tus beneficios continuarán vigentes hasta esta fecha ({daysRemainingInCycle} días restantes). Después, pasarás automáticamente a la versión gratuita sin cargos adicionales.
                     </p>
                   </div>
                 ) : (
                   <div className="space-y-1">
                     <span className="text-slate-600 dark:text-zinc-300 block">
-                      Próxima fecha de renovación: <strong>{formatDateDisplay(periodEnd)}</strong>
+                      Próxima fecha de facturación: <strong>{formatDateDisplay(periodEnd)}</strong>
                     </span>
                     <p className="text-[11px] text-slate-400 dark:text-zinc-500">
                       Ciclo de 30 días con débito automático a tu tarjeta afiliada.
@@ -316,6 +327,7 @@ export const SubscriptionBillingSection: React.FC<SubscriptionBillingSectionProp
                 </span>
                 <Link
                   to="/subscription/creditcard"
+                  id="btn-change-card"
                   className="text-violet-600 dark:text-violet-400 font-semibold hover:underline text-[11px]"
                 >
                   Cambiar tarjeta
@@ -324,16 +336,48 @@ export const SubscriptionBillingSection: React.FC<SubscriptionBillingSectionProp
             </div>
           </div>
 
-          {/* Read-Only Guarantee Notice */}
-          <div className="p-4 rounded-2xl bg-violet-50/60 dark:bg-zinc-900/50 border border-violet-100 dark:border-zinc-800 text-xs text-slate-600 dark:text-zinc-400 flex items-start gap-3">
-            <ShieldCheck className="w-5 h-5 text-violet-600 dark:text-violet-400 shrink-0 mt-0.5" />
-            <div>
-              <strong className="text-slate-900 dark:text-white block font-bold mb-0.5">
-                Garantía de Resguardo Histórico (Modo Lectura Permanente)
-              </strong>
-              <span>
-                Si decides cancelar o tu suscripción finaliza, <strong>toda tu información anterior</strong> (tatuajes registrados, historial de citas, diario fotográfico de cicatrización y portafolio de obras) se mantendrá disponible permanentemente para tu consulta. Únicamente se restringen nuevas acciones interactivas de membresía.
-              </span>
+          {/* Recuadro Destacado de Transparencia "Sin Letras Chiquitas" */}
+          <div
+            id="sin-letras-chiquitas"
+            data-testid="sin-letras-chiquitas-card"
+            className="p-5 rounded-2xl bg-gradient-to-br from-violet-500/5 via-indigo-500/5 to-purple-500/5 dark:bg-zinc-900/60 border border-violet-500/20 dark:border-zinc-800 space-y-3"
+          >
+            <div className="flex items-center gap-2 text-violet-700 dark:text-violet-300 font-bold text-sm font-heading">
+              <Sparkles className="w-4 h-4 text-violet-500 shrink-0" />
+              <span>Transparencia Total • Sin Letras Chiquitas</span>
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-3 text-xs text-slate-600 dark:text-zinc-400">
+              <div className="flex items-start gap-2.5 p-3 rounded-xl bg-white/80 dark:bg-zinc-800/50 border border-slate-200/60 dark:border-zinc-700/60">
+                <CheckCircle2 className="w-4 h-4 text-emerald-500 shrink-0 mt-0.5" />
+                <div>
+                  <strong className="text-slate-800 dark:text-zinc-200 block">Cero permanencia obligatoria</strong>
+                  <span className="text-[11px]">Cancela cuando quieras con 1 solo clic desde tu panel. Sin cláusulas ocultas ni penalizaciones.</span>
+                </div>
+              </div>
+
+              <div className="flex items-start gap-2.5 p-3 rounded-xl bg-white/80 dark:bg-zinc-800/50 border border-slate-200/60 dark:border-zinc-700/60">
+                <ShieldCheck className="w-4 h-4 text-indigo-500 shrink-0 mt-0.5" />
+                <div>
+                  <strong className="text-slate-800 dark:text-zinc-200 block">Historial resguardado para siempre</strong>
+                  <span className="text-[11px]">Tus citas, tatuajes registrados y fotos de cicatrización se mantienen para siempre en modo lectura y consulta.</span>
+                </div>
+              </div>
+
+              <div className="flex items-start gap-2.5 p-3 rounded-xl bg-white/80 dark:bg-zinc-800/50 border border-slate-200/60 dark:border-zinc-700/60">
+                <Calendar className="w-4 h-4 text-amber-500 shrink-0 mt-0.5" />
+                <div>
+                  <strong className="text-slate-800 dark:text-zinc-200 block">30 días garantizados de ciclo activo</strong>
+                  <span className="text-[11px]">Si cancelas hoy, mantienes todos tus beneficios comerciales o VIP activos hasta el día 30 del período pagado.</span>
+                </div>
+              </div>
+
+              <div className="flex items-start gap-2.5 p-3 rounded-xl bg-white/80 dark:bg-zinc-800/50 border border-slate-200/60 dark:border-zinc-700/60">
+                <CreditCard className="w-4 h-4 text-violet-500 shrink-0 mt-0.5" />
+                <div>
+                  <strong className="text-slate-800 dark:text-zinc-200 block">Facturación transparente</strong>
+                  <span className="text-[11px]">Sin comisiones ocultas, cobros sorpresa ni letra pequeña. Puedes afiliar o cambiar tu tarjeta cuando desees.</span>
+                </div>
+              </div>
             </div>
           </div>
 
@@ -351,15 +395,28 @@ export const SubscriptionBillingSection: React.FC<SubscriptionBillingSectionProp
                   <RefreshCw className={`w-3.5 h-3.5 ${loading ? 'animate-spin' : ''}`} />
                   <span>Reactivar Suscripción</span>
                 </button>
-                <span className="text-xs text-slate-500 dark:text-zinc-400">
-                  Continúa con tus beneficios sin cortes de servicio.
-                </span>
+                <Link
+                  to="/precios"
+                  id="btn-change-plan"
+                  className="px-4 py-2.5 rounded-xl text-xs font-semibold text-violet-600 dark:text-violet-400 hover:bg-violet-500/10 border border-violet-500/20 transition cursor-pointer"
+                >
+                  Renovar / Cambiar de Plan
+                </Link>
               </div>
             ) : (
-              <div className="flex items-center justify-between w-full">
-                <span className="text-xs text-slate-500 dark:text-zinc-400">
-                  ¿Deseas darte de baja? Conservarás tus 30 días pagados.
-                </span>
+              <div className="flex flex-col sm:flex-row items-center justify-between w-full gap-3">
+                <div className="flex items-center gap-3">
+                  <Link
+                    to="/precios"
+                    id="btn-change-plan"
+                    className="px-4 py-2 rounded-xl text-xs font-bold text-violet-700 dark:text-violet-300 bg-violet-500/10 hover:bg-violet-500/20 border border-violet-500/30 transition cursor-pointer"
+                  >
+                    Renovar / Cambiar de Plan
+                  </Link>
+                  <span className="text-xs text-slate-500 dark:text-zinc-400 hidden sm:inline">
+                    ¿Deseas darte de baja? Conservarás tus 30 días pagados.
+                  </span>
+                </div>
                 <button
                   type="button"
                   id="btn-open-cancel-modal"
@@ -374,27 +431,74 @@ export const SubscriptionBillingSection: React.FC<SubscriptionBillingSectionProp
         </div>
       ) : (
         /* Free Tier State */
-        <div className="text-center py-6">
-          <div className="w-12 h-12 rounded-full bg-slate-100 dark:bg-zinc-800 text-slate-500 dark:text-zinc-400 flex items-center justify-center mx-auto mb-3">
-            <Lock className="w-6 h-6" />
-          </div>
-          <h4 className="text-base font-bold text-slate-900 dark:text-white mb-1">
-            Cuenta en Plan Gratuito
-          </h4>
-          <p className="text-xs text-slate-500 dark:text-zinc-400 max-w-md mx-auto mb-6">
-            {isArtist
-              ? 'Pasa a Estudio Profesional para desbloquear citas ilimitadas, pin en el mapa geolocalizado y gestión multi-artista con 30 días de prueba sin comisiones.'
-              : 'Pasa a Cliente VIP para registrar la cicatrización clínica de tus tatuajes, acceder a flash drops anticipados y chat prioritario con artistas.'}
-          </p>
+        <div className="space-y-6">
+          <div className="text-center py-6">
+            <div className="w-12 h-12 rounded-full bg-slate-100 dark:bg-zinc-800 text-slate-500 dark:text-zinc-400 flex items-center justify-center mx-auto mb-3">
+              <Lock className="w-6 h-6" />
+            </div>
+            <h4 className="text-base font-bold text-slate-900 dark:text-white mb-1">
+              Cuenta en Plan Gratuito
+            </h4>
+            <p className="text-xs text-slate-500 dark:text-zinc-400 max-w-md mx-auto mb-6">
+              {isArtist
+                ? 'Pasa a Estudio Profesional para desbloquear citas ilimitadas, pin en el mapa geolocalizado y gestión multi-artista con 30 días de prueba sin comisiones.'
+                : 'Pasa a Cliente VIP para registrar la cicatrización clínica de tus tatuajes, acceder a flash drops anticipados y chat prioritario con artistas.'}
+            </p>
 
-          <Link
-            to={isArtist ? '/unete-como-tatuador' : '/subscription/creditcard'}
-            id="btn-upgrade-plan-now"
-            className="inline-flex items-center gap-2 px-6 py-3 rounded-xl text-xs font-bold bg-gradient-to-r from-violet-600 to-indigo-600 hover:from-violet-500 hover:to-indigo-500 text-white shadow-lg shadow-violet-600/30 transition transform hover:scale-[1.01]"
+            <Link
+              to={isArtist ? '/unete-como-tatuador' : '/subscription/creditcard'}
+              id="btn-upgrade-plan-now"
+              className="inline-flex items-center gap-2 px-6 py-3 rounded-xl text-xs font-bold bg-gradient-to-r from-violet-600 to-indigo-600 hover:from-violet-500 hover:to-indigo-500 text-white shadow-lg shadow-violet-600/30 transition transform hover:scale-[1.01]"
+            >
+              <Sparkles className="w-4 h-4" />
+              <span>{isArtist ? 'Activar Estudio Profesional (30 Días Gratis)' : 'Desbloquear Membresía VIP ($4.99/mes)'}</span>
+            </Link>
+          </div>
+
+          {/* Transparency Card for Free Tier */}
+          <div
+            id="sin-letras-chiquitas"
+            data-testid="sin-letras-chiquitas-card"
+            className="p-5 rounded-2xl bg-gradient-to-br from-violet-500/5 via-indigo-500/5 to-purple-500/5 dark:bg-zinc-900/60 border border-violet-500/20 dark:border-zinc-800 space-y-3"
           >
-            <Sparkles className="w-4 h-4" />
-            <span>{isArtist ? 'Activar Estudio Profesional (30 Días Gratis)' : 'Desbloquear Membresía VIP ($4.99/mes)'}</span>
-          </Link>
+            <div className="flex items-center gap-2 text-violet-700 dark:text-violet-300 font-bold text-sm font-heading">
+              <Sparkles className="w-4 h-4 text-violet-500 shrink-0" />
+              <span>Transparencia Total • Sin Letras Chiquitas</span>
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-3 text-xs text-slate-600 dark:text-zinc-400">
+              <div className="flex items-start gap-2.5 p-3 rounded-xl bg-white/80 dark:bg-zinc-800/50 border border-slate-200/60 dark:border-zinc-700/60">
+                <CheckCircle2 className="w-4 h-4 text-emerald-500 shrink-0 mt-0.5" />
+                <div>
+                  <strong className="text-slate-800 dark:text-zinc-200 block">Cero permanencia obligatoria</strong>
+                  <span className="text-[11px]">Cancela cuando quieras con 1 solo clic desde tu panel. Sin cláusulas ocultas ni penalizaciones.</span>
+                </div>
+              </div>
+
+              <div className="flex items-start gap-2.5 p-3 rounded-xl bg-white/80 dark:bg-zinc-800/50 border border-slate-200/60 dark:border-zinc-700/60">
+                <ShieldCheck className="w-4 h-4 text-indigo-500 shrink-0 mt-0.5" />
+                <div>
+                  <strong className="text-slate-800 dark:text-zinc-200 block">Historial resguardado para siempre</strong>
+                  <span className="text-[11px]">Tus citas, tatuajes registrados y fotos de cicatrización se mantienen para siempre en modo lectura y consulta.</span>
+                </div>
+              </div>
+
+              <div className="flex items-start gap-2.5 p-3 rounded-xl bg-white/80 dark:bg-zinc-800/50 border border-slate-200/60 dark:border-zinc-700/60">
+                <Calendar className="w-4 h-4 text-amber-500 shrink-0 mt-0.5" />
+                <div>
+                  <strong className="text-slate-800 dark:text-zinc-200 block">30 días garantizados de ciclo activo</strong>
+                  <span className="text-[11px]">Si cancelas hoy, mantienes todos tus beneficios comerciales o VIP activos hasta el día 30 del período pagado.</span>
+                </div>
+              </div>
+
+              <div className="flex items-start gap-2.5 p-3 rounded-xl bg-white/80 dark:bg-zinc-800/50 border border-slate-200/60 dark:border-zinc-700/60">
+                <CreditCard className="w-4 h-4 text-violet-500 shrink-0 mt-0.5" />
+                <div>
+                  <strong className="text-slate-800 dark:text-zinc-200 block">Facturación transparente</strong>
+                  <span className="text-[11px]">Sin comisiones ocultas, cobros sorpresa ni letra pequeña. Puedes afiliar o cambiar tu tarjeta cuando desees.</span>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       )}
 

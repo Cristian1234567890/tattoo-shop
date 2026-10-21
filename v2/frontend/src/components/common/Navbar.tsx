@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import { useCurrency } from '../../context/CurrencyContext';
 import { useLanguage } from '../../context/LanguageContext';
@@ -46,6 +46,29 @@ export const Navbar: React.FC<NavbarProps> = ({ forceRender = false }) => {
   const { country, currency, countryInfo, setCountry } = useCurrency();
   const { language, setLanguage, t } = useLanguage();
   const { isDark } = useTheme();
+  const location = useLocation();
+  const currentPath = location.pathname;
+
+  const getNavLinkClass = (targetPath: string) => {
+    const isActive =
+      currentPath === targetPath ||
+      (targetPath !== '/' && currentPath.startsWith(targetPath));
+    if (isActive) {
+      return 'px-3.5 py-1.5 rounded-full text-xs xl:text-sm font-bold bg-violet-600 !text-white shadow-sm shadow-violet-500/25 whitespace-nowrap shrink-0 transition-all keep-white-text';
+    }
+    return 'px-3 py-1.5 rounded-full text-xs xl:text-sm font-medium text-slate-700 hover:text-slate-900 hover:bg-slate-100 dark:text-gray-300 dark:hover:text-white dark:hover:bg-white/10 transition-colors whitespace-nowrap shrink-0';
+  };
+
+  const getMobileNavLinkClass = (targetPath: string) => {
+    const isActive =
+      currentPath === targetPath ||
+      (targetPath !== '/' && currentPath.startsWith(targetPath));
+    if (isActive) {
+      return 'flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-base font-bold bg-violet-600 !text-white shadow-md transition-all keep-white-text';
+    }
+    return 'flex items-center gap-3 px-3 py-2.5 rounded-xl text-base font-medium text-slate-800 hover:text-slate-950 hover:bg-slate-100 dark:text-gray-200 dark:hover:text-white dark:hover:bg-white/10 transition-colors';
+  };
+
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [currencyDropdownOpen, setCurrencyDropdownOpen] = useState(false);
   const [userDropdownOpen, setUserDropdownOpen] = useState(false);
@@ -75,7 +98,9 @@ export const Navbar: React.FC<NavbarProps> = ({ forceRender = false }) => {
     (typeof window !== 'undefined' && window.location.pathname === '/change-password');
 
   const isArtist =
-    user?.user_metadata?.tipo === 'Tatuador' || user?.user_metadata?.role === 'Tatuador';
+    ((user as any)?.role || '').toLowerCase() === 'tatuador' ||
+    (user?.user_metadata?.role || '').toLowerCase() === 'tatuador' ||
+    (user?.user_metadata?.tipo || '').toLowerCase() === 'tatuador';
 
   const hasVip = Boolean(user?.user_metadata?.has_active_subscription);
 
@@ -140,14 +165,14 @@ export const Navbar: React.FC<NavbarProps> = ({ forceRender = false }) => {
                 <Link
                   id="nav-beneficios"
                   to="/beneficios"
-                  className="px-3 py-1.5 rounded-full text-xs xl:text-sm font-medium text-slate-700 hover:text-slate-900 hover:bg-slate-100 dark:text-gray-300 dark:hover:text-white dark:hover:bg-white/10 transition-colors whitespace-nowrap shrink-0"
+                  className={getNavLinkClass('/beneficios')}
                 >
                   {t('nav.benefits')}
                 </Link>
                 <Link
                   id="nav-precios"
                   to="/precios"
-                  className="px-3 py-1.5 rounded-full text-xs xl:text-sm font-medium text-slate-700 hover:text-slate-900 hover:bg-slate-100 dark:text-gray-300 dark:hover:text-white dark:hover:bg-white/10 transition-colors whitespace-nowrap shrink-0"
+                  className={getNavLinkClass('/precios')}
                 >
                   {t('nav.pricing')}
                 </Link>
@@ -156,20 +181,20 @@ export const Navbar: React.FC<NavbarProps> = ({ forceRender = false }) => {
             <Link
               id="nav-artistas"
               to="/artistas"
-              className="px-3 py-1.5 rounded-full text-xs xl:text-sm font-medium text-slate-700 hover:text-slate-900 hover:bg-slate-100 dark:text-gray-300 dark:hover:text-white dark:hover:bg-white/10 transition-colors whitespace-nowrap shrink-0"
+              className={getNavLinkClass('/artistas')}
             >
               {t('nav.artists')}
             </Link>
             <Link
               id="nav-tienda"
               to="/tienda"
-              className="px-3 py-1.5 rounded-full text-xs xl:text-sm font-medium text-slate-700 hover:text-slate-900 hover:bg-slate-100 dark:text-gray-300 dark:hover:text-white dark:hover:bg-white/10 transition-colors whitespace-nowrap shrink-0"
+              className={getNavLinkClass('/tienda')}
             >
               {t('nav.shop')}
             </Link>
             <Link
               to="/hub"
-              className="px-3 py-1.5 rounded-full text-xs xl:text-sm font-medium text-slate-700 hover:text-slate-900 hover:bg-slate-100 dark:text-gray-300 dark:hover:text-white dark:hover:bg-white/10 transition-colors whitespace-nowrap shrink-0"
+              className={getNavLinkClass('/hub')}
             >
               {t('nav.explore_map')}
             </Link>
@@ -600,7 +625,7 @@ export const Navbar: React.FC<NavbarProps> = ({ forceRender = false }) => {
                   id="mobile-beneficios"
                   to="/beneficios"
                   onClick={closeMenu}
-                  className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-base font-medium text-slate-800 hover:text-slate-950 hover:bg-slate-100 dark:text-gray-200 dark:hover:text-white dark:hover:bg-white/10 transition-colors"
+                  className={getMobileNavLinkClass('/beneficios')}
                 >
                   <Sparkles className="w-5 h-5 text-violet-600 dark:text-violet-400" />
                   {t('nav.benefits')}
@@ -609,7 +634,7 @@ export const Navbar: React.FC<NavbarProps> = ({ forceRender = false }) => {
                   id="mobile-precios"
                   to="/precios"
                   onClick={closeMenu}
-                  className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-base font-medium text-slate-800 hover:text-slate-950 hover:bg-slate-100 dark:text-gray-200 dark:hover:text-white dark:hover:bg-white/10 transition-colors"
+                  className={getMobileNavLinkClass('/precios')}
                 >
                   <DollarSign className="w-5 h-5 text-indigo-600 dark:text-indigo-400" />
                   {t('nav.pricing')}
@@ -620,7 +645,7 @@ export const Navbar: React.FC<NavbarProps> = ({ forceRender = false }) => {
               id="mobile-artistas"
               to="/artistas"
               onClick={closeMenu}
-              className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-base font-medium text-slate-800 hover:text-slate-950 hover:bg-slate-100 dark:text-gray-200 dark:hover:text-white dark:hover:bg-white/10 transition-colors"
+              className={getMobileNavLinkClass('/artistas')}
             >
               <User className="w-5 h-5 text-fuchsia-600 dark:text-fuchsia-400" />
               {t('nav.artists')}
@@ -629,7 +654,7 @@ export const Navbar: React.FC<NavbarProps> = ({ forceRender = false }) => {
               id="mobile-tienda"
               to="/tienda"
               onClick={closeMenu}
-              className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-base font-medium text-slate-800 hover:text-slate-950 hover:bg-slate-100 dark:text-gray-200 dark:hover:text-white dark:hover:bg-white/10 transition-colors"
+              className={getMobileNavLinkClass('/tienda')}
             >
               <ShoppingBag className="w-5 h-5 text-amber-600 dark:text-amber-400" />
               {t('nav.shop')}
@@ -637,7 +662,7 @@ export const Navbar: React.FC<NavbarProps> = ({ forceRender = false }) => {
             <Link
               to="/hub"
               onClick={closeMenu}
-              className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-base font-medium text-slate-800 hover:text-slate-950 hover:bg-slate-100 dark:text-gray-200 dark:hover:text-white dark:hover:bg-white/10 transition-colors"
+              className={getMobileNavLinkClass('/hub')}
             >
               <Compass className="w-5 h-5 text-emerald-600 dark:text-emerald-400" />
               {t('nav.explore_map')}
@@ -645,7 +670,7 @@ export const Navbar: React.FC<NavbarProps> = ({ forceRender = false }) => {
             <Link
               to="/about"
               onClick={closeMenu}
-              className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-base font-medium text-slate-800 hover:text-slate-950 hover:bg-slate-100 dark:text-gray-200 dark:hover:text-white dark:hover:bg-white/10 transition-colors"
+              className={getMobileNavLinkClass('/about')}
             >
               <Info className="w-5 h-5 text-sky-600 dark:text-sky-400" />
               {t('nav.about')}

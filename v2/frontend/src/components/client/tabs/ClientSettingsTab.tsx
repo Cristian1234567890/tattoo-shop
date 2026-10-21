@@ -542,8 +542,8 @@ export const ClientSettingsTab: React.FC<ClientSettingsTabProps> = ({
                     onClick={handleSelectStudioDefault}
                     className={`inline-flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs font-semibold cursor-pointer transition border ${
                       profileImg === STUDIO_DEFAULT_AVATAR
-                        ? 'bg-amber-500/20 text-amber-300 border-amber-500 ring-2 ring-amber-500/40'
-                        : 'bg-zinc-800 hover:bg-zinc-750 text-zinc-300 hover:text-white border-zinc-700'
+                        ? 'bg-amber-500/20 text-amber-800 dark:text-amber-300 border-amber-500 ring-2 ring-amber-500/40'
+                        : 'bg-slate-100 hover:bg-slate-200 text-slate-800 border-slate-300 dark:bg-zinc-800 dark:hover:bg-zinc-750 dark:text-zinc-300 dark:border-zinc-700'
                     }`}
                     title="Usar arte exclusivo de Tattoo Hub Studio"
                   >
@@ -553,10 +553,10 @@ export const ClientSettingsTab: React.FC<ClientSettingsTabProps> = ({
                       className="w-4 h-4 object-contain rounded-full"
                     />
                     <span>Arte de Estudio</span>
-                    {profileImg === STUDIO_DEFAULT_AVATAR && <Check size={12} className="text-amber-400" />}
+                    {profileImg === STUDIO_DEFAULT_AVATAR && <Check size={12} className="text-amber-600 dark:text-amber-400" />}
                   </button>
 
-                  <label className="inline-flex items-center gap-2 px-3 py-2 bg-gray-800 hover:bg-gray-750 text-gray-200 hover:text-white border border-gray-700 rounded-xl text-xs font-semibold cursor-pointer transition">
+                  <label className="inline-flex items-center gap-2 px-3 py-2 bg-slate-100 hover:bg-slate-200 text-slate-800 border border-slate-300 dark:bg-gray-800 dark:hover:bg-gray-750 dark:text-gray-200 dark:border-gray-700 rounded-xl text-xs font-semibold cursor-pointer transition">
                     <Upload size={14} />
                     <span>{t.uploadBtn}</span>
                     <input
@@ -571,10 +571,10 @@ export const ClientSettingsTab: React.FC<ClientSettingsTabProps> = ({
                     <button
                       type="button"
                       onClick={handleRestoreGoogleAvatar}
-                      className="inline-flex items-center gap-1.5 px-3 py-2 bg-zinc-800 hover:bg-zinc-750 text-violet-300 hover:text-white border border-zinc-700 hover:border-violet-500/50 rounded-xl text-xs font-semibold cursor-pointer transition"
+                      className="inline-flex items-center gap-1.5 px-3 py-2 bg-slate-100 hover:bg-slate-200 text-slate-800 border border-slate-300 hover:border-violet-500/50 dark:bg-zinc-800 dark:hover:bg-zinc-750 dark:text-violet-300 dark:hover:text-white dark:border-zinc-700 rounded-xl text-xs font-semibold cursor-pointer transition"
                       title="Restaurar foto sincronizada de Google"
                     >
-                      <RotateCcw size={13} className="text-violet-400" />
+                      <RotateCcw size={13} className="text-violet-600 dark:text-violet-400" />
                       <span>Restaurar foto de Google</span>
                     </button>
                   )}
@@ -582,7 +582,7 @@ export const ClientSettingsTab: React.FC<ClientSettingsTabProps> = ({
                   <button
                     type="button"
                     onClick={handleSetDefaultAvatar}
-                    className="inline-flex items-center gap-1.5 px-3 py-2 bg-zinc-800/80 hover:bg-zinc-750 text-zinc-400 hover:text-white border border-zinc-700/80 rounded-xl text-xs font-semibold cursor-pointer transition"
+                    className="inline-flex items-center gap-1.5 px-3 py-2 bg-slate-100 hover:bg-slate-200 text-slate-800 border border-slate-300 dark:bg-zinc-800/80 dark:hover:bg-zinc-750 dark:text-zinc-400 dark:hover:text-white dark:border-zinc-700/80 rounded-xl text-xs font-semibold cursor-pointer transition"
                     title="Usar icono de perfil predeterminado"
                   >
                     <UserIcon size={13} />
@@ -667,7 +667,7 @@ export const ClientSettingsTab: React.FC<ClientSettingsTabProps> = ({
           {/* Names */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
-              <label className="block text-xs font-semibold text-gray-300 uppercase mb-1">
+              <label className="block text-xs font-semibold text-slate-700 dark:text-gray-300 uppercase mb-1">
                 {t.name}
               </label>
               <input
@@ -676,12 +676,12 @@ export const ClientSettingsTab: React.FC<ClientSettingsTabProps> = ({
                 onChange={(e) => setName(e.target.value)}
                 placeholder="Carlos"
                 required
-                className="w-full bg-gray-900 border border-gray-700 rounded-xl px-4 py-2.5 text-white text-sm focus:outline-none focus:border-primary transition"
+                className="w-full bg-slate-50 dark:bg-gray-900 border border-slate-300 dark:border-gray-700 rounded-xl px-4 py-2.5 text-slate-900 dark:text-white text-sm focus:outline-none focus:border-primary transition"
               />
             </div>
 
             <div>
-              <label className="block text-xs font-semibold text-gray-300 uppercase mb-1">
+              <label className="block text-xs font-semibold text-slate-700 dark:text-gray-300 uppercase mb-1">
                 {t.lastName}
               </label>
               <input
@@ -689,7 +689,7 @@ export const ClientSettingsTab: React.FC<ClientSettingsTabProps> = ({
                 value={lastName}
                 onChange={(e) => setLastName(e.target.value)}
                 placeholder="González"
-                className="w-full bg-gray-900 border border-gray-700 rounded-xl px-4 py-2.5 text-white text-sm focus:outline-none focus:border-primary transition"
+                className="w-full bg-slate-50 dark:bg-gray-900 border border-slate-300 dark:border-gray-700 rounded-xl px-4 py-2.5 text-slate-900 dark:text-white text-sm focus:outline-none focus:border-primary transition"
               />
             </div>
           </div>
@@ -780,7 +780,7 @@ export const ClientSettingsTab: React.FC<ClientSettingsTabProps> = ({
             </div>
 
             <div>
-              <label className="block text-xs font-semibold text-gray-300 uppercase mb-1">
+              <label className="block text-xs font-semibold text-slate-700 dark:text-gray-300 uppercase mb-1">
                 {t.address}
               </label>
               <input
@@ -788,7 +788,7 @@ export const ClientSettingsTab: React.FC<ClientSettingsTabProps> = ({
                 value={direction}
                 onChange={(e) => setDirection(e.target.value)}
                 placeholder="Calle 50, Edificio Royal"
-                className="w-full bg-gray-900 border border-gray-700 rounded-xl px-4 py-2.5 text-white text-sm focus:outline-none focus:border-primary transition"
+                className="w-full bg-slate-50 dark:bg-gray-900 border border-slate-300 dark:border-gray-700 rounded-xl px-4 py-2.5 text-slate-900 dark:text-white text-sm focus:outline-none focus:border-primary transition"
               />
             </div>
           </div>
@@ -807,29 +807,29 @@ export const ClientSettingsTab: React.FC<ClientSettingsTabProps> = ({
       </section>
 
       {/* 2. Preferencias de Notificaciones */}
-      <section className="bg-gray-850/90 border border-white/10 rounded-2xl p-6 md:p-8 shadow-xl backdrop-blur-md">
-        <div className="flex items-center gap-3 mb-6 pb-4 border-b border-white/10">
-          <div className="w-10 h-10 rounded-xl bg-blue-500/15 border border-blue-500/30 flex items-center justify-center text-blue-400">
+      <section className="bg-white dark:bg-gray-850/90 border border-slate-200 dark:border-white/10 rounded-2xl p-6 md:p-8 shadow-xl backdrop-blur-md">
+        <div className="flex items-center gap-3 mb-6 pb-4 border-b border-slate-200 dark:border-white/10">
+          <div className="w-10 h-10 rounded-xl bg-blue-500/15 border border-blue-500/30 flex items-center justify-center text-blue-600 dark:text-blue-400">
             <Bell size={20} />
           </div>
           <div>
-            <h2 className="text-xl font-bold text-white">{t.notificationsTitle}</h2>
-            <p className="text-xs md:text-sm text-gray-400">{t.notificationsSubtitle}</p>
+            <h2 className="text-xl font-bold text-slate-800 dark:text-white">{t.notificationsTitle}</h2>
+            <p className="text-xs md:text-sm text-slate-500 dark:text-gray-400">{t.notificationsSubtitle}</p>
           </div>
         </div>
 
         <div className="space-y-6">
           {/* Email Alerts */}
           <div>
-            <h3 className="text-xs font-bold text-primary uppercase tracking-wider mb-3">
+            <h3 className="text-xs font-bold text-violet-600 dark:text-primary uppercase tracking-wider mb-3">
               {t.emailAlertsSection}
             </h3>
             <div className="space-y-3">
               {/* Appointments */}
-              <div className="flex items-center justify-between p-4 bg-gray-900/60 border border-white/5 rounded-xl">
+              <div className="flex items-center justify-between p-4 bg-slate-50 hover:bg-slate-100 border border-slate-200 text-slate-800 dark:bg-zinc-800/80 dark:border-zinc-700 dark:text-zinc-200 rounded-xl transition shadow-sm">
                 <div>
-                  <div className="text-sm font-bold text-white">{t.notifAppt}</div>
-                  <div className="text-xs text-gray-400">{t.notifApptDesc}</div>
+                  <div className="text-sm font-bold text-slate-800 dark:text-white">{t.notifAppt}</div>
+                  <div className="text-xs text-slate-500 dark:text-gray-400">{t.notifApptDesc}</div>
                 </div>
                 <button
                   type="button"
@@ -840,7 +840,7 @@ export const ClientSettingsTab: React.FC<ClientSettingsTabProps> = ({
                     }))
                   }
                   className={`w-12 h-6 flex items-center rounded-full p-1 cursor-pointer transition duration-300 ${
-                    notifications.email_appointments ? 'bg-primary' : 'bg-gray-700'
+                    notifications.email_appointments ? 'bg-primary' : 'bg-slate-300 dark:bg-gray-700'
                   }`}
                 >
                   <div
@@ -852,10 +852,10 @@ export const ClientSettingsTab: React.FC<ClientSettingsTabProps> = ({
               </div>
 
               {/* Chat */}
-              <div className="flex items-center justify-between p-4 bg-gray-900/60 border border-white/5 rounded-xl">
+              <div className="flex items-center justify-between p-4 bg-slate-50 hover:bg-slate-100 border border-slate-200 text-slate-800 dark:bg-zinc-800/80 dark:border-zinc-700 dark:text-zinc-200 rounded-xl transition shadow-sm">
                 <div>
-                  <div className="text-sm font-bold text-white">{t.notifChat}</div>
-                  <div className="text-xs text-gray-400">{t.notifChatDesc}</div>
+                  <div className="text-sm font-bold text-slate-800 dark:text-white">{t.notifChat}</div>
+                  <div className="text-xs text-slate-500 dark:text-gray-400">{t.notifChatDesc}</div>
                 </div>
                 <button
                   type="button"
@@ -866,7 +866,7 @@ export const ClientSettingsTab: React.FC<ClientSettingsTabProps> = ({
                     }))
                   }
                   className={`w-12 h-6 flex items-center rounded-full p-1 cursor-pointer transition duration-300 ${
-                    notifications.email_chat ? 'bg-primary' : 'bg-gray-700'
+                    notifications.email_chat ? 'bg-primary' : 'bg-slate-300 dark:bg-gray-700'
                   }`}
                 >
                   <div
@@ -878,10 +878,10 @@ export const ClientSettingsTab: React.FC<ClientSettingsTabProps> = ({
               </div>
 
               {/* Care Reminders */}
-              <div className="flex items-center justify-between p-4 bg-gray-900/60 border border-white/5 rounded-xl">
+              <div className="flex items-center justify-between p-4 bg-slate-50 hover:bg-slate-100 border border-slate-200 text-slate-800 dark:bg-zinc-800/80 dark:border-zinc-700 dark:text-zinc-200 rounded-xl transition shadow-sm">
                 <div>
-                  <div className="text-sm font-bold text-white">{t.notifCare}</div>
-                  <div className="text-xs text-gray-400">{t.notifCareDesc}</div>
+                  <div className="text-sm font-bold text-slate-800 dark:text-white">{t.notifCare}</div>
+                  <div className="text-xs text-slate-500 dark:text-gray-400">{t.notifCareDesc}</div>
                 </div>
                 <button
                   type="button"
@@ -892,7 +892,7 @@ export const ClientSettingsTab: React.FC<ClientSettingsTabProps> = ({
                     }))
                   }
                   className={`w-12 h-6 flex items-center rounded-full p-1 cursor-pointer transition duration-300 ${
-                    notifications.email_care_reminders ? 'bg-primary' : 'bg-gray-700'
+                    notifications.email_care_reminders ? 'bg-primary' : 'bg-slate-300 dark:bg-gray-700'
                   }`}
                 >
                   <div
@@ -904,10 +904,10 @@ export const ClientSettingsTab: React.FC<ClientSettingsTabProps> = ({
               </div>
 
               {/* Promotions */}
-              <div className="flex items-center justify-between p-4 bg-gray-900/60 border border-white/5 rounded-xl">
+              <div className="flex items-center justify-between p-4 bg-slate-50 hover:bg-slate-100 border border-slate-200 text-slate-800 dark:bg-zinc-800/80 dark:border-zinc-700 dark:text-zinc-200 rounded-xl transition shadow-sm">
                 <div>
-                  <div className="text-sm font-bold text-white">{t.notifPromo}</div>
-                  <div className="text-xs text-gray-400">{t.notifPromoDesc}</div>
+                  <div className="text-sm font-bold text-slate-800 dark:text-white">{t.notifPromo}</div>
+                  <div className="text-xs text-slate-500 dark:text-gray-400">{t.notifPromoDesc}</div>
                 </div>
                 <button
                   type="button"
@@ -918,7 +918,7 @@ export const ClientSettingsTab: React.FC<ClientSettingsTabProps> = ({
                     }))
                   }
                   className={`w-12 h-6 flex items-center rounded-full p-1 cursor-pointer transition duration-300 ${
-                    notifications.email_promotions ? 'bg-primary' : 'bg-gray-700'
+                    notifications.email_promotions ? 'bg-primary' : 'bg-slate-300 dark:bg-gray-700'
                   }`}
                 >
                   <div
@@ -933,15 +933,15 @@ export const ClientSettingsTab: React.FC<ClientSettingsTabProps> = ({
 
           {/* In-App Alerts */}
           <div>
-            <h3 className="text-xs font-bold text-primary uppercase tracking-wider mb-3">
+            <h3 className="text-xs font-bold text-violet-600 dark:text-primary uppercase tracking-wider mb-3">
               {t.appAlertsSection}
             </h3>
             <div className="space-y-3">
               {/* Sounds */}
-              <div className="flex items-center justify-between p-4 bg-gray-900/60 border border-white/5 rounded-xl">
+              <div className="flex items-center justify-between p-4 bg-slate-50 hover:bg-slate-100 border border-slate-200 text-slate-800 dark:bg-zinc-800/80 dark:border-zinc-700 dark:text-zinc-200 rounded-xl transition shadow-sm">
                 <div>
-                  <div className="text-sm font-bold text-white">{t.notifSounds}</div>
-                  <div className="text-xs text-gray-400">{t.notifSoundsDesc}</div>
+                  <div className="text-sm font-bold text-slate-800 dark:text-white">{t.notifSounds}</div>
+                  <div className="text-xs text-slate-500 dark:text-gray-400">{t.notifSoundsDesc}</div>
                 </div>
                 <button
                   type="button"
@@ -952,7 +952,7 @@ export const ClientSettingsTab: React.FC<ClientSettingsTabProps> = ({
                     }))
                   }
                   className={`w-12 h-6 flex items-center rounded-full p-1 cursor-pointer transition duration-300 ${
-                    notifications.inapp_sounds ? 'bg-primary' : 'bg-gray-700'
+                    notifications.inapp_sounds ? 'bg-primary' : 'bg-slate-300 dark:bg-gray-700'
                   }`}
                 >
                   <div
@@ -964,10 +964,10 @@ export const ClientSettingsTab: React.FC<ClientSettingsTabProps> = ({
               </div>
 
               {/* Push */}
-              <div className="flex items-center justify-between p-4 bg-gray-900/60 border border-white/5 rounded-xl">
+              <div className="flex items-center justify-between p-4 bg-slate-50 hover:bg-slate-100 border border-slate-200 text-slate-800 dark:bg-zinc-800/80 dark:border-zinc-700 dark:text-zinc-200 rounded-xl transition shadow-sm">
                 <div>
-                  <div className="text-sm font-bold text-white">{t.notifPush}</div>
-                  <div className="text-xs text-gray-400">{t.notifPushDesc}</div>
+                  <div className="text-sm font-bold text-slate-800 dark:text-white">{t.notifPush}</div>
+                  <div className="text-xs text-slate-500 dark:text-gray-400">{t.notifPushDesc}</div>
                 </div>
                 <button
                   type="button"
@@ -978,7 +978,7 @@ export const ClientSettingsTab: React.FC<ClientSettingsTabProps> = ({
                     }))
                   }
                   className={`w-12 h-6 flex items-center rounded-full p-1 cursor-pointer transition duration-300 ${
-                    notifications.inapp_browser_push ? 'bg-primary' : 'bg-gray-700'
+                    notifications.inapp_browser_push ? 'bg-primary' : 'bg-slate-300 dark:bg-gray-700'
                   }`}
                 >
                   <div
@@ -990,10 +990,10 @@ export const ClientSettingsTab: React.FC<ClientSettingsTabProps> = ({
               </div>
 
               {/* Upcoming */}
-              <div className="flex items-center justify-between p-4 bg-gray-900/60 border border-white/5 rounded-xl">
+              <div className="flex items-center justify-between p-4 bg-slate-50 hover:bg-slate-100 border border-slate-200 text-slate-800 dark:bg-zinc-800/80 dark:border-zinc-700 dark:text-zinc-200 rounded-xl transition shadow-sm">
                 <div>
-                  <div className="text-sm font-bold text-white">{t.notifUpcoming}</div>
-                  <div className="text-xs text-gray-400">{t.notifUpcomingDesc}</div>
+                  <div className="text-sm font-bold text-slate-800 dark:text-white">{t.notifUpcoming}</div>
+                  <div className="text-xs text-slate-500 dark:text-gray-400">{t.notifUpcomingDesc}</div>
                 </div>
                 <button
                   type="button"
@@ -1004,7 +1004,7 @@ export const ClientSettingsTab: React.FC<ClientSettingsTabProps> = ({
                     }))
                   }
                   className={`w-12 h-6 flex items-center rounded-full p-1 cursor-pointer transition duration-300 ${
-                    notifications.inapp_upcoming_alerts ? 'bg-primary' : 'bg-gray-700'
+                    notifications.inapp_upcoming_alerts ? 'bg-primary' : 'bg-slate-300 dark:bg-gray-700'
                   }`}
                 >
                   <div
@@ -1032,14 +1032,14 @@ export const ClientSettingsTab: React.FC<ClientSettingsTabProps> = ({
       </section>
 
       {/* 3. Idioma & Región */}
-      <section className="bg-gray-850/90 border border-white/10 rounded-2xl p-6 md:p-8 shadow-xl backdrop-blur-md">
-        <div className="flex items-center gap-3 mb-6 pb-4 border-b border-white/10">
-          <div className="w-10 h-10 rounded-xl bg-emerald-500/15 border border-emerald-500/30 flex items-center justify-center text-emerald-400">
+      <section className="bg-white dark:bg-gray-850/90 border border-slate-200 dark:border-white/10 rounded-2xl p-6 md:p-8 shadow-xl backdrop-blur-md">
+        <div className="flex items-center gap-3 mb-6 pb-4 border-b border-slate-200 dark:border-white/10">
+          <div className="w-10 h-10 rounded-xl bg-emerald-500/15 border border-emerald-500/30 flex items-center justify-center text-emerald-600 dark:text-emerald-400">
             <Globe size={20} />
           </div>
           <div>
-            <h2 className="text-xl font-bold text-white">{t.langTitle}</h2>
-            <p className="text-xs md:text-sm text-gray-400">{t.langSubtitle}</p>
+            <h2 className="text-xl font-bold text-slate-800 dark:text-white">{t.langTitle}</h2>
+            <p className="text-xs md:text-sm text-slate-500 dark:text-gray-400">{t.langSubtitle}</p>
           </div>
         </div>
 
@@ -1051,14 +1051,14 @@ export const ClientSettingsTab: React.FC<ClientSettingsTabProps> = ({
               className={`p-4 rounded-xl border cursor-pointer transition flex items-center justify-between ${
                 lang === 'es'
                   ? 'bg-primary/10 border-primary shadow-[0_0_15px_rgba(230,81,0,0.2)]'
-                  : 'bg-gray-900/60 border-gray-700 hover:border-gray-500'
+                  : 'bg-slate-50 hover:bg-slate-100 border-slate-200 text-slate-800 dark:bg-gray-900/60 dark:border-gray-700 dark:text-gray-200'
               }`}
             >
               <div className="flex items-center gap-3">
                 <span className="text-2xl">🇪🇸</span>
                 <div>
-                  <div className="font-bold text-white text-sm">Español</div>
-                  <div className="text-xs text-gray-400">{t.spanishOption}</div>
+                  <div className="font-bold text-slate-900 dark:text-white text-sm">Español</div>
+                  <div className="text-xs text-slate-500 dark:text-gray-400">{t.spanishOption}</div>
                 </div>
               </div>
               {lang === 'es' && (
@@ -1073,14 +1073,14 @@ export const ClientSettingsTab: React.FC<ClientSettingsTabProps> = ({
               className={`p-4 rounded-xl border cursor-pointer transition flex items-center justify-between ${
                 lang === 'en'
                   ? 'bg-primary/10 border-primary shadow-[0_0_15px_rgba(230,81,0,0.2)]'
-                  : 'bg-gray-900/60 border-gray-700 hover:border-gray-500'
+                  : 'bg-slate-50 hover:bg-slate-100 border-slate-200 text-slate-800 dark:bg-gray-900/60 dark:border-gray-700 dark:text-gray-200'
               }`}
             >
               <div className="flex items-center gap-3">
                 <span className="text-2xl">🇺🇸</span>
                 <div>
-                  <div className="font-bold text-white text-sm">English</div>
-                  <div className="text-xs text-gray-400">{t.englishOption}</div>
+                  <div className="font-bold text-slate-900 dark:text-white text-sm">English</div>
+                  <div className="text-xs text-slate-500 dark:text-gray-400">{t.englishOption}</div>
                 </div>
               </div>
               {lang === 'en' && (
@@ -1092,12 +1092,12 @@ export const ClientSettingsTab: React.FC<ClientSettingsTabProps> = ({
           </div>
 
           {/* Time format */}
-          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between p-4 bg-gray-900/60 border border-white/5 rounded-xl gap-4">
+          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between p-4 bg-slate-50 hover:bg-slate-100 border border-slate-200 text-slate-800 dark:bg-gray-900/60 dark:border-white/5 dark:text-white rounded-xl gap-4">
             <div className="flex items-center gap-3">
-              <Clock size={18} className="text-gray-400" />
+              <Clock size={18} className="text-slate-500 dark:text-gray-400" />
               <div>
-                <div className="text-sm font-bold text-white">{t.timeFormatTitle}</div>
-                <div className="text-xs text-gray-400">
+                <div className="text-sm font-bold text-slate-900 dark:text-white">{t.timeFormatTitle}</div>
+                <div className="text-xs text-slate-500 dark:text-gray-400">
                   {timeFormat === '24h' ? '14:30 (24 Horas)' : '2:30 PM (12 Horas)'}
                 </div>
               </div>
@@ -1109,7 +1109,7 @@ export const ClientSettingsTab: React.FC<ClientSettingsTabProps> = ({
                 className={`px-3 py-1.5 rounded-lg text-xs font-bold transition cursor-pointer ${
                   timeFormat === '12h'
                     ? 'bg-primary text-white'
-                    : 'bg-gray-800 text-gray-400 hover:text-white'
+                    : 'bg-slate-200 text-slate-700 hover:bg-slate-300 dark:bg-gray-800 dark:text-gray-400 dark:hover:text-white'
                 }`}
               >
                 12h (AM/PM)
@@ -1120,7 +1120,7 @@ export const ClientSettingsTab: React.FC<ClientSettingsTabProps> = ({
                 className={`px-3 py-1.5 rounded-lg text-xs font-bold transition cursor-pointer ${
                   timeFormat === '24h'
                     ? 'bg-primary text-white'
-                    : 'bg-gray-800 text-gray-400 hover:text-white'
+                    : 'bg-slate-200 text-slate-700 hover:bg-slate-300 dark:bg-gray-800 dark:text-gray-400 dark:hover:text-white'
                 }`}
               >
                 24h (Militar)

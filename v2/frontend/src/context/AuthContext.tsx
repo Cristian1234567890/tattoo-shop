@@ -49,6 +49,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
           is_trial_active: res.data.is_trial_active,
           trial_expired: res.data.trial_expired,
           days_active: res.data.days_active,
+          card_last4: (res.data as any).card_last4 || (currentUser as any)?.user_metadata?.card_last4 || (currentUser as any)?.card_last4 || undefined,
+          card_brand: (res.data as any).card_brand || (currentUser as any)?.user_metadata?.card_brand || (currentUser as any)?.card_brand || undefined,
         });
         return;
       }
