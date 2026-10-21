@@ -60,6 +60,23 @@ export const ArtistDashboardPage: React.FC = () => {
   const normalizeName = (str: string) =>
     str.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^a-z0-9]/g, ' ').replace(/\s+/g, ' ').trim();
 
+  const formatOpeningHours = (hours: any): string => {
+    if (!hours) return 'Lun - Sáb: 10:00 - 20:00';
+    if (typeof hours === 'string') return hours;
+    if (typeof hours === 'object') {
+      const dayLabels: Record<string, string> = {
+        mon: 'Lun', tue: 'Mar', wed: 'Mié', thu: 'Jue', fri: 'Vie', sat: 'Sáb', sun: 'Dom'
+      };
+      const parts: string[] = [];
+      for (const [k, v] of Object.entries(hours)) {
+        const label = dayLabels[k.toLowerCase()] || k;
+        parts.push(`${label}: ${v}`);
+      }
+      return parts.join(' | ') || 'Lun - Sáb: 10:00 - 20:00';
+    }
+    return String(hours);
+  };
+
   const loadStudios = async () => {
     setIsLoadingStudios(true);
     try {
@@ -122,6 +139,18 @@ export const ArtistDashboardPage: React.FC = () => {
       setStudioError('Ya existe un estudio registrado con este nombre. Elige un nombre distintivo.');
       return;
     }
+
+    const latNum = parseFloat(newStudioLat);
+    const lngNum = parseFloat(newStudioLng);
+    if (!isNaN(latNum) && (latNum < -90 || latNum > 90)) {
+      setStudioError('La latitud debe estar comprendida entre -90 y 90 grados.');
+      return;
+    }
+    if (!isNaN(lngNum) && (lngNum < -180 || lngNum > 180)) {
+      setStudioError('La longitud debe estar comprendida entre -180 y 180 grados.');
+      return;
+    }
+
     setIsSubmittingStudio(true);
     setStudioError(null);
     setStudioSuccess(null);
@@ -132,8 +161,8 @@ export const ArtistDashboardPage: React.FC = () => {
         tagline: newStudioTagline.trim() || 'Estudio de Tatuajes & Colectivo de Arte',
         description: newStudioDescription.trim() || 'Estudio profesional de tatuajes con artistas residentes.',
         opening_hours: newStudioHours.trim() || 'Lun - Sáb: 10:00 - 20:00',
-        lat: parseFloat(newStudioLat) || 8.9824,
-        lng: parseFloat(newStudioLng) || -79.5199,
+        lat: isNaN(latNum) ? 8.9824 : latNum,
+        lng: isNaN(lngNum) ? -79.5199 : lngNum,
       });
 
       if (res.success && res.data) {
@@ -572,7 +601,7 @@ export const ArtistDashboardPage: React.FC = () => {
                     </p>
                     <p className="flex items-center gap-2">
                       <Clock size={14} className="text-slate-400 shrink-0" />
-                      <span>{studio.opening_hours || 'Lun - Sáb: 10:00 - 20:00'}</span>
+                      <span>{formatOpeningHours(studio.opening_hours)}</span>
                     </p>
                     <p className="flex items-center gap-2">
                       <Users size={14} className="text-slate-400 shrink-0" />

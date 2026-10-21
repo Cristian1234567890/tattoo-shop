@@ -757,6 +757,20 @@ export const Navbar: React.FC<NavbarProps> = ({ forceRender = false }) => {
                   </div>
                   <span>{isArtist ? t('nav.artist_panel') : t('nav.my_panel')}</span>
                 </Link>
+                {!isArtist && (
+                  <button
+                    id="mobile-btn-become-artist"
+                    data-testid="mobile-btn-become-artist"
+                    onClick={() => {
+                      closeMenu();
+                      setBecomeArtistOpen(true);
+                    }}
+                    className="flex items-center justify-center gap-2 w-full py-2.5 px-4 rounded-full text-xs font-bold text-violet-700 dark:text-violet-300 bg-violet-500/15 hover:bg-violet-500/25 border border-violet-500/30 transition-all cursor-pointer shadow-sm"
+                  >
+                    <Sparkles className="w-4 h-4 text-violet-500 animate-pulse" />
+                    <span>Quiero ser Tatuador / Abrir Estudio</span>
+                  </button>
+                )}
                 <button
                   id="mobile-btn-switch-role"
                   onClick={() => {

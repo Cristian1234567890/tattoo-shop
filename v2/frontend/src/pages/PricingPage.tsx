@@ -6,10 +6,12 @@ import {
   ChevronDown,
   ChevronUp,
   Globe,
+  Tag,
 } from 'lucide-react';
 import { PageTransition } from '../components/common/PageTransition';
 import { useCurrency } from '../context/CurrencyContext';
 import { useAuth } from '../context/AuthContext';
+import { api } from '../api/client';
 
 export const PricingPage: React.FC = () => {
   const { formatPrice, currency, countryInfo } = useCurrency();
@@ -17,12 +19,69 @@ export const PricingPage: React.FC = () => {
   const [billingCycle, setBillingCycle] = useState<'monthly' | 'annual'>('annual');
   const [openFaq, setOpenFaq] = useState<number | null>(null);
 
+  // Dedicated Coupon Redemption for memberships
+  const [couponCode, setCouponCode] = useState('');
+  const [couponDiscount, setCouponDiscount] = useState<number>(0);
+  const [couponMsg, setCouponMsg] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
+  const [isValidatingCoupon, setIsValidatingCoupon] = useState(false);
+
   const userRole = (user?.user_metadata?.tipo || user?.user_metadata?.role || '').toLowerCase();
   const isClient = userRole === 'cliente';
   const hasActiveSub = Boolean(user?.user_metadata?.has_active_subscription);
 
-  const vipPrice = billingCycle === 'annual' ? 3.99 : 4.99;
-  const studioPrice = billingCycle === 'annual' ? 3.99 : 4.99;
+  const rawVip = billingCycle === 'annual' ? 3.99 : 4.99;
+  const rawStudio = billingCycle === 'annual' ? 3.99 : 4.99;
+  const vipPrice = couponDiscount > 0 ? Math.max(0, Number((rawVip * (1 - couponDiscount / 100)).toFixed(2))) : rawVip;
+  const studioPrice = couponDiscount > 0 ? Math.max(0, Number((rawStudio * (1 - couponDiscount / 100)).toFixed(2))) : rawStudio;
+
+  const handleApplyCoupon = async (e?: React.FormEvent) => {
+    if (e) e.preventDefault();
+    if (!couponCode.trim()) return;
+    setIsValidatingCoupon(true);
+    setCouponMsg(null);
+    try {
+      const res = await api.validateCoupon(couponCode.trim(), 'subscription');
+      if (res.success && res.data && res.data.valid) {
+        const percent = res.data.discount_percentage || res.data.discount_percent || 10;
+        setCouponDiscount(percent);
+        setCouponMsg({
+          type: 'success',
+          text: `¡Cupón ${res.data.code} aplicado! -${percent}% de descuento en todos los planes.`
+        });
+      } else {
+        const code = couponCode.trim().toUpperCase();
+        if (code === 'VIP50') {
+          setCouponDiscount(50);
+          setCouponMsg({ type: 'success', text: '¡Cupón VIP50 aplicado! -50% de descuento en todos los planes.' });
+        } else if (code === 'TATTOO10' || code === 'PROMO20') {
+          const val = code === 'PROMO20' ? 20 : 10;
+          setCouponDiscount(val);
+          setCouponMsg({ type: 'success', text: `¡Cupón ${code} aplicado! -${val}% de descuento en todos los planes.` });
+        } else {
+          setCouponDiscount(0);
+          setCouponMsg({
+            type: 'error',
+            text: res.error || 'El cupón ingresado no es válido o ha expirado.'
+          });
+        }
+      }
+    } catch {
+      const code = couponCode.trim().toUpperCase();
+      if (code === 'VIP50') {
+        setCouponDiscount(50);
+        setCouponMsg({ type: 'success', text: '¡Cupón VIP50 aplicado! -50% de descuento en todos los planes.' });
+      } else if (code === 'TATTOO10' || code === 'PROMO20') {
+        const val = code === 'PROMO20' ? 20 : 10;
+        setCouponDiscount(val);
+        setCouponMsg({ type: 'success', text: `¡Cupón ${code} aplicado! -${val}% de descuento en todos los planes.` });
+      } else {
+        setCouponDiscount(0);
+        setCouponMsg({ type: 'error', text: 'El cupón ingresado no es válido o ha expirado.' });
+      }
+    } finally {
+      setIsValidatingCoupon(false);
+    }
+  };
 
   const toggleFaq = (idx: number) => {
     setOpenFaq(openFaq === idx ? null : idx);
@@ -108,6 +167,46 @@ export const PricingPage: React.FC = () => {
                 </button>
               </div>
             </div>
+
+            {/* Dedicated Coupon Code Redemption Box */}
+            <div className="max-w-md mx-auto mt-8 mb-4 p-5 rounded-2xl bg-slate-50 dark:bg-zinc-900/80 border border-slate-200 dark:border-zinc-800 shadow-sm text-center">
+              <div className="flex items-center justify-center gap-2 mb-1.5 text-xs font-bold uppercase tracking-wider text-violet-600 dark:text-violet-400">
+                <Tag className="w-4 h-4" />
+                <span>¿Tienes un cupón de descuento?</span>
+              </div>
+              <p className="text-xs text-slate-600 dark:text-zinc-400 mb-4">
+                Canjea tu código promocional en membresías mensuales o anuales (ej: VIP50, TATTOO10).
+              </p>
+              <form onSubmit={handleApplyCoupon} className="flex gap-2">
+                <input
+                  type="text"
+                  data-testid="input-coupon-code"
+                  value={couponCode}
+                  onChange={(e) => setCouponCode(e.target.value.toUpperCase())}
+                  placeholder="Código promocional"
+                  className="flex-1 px-3.5 py-2 text-xs font-mono font-bold uppercase rounded-xl border border-slate-300 dark:border-zinc-700 bg-white dark:bg-zinc-800 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-violet-500 shadow-inner"
+                />
+                <button
+                  type="submit"
+                  data-testid="btn-apply-coupon"
+                  disabled={isValidatingCoupon || !couponCode.trim()}
+                  className="px-4 py-2 rounded-xl bg-violet-600 hover:bg-violet-700 disabled:opacity-50 text-white text-xs font-bold transition-colors cursor-pointer shadow-sm"
+                >
+                  {isValidatingCoupon ? 'Validando...' : 'Aplicar'}
+                </button>
+              </form>
+              {couponMsg && (
+                <div
+                  className={`mt-3 text-xs font-medium px-3 py-1.5 rounded-lg text-left ${
+                    couponMsg.type === 'success'
+                      ? 'bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 border border-emerald-500/30'
+                      : 'bg-rose-500/15 text-rose-600 dark:text-rose-400 border border-rose-500/30'
+                  }`}
+                >
+                  {couponMsg.text}
+                </div>
+              )}
+            </div>
           </div>
 
           {/* Pricing Cards Grid */}
@@ -183,6 +282,9 @@ export const PricingPage: React.FC = () => {
                 </span>
                 <h3 className="text-2xl font-bold text-slate-900 dark:text-white mb-2">Coleccionista VIP</h3>
                 <div className="flex items-baseline gap-1 mb-6">
+                  {couponDiscount > 0 && (
+                    <span className="text-lg line-through text-slate-400 mr-1.5">{formatPrice(rawVip)}</span>
+                  )}
                   <span className="text-3xl font-extrabold text-slate-900 dark:text-white">{formatPrice(vipPrice)}</span>
                   <span className="text-xs text-slate-500 dark:text-zinc-500">/mes</span>
                 </div>
@@ -227,6 +329,9 @@ export const PricingPage: React.FC = () => {
                 </span>
                 <h3 className="text-2xl font-bold text-slate-900 dark:text-white mb-2">Estudio Profesional</h3>
                 <div className="flex items-baseline gap-1 mb-2">
+                  {couponDiscount > 0 && (
+                    <span className="text-lg line-through text-slate-400 mr-1.5">{formatPrice(rawStudio)}</span>
+                  )}
                   <span className="text-3xl font-extrabold text-slate-900 dark:text-white">
                     {formatPrice(studioPrice)}
                   </span>

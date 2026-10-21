@@ -128,6 +128,7 @@ export const FloatingChatWidget: React.FC = () => {
         };
         img.onerror = () => {
           setIsCompressing(false);
+          alert('El archivo seleccionado no es una imagen válida o está dañado.');
           reject(new Error('Failed to load image'));
         };
         img.src = e.target?.result as string;

@@ -96,6 +96,17 @@ async function setupRouteMocks(context, role = 'cliente') {
           })
         });
       }
+      if (code === 'VIP50') {
+        return route.fulfill({
+          status: 200,
+          headers: corsHeaders,
+          contentType: 'application/json',
+          body: JSON.stringify({
+            success: true,
+            data: { valid: true, code: 'VIP50', discount_percentage: 50, discount_percent: 50, applies_to: 'subscription', message: 'Cupón VIP50 validado con éxito' }
+          })
+        });
+      }
       if (code === 'PROMO20') {
         return route.fulfill({
           status: 200,
@@ -232,6 +243,7 @@ async function runAudit() {
     // =========================================================================
     console.log('\n--- 1. Homologación de Precios en HomePage (/) ---');
     const contextGuest = await browser.newContext({ viewport: { width: 1440, height: 900 } });
+    await setupRouteMocks(contextGuest, 'guest');
     await contextGuest.addInitScript(() => {
       localStorage.setItem('tattoo_hub_theme', 'light');
     });
@@ -264,6 +276,22 @@ async function runAudit() {
 
     // Verify Explorador is $0
     assert(priceTextAnnual.includes('Gratis') || priceTextAnnual.includes('0') || priceTextAnnual.includes('$0'), 'Plan Explorador a $0 verificado');
+
+    // Verify dedicated /precios page with coupon redemption
+    await page.goto('http://localhost:4202/precios');
+    await page.waitForLoadState('networkidle');
+    await page.waitForTimeout(400);
+
+    const pricingCouponInput = page.locator('[data-testid="input-coupon-code"]');
+    const pricingApplyBtn = page.locator('[data-testid="btn-apply-coupon"]');
+    assert(await pricingCouponInput.count() > 0 && await pricingApplyBtn.count() > 0, 'Apartado exclusivo de canje de cupones de membresía presente en /precios');
+
+    await pricingCouponInput.fill('VIP50');
+    await pricingApplyBtn.click();
+    await page.waitForTimeout(400);
+
+    const preciosPageText = await page.locator('body').innerText();
+    assert(preciosPageText.includes('VIP50') && (preciosPageText.includes('50%') || preciosPageText.includes('aplicado')), 'Cupón VIP50 (50% OFF) validado y aplicado a membresías en /precios');
 
     await page.screenshot({ path: path.join(artifactsDir, '01_pricing_homologation.png'), fullPage: false });
 
@@ -507,6 +535,21 @@ async function runAudit() {
 
       const retentionNotice = pageClient.locator('[data-testid="chat-retention-notice"]');
       assert(await retentionNotice.count() > 0, 'Aviso de política de retención de 30 días para imágenes en chat visible');
+
+      // Test corrupted or invalid image rejection with alert
+      let dialogMessage = '';
+      pageClient.once('dialog', async (dialog) => {
+        dialogMessage = dialog.message();
+        await dialog.dismiss();
+      });
+
+      await fileInput.setInputFiles({
+        name: 'fake_corrupt.png',
+        mimeType: 'image/png',
+        buffer: Buffer.from('NOT_A_REAL_IMAGE_DATA_HEADER')
+      });
+      await pageClient.waitForTimeout(600);
+      assert(dialogMessage.includes('no es una imagen válida') || dialogMessage.includes('dañado'), 'Rechazo seguro y alerta amigable ante subida de archivo corrupto o inválido en chat');
     }
 
     await pageClient.screenshot({ path: path.join(artifactsDir, '05_floating_chat_widget.png'), fullPage: false });

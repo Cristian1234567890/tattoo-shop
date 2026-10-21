@@ -23,7 +23,7 @@ export interface StudioRecord {
   phone?: string;
   description?: string;
   banner_url?: string;
-  opening_hours?: Record<string, string>;
+  opening_hours?: Record<string, string> | string;
   rating: number;
   review_count: number;
   verified: boolean;
@@ -360,7 +360,7 @@ export class StudioService {
       phone?: string;
       description?: string;
       banner_url?: string;
-      opening_hours?: Record<string, string>;
+      opening_hours?: Record<string, string> | string;
       delegated_admin_id?: string;
     },
     ownerId: string
@@ -373,6 +373,15 @@ export class StudioService {
     }
 
     const nameNorm = this.normalizeName(data.name);
+    if (!nameNorm || nameNorm.length < 2) {
+      throw new Error('El nombre del estudio debe contener al menos 2 caracteres alfanuméricos válidos.');
+    }
+
+    const rawLat = data.lat !== undefined && data.lat !== null && !isNaN(Number(data.lat)) ? Number(data.lat) : 8.9824;
+    const rawLng = data.lng !== undefined && data.lng !== null && !isNaN(Number(data.lng)) ? Number(data.lng) : -79.5199;
+    if (rawLat < -90 || rawLat > 90 || rawLng < -180 || rawLng > 180) {
+      throw new Error('Las coordenadas geográficas del estudio están fuera del rango válido (-90 a 90 de latitud, -180 a 180 de longitud).');
+    }
 
     // Duplicate name validation across DB and runtime cache
     try {
@@ -405,8 +414,8 @@ export class StudioService {
       city: data.city || 'Ciudad de Panamá',
       province: data.province || 'Panamá',
       country: 'Panama',
-      lat: Number(data.lat) || 8.9824,
-      lng: Number(data.lng) || -79.5199,
+      lat: rawLat,
+      lng: rawLng,
       phone: data.phone || '',
       description: data.description || '',
       banner_url: data.banner_url || 'https://images.unsplash.com/photo-1598371839696-5c5bb00bdc28?auto=format&fit=crop&w=800&q=80',

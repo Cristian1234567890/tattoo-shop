@@ -19,7 +19,7 @@ import {
 import { MapContainer, TileLayer, Marker, Popup, ZoomControl, useMap } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
 import L from 'leaflet';
-import { Link } from 'react-router-dom';
+import { Link, useSearchParams } from 'react-router-dom';
 import { useCurrency } from '../context/CurrencyContext';
 import { useTheme } from '../context/ThemeContext';
 import { useLanguage } from '../context/LanguageContext';
@@ -75,6 +75,32 @@ function MapTileA11yFix() {
 }
 
 /**
+ * Safely format studio opening hours from string or dictionary to human-readable text
+ */
+export function formatOpeningHours(hours: any): string {
+  if (!hours) return 'Lun - Sáb: 10:00 - 20:00';
+  if (typeof hours === 'string') return hours;
+  if (typeof hours === 'object') {
+    const dayLabels: Record<string, string> = {
+      mon: 'Lun',
+      tue: 'Mar',
+      wed: 'Mié',
+      thu: 'Jue',
+      fri: 'Vie',
+      sat: 'Sáb',
+      sun: 'Dom',
+    };
+    const parts: string[] = [];
+    for (const [k, v] of Object.entries(hours)) {
+      const label = dayLabels[k.toLowerCase()] || k;
+      parts.push(`${label}: ${v}`);
+    }
+    return parts.join(' | ') || 'Lun - Sáb: 10:00 - 20:00';
+  }
+  return String(hours);
+}
+
+/**
  * Controller to smoothly transition Leaflet map tile colors between dark and light themes without remounting
  */
 function MapThemeTransitionController({ isDark }: { isDark: boolean }) {
@@ -89,6 +115,12 @@ function MapThemeTransitionController({ isDark }: { isDark: boolean }) {
       container.classList.remove('dark-map-tiles');
       container.classList.add('light-map-tiles');
     }
+    // Seamless reactive tile refresh without reloading page or losing state
+    requestAnimationFrame(() => {
+      try {
+        map.invalidateSize({ animate: false });
+      } catch {}
+    });
   }, [isDark, map]);
   return null;
 }
@@ -458,10 +490,17 @@ export default function ArtistsHubPage() {
   const { requireAuth } = useGuestGate();
   const { coords: globalCoords, status: globalGeoStatus, requestLocation: requestGlobalLocation } = useGeolocation();
 
+  const [searchParams, setSearchParams] = useSearchParams();
+  const urlStudio = searchParams.get('studio');
+  const urlArtist = searchParams.get('artist');
+  const urlQuery = searchParams.get('q');
+  const urlRating = searchParams.get('rating');
+  const urlStyle = searchParams.get('style');
+
   const [viewMode, setViewMode] = useState<'map' | 'list'>('map');
   const [typeFilter, setTypeFilter] = useState<'all' | 'studio' | 'independent'>('all');
-  const [searchQuery, setSearchQuery] = useState('');
-  const [filter, setFilter] = useState<string>('All');
+  const [searchQuery, setSearchQuery] = useState(urlQuery || '');
+  const [filter, setFilter] = useState<string>(urlStyle || 'All');
 
   // Mapa interactivo y posicionamiento GPS
   const [mapCenter, setMapCenter] = useState<[number, number]>(globalCoords || [8.9750, -79.5050]);
@@ -473,11 +512,11 @@ export default function ArtistsHubPage() {
   const [artists, setArtists] = useState<any[]>([]);
 
   // Selección de Local/Estudio Activo
-  const [minRatingFilter, setMinRatingFilter] = useState<number>(0);
+  const [minRatingFilter, setMinRatingFilter] = useState<number>(urlRating ? parseFloat(urlRating) : 0);
   const [studiosList, setStudiosList] = useState<StudioLocation[]>(STUDIOS_DATA);
-  const [activeStudioId, setActiveStudioId] = useState<string | null>(null);
+  const [activeStudioId, setActiveStudioId] = useState<string | null>(urlStudio || null);
   // Selección del Artista Residente Específico dentro del Estudio
-  const [selectedResidentId, setSelectedResidentId] = useState<string>('artist-kaelen');
+  const [selectedResidentId, setSelectedResidentId] = useState<string>(urlArtist || 'artist-kaelen');
 
   // Estado para modal de reseñas
   const [reviewModalOpen, setReviewModalOpen] = useState(false);
@@ -489,6 +528,92 @@ export default function ArtistsHubPage() {
   // Estado para el modal de bocetos (SendSketchModal)
   const [sketchModalOpen, setSketchModalOpen] = useState(false);
   const [sketchTarget, setSketchTarget] = useState<{ id: string; name: string } | null>(null);
+
+  // Carga de estudios desde la API backend sincronizados con el mapa interactivo
+  useEffect(() => {
+    let isMounted = true;
+    const fetchStudios = async () => {
+      try {
+        const res = await api.getStudios({
+          minRating: minRatingFilter > 0 ? minRatingFilter : undefined,
+        });
+        if (isMounted && res.success && Array.isArray(res.data) && res.data.length > 0) {
+          const backendStudios = res.data;
+          setStudiosList((prev) => {
+            const list = [...prev];
+            backendStudios.forEach((backendStudio: any) => {
+              const existingIndex = list.findIndex((s) => s.id === backendStudio.id);
+              const normalizedStudio: StudioLocation = {
+                id: backendStudio.id,
+                type: 'studio',
+                name: backendStudio.name,
+                tagline: backendStudio.tagline || backendStudio.description?.slice(0, 55) || 'Estudio Profesional de Tatuajes',
+                description: backendStudio.description || 'Estudio profesional verificado en Tattoo Hub.',
+                banner: backendStudio.banner_url || backendStudio.banner || 'https://images.unsplash.com/photo-1598371839696-5c5bb00bdc28?auto=format&fit=crop&w=800&q=80',
+                rating: Number(backendStudio.rating) || 5.0,
+                reviewCount: backendStudio.review_count !== undefined ? backendStudio.review_count : (backendStudio.reviewCount || backendStudio.reviews?.length || 0),
+                verified: Boolean(backendStudio.verified),
+                address: backendStudio.address || 'Ciudad de Panamá',
+                distance: backendStudio.distance || '2.5 km',
+                lat: Number(backendStudio.lat) || 8.9824,
+                lng: Number(backendStudio.lng) || -79.5199,
+                mapPin: backendStudio.mapPin || { x: '50%', y: '50%' },
+                opening_hours: formatOpeningHours(backendStudio.opening_hours),
+                reviews: (backendStudio.reviews || []).map((r: any) => ({
+                  id: r.id || `rev-${Math.random()}`,
+                  user: r.client_name || r.user || 'Cliente',
+                  author: r.client_name || r.author || 'Cliente',
+                  rating: Number(r.rating) || 5,
+                  comment: r.comment || '',
+                  date: r.created_at ? new Date(r.created_at).toLocaleDateString() : 'Reciente'
+                })),
+                artistsCount: (backendStudio.residents && backendStudio.residents.length) || 1,
+                residents: (backendStudio.residents && backendStudio.residents.length > 0)
+                  ? backendStudio.residents
+                  : [
+                      {
+                        id: backendStudio.owner_id || `artist-${backendStudio.id}`,
+                        name: backendStudio.name + ' Residente',
+                        alias: 'Residente',
+                        avatar: '/assets/GB Tattoo.jpg',
+                        bio: backendStudio.description || 'Artista residente en ' + backendStudio.name,
+                        specialties: ['General', 'Blackwork'],
+                        hourlyRate: 75,
+                        availableToday: true,
+                        whatsapp: { number: '60000000', prefix: '507' },
+                        flashes: []
+                      }
+                    ]
+              };
+              if (existingIndex >= 0) {
+                list[existingIndex] = { ...list[existingIndex], ...normalizedStudio };
+              } else {
+                list.unshift(normalizedStudio);
+              }
+            });
+            return list;
+          });
+        }
+      } catch (err) {
+        console.warn('Backend studios fetch error, keeping cached studios:', err);
+      }
+    };
+    fetchStudios();
+    return () => {
+      isMounted = false;
+    };
+  }, [minRatingFilter]);
+
+  // Sincronizar parámetros en URL para preservar estado ante refrescos o navegación
+  useEffect(() => {
+    const params = new URLSearchParams();
+    if (activeStudioId) params.set('studio', activeStudioId);
+    if (selectedResidentId && activeStudioId) params.set('artist', selectedResidentId);
+    if (searchQuery.trim()) params.set('q', searchQuery.trim());
+    if (minRatingFilter > 0) params.set('rating', String(minRatingFilter));
+    if (filter && filter !== 'All') params.set('style', filter);
+    setSearchParams(params, { replace: true });
+  }, [activeStudioId, selectedResidentId, searchQuery, minRatingFilter, filter, setSearchParams]);
 
   // Sincronizar coordenadas globales del usuario
   useEffect(() => {
@@ -1296,7 +1421,7 @@ export default function ArtistsHubPage() {
                         <div className="flex items-center gap-2 p-2.5 rounded-xl bg-slate-50 dark:bg-zinc-900/70 border border-slate-200 dark:border-zinc-800/80 text-xs text-slate-700 dark:text-zinc-300">
                           <Clock className="w-4 h-4 text-violet-500 shrink-0" />
                           <span className="font-bold">{isEn ? 'Opening Hours:' : 'Horario:'}</span>
-                          <span>{activeStudio.opening_hours}</span>
+                          <span>{formatOpeningHours(activeStudio.opening_hours)}</span>
                         </div>
                       )}
 

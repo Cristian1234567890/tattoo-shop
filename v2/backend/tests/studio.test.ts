@@ -104,6 +104,42 @@ describe('Studio Management, Multi-Studio, Certification, Ratings & Coupons Suit
       assert.equal(studio1.owner_id, 'artist-owner-multi');
       assert.equal(studio2.owner_id, 'artist-owner-multi');
     });
+
+    it('1.4 should reject studio names without sufficient alphanumeric characters', async () => {
+      await assert.rejects(
+        async () => {
+          await studioService.createStudio(
+            {
+              name: '!!! ???',
+              address: 'Calle 50',
+            },
+            'artist-symbols'
+          );
+        },
+        {
+          message: /al menos 2 caracteres alfanuméricos/i,
+        }
+      );
+    });
+
+    it('1.5 should reject out-of-bounds geographic coordinates', async () => {
+      await assert.rejects(
+        async () => {
+          await studioService.createStudio(
+            {
+              name: 'Space Orbit Ink',
+              address: 'Espacio Exterior',
+              lat: 120.5,
+              lng: -200.0,
+            },
+            'artist-space'
+          );
+        },
+        {
+          message: /fuera del rango válido/i,
+        }
+      );
+    });
   });
 
   describe('2. Collaborator Association & Security (Studio ID)', () => {

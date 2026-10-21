@@ -61,7 +61,7 @@ export const LoginPage: React.FC = () => {
     if (hasNavigatedRef.current) return;
     hasNavigatedRef.current = true;
     const rawRedirect = searchParams.get('redirect');
-    if (rawRedirect && rawRedirect.startsWith('/') && !rawRedirect.startsWith('//') && !rawRedirect.startsWith('/hub')) {
+    if (rawRedirect && rawRedirect.startsWith('/') && !rawRedirect.startsWith('//') && !rawRedirect.startsWith('/login') && !rawRedirect.startsWith('/register')) {
       navigate(rawRedirect, { replace: true });
       return;
     }
@@ -230,6 +230,15 @@ export const LoginPage: React.FC = () => {
     rawRedirect && rawRedirect.startsWith('/') && !rawRedirect.startsWith('//')
       ? `/register?redirect=${encodeURIComponent(rawRedirect)}`
       : '/register';
+
+  if (isAuthenticated && currentUser) {
+    return (
+      <div className="min-h-screen dark:bg-[#090b10] bg-transparent flex flex-col items-center justify-center text-slate-800 dark:text-white font-sans">
+        <div className="w-10 h-10 border-4 border-violet-600 border-t-transparent rounded-full animate-spin mb-4" />
+        <p className="text-sm font-semibold text-slate-600 dark:text-zinc-300">Iniciando sesión y redirigiendo...</p>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen dark:bg-[#090b10] bg-transparent text-slate-800 dark:text-[#e5e1e6] flex flex-col justify-center items-center px-4 py-12 relative overflow-hidden font-sans">
