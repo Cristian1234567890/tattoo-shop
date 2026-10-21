@@ -184,6 +184,63 @@ class ApiClient {
     return res.data;
   }
 
+  // 13.1 POST /subscription/affiliate-card (Legacy Card Vault Gateway)
+  async affiliateCard(payload: {
+    user_id?: string;
+    holder_name: string;
+    card_number: string;
+    expiration: string;
+    cvv: string;
+    agreement_accepted: boolean;
+    role?: string;
+    plan_type?: string;
+    billing_cycle?: 'monthly' | 'annual';
+  }): Promise<{ success: boolean; message?: string; data?: any; error?: any }> {
+    try {
+      const res = await this.axiosInstance.post('/subscription/affiliate-card', payload);
+      return res.data;
+    } catch (err: any) {
+      return err.response?.data || { success: false, error: err.message };
+    }
+  }
+
+  // 13.2 POST /subscription/cancel
+  async cancelSubscription(payload: {
+    id?: string;
+    user_id?: string;
+    reason?: string;
+  }): Promise<{ success: boolean; message?: string; data?: any; error?: any }> {
+    try {
+      const res = await this.axiosInstance.post('/subscription/cancel', payload);
+      return res.data;
+    } catch (err: any) {
+      return err.response?.data || { success: false, error: err.message };
+    }
+  }
+
+  // 13.3 POST /subscription/reactivate
+  async reactivateSubscription(payload: {
+    id?: string;
+    user_id?: string;
+  }): Promise<{ success: boolean; message?: string; data?: any; error?: any }> {
+    try {
+      const res = await this.axiosInstance.post('/subscription/reactivate', payload);
+      return res.data;
+    } catch (err: any) {
+      return err.response?.data || { success: false, error: err.message };
+    }
+  }
+
+  // 13.4 GET /subscription/status/:id
+  async getSubscriptionStatus(userId: string): Promise<{ success: boolean; data?: any; error?: any }> {
+    try {
+      const res = await this.axiosInstance.get(`/subscription/status/${userId}`);
+      return res.data;
+    } catch (err: any) {
+      return err.response?.data || { success: false, error: err.message };
+    }
+  }
+
   // 14. POST /mail
   async sendMail(payload: {
     to: string;

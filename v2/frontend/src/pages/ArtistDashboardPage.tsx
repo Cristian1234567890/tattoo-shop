@@ -28,6 +28,7 @@ import {
 } from 'lucide-react';
 import { useCurrency } from '../context/CurrencyContext';
 import { api } from '../api/client';
+import { SubscriptionBillingSection } from '../components/common/SubscriptionBillingSection';
 
 export const ArtistDashboardPage: React.FC = () => {
   const { user, isAuthenticated, isLoading, logout } = useAuth();
@@ -378,6 +379,11 @@ export const ArtistDashboardPage: React.FC = () => {
               )}
             </div>
           </div>
+        </section>
+
+        {/* Facturación & Suscripción Management */}
+        <section className="mb-8">
+          <SubscriptionBillingSection userRole="tatuador" />
         </section>
 
         {/* Studio Summary Bar */}

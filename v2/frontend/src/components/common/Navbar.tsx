@@ -29,7 +29,6 @@ import {
 import { isQaEnvironment } from '../../api/supabase';
 import { ThemeSwitch } from './ThemeSwitch';
 import { useTheme } from '../../context/ThemeContext';
-import { BecomeArtistModal } from '../auth/BecomeArtistModal';
 
 export const NavbarContext = React.createContext<{ isMounted: boolean }>({ isMounted: false });
 
@@ -51,7 +50,6 @@ export const Navbar: React.FC<NavbarProps> = ({ forceRender = false }) => {
   const [currencyDropdownOpen, setCurrencyDropdownOpen] = useState(false);
   const [userDropdownOpen, setUserDropdownOpen] = useState(false);
   const [guestPreferencesOpen, setGuestPreferencesOpen] = useState(false);
-  const [becomeArtistOpen, setBecomeArtistOpen] = useState(false);
 
   const closeMenu = () => {
     setMobileMenuOpen(false);
@@ -289,13 +287,11 @@ export const Navbar: React.FC<NavbarProps> = ({ forceRender = false }) => {
                       {/* Botón Quiero ser Tatuador / Abrir Estudio si es cliente */}
                       {!isArtist && (
                         <div className="px-1 py-1 mb-1.5">
-                          <button
+                          <Link
                             id="btn-become-artist"
-                            onClick={() => {
-                              setUserDropdownOpen(false);
-                              setBecomeArtistOpen(true);
-                            }}
-                            className="w-full flex items-center justify-between px-2.5 py-2 rounded-xl text-xs font-bold text-violet-700 dark:text-violet-300 hover:text-violet-900 dark:hover:text-white bg-violet-500/10 hover:bg-violet-500/20 border border-violet-500/30 transition-all cursor-pointer shadow-sm"
+                            to="/unete-como-tatuador"
+                            onClick={() => setUserDropdownOpen(false)}
+                            className="w-full flex items-center justify-between px-2.5 py-2 rounded-xl text-xs font-bold text-violet-700 dark:text-violet-300 hover:text-violet-900 dark:hover:text-white bg-violet-500/10 hover:bg-violet-500/20 border border-violet-500/30 transition-all cursor-pointer shadow-sm no-underline"
                           >
                             <div className="flex items-center gap-2">
                               <Sparkles className="w-3.5 h-3.5 text-violet-500 animate-pulse" />
@@ -304,7 +300,7 @@ export const Navbar: React.FC<NavbarProps> = ({ forceRender = false }) => {
                             <span className="text-[10px] bg-violet-500/20 px-1.5 py-0.5 rounded text-violet-600 dark:text-violet-300 font-bold uppercase">
                               Pro
                             </span>
-                          </button>
+                          </Link>
                         </div>
                       )}
 
@@ -758,18 +754,16 @@ export const Navbar: React.FC<NavbarProps> = ({ forceRender = false }) => {
                   <span>{isArtist ? t('nav.artist_panel') : t('nav.my_panel')}</span>
                 </Link>
                 {!isArtist && (
-                  <button
+                  <Link
                     id="mobile-btn-become-artist"
                     data-testid="mobile-btn-become-artist"
-                    onClick={() => {
-                      closeMenu();
-                      setBecomeArtistOpen(true);
-                    }}
-                    className="flex items-center justify-center gap-2 w-full py-2.5 px-4 rounded-full text-xs font-bold text-violet-700 dark:text-violet-300 bg-violet-500/15 hover:bg-violet-500/25 border border-violet-500/30 transition-all cursor-pointer shadow-sm"
+                    to="/unete-como-tatuador"
+                    onClick={closeMenu}
+                    className="flex items-center justify-center gap-2 w-full py-2.5 px-4 rounded-full text-xs font-bold text-violet-700 dark:text-violet-300 bg-violet-500/15 hover:bg-violet-500/25 border border-violet-500/30 transition-all cursor-pointer shadow-sm no-underline"
                   >
                     <Sparkles className="w-4 h-4 text-violet-500 animate-pulse" />
                     <span>Quiero ser Tatuador / Abrir Estudio</span>
-                  </button>
+                  </Link>
                 )}
                 <button
                   id="mobile-btn-switch-role"
@@ -818,12 +812,6 @@ export const Navbar: React.FC<NavbarProps> = ({ forceRender = false }) => {
           </div>
         </div>
       )}
-
-      {/* Modal Convertirme en Tatuador / Abrir Estudio */}
-      <BecomeArtistModal
-        isOpen={becomeArtistOpen}
-        onClose={() => setBecomeArtistOpen(false)}
-      />
     </nav>
   );
 };

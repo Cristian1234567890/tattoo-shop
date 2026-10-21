@@ -22,6 +22,7 @@ import { ClientSettingsTab } from '../components/client/tabs/ClientSettingsTab';
 import { ClientSecurityTab } from '../components/client/tabs/ClientSecurityTab';
 import { AgendaTracking } from '../components/hub/AgendaTracking';
 import { PaymentTracking } from '../components/hub/PaymentTracking';
+import { SubscriptionBillingSection } from '../components/common/SubscriptionBillingSection';
 import { useCurrency } from '../context/CurrencyContext';
 
 const HEALING_STAGES: SelectOption[] = [
@@ -433,16 +434,22 @@ export const ClientDashboardPage: React.FC = () => {
               )}
 
               {activeTab === 'pagos' && (
-                <PaymentTracking />
+                <div className="space-y-8">
+                  <SubscriptionBillingSection userRole="cliente" />
+                  <PaymentTracking />
+                </div>
               )}
 
               {activeTab === 'configuracion' && (
-                <ClientSettingsTab
-                  user={user}
-                  lang={lang}
-                  onLanguageChange={setLang}
-                  onShowToast={handleShowToast}
-                />
+                <div className="space-y-8">
+                  <SubscriptionBillingSection userRole="cliente" />
+                  <ClientSettingsTab
+                    user={user}
+                    lang={lang}
+                    onLanguageChange={setLang}
+                    onShowToast={handleShowToast}
+                  />
+                </div>
               )}
 
               {activeTab === 'seguridad' && (

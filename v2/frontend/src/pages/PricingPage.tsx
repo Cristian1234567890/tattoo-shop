@@ -267,7 +267,7 @@ export const PricingPage: React.FC = () => {
               ) : (
                 <Link
                   to="/register?role=Cliente"
-                  className="w-full text-center py-3 rounded-xl bg-slate-900 hover:bg-slate-800 dark:bg-zinc-800 dark:hover:bg-zinc-700 text-white text-xs font-bold transition-colors cursor-pointer shadow-sm"
+                  className="w-full text-center py-3 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-zinc-800 dark:hover:bg-zinc-700 text-slate-800 dark:text-white border border-slate-300 dark:border-zinc-700 text-xs font-bold transition-colors cursor-pointer shadow-sm"
                 >
                   Empezar Gratis
                 </Link>
@@ -312,7 +312,7 @@ export const PricingPage: React.FC = () => {
               </div>
               <Link
                 to="/register?role=Cliente"
-                className="w-full text-center py-3 rounded-xl bg-slate-900 hover:bg-slate-800 dark:bg-zinc-800 dark:hover:bg-zinc-700 text-white text-xs font-bold transition-colors cursor-pointer shadow-sm"
+                className="w-full text-center py-3 rounded-xl bg-gradient-to-r from-violet-600 to-indigo-600 hover:from-violet-500 hover:to-indigo-500 text-white border border-violet-400/30 text-xs font-bold transition-all shadow-md shadow-violet-500/20 cursor-pointer"
               >
                 Elegir Coleccionista VIP
               </Link>

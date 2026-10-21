@@ -29,3 +29,43 @@ export interface PayPalPlan {
   status: string;
   [key: string]: any;
 }
+
+export interface CardAffiliationDTO {
+  user_id?: string;
+  holder_name: string;
+  card_number: string;
+  expiration: string;
+  cvv: string;
+  agreement_accepted: boolean;
+  role?: 'cliente' | 'tatuador' | string;
+  plan_type?: 'vip' | 'studio' | string;
+  billing_cycle?: 'monthly' | 'annual';
+}
+
+export interface CancelSubscriptionDTO {
+  id?: string;
+  user_id?: string;
+  reason?: string;
+}
+
+export interface ReactivateSubscriptionDTO {
+  id?: string;
+  user_id?: string;
+}
+
+export interface SubscriptionStatusDTO {
+  has_active_subscription: boolean;
+  subscription_status: 'active' | 'canceling' | 'canceled' | 'none';
+  cancel_at_period_end: boolean;
+  current_period_end?: string;
+  days_remaining?: number;
+  plan?: string;
+  card?: {
+    last4: string;
+    brand: string;
+    exp_month?: string;
+    exp_year?: string;
+    holder?: string;
+  };
+}
+

@@ -30,6 +30,54 @@ export class SubscriptionController {
     const result = await subscriptionService.insertUserSubscription(req.body);
     res.status(200).json(result);
   }
+
+  async affiliateCard(req: AuthenticatedRequest, res: Response): Promise<void> {
+    const userId = req.user?.id || req.body.user_id;
+    const result = await subscriptionService.affiliateCard({
+      ...req.body,
+      user_id: userId,
+    });
+    const statusCode = result.success ? 200 : 400;
+    res.status(statusCode).json(result);
+  }
+
+  async cancelSubscription(req: AuthenticatedRequest, res: Response): Promise<void> {
+    const userId = req.user?.id || req.body.id || req.body.user_id;
+    if (!userId) {
+      res.status(401).json({ success: false, error: 'Usuario no autenticado o ID faltante.' });
+      return;
+    }
+    const result = await subscriptionService.cancelSubscription({
+      ...req.body,
+      user_id: userId,
+    });
+    const statusCode = result.success ? 200 : 400;
+    res.status(statusCode).json(result);
+  }
+
+  async reactivateSubscription(req: AuthenticatedRequest, res: Response): Promise<void> {
+    const userId = req.user?.id || req.body.id || req.body.user_id;
+    if (!userId) {
+      res.status(401).json({ success: false, error: 'Usuario no autenticado o ID faltante.' });
+      return;
+    }
+    const result = await subscriptionService.reactivateSubscription({
+      ...req.body,
+      user_id: userId,
+    });
+    const statusCode = result.success ? 200 : 400;
+    res.status(statusCode).json(result);
+  }
+
+  async getStatus(req: AuthenticatedRequest, res: Response): Promise<void> {
+    const userId = req.user?.id || req.params.id || (req.query.id as string);
+    if (!userId) {
+      res.status(400).json({ success: false, error: 'ID de usuario requerido.' });
+      return;
+    }
+    const result = await subscriptionService.getSubscriptionStatus(userId);
+    res.status(200).json(result);
+  }
 }
 
 export const subscriptionController = new SubscriptionController();

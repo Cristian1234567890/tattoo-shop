@@ -496,7 +496,7 @@ export const ShopPage: React.FC = () => {
                           data-testid="shop-reserve-btn"
                           onClick={() => handleReserveClick(product)}
                           disabled={!product.in_stock}
-                          className="w-full btn-atelier-primary text-xs py-2 px-3 font-semibold rounded-xl flex items-center justify-center gap-2 transition disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
+                          className="w-full bg-gradient-to-r from-violet-600 to-indigo-600 hover:from-violet-500 hover:to-indigo-500 text-white shadow-md shadow-violet-500/20 text-xs py-2 px-3 font-semibold rounded-xl flex items-center justify-center gap-2 transition disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer border border-violet-400/30"
                         >
                           <ShoppingBag className="w-3.5 h-3.5" />
                           <span>Apartar para Retiro</span>
@@ -753,7 +753,7 @@ export const ShopPage: React.FC = () => {
                           type="button"
                           disabled={isSubmittingOrder}
                           onClick={handleConfirmReservation}
-                          className="flex-1 btn-atelier-primary py-2.5 text-xs font-bold rounded-xl flex items-center justify-center gap-2 cursor-pointer"
+                          className="flex-1 bg-gradient-to-r from-violet-600 to-indigo-600 hover:from-violet-500 hover:to-indigo-500 text-white shadow-md shadow-violet-500/20 py-2.5 text-xs font-bold rounded-xl flex items-center justify-center gap-2 cursor-pointer border border-violet-400/30"
                         >
                           {isSubmittingOrder ? (
                             <RefreshCw className="w-4 h-4 animate-spin" />

@@ -26,6 +26,7 @@ import { PricingPage } from './pages/PricingPage';
 import { ArtistsDirectoryPage } from './pages/ArtistsDirectoryPage';
 import { ShopPage } from './pages/ShopPage';
 import { OnboardingPage } from './pages/OnboardingPage';
+import { BecomeArtistPage } from './pages/BecomeArtistPage';
 import { Navbar, NavbarContext } from './components/common/Navbar';
 import { QaEnvironmentBanner } from './components/common/QaEnvironmentBanner';
 import { Footer, FooterContext } from './components/common/Footer';
@@ -43,7 +44,26 @@ export const OnboardingGate: React.FC = () => {
     if (isLoading || !user) return;
 
     // Public / Legal pages exempt from redirection
-    const exemptPaths = ['/hub', '/about', '/beneficios', '/precios', '/artistas', '/tienda', '/shop', '/legal/terms', '/legal/privacy', '/login', '/register', '/forget-password', '/change-password', '/chat', '/user', '/onboarding'];
+    const exemptPaths = [
+      '/unete-como-tatuador',
+      '/become-artist',
+      '/hub',
+      '/about',
+      '/beneficios',
+      '/precios',
+      '/artistas',
+      '/tienda',
+      '/shop',
+      '/legal/terms',
+      '/legal/privacy',
+      '/login',
+      '/register',
+      '/forget-password',
+      '/change-password',
+      '/chat',
+      '/user',
+      '/onboarding',
+    ];
     if (exemptPaths.some((p) => location.pathname.startsWith(p))) {
       return;
     }
@@ -228,6 +248,8 @@ export const AnimatedAppRoutes: React.FC = () => {
                 <Route path="/legal/privacy" element={<PageTransition><PrivacyPolicy /></PageTransition>} />
                 <Route path="/login" element={<PageTransition><LoginPage /></PageTransition>} />
                 <Route path="/register" element={<PageTransition><RegisterPage /></PageTransition>} />
+                <Route path="/unete-como-tatuador" element={<PageTransition><BecomeArtistPage /></PageTransition>} />
+                <Route path="/become-artist" element={<Navigate to="/unete-como-tatuador" replace />} />
                 <Route path="/user" element={<PageTransition><OnboardingPage /></PageTransition>} />
                 <Route path="/onboarding" element={<PageTransition><OnboardingPage /></PageTransition>} />
                 <Route
