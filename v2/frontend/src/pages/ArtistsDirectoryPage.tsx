@@ -408,7 +408,7 @@ export const ArtistsDirectoryPage: React.FC = () => {
               return (
                 <div
                   key={studio.id}
-                  className="atelier-card rounded-3xl overflow-hidden flex flex-col justify-between shadow-xl"
+                  className="atelier-card atelier-card-hover hover:scale-[1.02] cursor-pointer rounded-3xl overflow-hidden flex flex-col justify-between shadow-xl transition-all duration-300"
                 >
                   <div>
                     {/* Banner & Header */}

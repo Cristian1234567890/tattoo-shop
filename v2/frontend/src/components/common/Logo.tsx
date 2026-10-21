@@ -13,17 +13,17 @@ export const Logo: React.FC<LogoProps> = ({
 }) => {
   const sizeMap = {
     sm: {
-      icon: 'w-6 h-6',
+      icon: 'w-7 h-7',
       text: 'text-lg',
       subtext: 'text-[9px]',
     },
     md: {
-      icon: 'w-9 h-9',
+      icon: 'w-10 h-10',
       text: 'text-2xl',
       subtext: 'text-[11px]',
     },
     lg: {
-      icon: 'w-12 h-12',
+      icon: 'w-14 h-14',
       text: 'text-3xl',
       subtext: 'text-xs',
     },
@@ -32,13 +32,20 @@ export const Logo: React.FC<LogoProps> = ({
   const currentSize = sizeMap[size] || sizeMap.md;
 
   return (
-    <div className={`inline-flex items-center gap-2.5 select-none ${className}`}>
-      {/* Pure SVG Tattoo Machine Emblem */}
+    <div className={`inline-flex items-center gap-3 select-none ${className}`}>
+      {/* Official Tattoo Hub Pin Emblem */}
+      <img
+        src="/logo-icon.png"
+        alt="Tattoo Hub Logo"
+        className={`${currentSize.icon} shrink-0 object-contain drop-shadow-[0_2px_12px_rgba(139,92,246,0.45)] transition-transform hover:scale-105 duration-300`}
+      />
+
+      {/* Pure SVG Tattoo Machine Emblem Vector Definition */}
       <svg
         viewBox="0 0 120 120"
         fill="none"
         xmlns="http://www.w3.org/2000/svg"
-        className={`${currentSize.icon} shrink-0 drop-shadow-[0_2px_10px_rgba(139,92,246,0.35)] transition-transform hover:scale-105 duration-300`}
+        className="hidden"
         aria-label="Tattoo Hub Logo Emblem"
       >
         <defs>

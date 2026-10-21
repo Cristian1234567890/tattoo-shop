@@ -118,9 +118,9 @@ export const Navbar: React.FC<NavbarProps> = ({ forceRender = false }) => {
   }, [displayAvatar]);
 
   return (
-    <nav className="bg-white/90 dark:bg-gray-950/40 backdrop-blur-xl border-b border-slate-200 dark:border-white/10 sticky top-0 z-50 transition-all font-sans text-slate-900 dark:text-white">
+    <nav className="sticky top-0 z-50 bg-gradient-to-b from-white/95 via-white/90 to-white/80 dark:from-zinc-950/95 dark:via-zinc-950/90 dark:to-zinc-950/80 dark:bg-gray-950/40 backdrop-blur-md backdrop-blur-xl border-b border-slate-200/60 dark:border-zinc-800/60 dark:border-white/10 shadow-sm dark:shadow-none transition-all duration-300 font-sans text-slate-900 dark:text-white">
       <div className="w-full max-w-[1720px] mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between h-16 w-full gap-4 xl:gap-8">
+        <div className="flex items-center justify-between h-20 w-full gap-4 xl:gap-8 py-2">
           {/* Brand Logo (Left Section) */}
           <div className="flex items-center justify-start flex-1 min-w-[180px]">
             <Link to="/" id="logo" onClick={closeMenu} className="flex items-center gap-2 no-underline">

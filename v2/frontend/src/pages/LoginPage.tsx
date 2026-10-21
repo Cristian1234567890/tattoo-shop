@@ -240,6 +240,13 @@ export const LoginPage: React.FC = () => {
 
             {/* Atelier Header Section */}
             <div className="flex flex-col items-center text-center">
+              <Link to="/" className="mb-4 inline-block transition-transform hover:scale-105 duration-300" aria-label="Ir a Inicio Tattoo Hub">
+                <img
+                  src="/logo-icon.png"
+                  alt="Tattoo Hub"
+                  className="w-16 h-16 object-contain drop-shadow-[0_4px_16px_rgba(139,92,246,0.4)]"
+                />
+              </Link>
               {/* Headings */}
               <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-white tracking-tight mb-2">
                 ¡Bienvenido de nuevo!

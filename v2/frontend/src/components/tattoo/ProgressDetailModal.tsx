@@ -57,12 +57,12 @@ export const ProgressDetailModal: React.FC<ProgressDetailModalProps> = ({
   const whatsappUrl = entry.artist ? getWhatsAppLink(entry.artist) : null;
 
   return (
-    <div className="fixed inset-0 z-50 bg-black/90 backdrop-blur-md flex items-center justify-center p-4 overflow-y-auto">
-      <div className="bg-gray-900 border border-gray-700/80 rounded-3xl max-w-4xl w-full overflow-hidden shadow-2xl relative my-8 flex flex-col md:flex-row">
+    <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-md flex items-center justify-center p-4 overflow-y-auto">
+      <div className="bg-white dark:bg-gray-900 border border-slate-200 dark:border-gray-700/80 rounded-3xl max-w-4xl w-full overflow-hidden shadow-2xl relative my-8 flex flex-col md:flex-row text-slate-900 dark:text-white">
         {/* Close Button */}
         <button
           onClick={onClose}
-          className="absolute top-4 right-4 z-10 bg-black/60 hover:bg-black/80 text-gray-300 hover:text-white p-2 rounded-full backdrop-blur-sm transition"
+          className="absolute top-4 right-4 z-10 bg-black/60 hover:bg-black/80 text-gray-300 hover:text-white p-2 rounded-full backdrop-blur-sm transition cursor-pointer"
           aria-label="Cerrar"
         >
           <X size={20} />
@@ -97,18 +97,18 @@ export const ProgressDetailModal: React.FC<ProgressDetailModalProps> = ({
                 {entry.stage}
               </span>
 
-              <div className="flex items-center gap-1.5 text-xs text-gray-400">
-                <Calendar size={14} className="text-gray-500" />
+              <div className="flex items-center gap-1.5 text-xs text-slate-500 dark:text-gray-400">
+                <Calendar size={14} className="text-slate-400 dark:text-gray-500" />
                 <span>{entry.date}</span>
               </div>
             </div>
 
             {/* Title */}
-            <h3 className="text-2xl font-black text-white mb-4">{entry.title}</h3>
+            <h3 className="text-2xl font-black text-slate-900 dark:text-white mb-4">{entry.title}</h3>
 
             {/* Artist Card */}
             {entry.artist ? (
-              <div className="bg-gray-950/80 border border-gray-800 rounded-2xl p-4 mb-6 flex items-center justify-between gap-4">
+              <div className="bg-slate-50 dark:bg-gray-950/80 border border-slate-200 dark:border-gray-800 rounded-2xl p-4 mb-6 flex items-center justify-between gap-4">
                 <div className="flex items-center gap-3">
                   <img
                     src={entry.artist.avatar_url || '/assets/Tattoo Machine Rotary.png'}
@@ -116,10 +116,10 @@ export const ProgressDetailModal: React.FC<ProgressDetailModalProps> = ({
                     className="w-11 h-11 rounded-full object-cover border-2 border-primary/60"
                   />
                   <div>
-                    <span className="text-[10px] text-gray-400 uppercase font-bold tracking-wider block">
+                    <span className="text-[10px] text-slate-500 dark:text-gray-400 uppercase font-bold tracking-wider block">
                       Tatuador Responsable
                     </span>
-                    <h5 className="text-sm font-bold text-white">
+                    <h5 className="text-sm font-bold text-slate-900 dark:text-white">
                       {entry.artist.full_name || 'Artista Tattoo Hub'}
                     </h5>
                   </div>
@@ -137,32 +137,32 @@ export const ProgressDetailModal: React.FC<ProgressDetailModalProps> = ({
                 )}
               </div>
             ) : (
-              <div className="bg-gray-950/40 border border-gray-800/80 rounded-xl p-3 mb-6 flex items-center gap-2 text-xs text-gray-400">
-                <User size={14} className="text-gray-500" />
+              <div className="bg-slate-50 dark:bg-gray-950/40 border border-slate-200 dark:border-gray-800/80 rounded-xl p-3 mb-6 flex items-center gap-2 text-xs text-slate-600 dark:text-gray-400">
+                <User size={14} className="text-slate-500" />
                 <span>Registro fotográfico de cuidados personales</span>
               </div>
             )}
 
             {/* Notes Section */}
             <div className="mb-6">
-              <h4 className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">
+              <h4 className="text-xs font-bold text-slate-600 dark:text-gray-400 uppercase tracking-wider mb-2">
                 Notas de la Sesión & Cuidados
               </h4>
-              <div className="bg-gray-950 border border-gray-800 rounded-2xl p-4 text-sm text-gray-200 leading-relaxed max-h-48 overflow-y-auto">
+              <div className="bg-slate-50 dark:bg-gray-950 border border-slate-200 dark:border-gray-800 rounded-2xl p-4 text-sm text-slate-700 dark:text-gray-200 leading-relaxed max-h-48 overflow-y-auto">
                 {entry.notes ? (
                   <p>{entry.notes}</p>
                 ) : (
-                  <p className="text-gray-500 italic">No se agregaron notas para este avance.</p>
+                  <p className="text-slate-400 dark:text-gray-500 italic">No se agregaron notas para este avance.</p>
                 )}
               </div>
             </div>
           </div>
 
           {/* Bottom Actions */}
-          <div className="pt-4 border-t border-gray-800">
+          <div className="pt-4 border-t border-slate-200 dark:border-gray-800">
             {showDeleteConfirm ? (
               <div className="bg-red-500/10 border border-red-500/30 rounded-2xl p-4 flex flex-col gap-3">
-                <div className="flex items-center gap-2 text-red-400 text-xs font-bold">
+                <div className="flex items-center gap-2 text-red-500 dark:text-red-400 text-xs font-bold">
                   <AlertTriangle size={16} />
                   <span>¿Estás seguro de que deseas eliminar este registro?</span>
                 </div>
@@ -170,14 +170,14 @@ export const ProgressDetailModal: React.FC<ProgressDetailModalProps> = ({
                   <button
                     onClick={() => setShowDeleteConfirm(false)}
                     disabled={isDeleting}
-                    className="text-xs text-gray-400 hover:text-white px-3 py-1.5"
+                    className="text-xs text-slate-600 hover:text-slate-900 dark:text-gray-400 dark:hover:text-white px-3 py-1.5 cursor-pointer"
                   >
                     Cancelar
                   </button>
                   <button
                     onClick={handleDelete}
                     disabled={isDeleting}
-                    className="bg-red-600 hover:bg-red-500 text-white text-xs font-bold px-4 py-1.5 rounded-xl transition shadow"
+                    className="bg-red-600 hover:bg-red-500 text-white text-xs font-bold px-4 py-1.5 rounded-xl transition shadow cursor-pointer"
                   >
                     {isDeleting ? 'Eliminando...' : 'Sí, eliminar'}
                   </button>
@@ -188,7 +188,7 @@ export const ProgressDetailModal: React.FC<ProgressDetailModalProps> = ({
                 {isOwner && onDelete && (
                   <button
                     onClick={() => setShowDeleteConfirm(true)}
-                    className="text-gray-500 hover:text-red-400 text-xs font-semibold flex items-center gap-1.5 py-1.5 transition"
+                    className="text-slate-400 hover:text-red-500 dark:text-gray-500 dark:hover:text-red-400 text-xs font-semibold flex items-center gap-1.5 py-1.5 transition cursor-pointer"
                   >
                     <Trash2 size={14} /> Eliminar avance
                   </button>
@@ -196,7 +196,7 @@ export const ProgressDetailModal: React.FC<ProgressDetailModalProps> = ({
 
                 <button
                   onClick={onClose}
-                  className="ml-auto bg-gray-800 hover:bg-gray-700 text-white text-xs font-bold px-5 py-2.5 rounded-xl transition shadow"
+                  className="ml-auto bg-slate-100 hover:bg-slate-200 dark:bg-gray-800 dark:hover:bg-gray-700 text-slate-800 dark:text-white text-xs font-bold px-5 py-2.5 rounded-xl transition shadow-sm border border-slate-200 dark:border-transparent cursor-pointer"
                 >
                   Cerrar
                 </button>

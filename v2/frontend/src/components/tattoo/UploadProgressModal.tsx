@@ -172,25 +172,25 @@ export const UploadProgressModal: React.FC<UploadProgressModalProps> = ({
 
   return (
     <div className="fixed inset-0 z-50 bg-black/85 backdrop-blur-md flex items-center justify-center p-4 overflow-y-auto">
-      <div className="bg-gray-900 border border-gray-700/80 rounded-3xl max-w-2xl w-full p-6 md:p-8 shadow-2xl relative my-8">
+      <div className="bg-white dark:bg-gray-900 border border-slate-200 dark:border-gray-700/80 rounded-3xl max-w-2xl w-full p-6 md:p-8 shadow-2xl relative my-8">
         {/* Close Button */}
         <button
           onClick={onClose}
           disabled={isUploading}
-          className="absolute top-5 right-5 text-gray-400 hover:text-white transition p-1 rounded-lg hover:bg-gray-800"
+          className="absolute top-5 right-5 text-slate-400 hover:text-slate-800 dark:text-gray-400 dark:hover:text-white transition p-1 rounded-lg hover:bg-slate-100 dark:hover:bg-gray-800"
           aria-label="Cerrar"
         >
           <X size={20} />
         </button>
 
         {/* Modal Header */}
-        <div className="flex items-center gap-3 mb-6 pb-4 border-b border-gray-800">
+        <div className="flex items-center gap-3 mb-6 pb-4 border-b border-slate-200 dark:border-gray-800">
           <div className="w-10 h-10 rounded-2xl bg-primary/20 border border-primary/40 flex items-center justify-center text-primary">
             <Camera size={20} />
           </div>
           <div>
-            <h3 className="text-xl font-bold text-white">Registrar Avance del Tatuaje</h3>
-            <p className="text-xs text-gray-400">
+            <h3 className="text-xl font-bold text-slate-900 dark:text-white">Registrar Avance del Tatuaje</h3>
+            <p className="text-xs text-slate-500 dark:text-gray-400">
               Sube una fotografía reciente y documenta la cicatrización o sesión.
             </p>
           </div>
@@ -198,7 +198,7 @@ export const UploadProgressModal: React.FC<UploadProgressModalProps> = ({
 
         {/* Error Alert */}
         {errorMessage && (
-          <div className="mb-6 p-4 rounded-2xl bg-red-500/10 border border-red-500/30 text-red-400 text-xs flex items-center gap-2">
+          <div className="mb-6 p-4 rounded-2xl bg-red-500/10 border border-red-500/30 text-red-500 dark:text-red-400 text-xs flex items-center gap-2">
             <AlertCircle size={16} className="shrink-0" />
             <span>{errorMessage}</span>
           </div>
@@ -207,12 +207,12 @@ export const UploadProgressModal: React.FC<UploadProgressModalProps> = ({
         <form onSubmit={handleSubmit} className="space-y-5">
           {/* Photo Dropzone / Preview */}
           <div>
-            <label className="block text-xs font-semibold text-gray-300 uppercase tracking-wider mb-2">
+            <label className="block text-xs font-semibold text-slate-700 dark:text-gray-300 uppercase tracking-wider mb-2">
               Fotografía de la Sesión / Cicatrización *
             </label>
 
             {imagePreview ? (
-              <div className="relative rounded-2xl overflow-hidden bg-gray-950 border-2 border-primary/40 p-2 flex items-center justify-center group">
+              <div className="relative rounded-2xl overflow-hidden bg-slate-100 dark:bg-gray-950 border-2 border-primary/40 p-2 flex items-center justify-center group">
                 <img
                   src={imagePreview}
                   alt="Vista previa"
@@ -224,7 +224,7 @@ export const UploadProgressModal: React.FC<UploadProgressModalProps> = ({
                     setSelectedFile(null);
                     setImagePreview('');
                   }}
-                  className="absolute top-4 right-4 bg-black/80 hover:bg-red-600 text-white p-2 rounded-xl text-xs flex items-center gap-1 backdrop-blur-sm transition shadow-lg"
+                  className="absolute top-4 right-4 bg-black/80 hover:bg-red-600 text-white keep-white-text p-2 rounded-xl text-xs flex items-center gap-1 backdrop-blur-sm transition shadow-lg"
                 >
                   <X size={14} /> Cambiar Foto
                 </button>
@@ -234,15 +234,15 @@ export const UploadProgressModal: React.FC<UploadProgressModalProps> = ({
                 onDragOver={(e) => e.preventDefault()}
                 onDrop={handleDrop}
                 onClick={() => fileInputRef.current?.click()}
-                className="border-2 border-dashed border-gray-700 hover:border-primary/60 rounded-2xl p-8 text-center cursor-pointer transition bg-gray-950/40 hover:bg-gray-800/40 flex flex-col items-center justify-center"
+                className="border-2 border-dashed border-slate-300 dark:border-gray-700 hover:border-primary/60 rounded-2xl p-8 text-center cursor-pointer transition bg-slate-50/70 dark:bg-gray-950/40 hover:bg-slate-100/70 dark:hover:bg-gray-800/40 flex flex-col items-center justify-center"
               >
-                <div className="w-14 h-14 rounded-2xl bg-gray-800/80 flex items-center justify-center text-primary mb-3">
+                <div className="w-14 h-14 rounded-2xl bg-slate-200/80 dark:bg-gray-800/80 flex items-center justify-center text-primary mb-3">
                   <UploadCloud size={28} />
                 </div>
-                <h4 className="text-sm font-bold text-white mb-1">
+                <h4 className="text-sm font-bold text-slate-900 dark:text-white mb-1">
                   Haz clic para seleccionar o arrastra tu foto aquí
                 </h4>
-                <p className="text-xs text-gray-400">
+                <p className="text-xs text-slate-500 dark:text-gray-400">
                   Formatos soportados: JPG, PNG, WEBP (Hasta 10MB)
                 </p>
                 <input
@@ -263,7 +263,7 @@ export const UploadProgressModal: React.FC<UploadProgressModalProps> = ({
           {/* Title & Stage Row */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
-              <label className="block text-xs font-semibold text-gray-300 uppercase tracking-wider mb-1">
+              <label className="block text-xs font-semibold text-slate-700 dark:text-gray-300 uppercase tracking-wider mb-1">
                 Título del Registro *
               </label>
               <input
@@ -272,7 +272,7 @@ export const UploadProgressModal: React.FC<UploadProgressModalProps> = ({
                 value={title}
                 onChange={(e) => setTitle(e.target.value)}
                 placeholder="Ej. Sesión 1 - Líneas brazo derecho"
-                className="w-full bg-gray-950 border border-gray-700 rounded-xl px-4 py-2.5 text-white text-sm focus:outline-none focus:border-primary placeholder-gray-500"
+                className="w-full bg-slate-50 dark:bg-gray-950 border border-slate-300 dark:border-gray-700 rounded-xl px-4 py-2.5 text-slate-900 dark:text-white text-sm focus:outline-none focus:border-primary placeholder-slate-400 dark:placeholder-gray-500"
               />
             </div>
 
@@ -289,19 +289,19 @@ export const UploadProgressModal: React.FC<UploadProgressModalProps> = ({
           {/* Date, Session Number & Artist Tag */}
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
             <div>
-              <label className="block text-xs font-semibold text-gray-300 uppercase tracking-wider mb-1">
+              <label className="block text-xs font-semibold text-slate-700 dark:text-gray-300 uppercase tracking-wider mb-1">
                 Fecha del Avance
               </label>
               <input
                 type="date"
                 value={date}
                 onChange={(e) => setDate(e.target.value)}
-                className="w-full bg-gray-950 border border-gray-700 rounded-xl px-4 py-2.5 text-white text-sm focus:outline-none focus:border-primary"
+                className="w-full bg-slate-50 dark:bg-gray-950 border border-slate-300 dark:border-gray-700 rounded-xl px-4 py-2.5 text-slate-900 dark:text-white text-sm focus:outline-none focus:border-primary"
               />
             </div>
 
             <div>
-              <label className="block text-xs font-semibold text-gray-300 uppercase tracking-wider mb-1">
+              <label className="block text-xs font-semibold text-slate-700 dark:text-gray-300 uppercase tracking-wider mb-1">
                 Número de Sesión
               </label>
               <input
@@ -310,7 +310,7 @@ export const UploadProgressModal: React.FC<UploadProgressModalProps> = ({
                 max={50}
                 value={sessionNumber}
                 onChange={(e) => setSessionNumber(Number(e.target.value))}
-                className="w-full bg-gray-950 border border-gray-700 rounded-xl px-4 py-2.5 text-white text-sm focus:outline-none focus:border-primary"
+                className="w-full bg-slate-50 dark:bg-gray-950 border border-slate-300 dark:border-gray-700 rounded-xl px-4 py-2.5 text-slate-900 dark:text-white text-sm focus:outline-none focus:border-primary"
               />
             </div>
 
@@ -330,7 +330,7 @@ export const UploadProgressModal: React.FC<UploadProgressModalProps> = ({
           {/* Body Part & Healing Rating */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
-              <label className="block text-xs font-semibold text-gray-300 uppercase tracking-wider mb-1">
+              <label className="block text-xs font-semibold text-slate-700 dark:text-gray-300 uppercase tracking-wider mb-1">
                 Zona del Cuerpo
               </label>
               <input
@@ -338,7 +338,7 @@ export const UploadProgressModal: React.FC<UploadProgressModalProps> = ({
                 value={bodyPart}
                 onChange={(e) => setBodyPart(e.target.value)}
                 placeholder="Brazo, Pierna, Espalda..."
-                className="w-full bg-gray-950 border border-gray-700 rounded-xl px-4 py-2.5 text-white text-sm focus:outline-none focus:border-primary placeholder-gray-500"
+                className="w-full bg-slate-50 dark:bg-gray-950 border border-slate-300 dark:border-gray-700 rounded-xl px-4 py-2.5 text-slate-900 dark:text-white text-sm focus:outline-none focus:border-primary placeholder-slate-400 dark:placeholder-gray-500"
               />
             </div>
 
@@ -354,7 +354,7 @@ export const UploadProgressModal: React.FC<UploadProgressModalProps> = ({
 
           {/* Notes and Aftercare Details */}
           <div>
-            <label className="block text-xs font-semibold text-gray-300 uppercase tracking-wider mb-1">
+            <label className="block text-xs font-semibold text-slate-700 dark:text-gray-300 uppercase tracking-wider mb-1">
               Notas de Curación & Cuidados
             </label>
             <textarea
@@ -362,19 +362,19 @@ export const UploadProgressModal: React.FC<UploadProgressModalProps> = ({
               value={notes}
               onChange={(e) => setNotes(e.target.value)}
               placeholder="Describe cómo sientes la piel, crema utilizada (ej. Bepanthen, Aquaphor), nivel de enrojecimiento o dudas..."
-              className="w-full bg-gray-950 border border-gray-700 rounded-xl px-4 py-2.5 text-white text-sm focus:outline-none focus:border-primary placeholder-gray-500"
+              className="w-full bg-slate-50 dark:bg-gray-950 border border-slate-300 dark:border-gray-700 rounded-xl px-4 py-2.5 text-slate-900 dark:text-white text-sm focus:outline-none focus:border-primary placeholder-slate-400 dark:placeholder-gray-500"
             ></textarea>
           </div>
 
           {/* Footer Actions */}
-          <div className="flex items-center justify-between pt-4 border-t border-gray-800">
+          <div className="flex items-center justify-between pt-4 border-t border-slate-200 dark:border-gray-800">
             {isUploading ? (
               <div className="flex items-center gap-2 text-xs text-primary">
                 <div className="w-4 h-4 rounded-full border-2 border-primary border-t-transparent animate-spin"></div>
                 <span>{uploadProgress}</span>
               </div>
             ) : (
-              <span className="text-xs text-gray-500 flex items-center gap-1">
+              <span className="text-xs text-slate-500 dark:text-gray-500 flex items-center gap-1">
                 <Info size={13} /> Visible en tu perfil y compartido con tu tatuador
               </span>
             )}
@@ -384,7 +384,7 @@ export const UploadProgressModal: React.FC<UploadProgressModalProps> = ({
                 type="button"
                 onClick={onClose}
                 disabled={isUploading}
-                className="px-4 py-2 text-sm text-gray-400 hover:text-white transition disabled:opacity-50"
+                className="px-4 py-2 text-sm text-slate-500 hover:text-slate-800 dark:text-gray-400 dark:hover:text-white transition disabled:opacity-50"
               >
                 Cancelar
               </button>
@@ -392,7 +392,7 @@ export const UploadProgressModal: React.FC<UploadProgressModalProps> = ({
               <button
                 type="submit"
                 disabled={isUploading || !selectedFile}
-                className="inline-flex items-center gap-2 bg-primary hover:bg-primary-hover text-white text-sm font-bold px-6 py-2.5 rounded-xl shadow-lg transition transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed"
+                className="inline-flex items-center gap-2 bg-primary hover:bg-primary-hover text-white keep-white-text text-sm font-bold px-6 py-2.5 rounded-xl shadow-lg transition transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 {isUploading ? 'Guardando...' : 'Publicar Avance'}
               </button>

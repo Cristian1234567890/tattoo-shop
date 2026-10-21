@@ -223,6 +223,18 @@ export const RegisterPage: React.FC = () => {
         </Link>
 
         <div className="mb-10">
+          <div className="flex items-center gap-3 mb-6">
+            <Link to="/" className="inline-block transition-transform hover:scale-105 duration-300" aria-label="Tattoo Hub">
+              <img
+                src="/logo-icon.png"
+                alt="Tattoo Hub"
+                className="w-12 h-12 object-contain drop-shadow-[0_4px_14px_rgba(139,92,246,0.4)]"
+              />
+            </Link>
+            <span className="text-xl font-black font-heading tracking-tight text-slate-900 dark:text-white">
+              Tattoo <span className="bg-gradient-to-r from-violet-500 via-indigo-500 to-fuchsia-500 bg-clip-text text-transparent">Hub</span>
+            </span>
+          </div>
           <span className="text-[10px] font-bold tracking-widest uppercase text-violet-400 mb-2 block bg-violet-600/10 w-max px-2.5 py-1 rounded-full border border-violet-500/20">
             PORTAL DE ACCESO AL COLECTIVO
           </span>

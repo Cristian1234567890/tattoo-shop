@@ -85,45 +85,45 @@ export const TattooTimeline: React.FC<TattooTimelineProps> = ({
   return (
     <div className="w-full">
       {/* Top Filter and Controls Bar */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8 bg-gray-900/60 p-4 rounded-2xl border border-gray-800">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8 bg-slate-100/90 dark:bg-gray-900/60 p-4 rounded-2xl border border-slate-200 dark:border-gray-800 shadow-sm dark:shadow-none">
         <div className="flex items-center gap-2 overflow-x-auto pb-1 sm:pb-0 scrollbar-none">
-          <Filter size={16} className="text-gray-400 shrink-0 mr-1" />
+          <Filter size={16} className="text-slate-500 dark:text-gray-400 shrink-0 mr-1" />
           <button
             onClick={() => setSelectedFilter('all')}
-            className={`px-3 py-1.5 rounded-xl text-xs font-semibold whitespace-nowrap transition ${
+            className={`px-3 py-1.5 rounded-xl text-xs font-semibold whitespace-nowrap transition cursor-pointer ${
               selectedFilter === 'all'
                 ? 'bg-primary text-white shadow-md shadow-primary/20'
-                : 'bg-gray-800 text-gray-400 hover:text-white hover:bg-gray-700'
+                : 'bg-white text-slate-700 hover:text-slate-900 hover:bg-slate-50 border border-slate-200 shadow-sm dark:bg-gray-800 dark:text-gray-400 dark:hover:text-white dark:hover:bg-gray-700 dark:border-transparent dark:shadow-none'
             }`}
           >
             Todas ({entries.length})
           </button>
           <button
             onClick={() => setSelectedFilter('fase 1')}
-            className={`px-3 py-1.5 rounded-xl text-xs font-semibold whitespace-nowrap transition ${
+            className={`px-3 py-1.5 rounded-xl text-xs font-semibold whitespace-nowrap transition cursor-pointer ${
               selectedFilter === 'fase 1'
                 ? 'bg-blue-600 text-white shadow-md'
-                : 'bg-gray-800 text-gray-400 hover:text-white hover:bg-gray-700'
+                : 'bg-white text-slate-700 hover:text-slate-900 hover:bg-slate-50 border border-slate-200 shadow-sm dark:bg-gray-800 dark:text-gray-400 dark:hover:text-white dark:hover:bg-gray-700 dark:border-transparent dark:shadow-none'
             }`}
           >
             Fase 1: Limpieza
           </button>
           <button
             onClick={() => setSelectedFilter('fase 2')}
-            className={`px-3 py-1.5 rounded-xl text-xs font-semibold whitespace-nowrap transition ${
+            className={`px-3 py-1.5 rounded-xl text-xs font-semibold whitespace-nowrap transition cursor-pointer ${
               selectedFilter === 'fase 2'
                 ? 'bg-amber-600 text-white shadow-md'
-                : 'bg-gray-800 text-gray-400 hover:text-white hover:bg-gray-700'
+                : 'bg-white text-slate-700 hover:text-slate-900 hover:bg-slate-50 border border-slate-200 shadow-sm dark:bg-gray-800 dark:text-gray-400 dark:hover:text-white dark:hover:bg-gray-700 dark:border-transparent dark:shadow-none'
             }`}
           >
             Fase 2: Descamación
           </button>
           <button
             onClick={() => setSelectedFilter('fase 3')}
-            className={`px-3 py-1.5 rounded-xl text-xs font-semibold whitespace-nowrap transition ${
+            className={`px-3 py-1.5 rounded-xl text-xs font-semibold whitespace-nowrap transition cursor-pointer ${
               selectedFilter === 'fase 3'
                 ? 'bg-emerald-600 text-white shadow-md'
-                : 'bg-gray-800 text-gray-400 hover:text-white hover:bg-gray-700'
+                : 'bg-white text-slate-700 hover:text-slate-900 hover:bg-slate-50 border border-slate-200 shadow-sm dark:bg-gray-800 dark:text-gray-400 dark:hover:text-white dark:hover:bg-gray-700 dark:border-transparent dark:shadow-none'
             }`}
           >
             Fase 3: Cicatrizado
@@ -133,7 +133,7 @@ export const TattooTimeline: React.FC<TattooTimelineProps> = ({
         <div className="flex items-center gap-3 self-end sm:self-center">
           <button
             onClick={() => setSortAscending(!sortAscending)}
-            className="text-xs text-gray-400 hover:text-gray-200 transition flex items-center gap-1.5 bg-gray-800/80 px-3 py-1.5 rounded-xl border border-gray-700"
+            className="text-xs text-slate-700 dark:text-gray-400 hover:text-slate-900 dark:hover:text-gray-200 transition flex items-center gap-1.5 bg-white dark:bg-gray-800/80 px-3 py-1.5 rounded-xl border border-slate-200 dark:border-gray-700 shadow-sm dark:shadow-none cursor-pointer"
           >
             <Clock size={14} />
             <span>{sortAscending ? 'Más antiguos primero' : 'Más recientes primero'}</span>
@@ -141,7 +141,7 @@ export const TattooTimeline: React.FC<TattooTimelineProps> = ({
 
           <button
             onClick={onOpenUpload}
-            className="inline-flex items-center gap-2 bg-primary hover:bg-primary-hover text-white text-xs font-bold px-4 py-2 rounded-xl shadow-lg transition transform hover:scale-105"
+            className="inline-flex items-center gap-2 bg-primary hover:bg-primary-hover text-white text-xs font-bold px-4 py-2 rounded-xl shadow-lg transition transform hover:scale-105 cursor-pointer keep-white-text"
           >
             <Camera size={14} /> Subir Foto
           </button>
@@ -158,17 +158,17 @@ export const TattooTimeline: React.FC<TattooTimelineProps> = ({
 
       {/* Empty State */}
       {!isLoading && filteredEntries.length === 0 && (
-        <div className="bg-gray-900/40 border border-dashed border-gray-800 rounded-3xl p-10 text-center flex flex-col items-center justify-center my-6">
+        <div className="bg-slate-50 dark:bg-gray-900/40 border border-dashed border-slate-300 dark:border-gray-800 rounded-3xl p-10 text-center flex flex-col items-center justify-center my-6">
           <div className="w-16 h-16 rounded-2xl bg-primary/10 border border-primary/20 flex items-center justify-center text-primary mb-4">
             <Camera size={32} />
           </div>
-          <h3 className="text-lg font-bold text-white mb-2">No hay registros de progreso todavía</h3>
-          <p className="text-gray-400 text-sm max-w-md mb-6 leading-relaxed">
+          <h3 className="text-lg font-bold text-slate-900 dark:text-white mb-2">No hay registros de progreso todavía</h3>
+          <p className="text-slate-600 dark:text-gray-400 text-sm max-w-md mb-6 leading-relaxed">
             Comienza a documentar la evolución de tus tatuajes, los cuidados diarios y las fases de curación compartidas con tu artista.
           </p>
           <button
             onClick={onOpenUpload}
-            className="inline-flex items-center gap-2 bg-primary hover:bg-primary-hover text-white font-bold text-sm px-6 py-3 rounded-xl shadow-lg transition transform hover:scale-105"
+            className="inline-flex items-center gap-2 bg-primary hover:bg-primary-hover text-white font-bold text-sm px-6 py-3 rounded-xl shadow-lg transition transform hover:scale-105 cursor-pointer keep-white-text"
           >
             <Camera size={16} /> Subir Primera Fotografía
           </button>
@@ -190,17 +190,17 @@ export const TattooTimeline: React.FC<TattooTimelineProps> = ({
               >
                 {/* Timeline Dot Node */}
                 <div className="absolute -left-6 md:-left-10 top-3 flex items-center justify-center">
-                  <div className="w-5 h-5 md:w-7 md:h-7 rounded-full bg-gray-950 border-2 border-primary group-hover:border-purple-400 transition-all flex items-center justify-center shadow-lg shadow-primary/30 group-hover:scale-110">
+                  <div className="w-5 h-5 md:w-7 md:h-7 rounded-full bg-white dark:bg-gray-950 border-2 border-primary group-hover:border-purple-400 transition-all flex items-center justify-center shadow-lg shadow-primary/30 group-hover:scale-110">
                     <div className="w-2 h-2 md:w-2.5 md:h-2.5 rounded-full bg-primary group-hover:bg-purple-300"></div>
                   </div>
                 </div>
 
                 {/* Timeline Card */}
-                <div className="flex-1 bg-gray-900/80 border border-gray-800 hover:border-primary/50 transition-all rounded-2xl p-4 md:p-6 shadow-xl backdrop-blur-sm overflow-hidden flex flex-col md:flex-row gap-6">
+                <div className="flex-1 bg-white dark:bg-gray-900/80 border border-slate-200 dark:border-gray-800 hover:border-primary/50 transition-all duration-300 hover:scale-[1.01] hover:shadow-lg rounded-2xl p-4 md:p-6 shadow-md dark:shadow-xl backdrop-blur-sm overflow-hidden flex flex-col md:flex-row gap-6 text-slate-800 dark:text-white">
                   {/* Photo Preview Thumbnail */}
                   <div
                     onClick={() => onSelectEntry(entry)}
-                    className="relative w-full md:w-56 h-56 md:h-48 rounded-xl overflow-hidden bg-gray-950 shrink-0 cursor-pointer group/photo border border-gray-800"
+                    className="relative w-full md:w-56 h-56 md:h-48 rounded-xl overflow-hidden bg-slate-100 dark:bg-gray-950 shrink-0 cursor-pointer group/photo border border-slate-200 dark:border-gray-800"
                   >
                     <img
                       src={entry.image_url || '/assets/placeholder-tattoo.png'}
@@ -228,27 +228,27 @@ export const TattooTimeline: React.FC<TattooTimelineProps> = ({
                           {entry.stage}
                         </span>
 
-                        <div className="flex items-center gap-1.5 text-xs text-gray-400">
-                          <Calendar size={13} className="text-gray-500" />
+                        <div className="flex items-center gap-1.5 text-xs text-slate-500 dark:text-gray-400">
+                          <Calendar size={13} className="text-slate-400 dark:text-gray-500" />
                           <span>{entry.date || 'Sin fecha'}</span>
                         </div>
                       </div>
 
                       {/* Title */}
-                      <h4 className="text-lg md:text-xl font-bold text-white mb-2 group-hover:text-primary transition">
+                      <h4 className="text-lg md:text-xl font-bold text-slate-900 dark:text-white mb-2 group-hover:text-primary transition">
                         {entry.title}
                       </h4>
 
                       {/* Notes / Aftercare observations */}
                       {entry.notes && (
-                        <p className="text-gray-300 text-sm leading-relaxed mb-4 bg-gray-950/40 p-3 rounded-xl border border-gray-800/80">
+                        <p className="text-slate-700 dark:text-gray-300 text-sm leading-relaxed mb-4 bg-slate-50 dark:bg-gray-950/40 p-3 rounded-xl border border-slate-200 dark:border-gray-800/80">
                           {entry.notes}
                         </p>
                       )}
                     </div>
 
                     {/* Footer Row: Tagged Artist & Actions */}
-                    <div className="flex items-center justify-between pt-3 border-t border-gray-800/80 mt-auto">
+                    <div className="flex items-center justify-between pt-3 border-t border-slate-100 dark:border-gray-800/80 mt-auto">
                       {entry.artist ? (
                         <div className="flex items-center gap-2">
                           <img
@@ -256,12 +256,12 @@ export const TattooTimeline: React.FC<TattooTimelineProps> = ({
                             alt={entry.artist.full_name || 'Artista'}
                             className="w-7 h-7 rounded-full object-cover border border-purple-500/50"
                           />
-                          <span className="text-xs text-gray-300 font-medium">
+                          <span className="text-xs text-slate-700 dark:text-gray-300 font-medium">
                             {entry.artist.full_name || 'Artista del Estudio'}
                           </span>
                         </div>
                       ) : (
-                        <div className="flex items-center gap-1 text-xs text-gray-500">
+                        <div className="flex items-center gap-1 text-xs text-slate-500 dark:text-gray-500">
                           <Tag size={13} />
                           <span>Registro Personal</span>
                         </div>
@@ -271,7 +271,7 @@ export const TattooTimeline: React.FC<TattooTimelineProps> = ({
                         {onDeleteEntry && (
                           <button
                             onClick={() => onDeleteEntry(entry.id)}
-                            className="text-gray-500 hover:text-red-400 p-2 rounded-lg hover:bg-red-500/10 transition"
+                            className="text-slate-400 hover:text-red-500 dark:text-gray-500 dark:hover:text-red-400 p-2 rounded-lg hover:bg-red-500/10 transition cursor-pointer"
                             title="Eliminar registro"
                           >
                             <Trash2 size={16} />
@@ -280,7 +280,7 @@ export const TattooTimeline: React.FC<TattooTimelineProps> = ({
 
                         <button
                           onClick={() => onSelectEntry(entry)}
-                          className="inline-flex items-center gap-1 text-xs text-primary hover:text-primary-hover font-semibold px-2 py-1"
+                          className="inline-flex items-center gap-1 text-xs text-primary hover:text-primary-hover font-semibold px-2 py-1 cursor-pointer"
                         >
                           Detalles <ChevronRight size={14} />
                         </button>

@@ -203,7 +203,7 @@ export const ArtistDashboardPage: React.FC = () => {
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             {/* Card 1: Mi Estudio / Portafolio */}
-            <div className="bg-white dark:bg-gray-800/80 backdrop-blur border border-slate-200 dark:border-gray-700/60 rounded-xl p-6 hover:border-violet-500/50 transition-all hover:shadow-lg flex flex-col justify-between text-slate-800 dark:text-white">
+            <div className="atelier-card-hover hover:scale-[1.02] cursor-pointer bg-white dark:bg-gray-800/80 backdrop-blur border border-slate-200 dark:border-gray-700/60 rounded-xl p-6 hover:border-violet-500/50 transition-all duration-300 hover:shadow-lg flex flex-col justify-between text-slate-800 dark:text-white">
               <div>
                 <div className="w-12 h-12 rounded-xl bg-purple-500/10 border border-purple-500/30 flex items-center justify-center text-purple-400 mb-4">
                   <Palette size={24} />
@@ -222,7 +222,7 @@ export const ArtistDashboardPage: React.FC = () => {
             </div>
 
             {/* Card 2: Mensajes & Cotizaciones */}
-            <div className="bg-white dark:bg-gray-800/80 backdrop-blur border border-slate-200 dark:border-gray-700/60 rounded-xl p-6 hover:border-violet-500/50 transition-all hover:shadow-lg flex flex-col justify-between text-slate-800 dark:text-white">
+            <div className="atelier-card-hover hover:scale-[1.02] cursor-pointer bg-white dark:bg-gray-800/80 backdrop-blur border border-slate-200 dark:border-gray-700/60 rounded-xl p-6 hover:border-violet-500/50 transition-all duration-300 hover:shadow-lg flex flex-col justify-between text-slate-800 dark:text-white">
               <div>
                 <div className="flex items-center justify-between mb-4">
                   <div className="w-12 h-12 rounded-xl bg-blue-500/10 border border-blue-500/30 flex items-center justify-center text-blue-400">
@@ -250,7 +250,7 @@ export const ArtistDashboardPage: React.FC = () => {
             </div>
 
             {/* Card 3: Explorar Comunidad & Mapa */}
-            <div className="bg-white dark:bg-gray-800/80 backdrop-blur border border-slate-200 dark:border-gray-700/60 rounded-xl p-6 hover:border-violet-500/50 transition-all hover:shadow-lg flex flex-col justify-between text-slate-800 dark:text-white">
+            <div className="atelier-card-hover hover:scale-[1.02] cursor-pointer bg-white dark:bg-gray-800/80 backdrop-blur border border-slate-200 dark:border-gray-700/60 rounded-xl p-6 hover:border-violet-500/50 transition-all duration-300 hover:shadow-lg flex flex-col justify-between text-slate-800 dark:text-white">
               <div>
                 <div className="w-12 h-12 rounded-xl bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center text-emerald-500 dark:text-emerald-400 mb-4">
                   <Compass size={24} />
@@ -276,14 +276,14 @@ export const ArtistDashboardPage: React.FC = () => {
             <TrendingUp className="text-primary" size={20} /> Ventajas de tu Cuenta Comercial
           </h3>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm text-slate-600 dark:text-gray-300">
-            <div className="flex items-start gap-3 bg-slate-50 dark:bg-gray-900/60 p-4 rounded-xl border border-slate-200 dark:border-gray-800">
+            <div className="atelier-card-hover hover:scale-[1.02] cursor-pointer flex items-start gap-3 bg-slate-50 dark:bg-gray-900/60 p-4 rounded-xl border border-slate-200 dark:border-gray-800 transition-all duration-300">
               <ShieldCheck className="text-emerald-500 dark:text-emerald-400 shrink-0 mt-0.5" size={20} />
               <div>
                 <strong className="text-slate-800 dark:text-white block mb-0.5">Perfil Verificado en Búsquedas</strong>
                 Aparece en los primeros resultados de búsqueda cuando los clientes filtran por tu estilo y ciudad.
               </div>
             </div>
-            <div className="flex items-start gap-3 bg-slate-50 dark:bg-gray-900/60 p-4 rounded-xl border border-slate-200 dark:border-gray-800">
+            <div className="atelier-card-hover hover:scale-[1.02] cursor-pointer flex items-start gap-3 bg-slate-50 dark:bg-gray-900/60 p-4 rounded-xl border border-slate-200 dark:border-gray-800 transition-all duration-300">
               <Calendar className="text-primary shrink-0 mt-0.5" size={20} />
               <div>
                 <strong className="text-slate-800 dark:text-white block mb-0.5">Gestión Directa de Cotizaciones</strong>

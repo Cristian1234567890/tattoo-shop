@@ -279,17 +279,17 @@ export const HomePage: React.FC = () => {
       {/* 5. Sección de Artistas & Estudios (Normalized id="artistas") */}
       <section
         id="artistas"
-        className="scroll-mt-20 px-8 py-20 max-w-7xl mx-auto border-t border-zinc-900 w-full"
+        className="scroll-mt-20 px-8 py-20 max-w-7xl mx-auto border-t border-slate-200 dark:border-zinc-900 w-full"
       >
         <div className="flex flex-col md:flex-row items-center justify-between gap-8 atelier-card p-10 md:p-14 rounded-3xl border-violet-500/30">
           <div className="max-w-xl">
-            <span className="text-xs font-bold tracking-widest uppercase text-violet-400 bg-violet-600/10 px-3 py-1 rounded-full border border-violet-500/20 mb-4 inline-block">
+            <span className="text-xs font-bold tracking-widest uppercase text-violet-600 dark:text-violet-400 bg-violet-600/10 px-3 py-1 rounded-full border border-violet-500/20 mb-4 inline-block">
               DIRECTORIO Y LOCALES
             </span>
-            <h2 className="text-3xl md:text-4xl font-extrabold text-white mb-4">
+            <h2 className="text-3xl md:text-4xl font-extrabold text-slate-900 dark:text-white mb-4">
               Estudios con Residentes Verificados
             </h2>
-            <p className="text-zinc-400 text-base leading-relaxed mb-6">
+            <p className="text-slate-600 dark:text-zinc-400 text-base leading-relaxed mb-6">
               Conoce los estudios de tu ciudad, cuántos artistas residen en cada local y contacta directamente al especialista en tu estilo favorito.
             </p>
             <div className="flex flex-wrap gap-4">
@@ -301,22 +301,22 @@ export const HomePage: React.FC = () => {
               </Link>
               <Link
                 to="/hub"
-                className="bg-zinc-900 hover:bg-zinc-800 text-white border border-zinc-700 px-6 py-3 rounded-xl text-sm font-semibold transition-colors"
+                className="bg-slate-100 hover:bg-slate-200 text-slate-800 dark:bg-zinc-900 dark:hover:bg-zinc-800 dark:text-white border border-slate-300 dark:border-zinc-700 px-6 py-3 rounded-xl text-sm font-semibold transition-colors"
               >
                 Abrir Mapa de Estudios
               </Link>
             </div>
           </div>
           <div className="grid grid-cols-2 gap-4 w-full md:w-auto">
-            <div className="bg-zinc-950/80 p-5 rounded-2xl border border-zinc-800 text-center">
-              <Users className="w-6 h-6 text-violet-400 mx-auto mb-2" />
-              <div className="text-2xl font-extrabold text-white">100%</div>
-              <div className="text-xs text-zinc-400 mt-1">Contacto Directo</div>
+            <div className="bg-slate-50 dark:bg-zinc-950/80 p-5 rounded-2xl border border-slate-200 dark:border-zinc-800 text-center transition-all duration-300 hover:scale-[1.03] hover:shadow-md hover:border-violet-500/40 cursor-pointer">
+              <Users className="w-6 h-6 text-violet-600 dark:text-violet-400 mx-auto mb-2" />
+              <div className="text-2xl font-extrabold text-slate-900 dark:text-white">100%</div>
+              <div className="text-xs text-slate-600 dark:text-zinc-400 mt-1">Contacto Directo</div>
             </div>
-            <div className="bg-zinc-950/80 p-5 rounded-2xl border border-zinc-800 text-center">
-              <ShieldCheck className="w-6 h-6 text-emerald-400 mx-auto mb-2" />
-              <div className="text-2xl font-extrabold text-white">0%</div>
-              <div className="text-xs text-zinc-400 mt-1">Comisiones</div>
+            <div className="bg-slate-50 dark:bg-zinc-950/80 p-5 rounded-2xl border border-slate-200 dark:border-zinc-800 text-center transition-all duration-300 hover:scale-[1.03] hover:shadow-md hover:border-violet-500/40 cursor-pointer">
+              <ShieldCheck className="w-6 h-6 text-emerald-600 dark:text-emerald-400 mx-auto mb-2" />
+              <div className="text-2xl font-extrabold text-slate-900 dark:text-white">0%</div>
+              <div className="text-xs text-slate-600 dark:text-zinc-400 mt-1">Comisiones</div>
             </div>
           </div>
         </div>
@@ -325,41 +325,41 @@ export const HomePage: React.FC = () => {
       {/* 6. Pricing Section (Normalized id="precios") */}
       <section
         id="precios"
-        className="scroll-mt-20 px-8 py-20 max-w-5xl mx-auto border-t border-zinc-900 text-center w-full"
+        className="scroll-mt-20 px-8 py-20 max-w-5xl mx-auto border-t border-slate-200 dark:border-zinc-900 text-center w-full"
       >
-        <div className="inline-flex items-center justify-center px-3 py-1 rounded-full bg-zinc-900 border border-zinc-800 text-xs font-bold tracking-widest uppercase text-zinc-400 mb-6">
+        <div className="inline-flex items-center justify-center px-3 py-1 rounded-full bg-slate-100 dark:bg-zinc-900 border border-slate-200 dark:border-zinc-800 text-xs font-bold tracking-widest uppercase text-slate-600 dark:text-zinc-400 mb-6">
           PASES AL CLUB
         </div>
-        <h2 className="text-4xl font-bold text-white mb-4">Planes y Membresías</h2>
-        <p className="text-zinc-400 mb-12 text-base">
+        <h2 className="text-4xl font-bold text-slate-900 dark:text-white mb-4">Planes y Membresías</h2>
+        <p className="text-slate-600 dark:text-zinc-400 mb-12 text-base">
           Suscripción simple y directa. Sin comisiones sobre lo que cobras en el estudio.
         </p>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-3xl mx-auto text-left">
           {/* Plan 1: Coleccionista VIP */}
-          <div className="atelier-card p-8 rounded-3xl flex flex-col justify-between">
+          <div className="atelier-card atelier-card-hover p-8 rounded-3xl flex flex-col justify-between">
             <div>
-              <span className="text-xs font-bold tracking-widest text-zinc-400 uppercase mb-2 block">
+              <span className="text-xs font-bold tracking-widest text-slate-500 dark:text-zinc-400 uppercase mb-2 block">
                 PARA CLIENTES Y COLECCIONISTAS
               </span>
-              <h3 className="text-2xl font-bold text-white mb-2">Coleccionista VIP</h3>
+              <h3 className="text-2xl font-bold text-slate-900 dark:text-white mb-2">Coleccionista VIP</h3>
               <div className="flex items-baseline gap-1 mb-6">
-                <span className="text-4xl font-extrabold text-white">{formatPrice(4.99)}</span>
-                <span className="text-zinc-500 text-sm">/mes</span>
+                <span className="text-4xl font-extrabold text-slate-900 dark:text-white">{formatPrice(4.99)}</span>
+                <span className="text-slate-500 dark:text-zinc-500 text-sm">/mes</span>
               </div>
-              <p className="text-sm text-zinc-400 mb-8 pb-8 border-b border-zinc-800 leading-relaxed">
+              <p className="text-sm text-slate-600 dark:text-zinc-400 mb-8 pb-8 border-b border-slate-200 dark:border-zinc-800 leading-relaxed">
                 Explora el mapa y contacta estudios sin límites. Herramientas de control de tu agenda y alertas de flash drops.
               </p>
               <ul className="space-y-4 mb-8">
-                <li className="flex gap-3 text-sm text-zinc-300">
+                <li className="flex gap-3 text-sm text-slate-700 dark:text-zinc-300">
                   <CheckCircle2 className="w-5 h-5 text-emerald-500 shrink-0" />
                   <span>Buscar estudios, filtrar estilos y contactar artistas (Gratis)</span>
                 </li>
-                <li className="flex gap-3 text-sm text-zinc-300">
+                <li className="flex gap-3 text-sm text-slate-700 dark:text-zinc-300">
                   <CheckCircle2 className="w-5 h-5 text-emerald-500 shrink-0" />
                   <span>Diario de cicatrización para documentar tus piezas con foto y fecha</span>
                 </li>
-                <li className="flex gap-3 text-sm text-zinc-300">
+                <li className="flex gap-3 text-sm text-slate-700 dark:text-zinc-300">
                   <CheckCircle2 className="w-5 h-5 text-emerald-500 shrink-0" />
                   <span>Alertas tempranas de flash drops de tus artistas favoritos</span>
                 </li>
@@ -367,47 +367,47 @@ export const HomePage: React.FC = () => {
             </div>
             <Link
               to="/register?role=Cliente"
-              className="block w-full text-center bg-zinc-800 hover:bg-zinc-700 text-white py-3 rounded-xl font-medium transition-colors"
+              className="block w-full text-center bg-slate-100 hover:bg-slate-200 text-slate-800 dark:bg-zinc-800 dark:hover:bg-zinc-700 dark:text-white border border-slate-200 dark:border-transparent py-3 rounded-xl font-medium transition-colors"
             >
               Crear Perfil de Coleccionista
             </Link>
           </div>
 
           {/* Plan 2: Estudio Profesional */}
-          <div className="atelier-card border-2 border-violet-600 p-8 rounded-3xl relative shadow-[0_0_40px_rgba(124,58,237,0.2)] flex flex-col justify-between">
+          <div className="atelier-card atelier-card-hover border-2 border-violet-600 p-8 rounded-3xl relative shadow-[0_0_40px_rgba(124,58,237,0.2)] flex flex-col justify-between">
             <div className="absolute -top-3.5 right-8 bg-violet-600 text-white text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider">
               PLAN ESTUDIOS
             </div>
             <div>
-              <span className="text-xs font-bold tracking-widest text-violet-400 uppercase mb-2 block">
+              <span className="text-xs font-bold tracking-widest text-violet-600 dark:text-violet-400 uppercase mb-2 block">
                 MEMBRESÍA DESDE {formatPrice(3.99)}/MES
               </span>
-              <h3 className="text-2xl font-bold text-white mb-2">Estudio Profesional</h3>
+              <h3 className="text-2xl font-bold text-slate-900 dark:text-white mb-2">Estudio Profesional</h3>
               <div className="flex items-baseline gap-1 mb-2">
-                <span className="text-4xl font-extrabold text-white">{formatPrice(4.99)}</span>
-                <span className="text-zinc-500 text-sm">/mes</span>
+                <span className="text-4xl font-extrabold text-slate-900 dark:text-white">{formatPrice(4.99)}</span>
+                <span className="text-slate-500 dark:text-zinc-500 text-sm">/mes</span>
               </div>
-              <div className="inline-flex items-center gap-1 bg-emerald-500/10 text-emerald-400 text-xs font-bold px-2.5 py-1 rounded-full mb-6 border border-emerald-500/30">
+              <div className="inline-flex items-center gap-1 bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 text-xs font-bold px-2.5 py-1 rounded-full mb-6 border border-emerald-500/30">
                 <Sparkles className="w-3 h-3" /> Prueba de 30 días completamente gratis
               </div>
-              <p className="text-sm text-zinc-400 mb-8 pb-8 border-b border-zinc-800 leading-relaxed">
+              <p className="text-sm text-slate-600 dark:text-zinc-400 mb-8 pb-8 border-b border-slate-200 dark:border-zinc-800 leading-relaxed">
                 Todo lo que un estudio de tatuajes necesita. Sin comisiones extra por generar cotizaciones o agendar citas.
               </p>
               <ul className="space-y-4 mb-8">
-                <li className="flex gap-3 text-sm text-zinc-300">
-                  <CheckCircle2 className="w-5 h-5 text-violet-400 shrink-0" />
+                <li className="flex gap-3 text-sm text-slate-700 dark:text-zinc-300">
+                  <CheckCircle2 className="w-5 h-5 text-violet-500 shrink-0" />
                   <span>Pin y presencia geolocalizada en el mapa de estudios</span>
                 </li>
-                <li className="flex gap-3 text-sm text-zinc-300">
-                  <CheckCircle2 className="w-5 h-5 text-violet-400 shrink-0" />
+                <li className="flex gap-3 text-sm text-slate-700 dark:text-zinc-300">
+                  <CheckCircle2 className="w-5 h-5 text-violet-500 shrink-0" />
                   <span>Gestión de artistas residentes y recepciones del estudio</span>
                 </li>
-                <li className="flex gap-3 text-sm text-zinc-300">
-                  <CheckCircle2 className="w-5 h-5 text-violet-400 shrink-0" />
+                <li className="flex gap-3 text-sm text-slate-700 dark:text-zinc-300">
+                  <CheckCircle2 className="w-5 h-5 text-violet-500 shrink-0" />
                   <span>Catálogo ilimitado de flash designs y control de stock</span>
                 </li>
-                <li className="flex gap-3 text-sm text-zinc-300">
-                  <CheckCircle2 className="w-5 h-5 text-violet-400 shrink-0" />
+                <li className="flex gap-3 text-sm text-slate-700 dark:text-zinc-300">
+                  <CheckCircle2 className="w-5 h-5 text-violet-500 shrink-0" />
                   <span>Recepción estructurada con zona y centímetros aproximados</span>
                 </li>
               </ul>

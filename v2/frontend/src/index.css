@@ -134,20 +134,21 @@ html.light .atelier-card {
 
 .atelier-card-hover {
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  cursor: pointer;
 }
 
 html.dark .atelier-card-hover:hover, html:not(.light) .atelier-card-hover:hover {
   border-color: rgba(245, 158, 11, 0.45);
   background-color: rgba(26, 26, 36, 0.9);
   box-shadow: 0 0 30px rgba(245, 158, 11, 0.2), 0 20px 25px -5px rgba(0, 0, 0, 0.5);
-  transform: translateY(-0.25rem);
+  transform: translateY(-0.25rem) scale(1.02);
 }
 
 html.light .atelier-card-hover:hover {
   border-color: rgba(217, 119, 6, 0.4);
   background-color: #ffffff;
   box-shadow: 0 14px 28px -4px rgba(217, 119, 6, 0.15), 0 6px 12px -2px rgba(15, 23, 42, 0.08);
-  transform: translateY(-0.25rem);
+  transform: translateY(-0.25rem) scale(1.02);
 }
 
 /* Form Elements */
@@ -300,6 +301,7 @@ html.light .atelier-card-hover:hover {
   background-color: #ffffff !important;
   border-color: rgba(139, 92, 246, 0.35) !important;
   box-shadow: 0 14px 28px -4px rgba(15, 23, 42, 0.1), 0 6px 12px -2px rgba(15, 23, 42, 0.05) !important;
+  transform: translateY(-0.25rem) scale(1.02) !important;
 }
 
 /* Text white overrides in light mode: refined slate-700/600, exempting all button and banner elements */

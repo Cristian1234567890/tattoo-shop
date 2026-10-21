@@ -200,15 +200,15 @@ export const AboutPage: React.FC = () => {
               initial={{ opacity: 0, scale: 0.98 }}
               whileInView={{ opacity: 1, scale: 1 }}
               viewport={{ once: true }}
-              className="p-8 md:p-12 rounded-3xl bg-zinc-900/70 border border-zinc-800/80 shadow-2xl relative overflow-hidden"
+              className="p-8 md:p-12 rounded-3xl bg-white dark:bg-zinc-900/70 border border-slate-200 dark:border-zinc-800/80 shadow-xl dark:shadow-2xl relative overflow-hidden"
             >
               <div className="flex items-center gap-3.5 mb-6">
-                <div className="w-12 h-12 rounded-2xl bg-purple-500/10 border border-purple-500/30 flex items-center justify-center text-purple-400 shadow-inner">
+                <div className="w-12 h-12 rounded-2xl bg-purple-500/10 border border-purple-500/30 flex items-center justify-center text-purple-600 dark:text-purple-400 shadow-inner">
                   <MessageSquare className="w-6 h-6" />
                 </div>
                 <div>
-                  <h2 className="text-2xl font-bold text-white">Buzón de Feedback & Sugerencias</h2>
-                  <p className="text-xs text-zinc-400 mt-0.5">
+                  <h2 className="text-2xl font-bold text-slate-900 dark:text-white">Buzón de Feedback & Sugerencias</h2>
+                  <p className="text-xs text-slate-600 dark:text-zinc-400 mt-0.5">
                     Tu opinión técnica y artística guía directamente las prioridades de desarrollo en Tattoo Hub.
                   </p>
                 </div>
@@ -218,17 +218,17 @@ export const AboutPage: React.FC = () => {
                 <motion.div
                   initial={{ opacity: 0, y: 10 }}
                   animate={{ opacity: 1, y: 0 }}
-                  className="p-6 bg-emerald-950/30 border border-emerald-500/30 rounded-2xl text-center space-y-3 mt-4"
+                  className="p-6 bg-emerald-50 dark:bg-emerald-950/30 border border-emerald-300 dark:border-emerald-500/30 rounded-2xl text-center space-y-3 mt-4"
                 >
-                  <CheckCircle2 className="w-10 h-10 text-emerald-400 mx-auto" />
-                  <p className="text-lg font-bold text-white">¡Aporte Registrado!</p>
-                  <p className="text-sm text-emerald-200/90 max-w-md mx-auto">
+                  <CheckCircle2 className="w-10 h-10 text-emerald-600 dark:text-emerald-400 mx-auto" />
+                  <p className="text-lg font-bold text-slate-900 dark:text-white">¡Aporte Registrado!</p>
+                  <p className="text-sm text-emerald-800 dark:text-emerald-200/90 max-w-md mx-auto">
                     Gracias por tu retroalimentación. Nuestro equipo de producto analiza cada sugerencia para las siguientes entregas.
                   </p>
                   <button
                     type="button"
                     onClick={() => setFeedbackSuccess(false)}
-                    className="mt-3 px-5 py-2 rounded-xl bg-zinc-800 hover:bg-zinc-700 text-zinc-200 text-xs font-semibold cursor-pointer transition"
+                    className="mt-3 px-5 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-zinc-800 dark:hover:bg-zinc-700 text-slate-800 dark:text-zinc-200 text-xs font-semibold cursor-pointer transition border border-slate-200 dark:border-transparent"
                   >
                     Enviar otro comentario
                   </button>
@@ -237,7 +237,7 @@ export const AboutPage: React.FC = () => {
                 <form id="feedback-form" onSubmit={handleFeedbackSubmit} className="space-y-6">
                   {/* Tipo de Feedback */}
                   <div>
-                    <label className="block text-xs font-semibold uppercase tracking-wider text-zinc-400 mb-2">
+                    <label className="block text-xs font-semibold uppercase tracking-wider text-slate-600 dark:text-zinc-400 mb-2">
                       Categoría
                     </label>
                     <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
@@ -253,8 +253,8 @@ export const AboutPage: React.FC = () => {
                           onClick={() => setFeedbackType(item.id as any)}
                           className={`py-2 px-3 rounded-xl text-xs font-medium border transition cursor-pointer ${
                             feedbackType === item.id
-                              ? 'bg-purple-600/20 border-purple-500 text-purple-300 font-semibold'
-                              : 'bg-zinc-950/40 border-zinc-800 text-zinc-400 hover:border-zinc-700'
+                              ? 'bg-purple-600/15 border-purple-500 text-purple-700 dark:text-purple-300 font-bold shadow-sm'
+                              : 'bg-slate-100 hover:bg-slate-200 text-slate-700 border-slate-200 dark:bg-zinc-950/40 dark:border-zinc-800 dark:text-zinc-400 dark:hover:border-zinc-700'
                           }`}
                         >
                           {item.label}
@@ -265,7 +265,7 @@ export const AboutPage: React.FC = () => {
 
                   {/* Rating */}
                   <div>
-                    <label className="block text-xs font-semibold uppercase tracking-wider text-zinc-400 mb-2">
+                    <label className="block text-xs font-semibold uppercase tracking-wider text-slate-600 dark:text-zinc-400 mb-2">
                       Valoración de la Experiencia
                     </label>
                     <div className="flex items-center gap-2">
@@ -283,12 +283,12 @@ export const AboutPage: React.FC = () => {
                             className={`w-6 h-6 ${
                               star <= (hoverRating || rating)
                                 ? 'text-amber-400 fill-amber-400'
-                                : 'text-zinc-700'
+                                : 'text-slate-300 dark:text-zinc-700'
                             }`}
                           />
                         </button>
                       ))}
-                      <span className="text-xs text-zinc-400 ml-2 font-mono">
+                      <span className="text-xs text-slate-600 dark:text-zinc-400 ml-2 font-mono">
                         {rating} / 5
                       </span>
                     </div>
@@ -296,7 +296,7 @@ export const AboutPage: React.FC = () => {
 
                   {/* Mensaje */}
                   <div>
-                    <label htmlFor="feedback-message" className="block text-xs font-semibold uppercase tracking-wider text-zinc-400 mb-2">
+                    <label htmlFor="feedback-message" className="block text-xs font-semibold uppercase tracking-wider text-slate-600 dark:text-zinc-400 mb-2">
                       Tu Mensaje
                     </label>
                     <textarea
@@ -306,13 +306,13 @@ export const AboutPage: React.FC = () => {
                       value={feedbackMessage}
                       onChange={(e) => setFeedbackMessage(e.target.value)}
                       placeholder="Escribe aquí tu propuesta, feedback técnico o comentario sobre la plataforma..."
-                      className="w-full px-4 py-3 rounded-xl border border-zinc-800 bg-zinc-950/60 text-white placeholder-zinc-500 focus:border-purple-500 focus:ring-1 focus:ring-purple-500 focus:outline-none transition text-sm resize-none"
+                      className="w-full px-4 py-3 rounded-xl border border-slate-200 dark:border-zinc-800 bg-slate-50 dark:bg-zinc-950/60 text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-zinc-500 focus:border-purple-500 focus:ring-1 focus:ring-purple-500 focus:bg-white dark:focus:bg-zinc-950/90 focus:outline-none transition text-sm resize-none"
                     />
                   </div>
 
                   {/* Email */}
                   <div>
-                    <label htmlFor="feedback-email" className="block text-xs font-semibold uppercase tracking-wider text-zinc-400 mb-2">
+                    <label htmlFor="feedback-email" className="block text-xs font-semibold uppercase tracking-wider text-slate-600 dark:text-zinc-400 mb-2">
                       Correo Electrónico (opcional para darte seguimiento)
                     </label>
                     <input
@@ -321,14 +321,14 @@ export const AboutPage: React.FC = () => {
                       value={feedbackEmail}
                       onChange={(e) => setFeedbackEmail(e.target.value)}
                       placeholder="tu@correo.com"
-                      className="w-full px-4 py-2.5 rounded-xl border border-zinc-800 bg-zinc-950/60 text-white placeholder-zinc-500 focus:border-purple-500 focus:ring-1 focus:ring-purple-500 focus:outline-none transition text-sm"
+                      className="w-full px-4 py-2.5 rounded-xl border border-slate-200 dark:border-zinc-800 bg-slate-50 dark:bg-zinc-950/60 text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-zinc-500 focus:border-purple-500 focus:ring-1 focus:ring-purple-500 focus:bg-white dark:focus:bg-zinc-950/90 focus:outline-none transition text-sm"
                     />
                   </div>
 
                   <button
                     type="submit"
                     disabled={feedbackSubmitting || !feedbackMessage.trim()}
-                    className="w-full py-3.5 px-6 bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white font-bold rounded-xl shadow-lg shadow-purple-600/20 transition duration-200 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 text-sm"
+                    className="w-full py-3.5 px-6 bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white font-bold rounded-xl shadow-lg shadow-purple-600/20 transition duration-200 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 text-sm keep-white-text"
                   >
                     {feedbackSubmitting ? (
                       <>
