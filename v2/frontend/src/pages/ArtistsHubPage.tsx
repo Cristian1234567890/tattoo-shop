@@ -13,6 +13,8 @@ import {
   Sparkles,
   CheckCircle2,
   Image as ImageIcon,
+  Clock,
+  X,
 } from 'lucide-react';
 import { MapContainer, TileLayer, Marker, Popup, ZoomControl, useMap } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
@@ -72,6 +74,25 @@ function MapTileA11yFix() {
   return null;
 }
 
+/**
+ * Controller to smoothly transition Leaflet map tile colors between dark and light themes without remounting
+ */
+function MapThemeTransitionController({ isDark }: { isDark: boolean }) {
+  const map = useMap();
+  useEffect(() => {
+    const container = map.getContainer();
+    if (!container) return;
+    if (isDark) {
+      container.classList.add('dark-map-tiles');
+      container.classList.remove('light-map-tiles');
+    } else {
+      container.classList.remove('dark-map-tiles');
+      container.classList.add('light-map-tiles');
+    }
+  }, [isDark, map]);
+  return null;
+}
+
 const UserGpsIcon = L.divIcon({
   className: 'user-gps-marker',
   html: `<div class="relative flex items-center justify-center">
@@ -98,11 +119,16 @@ const STUDIOS_DATA: StudioLocation[] = [
     lat: 8.9824,
     lng: -79.5199,
     mapPin: { x: '40%', y: '50%' },
+    opening_hours: 'Lun - Sáb: 10:00 - 20:00',
+    reviews: [
+      { id: 'rev-obs-1', user: 'Andrés M.', author: 'Andrés M.', rating: 5, comment: 'Higiene de grado médico y diseño custom insuperable.', date: '15 Oct 2026' },
+      { id: 'rev-obs-2', user: 'Sofía T.', author: 'Sofía T.', rating: 5, comment: 'El blackwork con Kaelen quedó legendario.', date: '08 Oct 2026' }
+    ],
     artistsCount: 3,
     residents: [
       {
         id: 'artist-kaelen',
-        name: 'Artista Residente Void',
+        name: 'Kaelen Silva',
         alias: 'Void',
         avatar: '/assets/GB Tattoo.jpg',
         bio: 'Especialista en neo-tribal, cybersigilism, geometría oscura y blackwork biomecánico.',
@@ -118,7 +144,7 @@ const STUDIOS_DATA: StudioLocation[] = [
       },
       {
         id: 'artist-maya',
-        name: 'Artista Residente Thorne',
+        name: 'Maya Lin',
         alias: 'Thorne',
         avatar: '/assets/GB.jpeg',
         bio: 'Ornamental botánico de alta precisión, puntillismo sutil y micro-estructuras simétricas.',
@@ -133,7 +159,7 @@ const STUDIOS_DATA: StudioLocation[] = [
       },
       {
         id: 'artist-carlos',
-        name: 'Artista Residente Neon',
+        name: 'Carlos Mendoza',
         alias: 'Neon',
         avatar: '/assets/1571.jpg',
         bio: 'Cyberpunk futurista, estética glitch y tatuajes con tintas reactivas UV.',
@@ -152,16 +178,20 @@ const STUDIOS_DATA: StudioLocation[] = [
     type: 'studio',
     name: 'Neon Ink Studio',
     tagline: 'Realismo a Color & Retratos de Alto Impacto',
-    description: 'Estudio líder en Chiriquí para piezas de realismo y micro-detalle.',
+    description: 'Estudio líder en Chiriquí y Panamá para piezas de realismo y micro-detalle.',
     banner: 'https://images.unsplash.com/photo-1598371839696-5c5bb00bdc28?auto=format&fit=crop&w=800&q=80',
     rating: 4.8,
     reviewCount: 96,
     verified: true,
-    address: 'Barrio Bolívar, Calle 3ra, David, Chiriquí',
-    distance: '3.1 km',
-    lat: 8.4273,
-    lng: -82.4312,
+    address: 'El Cangrejo, Vía Argentina, Ciudad de Panamá / Chiriquí',
+    distance: '1.8 km',
+    lat: 8.9912,
+    lng: -79.5150,
     mapPin: { x: '60%', y: '30%' },
+    opening_hours: 'Lun - Sáb: 11:00 - 21:00',
+    reviews: [
+      { id: 'rev-neon-1', user: 'Roberto D.', author: 'Roberto D.', rating: 5, comment: 'Retratos a color hiperrealistas impecables.', date: '10 Oct 2026' }
+    ],
     artistsCount: 2,
     residents: [
       {
@@ -204,11 +234,15 @@ const STUDIOS_DATA: StudioLocation[] = [
     rating: 4.9,
     reviewCount: 78,
     verified: true,
-    address: 'Avenida Central, La Chorrera, Panamá Oeste',
-    distance: '5.0 km',
-    lat: 8.8803,
-    lng: -79.7833,
+    address: 'Obarrio, Calle 54 Este, Ciudad de Panamá',
+    distance: '3.0 km',
+    lat: 8.9870,
+    lng: -79.5120,
     mapPin: { x: '25%', y: '70%' },
+    opening_hours: 'Mar - Sáb: 12:00 - 20:00',
+    reviews: [
+      { id: 'rev-ana-1', user: 'Gabriel C.', author: 'Gabriel C.', rating: 5, comment: 'Tradicional clásico con líneas sólidas eternas.', date: '02 Oct 2026' }
+    ],
     artistsCount: 1,
     residents: [
       {
@@ -243,6 +277,10 @@ const STUDIOS_DATA: StudioLocation[] = [
     lat: 8.9880,
     lng: -79.4980,
     mapPin: { x: '75%', y: '65%' },
+    opening_hours: 'Lun - Dom: 10:00 - 22:00',
+    reviews: [
+      { id: 'rev-chr-1', user: 'Diana F.', author: 'Diana F.', rating: 4, comment: 'Excelente espacio artístico y gran ambiente.', date: '28 Sep 2026' }
+    ],
     artistsCount: 2,
     residents: [
       {
@@ -290,6 +328,10 @@ const STUDIOS_DATA: StudioLocation[] = [
     lat: 8.9525,
     lng: -79.5342,
     mapPin: { x: '35%', y: '60%' },
+    opening_hours: 'Mar - Dom: 11:00 - 21:00',
+    reviews: [
+      { id: 'rev-bp-1', user: 'Mateo R.', author: 'Mateo R.', rating: 5, comment: 'El mejor estudio en Casco Antiguo, atención de primera.', date: '12 Oct 2026' }
+    ],
     artistsCount: 2,
     residents: [
       {
@@ -431,9 +473,18 @@ export default function ArtistsHubPage() {
   const [artists, setArtists] = useState<any[]>([]);
 
   // Selección de Local/Estudio Activo
-  const [activeStudioId, setActiveStudioId] = useState<string>('obsidian');
+  const [minRatingFilter, setMinRatingFilter] = useState<number>(0);
+  const [studiosList, setStudiosList] = useState<StudioLocation[]>(STUDIOS_DATA);
+  const [activeStudioId, setActiveStudioId] = useState<string | null>(null);
   // Selección del Artista Residente Específico dentro del Estudio
   const [selectedResidentId, setSelectedResidentId] = useState<string>('artist-kaelen');
+
+  // Estado para modal de reseñas
+  const [reviewModalOpen, setReviewModalOpen] = useState(false);
+  const [reviewRating, setReviewRating] = useState(5);
+  const [reviewComment, setReviewComment] = useState('');
+  const [reviewAuthor, setReviewAuthor] = useState('');
+  const [isSubmittingReview, setIsSubmittingReview] = useState(false);
 
   // Estado para el modal de bocetos (SendSketchModal)
   const [sketchModalOpen, setSketchModalOpen] = useState(false);
@@ -511,15 +562,16 @@ export default function ArtistsHubPage() {
     return () => document.removeEventListener('click', handleGlobalPinClick);
   }, []);
 
-  // Filtrado de Locales por Tipo, Búsqueda y Estilo
+  // Filtrado de Locales por Tipo, Búsqueda, Estilo y Calificación
   const filteredStudios = useMemo(() => {
-    return STUDIOS_DATA.filter((s) => {
+    return studiosList.filter((s) => {
       const matchesType = typeFilter === 'all' ? true : s.type === typeFilter;
       const query = searchQuery.toLowerCase().trim();
       const matchesSearch =
         !query ||
         s.name.toLowerCase().includes(query) ||
         s.address.toLowerCase().includes(query) ||
+        (s.description && s.description.toLowerCase().includes(query)) ||
         (s.residents &&
           s.residents.some(
             (r) =>
@@ -548,9 +600,11 @@ export default function ArtistsHubPage() {
               })
             );
 
-      return matchesType && matchesSearch && matchesStyle;
+      const matchesRating = minRatingFilter === 0 || (s.rating && s.rating >= minRatingFilter);
+
+      return matchesType && matchesSearch && matchesStyle && matchesRating;
     });
-  }, [typeFilter, searchQuery, filter]);
+  }, [studiosList, typeFilter, searchQuery, filter, minRatingFilter]);
 
 
   // Sugerencias de búsqueda predictiva categorizada (Estudios, Artistas y Estilos)
@@ -558,12 +612,12 @@ export default function ArtistsHubPage() {
     const q = searchQuery.toLowerCase().trim();
     if (!q) return { studios: [], artists: [], styles: [] };
 
-    const matchingStudios = STUDIOS_DATA.filter(
+    const matchingStudios = studiosList.filter(
       (s) => s.name.toLowerCase().includes(q) || s.address.toLowerCase().includes(q)
     ).slice(0, 3);
 
     const matchingArtists: { artist: ResidentArtist; studio: StudioLocation }[] = [];
-    STUDIOS_DATA.forEach((s) => {
+    studiosList.forEach((s) => {
       s.residents?.forEach((r) => {
         if (
           r.name.toLowerCase().includes(q) ||
@@ -586,16 +640,17 @@ export default function ArtistsHubPage() {
       artists: matchingArtists.slice(0, 4),
       styles: matchingStyles,
     };
-  }, [searchQuery]);
+  }, [studiosList, searchQuery]);
 
   // Estudio seleccionado actualmente
   const activeStudio = useMemo(() => {
-    return STUDIOS_DATA.find((s) => s.id === activeStudioId) || STUDIOS_DATA[0];
-  }, [activeStudioId]);
+    if (!activeStudioId) return null;
+    return studiosList.find((s) => s.id === activeStudioId) || null;
+  }, [studiosList, activeStudioId]);
 
   // Artista Residente seleccionado dentro del Estudio
   const activeResident = useMemo(() => {
-    if (!activeStudio.residents || activeStudio.residents.length === 0) {
+    if (!activeStudio || !activeStudio.residents || activeStudio.residents.length === 0) {
       return null;
     }
     return (
@@ -607,7 +662,7 @@ export default function ArtistsHubPage() {
   // Manejar cambio de Estudio (reajusta automáticamente al primer artista y centra el mapa)
   const handleSelectStudio = (studioId: string) => {
     setActiveStudioId(studioId);
-    const targetStudio = STUDIOS_DATA.find((s) => s.id === studioId);
+    const targetStudio = studiosList.find((s) => s.id === studioId);
     if (targetStudio) {
       if (targetStudio.residents && targetStudio.residents.length > 0) {
         setSelectedResidentId(targetStudio.residents[0].id);
@@ -616,6 +671,46 @@ export default function ArtistsHubPage() {
         setMapCenter([targetStudio.lat, targetStudio.lng]);
         setMapZoom(13);
       }
+    }
+  };
+
+  // Manejar envío de Reseña a un Estudio
+  const handleSubmitReview = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!activeStudio || !reviewComment.trim()) return;
+    setIsSubmittingReview(true);
+    try {
+      const author = reviewAuthor.trim() || 'Cliente Verificado';
+      await api.addStudioReview(activeStudio.id, {
+        rating: reviewRating,
+        comment: reviewComment.trim(),
+        client_name: author,
+      });
+      const newReview = {
+        id: `rev-${Date.now()}`,
+        user: author,
+        author: author,
+        rating: reviewRating,
+        comment: reviewComment.trim(),
+        date: 'Hoy',
+      };
+      setStudiosList((prev) =>
+        prev.map((s) =>
+          s.id === activeStudio.id
+            ? {
+                ...s,
+                reviews: [newReview, ...(s.reviews || [])],
+                reviewCount: (s.reviewCount || 0) + 1,
+              }
+            : s
+        )
+      );
+      setReviewComment('');
+      setReviewModalOpen(false);
+    } catch (err) {
+      console.warn('Failed to submit review:', err);
+    } finally {
+      setIsSubmittingReview(false);
     }
   };
 
@@ -663,7 +758,7 @@ export default function ArtistsHubPage() {
       {
         title: `Apartar Flash con ${resident.alias || resident.name}`,
         message: `Para reservar este diseño flash con ${resident.name}, regístrate en Tattoo Hub.`,
-        redirectUrl: `/hub?studio=${activeStudio.id}&artist=${resident.id}`,
+        redirectUrl: `/hub?studio=${activeStudio?.id || ''}&artist=${resident.id}`,
       }
     );
   };
@@ -696,13 +791,13 @@ export default function ArtistsHubPage() {
             {/* Zoom Controls */}
             <ZoomControl position="bottomright" />
 
-            {/* Dynamic Re-centering and A11y accessibility controllers */}
+            {/* Dynamic Re-centering, A11y and Theme transition controllers */}
             <MapRecenter center={mapCenter} zoom={mapZoom} />
             <MapTileA11yFix />
+            <MapThemeTransitionController isDark={isDark} />
 
-            {/* Dynamic Map Tiles: Natural OSM Light in light mode, Dark OSM Inverted in dark mode */}
+            {/* Dynamic Map Tiles: Smooth CSS filter transition without unmounting or reloading */}
             <TileLayer
-              key={isDark ? 'dark-tiles' : 'light-tiles'}
               attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
               url="https://tile.openstreetmap.org/{z}/{x}/{y}.png"
             />
@@ -721,7 +816,7 @@ export default function ArtistsHubPage() {
 
             {/* Marcadores de Estudios y Locales */}
             {filteredStudios.map((studio) => {
-              const isActive = activeStudio.id === studio.id;
+              const isActive = activeStudio?.id === studio.id;
               const markerPos: [number, number] = [studio.lat || 8.9824, studio.lng || -79.5199];
               const resident = studio.residents?.[0];
               const artist = resident
@@ -1025,6 +1120,46 @@ export default function ArtistsHubPage() {
                 </div>
               </div>
 
+              {/* Filtro de Calificación Mínima */}
+              <div className="flex items-center gap-1.5 overflow-x-auto py-0.5 scrollbar-none">
+                <span className="text-[10px] font-bold uppercase tracking-wider text-slate-500 dark:text-zinc-500 shrink-0">
+                  Rating:
+                </span>
+                <button
+                  data-testid="filter-rating-all"
+                  onClick={() => setMinRatingFilter(0)}
+                  className={`px-2 py-0.5 rounded-lg text-xs font-semibold shrink-0 transition-colors cursor-pointer ${
+                    minRatingFilter === 0
+                      ? 'bg-violet-600 text-white shadow-sm'
+                      : 'bg-slate-100 dark:bg-zinc-900 text-slate-700 dark:text-zinc-400 hover:text-slate-900 dark:hover:text-zinc-200 border border-slate-200 dark:border-zinc-800'
+                  }`}
+                >
+                  Todas
+                </button>
+                <button
+                  data-testid="filter-rating-45"
+                  onClick={() => setMinRatingFilter(4.5)}
+                  className={`px-2 py-0.5 rounded-lg text-xs font-semibold shrink-0 flex items-center gap-1 transition-colors cursor-pointer ${
+                    minRatingFilter === 4.5
+                      ? 'bg-violet-600 text-white shadow-sm'
+                      : 'bg-slate-100 dark:bg-zinc-900 text-slate-700 dark:text-zinc-400 hover:text-slate-900 dark:hover:text-zinc-200 border border-slate-200 dark:border-zinc-800'
+                  }`}
+                >
+                  4.5+ <Star className="w-2.5 h-2.5 fill-amber-400 text-amber-400" />
+                </button>
+                <button
+                  data-testid="filter-rating-48"
+                  onClick={() => setMinRatingFilter(4.8)}
+                  className={`px-2 py-0.5 rounded-lg text-xs font-semibold shrink-0 flex items-center gap-1 transition-colors cursor-pointer ${
+                    minRatingFilter === 4.8
+                      ? 'bg-violet-600 text-white shadow-sm'
+                      : 'bg-slate-100 dark:bg-zinc-900 text-slate-700 dark:text-zinc-400 hover:text-slate-900 dark:hover:text-zinc-200 border border-slate-200 dark:border-zinc-800'
+                  }`}
+                >
+                  4.8+ <Star className="w-2.5 h-2.5 fill-amber-400 text-amber-400" />
+                </button>
+              </div>
+
               {/* Filtros dinámicos de estilo y geolocalización con scroll táctil suave */}
               <div
                 id="hub-style-filters-container"
@@ -1066,7 +1201,7 @@ export default function ArtistsHubPage() {
               )}
             </div>
 
-            {/* Contenido con Scroll: Tarjeta del Estudio & Artistas Residentes */}
+            {/* Contenido con Scroll: Tarjeta del Estudio & Artistas Residentes O Estado Inicial */}
             <div
               id="hub-drawer-scrollable-content"
               style={{
@@ -1079,315 +1214,518 @@ export default function ArtistsHubPage() {
               onWheel={(e) => e.stopPropagation()}
               className="flex-1 min-h-0 overflow-y-auto p-3 sm:p-4 space-y-4 custom-scrollbar"
             >
-              {/* TARJETA DEL ESTUDIO / LOCAL ACTIVO */}
-              <div className="bg-white dark:bg-zinc-950 border border-slate-200/90 dark:border-zinc-800/90 rounded-2xl overflow-hidden shadow-xl text-slate-900 dark:text-white">
-                {/* Banner & Identidad del Estudio */}
-                <div className="relative h-36 w-full">
-                  <img
-                    src={activeStudio.banner}
-                    alt={activeStudio.name}
-                    className="w-full h-full object-cover"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-zinc-950 via-zinc-950/60 to-transparent" />
-
-                  {/* Insignia de Estudio vs Independiente */}
-                  <div className="absolute top-3 left-3 flex gap-2">
-                    {activeStudio.type === 'studio' ? (
-                      <span className="px-2.5 py-1 rounded-full text-[11px] font-bold bg-violet-950/90 text-violet-300 border border-violet-500/50 flex items-center gap-1.5 shadow-lg backdrop-blur-sm">
-                        <Users className="w-3.5 h-3.5" /> {activeStudio.artistsCount} Artistas Residentes
-                      </span>
-                    ) : (
-                      <span className="px-2.5 py-1 rounded-full text-[11px] font-bold bg-zinc-900/90 text-zinc-300 border border-zinc-700 flex items-center gap-1.5 shadow-lg backdrop-blur-sm">
-                        <User className="w-3.5 h-3.5" /> Artista Independiente
-                      </span>
-                    )}
+              {!activeStudio ? (
+                /* ESTADO INICIAL DEL DRAWER (Sin estudio seleccionado) */
+                <div
+                  data-testid="drawer-initial-state"
+                  className="p-8 text-center text-slate-500 dark:text-zinc-400 flex flex-col items-center justify-center space-y-3 my-auto"
+                >
+                  <div className="w-14 h-14 rounded-2xl bg-violet-500/10 border border-violet-500/20 flex items-center justify-center text-violet-500">
+                    <MapPin className="w-7 h-7" />
                   </div>
+                  <h4 className="text-sm font-bold text-slate-800 dark:text-zinc-200">
+                    {isEn ? "Select a Studio or Artist on the Map" : "Selecciona un Estudio o Artista en el Mapa"}
+                  </h4>
+                  <p className="text-xs text-slate-500 dark:text-zinc-400 max-w-xs leading-relaxed">
+                    {isEn
+                      ? "Tap any studio marker to inspect resident artists, opening hours, reviews, and flash catalogs."
+                      : "Toca cualquier marcador del mapa para explorar sus artistas residentes, horarios de atención, calificaciones y catálogo de flashes."}
+                  </p>
+                </div>
+              ) : (
+                /* DETALLE EXPANDIDO DEL ESTUDIO / LOCAL ACTIVO */
+                <>
+                  <div className="bg-white dark:bg-zinc-950 border border-slate-200/90 dark:border-zinc-800/90 rounded-2xl overflow-hidden shadow-xl text-slate-900 dark:text-white">
+                    {/* Banner & Identidad del Estudio */}
+                    <div className="relative h-36 w-full">
+                      <img
+                        src={activeStudio.banner}
+                        alt={activeStudio.name}
+                        className="w-full h-full object-cover"
+                      />
+                      <div className="absolute inset-0 bg-gradient-to-t from-zinc-950 via-zinc-950/60 to-transparent" />
 
-                  <div className="absolute bottom-3 left-3 right-3 flex justify-between items-end">
-                    <div>
-                      <div className="flex items-center gap-1.5">
-                        <h3 className="text-lg font-bold text-white leading-tight">
-                          {activeStudio.name}
-                        </h3>
-                        {activeStudio.verified && (
-                          <CheckCircle2 className="w-4 h-4 text-violet-400 fill-violet-400/20" />
+                      {/* Botón de Cerrar / Minimizar Detalle para volver al estado inicial */}
+                      <button
+                        data-testid="close-drawer-details"
+                        onClick={() => setActiveStudioId(null)}
+                        className="absolute top-3 right-3 p-1.5 rounded-full bg-zinc-900/80 hover:bg-zinc-800 text-white border border-zinc-700 backdrop-blur-sm transition cursor-pointer shadow-md z-10"
+                        aria-label="Cerrar detalles del estudio"
+                      >
+                        <X className="w-4 h-4" />
+                      </button>
+
+                      {/* Insignia de Estudio vs Independiente */}
+                      <div className="absolute top-3 left-3 flex gap-2">
+                        {activeStudio.type === 'studio' ? (
+                          <span className="px-2.5 py-1 rounded-full text-[11px] font-bold bg-violet-950/90 text-violet-300 border border-violet-500/50 flex items-center gap-1.5 shadow-lg backdrop-blur-sm">
+                            <Users className="w-3.5 h-3.5" /> {activeStudio.artistsCount} Artistas Residentes
+                          </span>
+                        ) : (
+                          <span className="px-2.5 py-1 rounded-full text-[11px] font-bold bg-zinc-900/90 text-zinc-300 border border-zinc-700 flex items-center gap-1.5 shadow-lg backdrop-blur-sm">
+                            <User className="w-3.5 h-3.5" /> Artista Independiente
+                          </span>
                         )}
                       </div>
-                      <p className="text-xs text-slate-600 dark:text-zinc-400 mt-1 flex items-center gap-1">
-                        <MapPin className="w-3 h-3 text-violet-600 dark:text-violet-400" />
-                        {activeStudio.address} • {activeStudio.distance}
-                      </p>
-                    </div>
-                    <div className="flex items-center gap-1 bg-zinc-900/90 px-2 py-1 rounded-md text-xs font-semibold text-white border border-zinc-800">
-                      <Star className="w-3 h-3 text-violet-400 fill-violet-400" />
-                      {activeStudio.rating}
-                    </div>
-                  </div>
-                </div>
 
-                <div className="p-4 space-y-4">
-                  {/* SELECTOR DE ARTISTAS RESIDENTES (Multi-artista Studio Hierarchy) */}
-                  {activeStudio.type === 'studio' &&
-                    activeStudio.residents &&
-                    activeStudio.residents.length > 0 && (
-                      <div className="p-3 bg-slate-50 dark:bg-zinc-900/60 rounded-xl border border-slate-200 dark:border-zinc-800/80">
-                        <div className="flex items-center justify-between mb-2.5">
-                          <span className="text-xs font-bold text-slate-700 dark:text-zinc-400 uppercase tracking-wider flex items-center gap-1.5">
-                            <Sparkles className="w-3.5 h-3.5 text-violet-600 dark:text-violet-400" /> Artistas en este Local:
-                          </span>
-                          <span className="text-[11px] text-slate-500 dark:text-zinc-400 font-medium">Selecciona para contactar</span>
-                        </div>
-
-                        {/* Concentric Violet Avatar Rings */}
-                        <div
-                          className="flex gap-2.5 overflow-x-auto pb-1 no-scrollbar overscroll-x-contain touch-pan-x"
-                          style={{ WebkitOverflowScrolling: 'touch', touchAction: 'pan-x' }}
-                          onTouchStart={(e) => e.stopPropagation()}
-                          onTouchMove={(e) => e.stopPropagation()}
-                        >
-                          {activeStudio.residents.map((resident) => {
-                            const isResidentSelected = activeResident?.id === resident.id;
-                            return (
-                              <button
-                                key={resident.id}
-                                data-testid="resident-artist-pill"
-                                data-resident-id={resident.id}
-                                onClick={() => setSelectedResidentId(resident.id)}
-                                className={`flex items-center gap-2 p-1.5 pr-3 rounded-full border transition-all shrink-0 text-left cursor-pointer ${
-                                  isResidentSelected
-                                    ? 'bg-violet-600 text-white border-violet-500 shadow-md shadow-violet-600/30 dark:bg-violet-950/80 dark:text-white dark:shadow-[0_0_15px_rgba(139,92,246,0.4)]'
-                                    : 'bg-slate-100 dark:bg-zinc-950/60 border-slate-200 dark:border-zinc-800 text-slate-700 dark:text-zinc-400 hover:border-slate-300 dark:hover:border-zinc-700 hover:text-slate-900 dark:hover:text-zinc-200'
-                                }`}
-                              >
-                                <div
-                                  className={`relative w-8 h-8 rounded-full overflow-hidden p-0.5 ${
-                                    isResidentSelected
-                                      ? 'ring-2 ring-violet-500 ring-offset-1 ring-offset-zinc-950'
-                                      : ''
-                                  }`}
-                                >
-                                  <img
-                                    src={resident.avatar}
-                                    alt={resident.name}
-                                    className="w-full h-full object-cover rounded-full"
-                                  />
-                                </div>
-                                <div className="leading-tight">
-                                  <div className={`text-xs font-bold flex items-center gap-1 ${
-                                    isResidentSelected
-                                      ? 'text-white'
-                                      : 'text-slate-900 dark:text-white'
-                                  }`}>
-                                    {resident.alias || resident.name}
-                                  </div>
-                                  <div className={`text-[10px] truncate max-w-[90px] ${
-                                    isResidentSelected
-                                      ? 'text-violet-100 dark:text-zinc-300'
-                                      : 'text-slate-500 dark:text-zinc-400'
-                                  }`}>
-                                    {resident.specialties[0]}
-                                  </div>
-                                </div>
-                              </button>
-                            );
-                          })}
-                        </div>
-                      </div>
-                    )}
-
-                  {/* BIO Y DETALLES DEL ARTISTA RESIDENTE SELECCIONADO */}
-                  {activeResident && (
-                    <div className="space-y-2 border-b border-slate-200 dark:border-zinc-800/80 pb-3">
-                      <div className="flex items-center justify-between">
+                      <div className="absolute bottom-3 left-3 right-3 flex justify-between items-end">
                         <div>
-                          <span className="text-xs text-slate-500 dark:text-zinc-400 font-medium">{isEn ? "Artist to contact:" : "Artista a contactar:"}</span>
-                          <h4 className="text-sm font-bold text-slate-900 dark:text-white flex items-center gap-1.5">
-                            {activeResident.name}
-                            {activeResident.alias && (
-                              <span className="text-xs font-semibold text-violet-400">
-                                "{activeResident.alias}"
-                              </span>
+                          <div className="flex items-center gap-1.5">
+                            <h3 className="text-lg font-bold text-white leading-tight">
+                              {activeStudio.name}
+                            </h3>
+                            {activeStudio.verified && (
+                              <CheckCircle2 className="w-4 h-4 text-violet-400 fill-violet-400/20" />
                             )}
-                          </h4>
+                          </div>
+                          <p className="text-xs text-slate-300 mt-1 flex items-center gap-1">
+                            <MapPin className="w-3 h-3 text-violet-400" />
+                            {activeStudio.address} • {activeStudio.distance}
+                          </p>
                         </div>
-                        <div className="text-right">
-                          <span className="text-[10px] uppercase tracking-wider text-slate-500 dark:text-zinc-400 font-bold block">
-                            Tarifa Base
-                          </span>
-                          <span className="text-xs font-extrabold text-violet-700 dark:text-violet-300">
-                            {formatPrice(activeResident.hourlyRate || 70)}/h
-                          </span>
+                        <div className="flex items-center gap-1 bg-zinc-900/90 px-2 py-1 rounded-md text-xs font-semibold text-white border border-zinc-800">
+                          <Star className="w-3 h-3 text-violet-400 fill-violet-400" />
+                          {activeStudio.rating}
                         </div>
-                      </div>
-
-                      <p className="text-xs text-slate-600 dark:text-zinc-300 leading-relaxed">{activeResident.bio}</p>
-
-                      {/* Chips de Especialidades */}
-                      <div className="flex flex-wrap gap-1.5 pt-1">
-                        {activeResident.specialties.map((spec, i) => (
-                          <span
-                            key={i}
-                            className="px-2 py-0.5 rounded-md text-[10px] font-semibold bg-slate-100 dark:bg-zinc-900 text-slate-700 dark:text-zinc-300 border border-slate-200 dark:border-zinc-800"
-                          >
-                            {spec}
-                          </span>
-                        ))}
                       </div>
                     </div>
-                  )}
 
-                  {/* FLASHES DISPONIBLES DEL ARTISTA SELECCIONADO */}
-                  {activeResident && activeResident.flashes && activeResident.flashes.length > 0 && (
-                    <div>
-                      <div className="flex items-center justify-between mb-2">
-                        <h4 className="text-xs font-bold text-slate-700 dark:text-zinc-400 uppercase tracking-wider">
-                          {isEn ? "Flashes by" : "Flashes de"} {activeResident.alias || activeResident.name}
-                        </h4>
-                        <span className="text-[11px] text-violet-400 hover:text-violet-300 cursor-pointer">
-                          {isEn ? "View catalog" : "Ver catálogo"} ({activeResident.flashes.length})
-                        </span>
-                      </div>
+                    <div className="p-4 space-y-4">
+                      {/* Horario de Atención */}
+                      {activeStudio.opening_hours && (
+                        <div className="flex items-center gap-2 p-2.5 rounded-xl bg-slate-50 dark:bg-zinc-900/70 border border-slate-200 dark:border-zinc-800/80 text-xs text-slate-700 dark:text-zinc-300">
+                          <Clock className="w-4 h-4 text-violet-500 shrink-0" />
+                          <span className="font-bold">{isEn ? 'Opening Hours:' : 'Horario:'}</span>
+                          <span>{activeStudio.opening_hours}</span>
+                        </div>
+                      )}
 
-                      <div
-                        className="flex gap-2.5 overflow-x-auto no-scrollbar pb-1 overscroll-x-contain touch-pan-x"
-                        style={{ WebkitOverflowScrolling: 'touch', touchAction: 'pan-x' }}
-                        onTouchStart={(e) => e.stopPropagation()}
-                        onTouchMove={(e) => e.stopPropagation()}
-                      >
-                        {activeResident.flashes.map((flash) => (
-                          <div
-                            key={flash.id}
-                            data-testid="flash-card-item"
-                            onClick={() =>
-                              handleReserveFlash(
-                                flash.title,
-                                flash.amount || flash.price || 90,
-                                activeResident
-                              )
-                            }
-                            className="relative w-20 h-20 rounded-xl overflow-hidden shrink-0 group cursor-pointer border border-slate-200 dark:border-zinc-800 hover:border-violet-500 transition-colors shadow-sm"
-                          >
-                            <img
-                              src={flash.img}
-                              alt={flash.title}
-                              className="w-full h-full object-cover transition-transform group-hover:scale-110"
-                            />
-                            <div className="absolute inset-x-0 bottom-0 bg-white/90 dark:bg-zinc-950/85 py-0.5 px-1 flex justify-center border-t border-slate-200/60 dark:border-transparent">
-                              <span className="text-[10px] font-black text-violet-700 dark:text-violet-300">
-                                {formatPrice(flash.amount || flash.price || 90)}
+                      {/* SELECTOR DE ARTISTAS RESIDENTES (Multi-artista Studio Hierarchy) */}
+                      {activeStudio.type === 'studio' &&
+                        activeStudio.residents &&
+                        activeStudio.residents.length > 0 && (
+                          <div className="p-3 bg-slate-50 dark:bg-zinc-900/60 rounded-xl border border-slate-200 dark:border-zinc-800/80">
+                            <div className="flex items-center justify-between mb-2.5">
+                              <span className="text-xs font-bold text-slate-700 dark:text-zinc-400 uppercase tracking-wider flex items-center gap-1.5">
+                                <Sparkles className="w-3.5 h-3.5 text-violet-600 dark:text-violet-400" /> Artistas en este Local:
+                              </span>
+                              <span className="text-[11px] text-slate-500 dark:text-zinc-400 font-medium">Selecciona para contactar</span>
+                            </div>
+
+                            {/* Concentric Violet Avatar Rings */}
+                            <div
+                              className="flex gap-2.5 overflow-x-auto pb-1 no-scrollbar overscroll-x-contain touch-pan-x"
+                              style={{ WebkitOverflowScrolling: 'touch', touchAction: 'pan-x' }}
+                              onTouchStart={(e) => e.stopPropagation()}
+                              onTouchMove={(e) => e.stopPropagation()}
+                            >
+                              {activeStudio.residents.map((resident) => {
+                                const isResidentSelected = activeResident?.id === resident.id;
+                                return (
+                                  <button
+                                    key={resident.id}
+                                    data-testid="resident-artist-pill"
+                                    data-resident-id={resident.id}
+                                    onClick={() => setSelectedResidentId(resident.id)}
+                                    className={`flex items-center gap-2 p-1.5 pr-3 rounded-full border transition-all shrink-0 text-left cursor-pointer ${
+                                      isResidentSelected
+                                        ? 'bg-violet-600 text-white border-violet-500 shadow-md shadow-violet-600/30 dark:bg-violet-950/80 dark:text-white dark:shadow-[0_0_15px_rgba(139,92,246,0.4)]'
+                                        : 'bg-slate-100 dark:bg-zinc-950/60 border-slate-200 dark:border-zinc-800 text-slate-700 dark:text-zinc-400 hover:border-slate-300 dark:hover:border-zinc-700 hover:text-slate-900 dark:hover:text-zinc-200'
+                                    }`}
+                                  >
+                                    <div
+                                      className={`relative w-8 h-8 rounded-full overflow-hidden p-0.5 ${
+                                        isResidentSelected
+                                          ? 'ring-2 ring-violet-500 ring-offset-1 ring-offset-zinc-950'
+                                          : ''
+                                      }`}
+                                    >
+                                      <img
+                                        src={resident.avatar}
+                                        alt={resident.name}
+                                        className="w-full h-full object-cover rounded-full"
+                                      />
+                                    </div>
+                                    <div className="leading-tight">
+                                      <div className={`text-xs font-bold flex items-center gap-1 ${
+                                        isResidentSelected
+                                          ? 'text-white'
+                                          : 'text-slate-900 dark:text-white'
+                                      }`}>
+                                        {resident.alias || resident.name}
+                                      </div>
+                                      <div className={`text-[10px] truncate max-w-[90px] ${
+                                        isResidentSelected
+                                          ? 'text-violet-100 dark:text-zinc-300'
+                                          : 'text-slate-500 dark:text-zinc-400'
+                                      }`}>
+                                        {resident.specialties[0]}
+                                      </div>
+                                    </div>
+                                  </button>
+                                );
+                              })}
+                            </div>
+                          </div>
+                        )}
+
+                      {/* BIO Y DETALLES DEL ARTISTA RESIDENTE SELECCIONADO */}
+                      {activeResident && (
+                        <div className="space-y-2 border-b border-slate-200 dark:border-zinc-800/80 pb-3">
+                          <div className="flex items-center justify-between">
+                            <div>
+                              <span className="text-xs text-slate-500 dark:text-zinc-400 font-medium">{isEn ? "Artist to contact:" : "Artista a contactar:"}</span>
+                              <h4 className="text-sm font-bold text-slate-900 dark:text-white flex items-center gap-1.5">
+                                {activeResident.name}
+                                {activeResident.alias && (
+                                  <span className="text-xs font-semibold text-violet-400">
+                                    "{activeResident.alias}"
+                                  </span>
+                                )}
+                              </h4>
+                            </div>
+                            <div className="text-right">
+                              <span className="text-[10px] uppercase tracking-wider text-slate-500 dark:text-zinc-400 font-bold block">
+                                Tarifa Base
+                              </span>
+                              <span className="text-xs font-extrabold text-violet-700 dark:text-violet-300">
+                                {formatPrice(activeResident.hourlyRate || 70)}/h
                               </span>
                             </div>
                           </div>
-                        ))}
-                      </div>
-                    </div>
-                  )}
 
-                  {/* BOTONES DE ACCIÓN: WHATSAPP, BOCETOS Y AGENDAMIENTO */}
-                  {activeResident && (
-                    <div className="space-y-2 pt-2">
-                      {/* 1. Botón Principal de Reserva / Flash Book */}
-                      <button
-                        id="btn-reservar-cupo"
-                        data-testid="btn-reservar-flash"
-                        onClick={() =>
-                          handleReserveFlash(
-                            'Reserva General',
-                            activeResident.hourlyRate || 70,
-                            activeResident
-                          )
-                        }
-                        className="w-full bg-violet-600 hover:bg-violet-500 text-white text-xs sm:text-sm font-bold py-2.5 rounded-xl transition-all shadow-[0_0_15px_rgba(124,58,237,0.35)] hover:shadow-[0_0_20px_rgba(124,58,237,0.5)] cursor-pointer flex items-center justify-center gap-2"
-                      >
-                        <Sparkles className="w-4 h-4" />
-                        {isEn ? "Book with" : "Reservar con"} {activeResident.alias || activeResident.name}
-                      </button>
+                          <p className="text-xs text-slate-600 dark:text-zinc-300 leading-relaxed">{activeResident.bio}</p>
 
-                      {/* 2. Botón de Envío de Bocetos */}
-                      <button
-                        data-testid="btn-enviar-boceto"
-                        onClick={() => handleSendSketch(activeResident, activeStudio)}
-                        className="w-full bg-slate-100 hover:bg-slate-200 dark:bg-zinc-900 dark:hover:bg-zinc-800 border border-violet-500/30 text-violet-700 dark:text-violet-300 hover:text-violet-900 dark:hover:text-violet-200 text-xs font-semibold py-2 rounded-xl transition-colors flex items-center justify-center gap-2 cursor-pointer shadow-sm"
-                      >
-                        <ImageIcon className="w-4 h-4 text-violet-400" />
-                        {isEn ? "Send Sketch to" : "Enviar Boceto a"} {activeResident.alias || activeResident.name}
-                      </button>
-
-                      {/* 3. Botón de Contacto por WhatsApp */}
-                      <div className="pt-1 flex items-center justify-between">
-                        <button
-                          data-testid="btn-whatsapp-direct"
-                          onClick={() => handleContactWhatsApp(activeResident, activeStudio)}
-                          className="w-full inline-flex items-center justify-center gap-1.5 py-2 rounded-xl bg-emerald-50 hover:bg-emerald-100 dark:bg-emerald-950/60 dark:hover:bg-emerald-900/80 border border-emerald-500/40 text-emerald-700 dark:text-emerald-400 text-xs font-bold transition-colors cursor-pointer shadow-sm"
-                        >
-                          <MessageCircle className="w-4 h-4 text-emerald-400" />
-                          {isEn ? "Contact via WhatsApp" : "Contactar por WhatsApp"} ({activeResident.alias || activeResident.name})
-                        </button>
-                      </div>
-                    </div>
-                  )}
-                </div>
-              </div>
-
-              {/* OTROS ESTUDIOS Y LOCALES EN EL DIRECTORIO (Tarjetas Colapsadas) */}
-              <div className="space-y-2 pt-2">
-                <h3 className="text-xs font-bold text-slate-500 dark:text-zinc-500 uppercase tracking-wider">
-                  {isEn ? "Other Nearby Ateliers & Artists" : "Otros Locales & Artistas Cercanos"}
-                </h3>
-
-                {filteredStudios
-                  .filter((s) => s.id !== activeStudio.id)
-                  .map((studio) => (
-                    <div
-                      key={studio.id}
-                      data-testid="other-studio-card"
-                      data-other-studio-id={studio.id}
-                      onClick={() => handleSelectStudio(studio.id)}
-                      className="flex items-center gap-3 p-3 bg-slate-50/90 dark:bg-zinc-950/60 border border-slate-200 dark:border-zinc-800/70 rounded-xl hover:bg-slate-100 dark:hover:bg-zinc-900 hover:border-slate-300 dark:hover:border-zinc-700 transition-all cursor-pointer group text-slate-900 dark:text-white"
-                    >
-                      <div className="w-12 h-12 rounded-lg overflow-hidden shrink-0 relative">
-                        <img
-                          src={studio.banner}
-                          alt={studio.name}
-                          className="w-full h-full object-cover group-hover:scale-105 transition-transform"
-                        />
-                      </div>
-
-                      <div className="flex-1 min-w-0">
-                        <div className="flex items-center gap-2">
-                          <h4 className="text-sm font-semibold text-slate-900 dark:text-white truncate">{studio.name}</h4>
-                          {studio.type === 'studio' ? (
-                            <span className="text-[10px] px-1.5 py-0.5 rounded-full bg-violet-100 text-violet-800 dark:bg-violet-950 dark:text-violet-300 font-bold border border-violet-200 dark:border-violet-800/40 shrink-0">
-                              {studio.artistsCount} Residentes
-                            </span>
-                          ) : (
-                            <span className="text-[10px] px-1.5 py-0.5 rounded-full bg-slate-100 text-slate-600 dark:bg-zinc-800 dark:text-zinc-400 font-medium border border-slate-200 dark:border-zinc-700 shrink-0">
-                              Indep.
-                            </span>
-                          )}
+                          {/* Chips de Especialidades */}
+                          <div className="flex flex-wrap gap-1.5 pt-1">
+                            {activeResident.specialties.map((spec, i) => (
+                              <span
+                                key={i}
+                                className="px-2 py-0.5 rounded-md text-[10px] font-semibold bg-slate-100 dark:bg-zinc-900 text-slate-700 dark:text-zinc-300 border border-slate-200 dark:border-zinc-800"
+                              >
+                                {spec}
+                              </span>
+                            ))}
+                          </div>
                         </div>
-                        <p className="text-xs text-slate-600 dark:text-zinc-400 mt-0.5 truncate">
-                          {studio.residents?.map((r) => r.alias || r.name).join(', ')} •{' '}
-                          {studio.distance}
-                        </p>
-                      </div>
+                      )}
 
-                      <ChevronRight className="w-4 h-4 text-zinc-600 group-hover:text-violet-400 transition-colors" />
+                      {/* FLASHES DISPONIBLES DEL ARTISTA SELECCIONADO */}
+                      {activeResident && activeResident.flashes && activeResident.flashes.length > 0 && (
+                        <div>
+                          <div className="flex items-center justify-between mb-2">
+                            <h4 className="text-xs font-bold text-slate-700 dark:text-zinc-400 uppercase tracking-wider">
+                              {isEn ? "Flashes by" : "Flashes de"} {activeResident.alias || activeResident.name}
+                            </h4>
+                            <span className="text-[11px] text-violet-400 hover:text-violet-300 cursor-pointer">
+                              {isEn ? "View catalog" : "Ver catálogo"} ({activeResident.flashes.length})
+                            </span>
+                          </div>
+
+                          <div
+                            className="flex gap-2.5 overflow-x-auto no-scrollbar pb-1 overscroll-x-contain touch-pan-x"
+                            style={{ WebkitOverflowScrolling: 'touch', touchAction: 'pan-x' }}
+                            onTouchStart={(e) => e.stopPropagation()}
+                            onTouchMove={(e) => e.stopPropagation()}
+                          >
+                            {activeResident.flashes.map((flash) => (
+                              <div
+                                key={flash.id}
+                                data-testid="flash-card-item"
+                                onClick={() =>
+                                  handleReserveFlash(
+                                    flash.title,
+                                    flash.amount || flash.price || 90,
+                                    activeResident
+                                  )
+                                }
+                                className="relative w-20 h-20 rounded-xl overflow-hidden shrink-0 group cursor-pointer border border-slate-200 dark:border-zinc-800 hover:border-violet-500 transition-colors shadow-sm"
+                              >
+                                <img
+                                  src={flash.img}
+                                  alt={flash.title}
+                                  className="w-full h-full object-cover transition-transform group-hover:scale-110"
+                                />
+                                <div className="absolute inset-x-0 bottom-0 bg-white/90 dark:bg-zinc-950/85 py-0.5 px-1 flex justify-center border-t border-slate-200/60 dark:border-transparent">
+                                  <span className="text-[10px] font-black text-violet-700 dark:text-violet-300">
+                                    {formatPrice(flash.amount || flash.price || 90)}
+                                  </span>
+                                </div>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      )}
+
+                      {/* BOTONES DE ACCIÓN: WHATSAPP, BOCETOS Y AGENDAMIENTO */}
+                      {activeResident && (
+                        <div className="space-y-2 pt-2">
+                          {/* 1. Botón Principal de Reserva / Flash Book */}
+                          <button
+                            id="btn-reservar-cupo"
+                            data-testid="btn-reservar-flash"
+                            onClick={() =>
+                              handleReserveFlash(
+                                'Reserva General',
+                                activeResident.hourlyRate || 70,
+                                activeResident
+                              )
+                            }
+                            className="w-full bg-violet-600 hover:bg-violet-500 text-white text-xs sm:text-sm font-bold py-2.5 rounded-xl transition-all shadow-[0_0_15px_rgba(124,58,237,0.35)] hover:shadow-[0_0_20px_rgba(124,58,237,0.5)] cursor-pointer flex items-center justify-center gap-2"
+                          >
+                            <Sparkles className="w-4 h-4" />
+                            {isEn ? "Book with" : "Reservar con"} {activeResident.alias || activeResident.name}
+                          </button>
+
+                          {/* 2. Botón de Envío de Bocetos */}
+                          <button
+                            data-testid="btn-enviar-boceto"
+                            onClick={() => handleSendSketch(activeResident, activeStudio)}
+                            className="w-full bg-slate-100 hover:bg-slate-200 dark:bg-zinc-900 dark:hover:bg-zinc-800 border border-violet-500/30 text-violet-700 dark:text-violet-300 hover:text-violet-900 dark:hover:text-violet-200 text-xs font-semibold py-2 rounded-xl transition-colors flex items-center justify-center gap-2 cursor-pointer shadow-sm"
+                          >
+                            <ImageIcon className="w-4 h-4 text-violet-400" />
+                            {isEn ? "Send Sketch to" : "Enviar Boceto a"} {activeResident.alias || activeResident.name}
+                          </button>
+
+                          {/* 3. Botón de Contacto por WhatsApp */}
+                          <div className="pt-1 flex items-center justify-between">
+                            <button
+                              data-testid="btn-whatsapp-direct"
+                              onClick={() => handleContactWhatsApp(activeResident, activeStudio)}
+                              className="w-full inline-flex items-center justify-center gap-1.5 py-2 rounded-xl bg-emerald-50 hover:bg-emerald-100 dark:bg-emerald-950/60 dark:hover:bg-emerald-900/80 border border-emerald-500/40 text-emerald-700 dark:text-emerald-400 text-xs font-bold transition-colors cursor-pointer shadow-sm"
+                            >
+                              <MessageCircle className="w-4 h-4 text-emerald-400" />
+                              {isEn ? "Contact via WhatsApp" : "Contactar por WhatsApp"} ({activeResident.alias || activeResident.name})
+                            </button>
+                          </div>
+                        </div>
+                      )}
+
+                      {/* SECCIÓN DE RESEÑAS Y CALIFICACIONES DEL ESTUDIO */}
+                      <div className="pt-3 border-t border-slate-200 dark:border-zinc-800/80 space-y-3">
+                        <div className="flex items-center justify-between">
+                          <div className="flex items-center gap-2">
+                            <Star className="w-4 h-4 fill-amber-400 text-amber-400" />
+                            <span className="text-xs font-bold text-slate-800 dark:text-white">
+                              {activeStudio.rating} ({activeStudio.reviewCount || activeStudio.reviews?.length || 0} {isEn ? 'reviews' : 'reseñas'})
+                            </span>
+                          </div>
+                          <button
+                            data-testid="btn-add-review"
+                            onClick={() => setReviewModalOpen(true)}
+                            className="text-xs font-semibold text-violet-600 dark:text-violet-400 hover:text-violet-700 dark:hover:text-violet-300 cursor-pointer"
+                          >
+                            + {isEn ? 'Leave Review' : 'Dejar Reseña'}
+                          </button>
+                        </div>
+
+                        {/* Lista de Reseñas */}
+                        {activeStudio.reviews && activeStudio.reviews.length > 0 ? (
+                          <div className="space-y-2">
+                            {activeStudio.reviews.slice(0, 3).map((rev) => (
+                              <div
+                                key={rev.id}
+                                className="p-2.5 rounded-xl bg-slate-50 dark:bg-zinc-900/50 border border-slate-200 dark:border-zinc-800/60 text-xs space-y-1"
+                              >
+                                <div className="flex items-center justify-between">
+                                  <span className="font-bold text-slate-900 dark:text-white">
+                                    {rev.author || rev.user}
+                                  </span>
+                                  <div className="flex items-center gap-0.5">
+                                    {Array.from({ length: 5 }).map((_, idx) => (
+                                      <Star
+                                        key={idx}
+                                        className={`w-3 h-3 ${
+                                          idx < rev.rating
+                                            ? 'fill-amber-400 text-amber-400'
+                                            : 'text-zinc-600'
+                                        }`}
+                                      />
+                                    ))}
+                                  </div>
+                                </div>
+                                <p className="text-slate-600 dark:text-zinc-400 text-[11px] leading-relaxed">
+                                  "{rev.comment}"
+                                </p>
+                                {rev.date && (
+                                  <span className="text-[10px] text-slate-400 dark:text-zinc-500 block">
+                                    {rev.date}
+                                  </span>
+                                )}
+                              </div>
+                            ))}
+                          </div>
+                        ) : (
+                          <p className="text-xs text-slate-500 dark:text-zinc-500 italic">
+                            {isEn ? 'No reviews yet. Be the first!' : 'Aún no hay reseñas. ¡Sé el primero en calificar!'}
+                          </p>
+                        )}
+                      </div>
                     </div>
-                  ))}
-              </div>
+                  </div>
+
+                  {/* OTROS ESTUDIOS Y LOCALES EN EL DIRECTORIO (Tarjetas Colapsadas) */}
+                  <div className="space-y-2 pt-2">
+                    <h3 className="text-xs font-bold text-slate-500 dark:text-zinc-500 uppercase tracking-wider">
+                      {isEn ? "Other Nearby Ateliers & Artists" : "Otros Locales & Artistas Cercanos"}
+                    </h3>
+
+                    {filteredStudios
+                      .filter((s) => s.id !== activeStudio.id)
+                      .map((studio) => (
+                        <div
+                          key={studio.id}
+                          data-testid="other-studio-card"
+                          data-other-studio-id={studio.id}
+                          onClick={() => handleSelectStudio(studio.id)}
+                          className="flex items-center gap-3 p-3 bg-slate-50/90 dark:bg-zinc-950/60 border border-slate-200 dark:border-zinc-800/70 rounded-xl hover:bg-slate-100 dark:hover:bg-zinc-900 hover:border-slate-300 dark:hover:border-zinc-700 transition-all cursor-pointer group text-slate-900 dark:text-white"
+                        >
+                          <div className="w-12 h-12 rounded-lg overflow-hidden shrink-0 relative">
+                            <img
+                              src={studio.banner}
+                              alt={studio.name}
+                              className="w-full h-full object-cover group-hover:scale-105 transition-transform"
+                            />
+                          </div>
+
+                          <div className="flex-1 min-w-0">
+                            <div className="flex items-center gap-2">
+                              <h4 className="text-sm font-semibold text-slate-900 dark:text-white truncate">{studio.name}</h4>
+                              {studio.type === 'studio' ? (
+                                <span className="text-[10px] px-1.5 py-0.5 rounded-full bg-violet-100 text-violet-800 dark:bg-violet-950 dark:text-violet-300 font-bold border border-violet-200 dark:border-violet-800/40 shrink-0">
+                                  {studio.artistsCount} Residentes
+                                </span>
+                              ) : (
+                                <span className="text-[10px] px-1.5 py-0.5 rounded-full bg-slate-100 text-slate-600 dark:bg-zinc-800 dark:text-zinc-400 font-medium border border-slate-200 dark:border-zinc-700 shrink-0">
+                                  Indep.
+                                </span>
+                              )}
+                            </div>
+                            <p className="text-xs text-slate-600 dark:text-zinc-400 mt-0.5 truncate">
+                              {studio.residents?.map((r) => r.alias || r.name).join(', ')} •{' '}
+                              {studio.distance}
+                            </p>
+                          </div>
+
+                          <ChevronRight className="w-4 h-4 text-zinc-600 group-hover:text-violet-400 transition-colors" />
+                        </div>
+                      ))}
+                  </div>
+                </>
+              )}
             </div>
           </div>
         </div>
       </main>
 
+      {/* Modal para Dejar Reseña */}
+      {reviewModalOpen && activeStudio && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm animate-in fade-in duration-200">
+          <div className="w-full max-w-md bg-white dark:bg-zinc-900 border border-slate-200 dark:border-zinc-800 rounded-2xl shadow-2xl p-6 space-y-4 text-slate-900 dark:text-white">
+            <div className="flex items-center justify-between border-b border-slate-200 dark:border-zinc-800 pb-3">
+              <h3 className="font-bold text-base flex items-center gap-2">
+                <Star className="w-4 h-4 text-amber-400 fill-amber-400" />
+                {isEn ? 'Review' : 'Calificar'} {activeStudio.name}
+              </h3>
+              <button
+                onClick={() => setReviewModalOpen(false)}
+                className="p-1 rounded-lg text-zinc-400 hover:text-white hover:bg-zinc-800 transition"
+              >
+                <X className="w-4 h-4" />
+              </button>
+            </div>
+
+            <form onSubmit={handleSubmitReview} className="space-y-4">
+              <div>
+                <label className="text-xs font-semibold text-slate-700 dark:text-zinc-300 block mb-1.5">
+                  {isEn ? 'Rating (1 to 5 Stars):' : 'Calificación (1 a 5 Estrellas):'}
+                </label>
+                <div className="flex items-center gap-2">
+                  {[1, 2, 3, 4, 5].map((star) => (
+                    <button
+                      key={star}
+                      type="button"
+                      onClick={() => setReviewRating(star)}
+                      className="p-1 hover:scale-125 transition-transform cursor-pointer"
+                    >
+                      <Star
+                        className={`w-6 h-6 ${
+                          star <= reviewRating
+                            ? 'fill-amber-400 text-amber-400'
+                            : 'text-zinc-600'
+                        }`}
+                      />
+                    </button>
+                  ))}
+                  <span className="text-sm font-bold ml-2 text-amber-400">{reviewRating} / 5</span>
+                </div>
+              </div>
+
+              <div>
+                <label className="text-xs font-semibold text-slate-700 dark:text-zinc-300 block mb-1">
+                  {isEn ? 'Your Name or Alias:' : 'Tu Nombre o Alias:'}
+                </label>
+                <input
+                  type="text"
+                  value={reviewAuthor}
+                  onChange={(e) => setReviewAuthor(e.target.value)}
+                  placeholder="Ej. Juan Pérez"
+                  className="w-full bg-slate-50 dark:bg-zinc-950 border border-slate-300 dark:border-zinc-800 rounded-xl px-3.5 py-2 text-xs text-slate-900 dark:text-white focus:outline-none focus:border-violet-500"
+                />
+              </div>
+
+              <div>
+                <label className="text-xs font-semibold text-slate-700 dark:text-zinc-300 block mb-1">
+                  {isEn ? 'Comment / Experience:' : 'Comentario / Experiencia:'}
+                </label>
+                <textarea
+                  required
+                  rows={3}
+                  value={reviewComment}
+                  onChange={(e) => setReviewComment(e.target.value)}
+                  placeholder={isEn ? "Describe the hygiene, precision, and vibe..." : "Describe la higiene, atención, pulso y acabado del tatuaje..."}
+                  className="w-full bg-slate-50 dark:bg-zinc-950 border border-slate-300 dark:border-zinc-800 rounded-xl p-3 text-xs text-slate-900 dark:text-white focus:outline-none focus:border-violet-500"
+                />
+              </div>
+
+              <div className="flex gap-2 pt-2">
+                <button
+                  type="button"
+                  onClick={() => setReviewModalOpen(false)}
+                  className="flex-1 py-2 text-xs font-semibold rounded-xl border border-slate-300 dark:border-zinc-700 hover:bg-slate-100 dark:hover:bg-zinc-800 transition"
+                >
+                  {isEn ? 'Cancel' : 'Cancelar'}
+                </button>
+                <button
+                  type="submit"
+                  disabled={isSubmittingReview || !reviewComment.trim()}
+                  className="flex-1 py-2 text-xs font-bold rounded-xl bg-violet-600 hover:bg-violet-500 text-white transition disabled:opacity-50 cursor-pointer"
+                >
+                  {isSubmittingReview ? (isEn ? 'Saving...' : 'Publicando...') : (isEn ? 'Post Review' : 'Publicar Reseña')}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
       <style>{`
         /* Map Tiles Styles: Inverted Dark Mode vs Natural CartoDB Light Mode */
+        .leaflet-tile-pane {
+          transition: filter 0.4s ease-in-out;
+        }
         .dark-map-tiles .leaflet-tile-pane {
           filter: invert(1) hue-rotate(180deg) brightness(0.85) contrast(1.1) saturate(0.3);
         }
         .light-map-tiles .leaflet-tile-pane {
           filter: none !important;
+        }
+        /* Visually hide OSM watermark while keeping in DOM for legal attribution compliance */
+        .leaflet-control-attribution {
+          opacity: 0 !important;
+          pointer-events: none !important;
+          position: absolute !important;
+          bottom: -9999px !important;
         }
         .dark-map-tiles .leaflet-marker-pane,
         .dark-map-tiles .leaflet-popup-pane,

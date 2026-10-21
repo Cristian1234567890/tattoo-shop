@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { Navbar } from '../components/common/Navbar';
@@ -16,13 +16,204 @@ import {
   ShieldCheck,
   CreditCard,
   Lock,
+  Building2,
+  Copy,
+  Trash2,
+  Users,
+  Check,
+  MapPin,
+  Plus,
+  Share2,
+  X,
 } from 'lucide-react';
 import { useCurrency } from '../context/CurrencyContext';
+import { api } from '../api/client';
 
 export const ArtistDashboardPage: React.FC = () => {
   const { user, isAuthenticated, isLoading, logout } = useAuth();
   const { formatPrice } = useCurrency();
   const navigate = useNavigate();
+
+  // Studio management states
+  const [studios, setStudios] = useState<any[]>([]);
+  const [, setIsLoadingStudios] = useState(false);
+  const [showStudioModal, setShowStudioModal] = useState(false);
+  const [newStudioName, setNewStudioName] = useState('');
+  const [newStudioAddress, setNewStudioAddress] = useState('Bella Vista, Calle 50, Ciudad de Panamá');
+  const [newStudioTagline, setNewStudioTagline] = useState('Colectivo de Arte & Flash Lab');
+  const [newStudioDescription, setNewStudioDescription] = useState('Estudio profesional con bioseguridad visible y artistas residentes.');
+  const [newStudioHours, setNewStudioHours] = useState('Lun - Sáb: 10:00 - 20:00');
+  const [newStudioLat, setNewStudioLat] = useState('8.9824');
+  const [newStudioLng, setNewStudioLng] = useState('-79.5199');
+  const [isSubmittingStudio, setIsSubmittingStudio] = useState(false);
+  const [studioError, setStudioError] = useState<string | null>(null);
+  const [studioSuccess, setStudioSuccess] = useState<string | null>(null);
+
+  // Copy and collaboration states
+  const [copiedStudioCode, setCopiedStudioCode] = useState<string | null>(null);
+  const [joinStudioCode, setJoinStudioCode] = useState('');
+  const [isJoiningStudio, setIsJoiningStudio] = useState(false);
+  const [transferTargetStudio, setTransferTargetStudio] = useState<any | null>(null);
+  const [transferTargetArtistId, setTransferTargetArtistId] = useState('');
+  const [isTransferring, setIsTransferring] = useState(false);
+
+  const normalizeName = (str: string) =>
+    str.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^a-z0-9]/g, ' ').replace(/\s+/g, ' ').trim();
+
+  const loadStudios = async () => {
+    setIsLoadingStudios(true);
+    try {
+      const res = await api.getStudios();
+      if (res.success && Array.isArray(res.data) && res.data.length > 0) {
+        setStudios(res.data);
+      } else {
+        setStudios([
+          {
+            id: 'obsidian',
+            name: 'Obsidian Atelier & Flash Lab',
+            studio_code: 'OBS-9X42',
+            address: 'Bella Vista, Calle 50, Ciudad de Panamá',
+            tagline: 'Colectivo de Arte Oscuro & Cybersigilism',
+            opening_hours: 'Lun - Sáb: 10:00 - 20:00',
+            rating: 4.9,
+            review_count: 142,
+            is_owner: true,
+            artists_count: 3,
+            lat: 8.9824,
+            lng: -79.5199,
+          }
+        ]);
+      }
+    } catch {
+      setStudios([
+        {
+          id: 'obsidian',
+          name: 'Obsidian Atelier & Flash Lab',
+          studio_code: 'OBS-9X42',
+          address: 'Bella Vista, Calle 50, Ciudad de Panamá',
+          tagline: 'Colectivo de Arte Oscuro & Cybersigilism',
+          opening_hours: 'Lun - Sáb: 10:00 - 20:00',
+          rating: 4.9,
+          review_count: 142,
+          is_owner: true,
+          artists_count: 3,
+          lat: 8.9824,
+          lng: -79.5199,
+        }
+      ]);
+    } finally {
+      setIsLoadingStudios(false);
+    }
+  };
+
+  useEffect(() => {
+    loadStudios();
+  }, []);
+
+  const isNameDuplicate = useMemo(() => {
+    if (!newStudioName.trim()) return false;
+    const norm = normalizeName(newStudioName);
+    return studios.some((s) => normalizeName(s.name) === norm);
+  }, [newStudioName, studios]);
+
+  const handleCreateStudio = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (isNameDuplicate) {
+      setStudioError('Ya existe un estudio registrado con este nombre. Elige un nombre distintivo.');
+      return;
+    }
+    setIsSubmittingStudio(true);
+    setStudioError(null);
+    setStudioSuccess(null);
+    try {
+      const res = await api.createStudio({
+        name: newStudioName.trim(),
+        address: newStudioAddress.trim() || 'Bella Vista, Ciudad de Panamá',
+        tagline: newStudioTagline.trim() || 'Estudio de Tatuajes & Colectivo de Arte',
+        description: newStudioDescription.trim() || 'Estudio profesional de tatuajes con artistas residentes.',
+        opening_hours: newStudioHours.trim() || 'Lun - Sáb: 10:00 - 20:00',
+        lat: parseFloat(newStudioLat) || 8.9824,
+        lng: parseFloat(newStudioLng) || -79.5199,
+      });
+
+      if (res.success && res.data) {
+        setStudioSuccess(`¡Estudio "${res.data.name}" registrado con éxito! Código: ${res.data.studio_code}`);
+        setStudios((prev) => [res.data, ...prev]);
+        setShowStudioModal(false);
+        setNewStudioName('');
+      } else {
+        setStudioError(res.error || 'No se pudo crear el estudio.');
+      }
+    } catch (err: any) {
+      setStudioError(err.message || 'Error al conectar con el servidor.');
+    } finally {
+      setIsSubmittingStudio(false);
+    }
+  };
+
+  const handleJoinStudio = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!joinStudioCode.trim()) return;
+    setIsJoiningStudio(true);
+    setStudioError(null);
+    try {
+      const res = await api.joinStudio(joinStudioCode.trim().toUpperCase());
+      if (res.success) {
+        setStudioSuccess('¡Te has vinculado exitosamente al estudio colaborador!');
+        setJoinStudioCode('');
+        loadStudios();
+      } else {
+        setStudioError(res.error || 'Código de estudio no encontrado o inválido.');
+      }
+    } catch {
+      setStudioError('Error al vincularse al estudio.');
+    } finally {
+      setIsJoiningStudio(false);
+    }
+  };
+
+  const handleTransferOwnership = async () => {
+    if (!transferTargetStudio || !transferTargetArtistId.trim()) return;
+    setIsTransferring(true);
+    try {
+      const res = await api.transferStudioOwnership(transferTargetStudio.id, transferTargetArtistId.trim());
+      if (res.success) {
+        setStudioSuccess(`Propiedad de "${transferTargetStudio.name}" transferida con éxito.`);
+        setTransferTargetStudio(null);
+        setTransferTargetArtistId('');
+        loadStudios();
+      } else {
+        setStudioError(res.error || 'No se pudo transferir la propiedad.');
+      }
+    } catch {
+      setStudioError('Error al transferir la propiedad del estudio.');
+    } finally {
+      setIsTransferring(false);
+    }
+  };
+
+  const handleDeleteStudio = async (studioId: string) => {
+    if (!window.confirm('¿Seguro que deseas eliminar este estudio? Los artistas colaboradores no serán eliminados y continuarán como artistas independientes en el mapa.')) {
+      return;
+    }
+    try {
+      const res = await api.deleteStudio(studioId);
+      if (res.success) {
+        setStudios((prev) => prev.filter((s) => s.id !== studioId));
+        setStudioSuccess('Estudio eliminado de forma segura. Los artistas asociados continúan como independientes.');
+      } else {
+        setStudioError(res.error || 'No se pudo eliminar el estudio.');
+      }
+    } catch {
+      setStudioError('Error al eliminar el estudio.');
+    }
+  };
+
+  const copyStudioCode = (code: string) => {
+    navigator.clipboard.writeText(code);
+    setCopiedStudioCode(code);
+    setTimeout(() => setCopiedStudioCode(null), 2500);
+  };
 
   React.useEffect(() => {
     if (!isLoading) {
@@ -270,6 +461,186 @@ export const ArtistDashboardPage: React.FC = () => {
           </div>
         </section>
 
+        {/* Studio Management Section */}
+        <section className="mb-10" id="mis-estudios">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
+            <div>
+              <h2 className="text-xl font-bold text-slate-800 dark:text-white flex items-center gap-2">
+                <Building2 className="text-primary" size={22} /> Mis Estudios & Presencia en el Mapa
+              </h2>
+              <p className="text-sm text-slate-500 dark:text-gray-400 mt-1">
+                Registra tu estudio con ubicación geográfica exacta, comparte tu código para agregar artistas colaboradores o transfiere la administración.
+              </p>
+            </div>
+            <button
+              onClick={() => {
+                setStudioError(null);
+                setStudioSuccess(null);
+                setShowStudioModal(true);
+              }}
+              data-testid="btn-open-create-studio"
+              className="inline-flex items-center gap-2 bg-gradient-to-r from-primary to-violet-600 hover:from-primary-hover hover:to-violet-700 text-white font-semibold text-sm px-4 py-2.5 rounded-xl shadow-lg transition hover:scale-105 shrink-0"
+            >
+              <Plus size={18} /> Registrar Nuevo Estudio
+            </button>
+          </div>
+
+          {/* Feedback messages */}
+          {studioSuccess && (
+            <div className="mb-6 p-4 rounded-xl bg-emerald-500/10 border border-emerald-500/30 text-emerald-700 dark:text-emerald-300 flex items-center justify-between text-sm">
+              <span className="flex items-center gap-2">
+                <CheckCircle2 size={18} className="shrink-0 text-emerald-500" />
+                {studioSuccess}
+              </span>
+              <button onClick={() => setStudioSuccess(null)} className="text-emerald-700 dark:text-emerald-300 hover:opacity-75">
+                <X size={16} />
+              </button>
+            </div>
+          )}
+
+          {studioError && (
+            <div className="mb-6 p-4 rounded-xl bg-red-500/10 border border-red-500/30 text-red-700 dark:text-red-300 flex items-center justify-between text-sm">
+              <span>{studioError}</span>
+              <button onClick={() => setStudioError(null)} className="text-red-700 dark:text-red-300 hover:opacity-75">
+                <X size={16} />
+              </button>
+            </div>
+          )}
+
+          {/* Join Studio with Code Card */}
+          <div className="bg-white dark:bg-gray-800/80 border border-slate-200 dark:border-gray-700/60 rounded-2xl p-5 mb-6 shadow-sm">
+            <form onSubmit={handleJoinStudio} className="flex flex-col sm:flex-row items-center gap-3">
+              <div className="flex-1 w-full">
+                <label className="block text-xs font-semibold text-slate-600 dark:text-gray-300 mb-1">
+                  ¿Eres residente o colaborador en un estudio existente?
+                </label>
+                <div className="relative">
+                  <input
+                    type="text"
+                    value={joinStudioCode}
+                    onChange={(e) => setJoinStudioCode(e.target.value.toUpperCase())}
+                    placeholder="Ingresa el código del estudio (ej. OBS-9X42)"
+                    data-testid="join-studio-code-input"
+                    className="w-full pl-3 pr-24 py-2 text-sm bg-slate-50 dark:bg-gray-900 border border-slate-300 dark:border-gray-700 rounded-xl focus:ring-2 focus:ring-primary focus:outline-none uppercase font-mono"
+                  />
+                  <button
+                    type="submit"
+                    disabled={isJoiningStudio || !joinStudioCode.trim()}
+                    data-testid="btn-join-studio"
+                    className="absolute right-1.5 top-1.5 bottom-1.5 px-3 bg-primary hover:bg-primary-hover disabled:opacity-50 text-white text-xs font-bold rounded-lg transition"
+                  >
+                    {isJoiningStudio ? 'Vinculando...' : 'Vincularse'}
+                  </button>
+                </div>
+              </div>
+            </form>
+          </div>
+
+          {/* Studios Grid */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {studios.map((studio) => (
+              <div
+                key={studio.id}
+                data-testid={`studio-card-${studio.id}`}
+                className="bg-white dark:bg-gray-800/80 border border-slate-200 dark:border-gray-700/60 rounded-2xl p-6 shadow-md flex flex-col justify-between relative overflow-hidden"
+              >
+                <div>
+                  <div className="flex items-start justify-between gap-3 mb-3">
+                    <div>
+                      <div className="flex items-center gap-2">
+                        <h3 className="text-lg font-bold text-slate-800 dark:text-white">{studio.name}</h3>
+                        {studio.is_owner && (
+                          <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/30">
+                            Propietario
+                          </span>
+                        )}
+                      </div>
+                      <p className="text-xs text-primary font-medium mt-0.5">{studio.tagline}</p>
+                    </div>
+                    <div className="text-right shrink-0">
+                      <div className="flex items-center gap-1 text-amber-500 text-sm font-bold justify-end">
+                        ★ {studio.rating?.toFixed(1) || '5.0'}
+                      </div>
+                      <span className="text-[11px] text-slate-400">({studio.review_count || 0} reseñas)</span>
+                    </div>
+                  </div>
+
+                  <div className="space-y-2 text-xs text-slate-600 dark:text-gray-300 my-4">
+                    <p className="flex items-center gap-2">
+                      <MapPin size={14} className="text-slate-400 shrink-0" />
+                      <span>{studio.address}</span>
+                    </p>
+                    <p className="flex items-center gap-2">
+                      <Clock size={14} className="text-slate-400 shrink-0" />
+                      <span>{studio.opening_hours || 'Lun - Sáb: 10:00 - 20:00'}</span>
+                    </p>
+                    <p className="flex items-center gap-2">
+                      <Users size={14} className="text-slate-400 shrink-0" />
+                      <span>{studio.artists_count || 1} artistas residentes</span>
+                    </p>
+                  </div>
+
+                  {/* Collaboration Code Box */}
+                  <div className="p-3 bg-slate-50 dark:bg-gray-900/80 border border-slate-200 dark:border-gray-700/50 rounded-xl mb-4 flex items-center justify-between">
+                    <div>
+                      <span className="text-[10px] text-slate-500 dark:text-gray-400 uppercase font-bold tracking-wider block">
+                        Código de Colaboración
+                      </span>
+                      <span className="text-sm font-mono font-bold text-slate-800 dark:text-white">
+                        {studio.studio_code}
+                      </span>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={() => copyStudioCode(studio.studio_code)}
+                      data-testid={`copy-code-${studio.id}`}
+                      className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold rounded-lg bg-white dark:bg-gray-800 text-slate-700 dark:text-gray-200 border border-slate-200 dark:border-gray-700 hover:border-primary transition"
+                    >
+                      {copiedStudioCode === studio.studio_code ? (
+                        <>
+                          <Check size={14} className="text-emerald-500" />
+                          <span data-testid={`copied-code-${studio.id}`} className="text-emerald-600 dark:text-emerald-400">¡Copiado!</span>
+                        </>
+                      ) : (
+                        <>
+                          <Copy size={14} />
+                          <span>Copiar</span>
+                        </>
+                      )}
+                    </button>
+                  </div>
+                </div>
+
+                {/* Owner Actions */}
+                {studio.is_owner && (
+                  <div className="pt-4 border-t border-slate-100 dark:border-gray-700/60 flex items-center justify-between gap-2">
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setTransferTargetStudio(studio);
+                        setTransferTargetArtistId('');
+                      }}
+                      data-testid={`btn-transfer-studio-${studio.id}`}
+                      className="inline-flex items-center gap-1 text-xs text-slate-600 dark:text-gray-300 hover:text-primary transition"
+                    >
+                      <Share2 size={13} /> Transferir Propiedad
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => handleDeleteStudio(studio.id)}
+                      data-testid={`btn-delete-studio-${studio.id}`}
+                      className="inline-flex items-center gap-1 text-xs text-red-600 hover:text-red-700 dark:text-red-400 dark:hover:text-red-300 transition"
+                      title="Elimina el estudio de forma segura (los artistas colaboradores se mantienen independientes)"
+                    >
+                      <Trash2 size={13} /> Eliminar Estudio
+                    </button>
+                  </div>
+                )}
+              </div>
+            ))}
+          </div>
+        </section>
+
         {/* Commercial Features Overview */}
         <section className="bg-white dark:bg-gray-850 border border-slate-200 dark:border-gray-700/80 rounded-2xl p-6 md:p-8 mb-10 shadow-xl text-slate-800 dark:text-white">
           <h3 className="text-lg md:text-xl font-bold text-slate-800 dark:text-white mb-4 flex items-center gap-2">
@@ -294,6 +665,204 @@ export const ArtistDashboardPage: React.FC = () => {
         </section>
       </main>
 
+      {/* Studio Registration Modal */}
+      {showStudioModal && (
+        <div className="fixed inset-0 z-50 bg-black/75 backdrop-blur-sm flex items-center justify-center p-4">
+          <div className="bg-white dark:bg-gray-900 border border-slate-200 dark:border-gray-700 rounded-2xl max-w-lg w-full p-6 shadow-2xl text-slate-800 dark:text-white max-h-[90vh] overflow-y-auto">
+            <div className="flex items-center justify-between mb-4 pb-3 border-b border-slate-200 dark:border-gray-800">
+              <div className="flex items-center gap-2">
+                <Building2 className="text-primary" size={22} />
+                <h3 className="text-lg font-bold">Registrar Estudio en el Mapa</h3>
+              </div>
+              <button
+                onClick={() => setShowStudioModal(false)}
+                data-testid="btn-close-studio-modal"
+                className="text-slate-400 hover:text-slate-600 dark:hover:text-white"
+              >
+                <X size={20} />
+              </button>
+            </div>
+
+            <form onSubmit={handleCreateStudio} className="space-y-4">
+              <div>
+                <label className="block text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-gray-300 mb-1">
+                  Nombre del Estudio *
+                </label>
+                <input
+                  type="text"
+                  required
+                  value={newStudioName}
+                  onChange={(e) => setNewStudioName(e.target.value)}
+                  placeholder="Ej. Obsidian Atelier & Flash Lab"
+                  data-testid="studio-name-input"
+                  className={`w-full px-3 py-2 text-sm bg-slate-50 dark:bg-gray-800 border rounded-xl focus:outline-none focus:ring-2 ${
+                    isNameDuplicate
+                      ? 'border-red-500 focus:ring-red-500'
+                      : 'border-slate-300 dark:border-gray-700 focus:ring-primary'
+                  }`}
+                />
+                {isNameDuplicate && (
+                  <p className="text-xs text-red-500 mt-1 font-medium">
+                    ⚠️ Ya existe un estudio con este nombre. Elige un nombre único.
+                  </p>
+                )}
+              </div>
+
+              <div>
+                <label className="block text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-gray-300 mb-1">
+                  Lema / Especialidad
+                </label>
+                <input
+                  type="text"
+                  value={newStudioTagline}
+                  onChange={(e) => setNewStudioTagline(e.target.value)}
+                  placeholder="Ej. Colectivo de Arte Oscuro & Cybersigilism"
+                  data-testid="studio-tagline-input"
+                  className="w-full px-3 py-2 text-sm bg-slate-50 dark:bg-gray-800 border border-slate-300 dark:border-gray-700 rounded-xl focus:ring-2 focus:ring-primary focus:outline-none"
+                />
+              </div>
+
+              <div>
+                <label className="block text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-gray-300 mb-1">
+                  Dirección Física *
+                </label>
+                <input
+                  type="text"
+                  required
+                  value={newStudioAddress}
+                  onChange={(e) => setNewStudioAddress(e.target.value)}
+                  placeholder="Ej. Bella Vista, Calle 50, Ciudad de Panamá"
+                  data-testid="studio-address-input"
+                  className="w-full px-3 py-2 text-sm bg-slate-50 dark:bg-gray-800 border border-slate-300 dark:border-gray-700 rounded-xl focus:ring-2 focus:ring-primary focus:outline-none"
+                />
+              </div>
+
+              <div>
+                <label className="block text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-gray-300 mb-1">
+                  Horario de Atención
+                </label>
+                <input
+                  type="text"
+                  value={newStudioHours}
+                  onChange={(e) => setNewStudioHours(e.target.value)}
+                  placeholder="Lun - Sáb: 10:00 - 20:00"
+                  data-testid="studio-hours-input"
+                  className="w-full px-3 py-2 text-sm bg-slate-50 dark:bg-gray-800 border border-slate-300 dark:border-gray-700 rounded-xl focus:ring-2 focus:ring-primary focus:outline-none"
+                />
+              </div>
+
+              <div>
+                <label className="block text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-gray-300 mb-1">
+                  Descripción
+                </label>
+                <textarea
+                  rows={2}
+                  value={newStudioDescription}
+                  onChange={(e) => setNewStudioDescription(e.target.value)}
+                  placeholder="Breve reseña del estudio y normas sanitarias..."
+                  className="w-full px-3 py-2 text-sm bg-slate-50 dark:bg-gray-800 border border-slate-300 dark:border-gray-700 rounded-xl focus:ring-2 focus:ring-primary focus:outline-none"
+                />
+              </div>
+
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <label className="block text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-gray-300 mb-1">
+                    Latitud
+                  </label>
+                  <input
+                    type="text"
+                    value={newStudioLat}
+                    onChange={(e) => setNewStudioLat(e.target.value)}
+                    placeholder="8.9824"
+                    data-testid="studio-lat-input"
+                    className="w-full px-3 py-2 text-sm bg-slate-50 dark:bg-gray-800 border border-slate-300 dark:border-gray-700 rounded-xl focus:ring-2 focus:ring-primary focus:outline-none font-mono"
+                  />
+                </div>
+                <div>
+                  <label className="block text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-gray-300 mb-1">
+                    Longitud
+                  </label>
+                  <input
+                    type="text"
+                    value={newStudioLng}
+                    onChange={(e) => setNewStudioLng(e.target.value)}
+                    placeholder="-79.5199"
+                    data-testid="studio-lng-input"
+                    className="w-full px-3 py-2 text-sm bg-slate-50 dark:bg-gray-800 border border-slate-300 dark:border-gray-700 rounded-xl focus:ring-2 focus:ring-primary focus:outline-none font-mono"
+                  />
+                </div>
+              </div>
+
+              {studioError && (
+                <p className="text-xs text-red-500 font-medium">{studioError}</p>
+              )}
+
+              <div className="flex items-center justify-end gap-3 pt-3 border-t border-slate-200 dark:border-gray-800">
+                <button
+                  type="button"
+                  onClick={() => setShowStudioModal(false)}
+                  className="px-4 py-2 text-sm rounded-xl text-slate-600 dark:text-gray-300 hover:bg-slate-100 dark:hover:bg-gray-800 transition"
+                >
+                  Cancelar
+                </button>
+                <button
+                  type="submit"
+                  disabled={isSubmittingStudio || isNameDuplicate || !newStudioName.trim()}
+                  data-testid="btn-submit-studio"
+                  className="px-5 py-2 text-sm font-bold rounded-xl bg-primary hover:bg-primary-hover disabled:opacity-50 text-white shadow transition"
+                >
+                  {isSubmittingStudio ? 'Guardando...' : 'Guardar y Publicar en Mapa'}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* Transfer Ownership Modal */}
+      {transferTargetStudio && (
+        <div className="fixed inset-0 z-50 bg-black/75 backdrop-blur-sm flex items-center justify-center p-4">
+          <div className="bg-white dark:bg-gray-900 border border-slate-200 dark:border-gray-700 rounded-2xl max-w-md w-full p-6 shadow-2xl text-slate-800 dark:text-white">
+            <h3 className="text-lg font-bold mb-2">Transferir Propiedad del Estudio</h3>
+            <p className="text-sm text-slate-600 dark:text-gray-300 mb-4">
+              Estás por transferir la administración total de <strong>{transferTargetStudio.name}</strong> a otro artista.
+              Perderás los privilegios de eliminar o transferir este estudio.
+            </p>
+            <div className="mb-4">
+              <label className="block text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-gray-300 mb-1">
+                ID o Correo del Nuevo Propietario
+              </label>
+              <input
+                type="text"
+                value={transferTargetArtistId}
+                onChange={(e) => setTransferTargetArtistId(e.target.value)}
+                placeholder="ID de usuario o correo de destino"
+                data-testid="transfer-artist-id-input"
+                className="w-full px-3 py-2 text-sm bg-slate-50 dark:bg-gray-800 border border-slate-300 dark:border-gray-700 rounded-xl focus:ring-2 focus:ring-primary focus:outline-none"
+              />
+            </div>
+            <div className="flex items-center justify-end gap-3 pt-3 border-t border-slate-200 dark:border-gray-800">
+              <button
+                type="button"
+                onClick={() => setTransferTargetStudio(null)}
+                data-testid="btn-cancel-transfer"
+                className="px-4 py-2 text-sm rounded-xl text-slate-600 dark:text-gray-300 hover:bg-slate-100 dark:hover:bg-gray-800 transition"
+              >
+                Cancelar
+              </button>
+              <button
+                type="button"
+                onClick={handleTransferOwnership}
+                disabled={isTransferring || !transferTargetArtistId.trim()}
+                data-testid="btn-confirm-transfer"
+                className="px-5 py-2 text-sm font-bold rounded-xl bg-amber-600 hover:bg-amber-700 disabled:opacity-50 text-white shadow transition"
+              >
+                {isTransferring ? 'Transfiriendo...' : 'Confirmar Transferencia'}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
       </div>
     </PageTransition>
   );

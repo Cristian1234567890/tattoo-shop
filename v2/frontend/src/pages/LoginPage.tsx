@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import {
@@ -39,9 +39,10 @@ export const LoginPage: React.FC = () => {
   const [otpCode, setOtpCode] = useState('');
   const [verifyLoading, setVerifyLoading] = useState(false);
 
-  const { login } = useAuth();
+  const { login, user: currentUser, isAuthenticated } = useAuth();
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
+  const hasNavigatedRef = useRef(false);
 
   const getDashboardRoute = (userOrRole?: any): string => {
     let role = '';
@@ -57,13 +58,21 @@ export const LoginPage: React.FC = () => {
   };
 
   const navigateToDestination = (user?: any) => {
+    if (hasNavigatedRef.current) return;
+    hasNavigatedRef.current = true;
     const rawRedirect = searchParams.get('redirect');
     if (rawRedirect && rawRedirect.startsWith('/') && !rawRedirect.startsWith('//') && !rawRedirect.startsWith('/hub')) {
-      navigate(rawRedirect);
+      navigate(rawRedirect, { replace: true });
       return;
     }
-    navigate(getDashboardRoute(user));
+    navigate(getDashboardRoute(user), { replace: true });
   };
+
+  useEffect(() => {
+    if (isAuthenticated && currentUser && !hasNavigatedRef.current) {
+      navigateToDestination(currentUser);
+    }
+  }, [isAuthenticated, currentUser]);
 
   useEffect(() => {
     const { data: authListener } = supabase.auth.onAuthStateChange(async (event, session) => {

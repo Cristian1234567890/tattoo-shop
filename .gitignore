@@ -85,6 +85,8 @@ coverage/
 *.lcov
 results.json
 **/results.json
+test-results/
+**/test-results/
 
 # ---------------------------------------------------------------------
 # 5. PLATAFORMAS EN LA NUBE Y DESPLIEGUE SERVERLESS

@@ -7,6 +7,7 @@ import subscriptionRoutes from './routes/subscription.routes';
 import mailRoutes from './routes/mail.routes';
 import progressRoutes from './routes/progress.routes';
 import hubRoutes from './routes/hub.routes';
+import studioRoutes from './routes/studio.routes';
 import { errorHandler } from './middlewares/error.middleware';
 import { generalApiLimiter } from './middlewares/rateLimit.middleware';
 import { securityHeadersMiddleware } from './middlewares/security.middleware';
@@ -49,6 +50,7 @@ export function createApp(): Application {
   app.use(mailRoutes);
   app.use(progressRoutes);
   app.use(hubRoutes);
+  app.use(studioRoutes);
 
   // 404 Handler for unmatched routes
   app.use((_req: Request, res: Response) => {

@@ -31,6 +31,7 @@ import { QaEnvironmentBanner } from './components/common/QaEnvironmentBanner';
 import { Footer, FooterContext } from './components/common/Footer';
 import { PageTransition } from './components/common/PageTransition';
 import { TattooPatternBackground } from './components/common/TattooPatternBackground';
+import { FloatingChatWidget } from './components/common/FloatingChatWidget';
 import './index.css';
 
 export const OnboardingGate: React.FC = () => {
@@ -267,6 +268,9 @@ export const AnimatedAppRoutes: React.FC = () => {
 
           {/* Approved R4 Conditional Footer */}
           {!shouldHideFooter && <Footer forceRender={true} />}
+
+          {/* Floating Chat Widget for Authenticated Users */}
+          <FloatingChatWidget />
         </div>
       </FooterContext.Provider>
     </NavbarContext.Provider>

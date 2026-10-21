@@ -261,4 +261,14 @@ export interface StudioLocation {
     prefix: string;
   };
   amenities?: string[];
+  opening_hours?: string;
+  reviews?: Array<{
+    id: string;
+    user?: string;
+    author?: string;
+    rating: number;
+    comment: string;
+    date?: string;
+    created_at?: string;
+  }>;
 }

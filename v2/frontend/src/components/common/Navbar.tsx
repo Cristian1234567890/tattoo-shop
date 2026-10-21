@@ -23,9 +23,13 @@ import {
   ShoppingBag,
   Languages,
   Lock,
+  Sun,
+  Moon,
 } from 'lucide-react';
 import { isQaEnvironment } from '../../api/supabase';
 import { ThemeSwitch } from './ThemeSwitch';
+import { useTheme } from '../../context/ThemeContext';
+import { BecomeArtistModal } from '../auth/BecomeArtistModal';
 
 export const NavbarContext = React.createContext<{ isMounted: boolean }>({ isMounted: false });
 
@@ -42,16 +46,18 @@ export const Navbar: React.FC<NavbarProps> = ({ forceRender = false }) => {
   const { isAuthenticated, isPasswordRecovery, user, logout, updateUserMetadata } = useAuth();
   const { country, currency, countryInfo, setCountry } = useCurrency();
   const { language, setLanguage, t } = useLanguage();
+  const { isDark } = useTheme();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [currencyDropdownOpen, setCurrencyDropdownOpen] = useState(false);
-  const [languageDropdownOpen, setLanguageDropdownOpen] = useState(false);
   const [userDropdownOpen, setUserDropdownOpen] = useState(false);
+  const [guestPreferencesOpen, setGuestPreferencesOpen] = useState(false);
+  const [becomeArtistOpen, setBecomeArtistOpen] = useState(false);
 
   const closeMenu = () => {
     setMobileMenuOpen(false);
     setCurrencyDropdownOpen(false);
-    setLanguageDropdownOpen(false);
     setUserDropdownOpen(false);
+    setGuestPreferencesOpen(false);
   };
 
   const handleSwitchRole = (targetRole: 'Cliente' | 'Tatuador') => {
@@ -172,138 +178,8 @@ export const Navbar: React.FC<NavbarProps> = ({ forceRender = false }) => {
 
           </div>
 
-          {/* Desktop Right Actions: Country/Currency Selector + Language + Theme + Auth (Right Section) */}
+          {/* Desktop Right Actions: Consolidated Preferences Dropdown (Guest) or User Menu with embedded preferences (Authenticated) */}
           <div className="hidden lg:flex items-center justify-end gap-2 xl:gap-3 flex-1 min-w-[280px]">
-            {/* Country & Currency Selector Dropdown */}
-            <div className="relative">
-              <button
-                id="country-currency-selector-btn"
-                onClick={() => setCurrencyDropdownOpen(!currencyDropdownOpen)}
-                className="flex items-center justify-center gap-1.5 min-w-[78px] px-2.5 py-1.5 rounded-full text-xs font-semibold bg-slate-100 hover:bg-slate-200 dark:bg-white/5 dark:hover:bg-white/10 border border-slate-200 dark:border-white/10 text-slate-700 dark:text-zinc-300 hover:text-slate-900 dark:hover:text-white transition-all cursor-pointer shadow-sm shrink-0"
-                aria-label="Seleccionar País y Moneda"
-              >
-                <span className="text-base leading-none">{countryInfo.flag}</span>
-                <span className="text-violet-600 dark:text-violet-400 font-bold">{currency}</span>
-                <ChevronDown className="w-3.5 h-3.5 text-zinc-400" />
-              </button>
-
-              {currencyDropdownOpen && (
-                <>
-                  <div
-                    className="fixed inset-0 z-40"
-                    onClick={() => setCurrencyDropdownOpen(false)}
-                  />
-                  <div
-                    id="country-currency-dropdown-menu"
-                    className="absolute right-0 mt-2 w-64 bg-white/95 dark:bg-zinc-950/95 border border-slate-200 dark:border-zinc-800 rounded-2xl shadow-2xl p-2 z-50 backdrop-blur-xl animate-in fade-in slide-in-from-top-1 duration-150 text-slate-800 dark:text-zinc-200"
-                  >
-                    <div className="px-2.5 py-1.5 text-[11px] font-bold uppercase tracking-wider text-zinc-400 border-b border-zinc-800/80 mb-1 flex items-center gap-1.5">
-                      <Globe className="w-3.5 h-3.5 text-violet-400" />
-                      País & Divisa Activa
-                    </div>
-                    <div className="space-y-1">
-                      {SUPPORTED_COUNTRIES.map((c) => {
-                        const isSelected = country === c.code;
-                        return (
-                          <button
-                            key={c.code}
-                            onClick={() => {
-                              setCountry(c.code);
-                              setCurrencyDropdownOpen(false);
-                            }}
-                            className={`w-full flex items-center justify-between px-2.5 py-2 rounded-xl text-xs font-medium transition-colors cursor-pointer ${
-                              isSelected
-                                ? 'bg-violet-600/20 text-white border border-violet-500/40'
-                                : 'text-zinc-300 hover:bg-zinc-900 hover:text-white'
-                            }`}
-                          >
-                            <div className="flex items-center gap-2.5">
-                              <span className="text-base">{c.flag}</span>
-                              <div className="text-left">
-                                <p className="font-semibold leading-tight">{c.name}</p>
-                                <p className="text-[10px] text-zinc-400">
-                                  Moneda: {c.defaultCurrency}
-                                </p>
-                              </div>
-                            </div>
-                            {isSelected && (
-                              <Check className="w-4 h-4 text-violet-400 shrink-0" />
-                            )}
-                          </button>
-                        );
-                      })}
-                    </div>
-                  </div>
-                </>
-              )}
-            </div>
-
-            {/* Language Selector Dropdown */}
-            <div className="relative">
-              <button
-                id="language-selector-btn"
-                onClick={() => {
-                  setLanguageDropdownOpen(!languageDropdownOpen);
-                  setCurrencyDropdownOpen(false);
-                }}
-                className="flex items-center justify-center gap-1.5 w-16 px-2.5 py-1.5 rounded-full text-xs font-semibold bg-slate-100 hover:bg-slate-200 dark:bg-white/5 dark:hover:bg-white/10 border border-slate-200 dark:border-white/10 text-slate-700 dark:text-zinc-300 hover:text-slate-900 dark:hover:text-white transition-all cursor-pointer shadow-sm shrink-0"
-                aria-label="Seleccionar Idioma"
-              >
-                <Languages className="w-3.5 h-3.5 text-violet-400" />
-                <span className="uppercase font-bold">{language}</span>
-                <ChevronDown className="w-3.5 h-3.5 text-zinc-400" />
-              </button>
-
-              {languageDropdownOpen && (
-                <>
-                  <div
-                    className="fixed inset-0 z-40"
-                    onClick={() => setLanguageDropdownOpen(false)}
-                  />
-                  <div
-                    id="language-dropdown-menu"
-                    className="absolute right-0 mt-2 w-44 bg-white/95 dark:bg-zinc-950/95 border border-slate-200 dark:border-zinc-800 rounded-2xl shadow-2xl p-2 z-50 backdrop-blur-xl animate-in fade-in slide-in-from-top-1 duration-150 text-slate-800 dark:text-zinc-200"
-                  >
-                    <div className="px-2.5 py-1.5 text-[11px] font-bold uppercase tracking-wider text-zinc-400 border-b border-zinc-800/80 mb-1 flex items-center gap-1.5">
-                      <Languages className="w-3.5 h-3.5 text-violet-400" />
-                      Idioma
-                    </div>
-                    <div className="space-y-1">
-                      {LANGUAGE_OPTIONS.map((opt) => {
-                        const isSelected = language === opt.code;
-                        return (
-                          <button
-                            key={opt.code}
-                            onClick={() => {
-                              setLanguage(opt.code);
-                              setLanguageDropdownOpen(false);
-                            }}
-                            className={`w-full flex items-center justify-between px-2.5 py-2 rounded-xl text-xs font-medium transition-colors cursor-pointer ${
-                              isSelected
-                                ? 'bg-violet-600/20 text-white border border-violet-500/40'
-                                : 'text-zinc-300 hover:bg-zinc-900 hover:text-white'
-                            }`}
-                          >
-                            <div className="flex items-center gap-2">
-                              <span className="text-base">{opt.flag}</span>
-                              <span className="font-semibold">{opt.name}</span>
-                            </div>
-                            {isSelected && (
-                              <Check className="w-4 h-4 text-violet-400 shrink-0" />
-                            )}
-                          </button>
-                        );
-                      })}
-                    </div>
-                  </div>
-                </>
-              )}
-            </div>
-
-            {/* Theme Toggle (Light & Dark Mode) */}
-            <ThemeSwitch />
-
-            {/* Auth Actions */}
             {isRecoveryMode ? (
               <div
                 id="recovery-lock-badge"
@@ -347,7 +223,6 @@ export const Navbar: React.FC<NavbarProps> = ({ forceRender = false }) => {
                     onClick={() => {
                       setUserDropdownOpen(!userDropdownOpen);
                       setCurrencyDropdownOpen(false);
-                      setLanguageDropdownOpen(false);
                     }}
                     aria-label="Abrir opciones de cuenta"
                     className="p-1.5 rounded-full text-slate-600 hover:text-slate-900 dark:text-zinc-300 dark:hover:text-white bg-slate-100 hover:bg-slate-200 dark:bg-white/5 dark:hover:bg-white/10 border border-slate-200 dark:border-white/10 transition-all cursor-pointer"
@@ -411,6 +286,28 @@ export const Navbar: React.FC<NavbarProps> = ({ forceRender = false }) => {
                         )}
                       </div>
 
+                      {/* Botón Quiero ser Tatuador / Abrir Estudio si es cliente */}
+                      {!isArtist && (
+                        <div className="px-1 py-1 mb-1.5">
+                          <button
+                            id="btn-become-artist"
+                            onClick={() => {
+                              setUserDropdownOpen(false);
+                              setBecomeArtistOpen(true);
+                            }}
+                            className="w-full flex items-center justify-between px-2.5 py-2 rounded-xl text-xs font-bold text-violet-700 dark:text-violet-300 hover:text-violet-900 dark:hover:text-white bg-violet-500/10 hover:bg-violet-500/20 border border-violet-500/30 transition-all cursor-pointer shadow-sm"
+                          >
+                            <div className="flex items-center gap-2">
+                              <Sparkles className="w-3.5 h-3.5 text-violet-500 animate-pulse" />
+                              <span>Quiero ser Tatuador / Estudio</span>
+                            </div>
+                            <span className="text-[10px] bg-violet-500/20 px-1.5 py-0.5 rounded text-violet-600 dark:text-violet-300 font-bold uppercase">
+                              Pro
+                            </span>
+                          </button>
+                        </div>
+                      )}
+
                       <div className="px-1 py-1 mb-2">
                         <p className="px-2 text-[10px] font-bold uppercase tracking-wider text-slate-400 dark:text-zinc-500 mb-1">
                           Cambio Rápido de Función
@@ -458,6 +355,67 @@ export const Navbar: React.FC<NavbarProps> = ({ forceRender = false }) => {
                         </Link>
                       </div>
 
+                      {/* Preferencias integradas en el menú de usuario autenticado */}
+                      <div className="border-t border-slate-100 dark:border-zinc-800/80 mt-2 pt-2 px-1">
+                        <p className="px-1.5 text-[10px] font-bold uppercase tracking-wider text-slate-400 dark:text-zinc-500 mb-1.5">
+                          Preferencias de Usuario
+                        </p>
+                        {/* Selector de País & Divisa */}
+                        <div className="mb-2">
+                          <button
+                            onClick={() => setCurrencyDropdownOpen(!currencyDropdownOpen)}
+                            className="w-full flex items-center justify-between px-2.5 py-1.5 rounded-lg text-xs font-medium text-slate-700 dark:text-zinc-300 hover:bg-slate-100 dark:hover:bg-zinc-900 transition"
+                          >
+                            <span className="flex items-center gap-2">
+                              <Globe className="w-3.5 h-3.5 text-violet-500" />
+                              <span>{countryInfo.flag} {countryInfo.name}</span>
+                            </span>
+                            <span className="font-bold text-violet-600 dark:text-violet-400">{currency}</span>
+                          </button>
+                          {currencyDropdownOpen && (
+                            <div className="mt-1 space-y-1 p-1 bg-slate-50 dark:bg-zinc-900 rounded-lg max-h-36 overflow-y-auto">
+                              {SUPPORTED_COUNTRIES.map((c) => (
+                                <button
+                                  key={c.code}
+                                  onClick={() => {
+                                    setCountry(c.code);
+                                    setCurrencyDropdownOpen(false);
+                                  }}
+                                  className={`w-full flex items-center justify-between px-2 py-1 rounded text-[11px] ${
+                                    country === c.code
+                                      ? 'bg-violet-600/20 text-violet-600 font-bold'
+                                      : 'text-slate-600 dark:text-zinc-400 hover:bg-slate-200 dark:hover:bg-zinc-800'
+                                  }`}
+                                >
+                                  <span>{c.flag} {c.name}</span>
+                                  <span>{c.defaultCurrency}</span>
+                                </button>
+                              ))}
+                            </div>
+                          )}
+                        </div>
+
+                        {/* Selector de Idioma & Tema */}
+                        <div className="flex items-center justify-between gap-2 pt-1 border-t border-slate-100 dark:border-zinc-800/60">
+                          <div className="flex items-center gap-1 bg-slate-100 dark:bg-zinc-900 p-0.5 rounded-lg">
+                            {LANGUAGE_OPTIONS.map((opt) => (
+                              <button
+                                key={opt.code}
+                                onClick={() => setLanguage(opt.code)}
+                                className={`px-2 py-0.5 rounded text-[11px] font-bold ${
+                                  language === opt.code
+                                    ? 'bg-white dark:bg-zinc-800 text-violet-600 dark:text-violet-400 shadow-sm'
+                                    : 'text-slate-500 dark:text-zinc-500 hover:text-slate-900 dark:hover:text-white'
+                                }`}
+                              >
+                                {opt.flag} {opt.code.toUpperCase()}
+                              </button>
+                            ))}
+                          </div>
+                          <ThemeSwitch />
+                        </div>
+                      </div>
+
                       <div className="border-t border-slate-100 dark:border-zinc-800/80 mt-2 pt-1.5">
                         <button
                           id="log-out"
@@ -476,7 +434,123 @@ export const Navbar: React.FC<NavbarProps> = ({ forceRender = false }) => {
                 )}
               </div>
             ) : (
+              /* Modo Invitado: Botón Único de Preferencias Compacto + Login / Registro */
               <div className="flex items-center gap-3">
+                {/* Botón único desplegable con test IDs preservados */}
+                <div className="relative">
+                  <button
+                    id="country-currency-selector-btn"
+                    onClick={() => setGuestPreferencesOpen(!guestPreferencesOpen)}
+                    className="flex items-center justify-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold bg-slate-100 hover:bg-slate-200 dark:bg-white/5 dark:hover:bg-white/10 border border-slate-200 dark:border-white/10 text-slate-700 dark:text-zinc-300 hover:text-slate-900 dark:hover:text-white transition-all cursor-pointer shadow-sm shrink-0"
+                    aria-label="Seleccionar País, Moneda, Idioma y Tema"
+                  >
+                    <span className="text-base leading-none">{countryInfo.flag}</span>
+                    <span className="text-violet-600 dark:text-violet-400 font-bold">{currency}</span>
+                    <span className="text-slate-300 dark:text-zinc-600 font-normal">·</span>
+                    <span className="uppercase font-bold text-[11px] text-slate-600 dark:text-zinc-300">{language}</span>
+                    <span className="text-slate-300 dark:text-zinc-600 font-normal">·</span>
+                    {isDark ? (
+                      <Moon className="w-3.5 h-3.5 text-amber-400" />
+                    ) : (
+                      <Sun className="w-3.5 h-3.5 text-amber-500" />
+                    )}
+                    <ChevronDown className={`w-3.5 h-3.5 text-zinc-400 transition-transform duration-200 ${guestPreferencesOpen ? 'rotate-180' : ''}`} />
+                  </button>
+
+                  {guestPreferencesOpen && (
+                    <>
+                      <div
+                        className="fixed inset-0 z-40"
+                        onClick={() => setGuestPreferencesOpen(false)}
+                      />
+                      <div
+                        id="country-currency-dropdown-menu"
+                        className="absolute right-0 mt-2 w-72 bg-white/95 dark:bg-zinc-950/95 border border-slate-200 dark:border-zinc-800 rounded-2xl shadow-2xl p-3 z-50 backdrop-blur-xl animate-in fade-in slide-in-from-top-1 duration-150 text-slate-800 dark:text-zinc-200"
+                      >
+                        <div className="px-1 py-1 text-[11px] font-bold uppercase tracking-wider text-zinc-400 border-b border-zinc-200 dark:border-zinc-800 mb-2 flex items-center justify-between">
+                          <span className="flex items-center gap-1.5">
+                            <Globe className="w-3.5 h-3.5 text-violet-400" /> Preferencias Regionales
+                          </span>
+                          <ThemeSwitch />
+                        </div>
+
+                        {/* País & Divisa */}
+                        <p className="px-1 text-[10px] font-bold uppercase text-slate-400 dark:text-zinc-500 mb-1">
+                          País & Divisa Activa
+                        </p>
+                        <div className="space-y-1 mb-3 max-h-48 overflow-y-auto">
+                          {SUPPORTED_COUNTRIES.map((c) => {
+                            const isSelected = country === c.code;
+                            return (
+                              <button
+                                key={c.code}
+                                onClick={() => {
+                                  setCountry(c.code);
+                                  setGuestPreferencesOpen(false);
+                                }}
+                                className={`w-full flex items-center justify-between px-2.5 py-1.5 rounded-xl text-xs font-medium transition-colors cursor-pointer ${
+                                  isSelected
+                                    ? 'bg-violet-600/20 text-violet-700 dark:text-white border border-violet-500/40 font-bold'
+                                    : 'text-slate-600 dark:text-zinc-300 hover:bg-slate-100 dark:hover:bg-zinc-900 hover:text-slate-900 dark:hover:text-white'
+                                }`}
+                              >
+                                <div className="flex items-center gap-2">
+                                  <span className="text-base">{c.flag}</span>
+                                  <div className="text-left">
+                                    <p className="leading-tight">{c.name}</p>
+                                    <p className="text-[10px] text-slate-400 dark:text-zinc-500">
+                                      {c.defaultCurrency}
+                                    </p>
+                                  </div>
+                                </div>
+                                {isSelected && (
+                                  <Check className="w-4 h-4 text-violet-500 shrink-0" />
+                                )}
+                              </button>
+                            );
+                          })}
+                        </div>
+
+                        {/* Idioma con selector compatible */}
+                        <div className="pt-2 border-t border-slate-200 dark:border-zinc-800">
+                          <div className="flex items-center justify-between mb-1.5 px-1">
+                            <span className="text-[10px] font-bold uppercase text-slate-400 dark:text-zinc-500 flex items-center gap-1">
+                              <Languages className="w-3 h-3 text-violet-500" /> Idioma
+                            </span>
+                          </div>
+                          <div className="grid grid-cols-2 gap-2">
+                            {LANGUAGE_OPTIONS.map((opt) => {
+                              const isSelected = language === opt.code;
+                              return (
+                                <button
+                                  key={opt.code}
+                                  id="language-selector-btn"
+                                  onClick={() => {
+                                    setLanguage(opt.code);
+                                    setGuestPreferencesOpen(false);
+                                  }}
+                                  className={`flex items-center justify-between px-2.5 py-1.5 rounded-xl text-xs transition-colors cursor-pointer ${
+                                    isSelected
+                                      ? 'bg-violet-600/20 text-violet-700 dark:text-white border border-violet-500/40 font-bold'
+                                      : 'text-slate-600 dark:text-zinc-300 hover:bg-slate-100 dark:hover:bg-zinc-900'
+                                  }`}
+                                >
+                                  <span className="flex items-center gap-1.5">
+                                    <span>{opt.flag}</span>
+                                    <span>{opt.name}</span>
+                                  </span>
+                                  {isSelected && <Check className="w-3.5 h-3.5 text-violet-500" />}
+                                </button>
+                              );
+                            })}
+                          </div>
+                        </div>
+                      </div>
+                    </>
+                  )}
+                </div>
+
+                {/* Login & Register Buttons */}
                 <Link to="/login">
                   <button
                     id="log-in"
@@ -730,6 +804,12 @@ export const Navbar: React.FC<NavbarProps> = ({ forceRender = false }) => {
           </div>
         </div>
       )}
+
+      {/* Modal Convertirme en Tatuador / Abrir Estudio */}
+      <BecomeArtistModal
+        isOpen={becomeArtistOpen}
+        onClose={() => setBecomeArtistOpen(false)}
+      />
     </nav>
   );
 };

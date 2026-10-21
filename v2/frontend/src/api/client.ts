@@ -21,6 +21,7 @@ class ApiClient {
   constructor() {
     this.axiosInstance = axios.create({
       baseURL: API_BASE_URL,
+      timeout: 5000,
       headers: {
         'Content-Type': 'application/json',
       },
@@ -379,6 +380,94 @@ class ApiClient {
     } catch (err: any) {
       if (err.response?.data) return err.response.data;
       return { success: false, error: err.message || 'Error enviando boceto' };
+    }
+  }
+
+  // 29. GET /studios
+  async getStudios(params?: { search?: string; minRating?: number; style?: string; city?: string }): Promise<{ success: boolean; data?: any[]; error?: any }> {
+    try {
+      const res = await this.axiosInstance.get('/studios', { params });
+      return res.data;
+    } catch (err: any) {
+      if (err.response?.data) return err.response.data;
+      return { success: false, error: err.message || 'Error consultando estudios' };
+    }
+  }
+
+  // 30. POST /studios
+  async createStudio(payload: any): Promise<{ success: boolean; data?: any; error?: any }> {
+    try {
+      const res = await this.axiosInstance.post('/studios', payload);
+      return res.data;
+    } catch (err: any) {
+      if (err.response?.data) return err.response.data;
+      return { success: false, error: err.message || 'Error registrando estudio' };
+    }
+  }
+
+  // 31. PUT /studios/:id
+  async updateStudio(id: string, payload: any): Promise<{ success: boolean; data?: any; error?: any }> {
+    try {
+      const res = await this.axiosInstance.put(`/studios/${id}`, payload);
+      return res.data;
+    } catch (err: any) {
+      if (err.response?.data) return err.response.data;
+      return { success: false, error: err.message || 'Error actualizando estudio' };
+    }
+  }
+
+  // 32. POST /studios/:id/transfer
+  async transferStudioOwnership(id: string, newOwnerId: string): Promise<{ success: boolean; data?: any; error?: any }> {
+    try {
+      const res = await this.axiosInstance.post(`/studios/${id}/transfer`, { new_owner_id: newOwnerId });
+      return res.data;
+    } catch (err: any) {
+      if (err.response?.data) return err.response.data;
+      return { success: false, error: err.message || 'Error transfiriendo estudio' };
+    }
+  }
+
+  // 33. DELETE /studios/:id
+  async deleteStudio(id: string): Promise<{ success: boolean; data?: any; error?: any }> {
+    try {
+      const res = await this.axiosInstance.delete(`/studios/${id}`);
+      return res.data;
+    } catch (err: any) {
+      if (err.response?.data) return err.response.data;
+      return { success: false, error: err.message || 'Error eliminando estudio' };
+    }
+  }
+
+  // 34. POST /studios/join
+  async joinStudio(studioCode: string, specialties?: string[]): Promise<{ success: boolean; data?: any; error?: any }> {
+    try {
+      const res = await this.axiosInstance.post('/studios/join', { studio_code: studioCode, specialties });
+      return res.data;
+    } catch (err: any) {
+      if (err.response?.data) return err.response.data;
+      return { success: false, error: err.message || 'Error vinculándose al estudio' };
+    }
+  }
+
+  // 35. POST /studios/:id/reviews
+  async addStudioReview(studioId: string, payload: { rating: number; comment?: string; client_name?: string }): Promise<{ success: boolean; data?: any; error?: any }> {
+    try {
+      const res = await this.axiosInstance.post(`/studios/${studioId}/reviews`, payload);
+      return res.data;
+    } catch (err: any) {
+      if (err.response?.data) return err.response.data;
+      return { success: false, error: err.message || 'Error enviando calificación' };
+    }
+  }
+
+  // 36. POST /coupons/validate
+  async validateCoupon(code: string, appliesTo?: string): Promise<{ success: boolean; data?: any; error?: any }> {
+    try {
+      const res = await this.axiosInstance.post('/coupons/validate', { code, applies_to: appliesTo });
+      return res.data;
+    } catch (err: any) {
+      if (err.response?.data) return err.response.data;
+      return { success: false, error: err.message || 'Error validando cupón' };
     }
   }
 }
