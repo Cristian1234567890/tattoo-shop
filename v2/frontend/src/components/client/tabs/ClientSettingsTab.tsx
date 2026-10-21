@@ -493,21 +493,21 @@ export const ClientSettingsTab: React.FC<ClientSettingsTabProps> = ({
   return (
     <div className="space-y-8">
       {/* 1. Personalización de Perfil */}
-      <section className="bg-gray-850/90 border border-white/10 rounded-2xl p-6 md:p-8 shadow-xl backdrop-blur-md">
-        <div className="flex items-center gap-3 mb-6 pb-4 border-b border-white/10">
+      <section className="bg-white dark:bg-gray-850/90 border border-slate-200 dark:border-white/10 rounded-2xl p-6 md:p-8 shadow-xl backdrop-blur-md">
+        <div className="flex items-center gap-3 mb-6 pb-4 border-b border-slate-200 dark:border-white/10">
           <div className="w-10 h-10 rounded-xl bg-primary/15 border border-primary/30 flex items-center justify-center text-primary">
             <UserIcon size={20} />
           </div>
           <div>
-            <h2 className="text-xl font-bold text-white">{t.profileTitle}</h2>
-            <p className="text-xs md:text-sm text-gray-400">{t.profileSubtitle}</p>
+            <h2 className="text-xl font-bold text-slate-800 dark:text-white">{t.profileTitle}</h2>
+            <p className="text-xs md:text-sm text-slate-500 dark:text-gray-400">{t.profileSubtitle}</p>
           </div>
         </div>
 
         <form onSubmit={handleSaveProfile} className="space-y-6">
           {/* Avatar & Preset Selector */}
-          <div className="bg-gray-900/60 border border-white/5 rounded-2xl p-5 space-y-4">
-            <h3 className="text-sm font-bold text-gray-200 uppercase tracking-wider flex items-center gap-2">
+          <div className="bg-slate-50 dark:bg-gray-900/60 border border-slate-200 dark:border-white/5 rounded-2xl p-5 space-y-4">
+            <h3 className="text-sm font-bold text-slate-700 dark:text-gray-200 uppercase tracking-wider flex items-center gap-2">
               <Camera size={16} className="text-primary" /> {t.avatarTitle}
             </h3>
 
@@ -594,7 +594,7 @@ export const ClientSettingsTab: React.FC<ClientSettingsTabProps> = ({
           </div>
 
           {/* Google Account Linking / Unlinking Card */}
-          <div className="bg-gray-900/60 border border-white/5 rounded-2xl p-5 space-y-3">
+          <div className="bg-slate-50 dark:bg-gray-900/60 border border-slate-200 dark:border-white/5 rounded-2xl p-5 space-y-3">
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
               <div className="flex items-center gap-3">
                 <div className="w-10 h-10 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center shrink-0">
@@ -618,19 +618,19 @@ export const ClientSettingsTab: React.FC<ClientSettingsTabProps> = ({
                   </svg>
                 </div>
                 <div>
-                  <h4 className="text-sm font-bold text-white flex items-center gap-2">
+                  <h4 className="text-sm font-bold text-slate-800 dark:text-white flex items-center gap-2">
                     Cuenta de Google
                     {isGoogleLinked ? (
                       <span className="text-[11px] font-semibold px-2.5 py-0.5 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/30 flex items-center gap-1">
                         <Check size={10} /> Vinculada
                       </span>
                     ) : (
-                      <span className="text-[11px] font-semibold px-2.5 py-0.5 rounded-full bg-zinc-800 text-zinc-400 border border-zinc-700">
+                      <span className="text-[11px] font-semibold px-2.5 py-0.5 rounded-full bg-slate-200 dark:bg-zinc-800 text-slate-700 dark:text-zinc-400 border border-slate-300 dark:border-zinc-700">
                         No vinculada
                       </span>
                     )}
                   </h4>
-                  <p className="text-xs text-gray-400 mt-0.5">
+                  <p className="text-xs text-slate-500 dark:text-gray-400 mt-0.5">
                     {isGoogleLinked
                       ? 'Tu cuenta de Google está vinculada. Puedes iniciar sesión mediante Google o desvincularla para cambiar de correo electrónico.'
                       : 'Vincula tu cuenta de Google para iniciar sesión rápidamente y sincronizar tu foto de perfil.'}

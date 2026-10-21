@@ -119,17 +119,17 @@ export const Navbar: React.FC<NavbarProps> = ({ forceRender = false }) => {
 
   return (
     <nav className="bg-white/90 dark:bg-gray-950/40 backdrop-blur-xl border-b border-slate-200 dark:border-white/10 sticky top-0 z-50 transition-all font-sans text-slate-900 dark:text-white">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between h-16">
+      <div className="w-full max-w-[1720px] mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="flex items-center justify-between h-16 w-full">
           {/* Brand Logo (Left Section) */}
-          <div className="flex items-center shrink-0 min-w-max mr-4">
+          <div className="flex items-center justify-start flex-1 min-w-[180px]">
             <Link to="/" id="logo" onClick={closeMenu} className="flex items-center gap-2 no-underline">
               <Logo size="md" />
             </Link>
           </div>
 
-          {/* Desktop Navigation Links (Center Section - Generously spaced) */}
-          <div className="hidden lg:flex flex-1 items-center justify-center gap-1.5 xl:gap-3 px-3">
+          {/* Desktop Navigation Links (Center Section - Perfectly Centered) */}
+          <div className="hidden lg:flex items-center justify-center gap-2 xl:gap-4 shrink-0 px-4">
             {/* Only show Beneficios & Precios if NOT authenticated with VIP */}
             {(!isAuthenticated || !hasVip) && (
               <>
@@ -172,8 +172,8 @@ export const Navbar: React.FC<NavbarProps> = ({ forceRender = false }) => {
 
           </div>
 
-          {/* Desktop Right Actions: Country/Currency Selector + Auth (Right Section) */}
-          <div className="hidden lg:flex items-center gap-2 xl:gap-3 shrink-0 min-w-max ml-auto">
+          {/* Desktop Right Actions: Country/Currency Selector + Language + Theme + Auth (Right Section) */}
+          <div className="hidden lg:flex items-center justify-end gap-2 xl:gap-3 flex-1 min-w-[280px]">
             {/* Country & Currency Selector Dropdown */}
             <div className="relative">
               <button
@@ -480,7 +480,7 @@ export const Navbar: React.FC<NavbarProps> = ({ forceRender = false }) => {
                 <Link to="/login">
                   <button
                     id="log-in"
-                    className="px-5 py-2 rounded-full text-sm font-medium text-gray-200 hover:text-white bg-white/5 hover:bg-white/10 border border-white/10 hover:border-white/20 backdrop-blur-md transition-all cursor-pointer shadow-sm hover:shadow-lg"
+                    className="px-4 xl:px-5 py-2 rounded-full text-xs xl:text-sm font-semibold text-slate-700 hover:text-slate-900 bg-slate-100 hover:bg-slate-200 dark:text-gray-200 dark:hover:text-white dark:bg-white/5 dark:hover:bg-white/10 border border-slate-200 dark:border-white/10 backdrop-blur-md transition-all cursor-pointer shadow-sm hover:shadow-md"
                   >
                     {t('nav.login')}
                   </button>
@@ -488,9 +488,9 @@ export const Navbar: React.FC<NavbarProps> = ({ forceRender = false }) => {
                 <Link to="/register">
                   <button
                     id="nav-register"
-                    className="px-5 py-2 rounded-full text-sm font-semibold text-white bg-gradient-to-r from-violet-600 to-indigo-600 hover:from-violet-500 hover:to-indigo-500 shadow-lg shadow-violet-500/25 hover:shadow-violet-500/40 border border-violet-400/30 transition-all cursor-pointer"
+                    className="keep-white-text px-4 xl:px-5 py-2 rounded-full text-xs xl:text-sm font-semibold !text-white bg-gradient-to-r from-violet-600 to-indigo-600 hover:from-violet-500 hover:to-indigo-500 shadow-lg shadow-violet-500/25 hover:shadow-violet-500/40 border border-violet-400/30 transition-all cursor-pointer"
                   >
-                    {t('nav.register')}
+                    <span className="!text-white keep-white-text font-semibold">{t('nav.register')}</span>
                   </button>
                 </Link>
               </div>

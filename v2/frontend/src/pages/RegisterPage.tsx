@@ -290,7 +290,7 @@ export const RegisterPage: React.FC = () => {
             REGISTRO DE {tipo.toUpperCase()}
           </div>
 
-          <form onSubmit={handlePreRegister} className="space-y-6 mt-6">
+          <form onSubmit={handlePreRegister} noValidate className="space-y-6 mt-6">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
                 <label className="block text-sm font-medium text-slate-900 dark:text-white mb-2">Nombre(s)</label>

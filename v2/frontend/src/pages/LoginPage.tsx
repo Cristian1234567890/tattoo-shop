@@ -28,6 +28,7 @@ export const LoginPage: React.FC = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [rememberDevice, setRememberDevice] = useState(true);
   const [turnstileToken, setTurnstileToken] = useState<string | null>(null);
+  const [fieldErrors, setFieldErrors] = useState<{ email?: string; password?: string }>({});
   const [loading, setLoading] = useState(false);
   const [errorMsg, setErrorMsg] = useState('');
 
@@ -118,6 +119,29 @@ export const LoginPage: React.FC = () => {
   const handleEmailLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setErrorMsg('');
+
+    const errors: { email?: string; password?: string } = {};
+    const trimmedEmail = email.trim();
+    if (!trimmedEmail) {
+      errors.email = 'Por favor ingresa tu correo electrónico o alias.';
+    } else if (trimmedEmail.includes('@') && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(trimmedEmail)) {
+      errors.email = 'El formato del correo electrónico es inválido.';
+    }
+
+    if (!password) {
+      errors.password = 'Por favor ingresa tu contraseña.';
+    } else if (password.length < 6) {
+      errors.password = 'La contraseña debe tener al menos 6 caracteres.';
+    }
+
+    if (Object.keys(errors).length > 0) {
+      setFieldErrors(errors);
+      const targetId = errors.email ? 'userEmail' : 'userPassword';
+      document.getElementById(targetId)?.focus();
+      return;
+    }
+
+    setFieldErrors({});
 
     if (!turnstileToken) {
       setErrorMsg('Por favor completa la verificación de seguridad anti-bots.');
@@ -269,7 +293,7 @@ export const LoginPage: React.FC = () => {
                 </div>
 
                 {/* Formulario */}
-                <form onSubmit={handleEmailLogin} className="flex flex-col gap-4">
+                <form onSubmit={handleEmailLogin} noValidate className="flex flex-col gap-4">
                   {/* Correo o Alias */}
                   <div className="flex flex-col gap-1.5">
                     <div className="flex items-center justify-between">
@@ -283,16 +307,36 @@ export const LoginPage: React.FC = () => {
                       <input
                         id="userEmail"
                         type="text"
-                        required
                         value={email}
-                        onChange={(e) => setEmail(e.target.value)}
+                        aria-invalid={Boolean(fieldErrors.email)}
+                        aria-describedby={fieldErrors.email ? 'userEmail-error' : undefined}
+                        onChange={(e) => {
+                          setEmail(e.target.value);
+                          if (fieldErrors.email) setFieldErrors((prev) => ({ ...prev, email: undefined }));
+                        }}
                         placeholder="ej. artista@tattoohub.com o @master_ink"
-                        className="w-full bg-slate-50 dark:bg-zinc-950/80 text-slate-900 dark:text-white pl-3.5 pr-10 py-3 rounded-xl text-sm border border-slate-300 dark:border-zinc-800 placeholder:text-slate-400 dark:placeholder:text-zinc-600 focus:border-purple-500 focus:ring-1 focus:ring-purple-500 focus:outline-none transition shadow-inner"
+                        className={`w-full bg-slate-50 dark:bg-zinc-950/80 text-slate-900 dark:text-white pl-3.5 pr-10 py-3 rounded-xl text-sm border transition shadow-inner placeholder:text-slate-400 dark:placeholder:text-zinc-600 focus:outline-none ${
+                          fieldErrors.email
+                            ? 'border-rose-500 ring-2 ring-rose-500/20 bg-rose-50/20 dark:bg-rose-950/20 focus:border-rose-500'
+                            : 'border-slate-300 dark:border-zinc-800 focus:border-purple-500 focus:ring-1 focus:ring-purple-500'
+                        }`}
                       />
                       <div className="absolute right-3.5 text-zinc-500 pointer-events-none">
                         <AtSign className="w-4 h-4" />
                       </div>
                     </div>
+                    {fieldErrors.email && (
+                      <motion.div
+                        initial={{ opacity: 0, y: -4 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        id="userEmail-error"
+                        role="alert"
+                        className="flex items-center gap-1.5 text-xs text-rose-600 dark:text-rose-400 font-medium mt-1 pl-1"
+                      >
+                        <AlertCircle className="w-3.5 h-3.5 shrink-0 text-rose-500" />
+                        <span>{fieldErrors.email}</span>
+                      </motion.div>
+                    )}
                   </div>
 
                   {/* Contraseña */}
@@ -313,11 +357,19 @@ export const LoginPage: React.FC = () => {
                       <input
                         id="userPassword"
                         type={showPassword ? 'text' : 'password'}
-                        required
                         value={password}
-                        onChange={(e) => setPassword(e.target.value)}
+                        aria-invalid={Boolean(fieldErrors.password)}
+                        aria-describedby={fieldErrors.password ? 'userPassword-error' : undefined}
+                        onChange={(e) => {
+                          setPassword(e.target.value);
+                          if (fieldErrors.password) setFieldErrors((prev) => ({ ...prev, password: undefined }));
+                        }}
                         placeholder="••••••••••••"
-                        className="w-full bg-slate-50 dark:bg-zinc-950/80 text-slate-900 dark:text-white pl-3.5 pr-11 py-3 rounded-xl text-sm border border-slate-300 dark:border-zinc-800 placeholder:text-slate-400 dark:placeholder:text-zinc-600 focus:border-purple-500 focus:ring-1 focus:ring-purple-500 focus:outline-none transition shadow-inner"
+                        className={`w-full bg-slate-50 dark:bg-zinc-950/80 text-slate-900 dark:text-white pl-3.5 pr-11 py-3 rounded-xl text-sm border transition shadow-inner placeholder:text-slate-400 dark:placeholder:text-zinc-600 focus:outline-none ${
+                          fieldErrors.password
+                            ? 'border-rose-500 ring-2 ring-rose-500/20 bg-rose-50/20 dark:bg-rose-950/20 focus:border-rose-500'
+                            : 'border-slate-300 dark:border-zinc-800 focus:border-purple-500 focus:ring-1 focus:ring-purple-500'
+                        }`}
                       />
                       <button
                         type="button"
@@ -328,6 +380,18 @@ export const LoginPage: React.FC = () => {
                         {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                       </button>
                     </div>
+                    {fieldErrors.password && (
+                      <motion.div
+                        initial={{ opacity: 0, y: -4 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        id="userPassword-error"
+                        role="alert"
+                        className="flex items-center gap-1.5 text-xs text-rose-600 dark:text-rose-400 font-medium mt-1 pl-1"
+                      >
+                        <AlertCircle className="w-3.5 h-3.5 shrink-0 text-rose-500" />
+                        <span>{fieldErrors.password}</span>
+                      </motion.div>
+                    )}
                   </div>
 
                   {/* Mantener sesión */}
@@ -359,14 +423,15 @@ export const LoginPage: React.FC = () => {
                     />
                   </div>
 
-                  {/* Primary Submit Button con Halo Púrpura */}
+                  {/* Primary Submit Button con Halo Púrpura y texto blanco garantizado */}
                   <button
                     type="submit"
-                    disabled={loading || !turnstileToken}
-                    className="relative w-full mt-2 py-3.5 px-6 rounded-xl bg-gradient-to-r from-purple-600 via-indigo-600 to-purple-600 bg-[length:200%_auto] hover:bg-right transition-all duration-300 text-white font-semibold text-sm shadow-[0_8px_25px_rgba(124,58,237,0.35)] hover:shadow-[0_10px_35px_rgba(124,58,237,0.55)] flex items-center justify-center gap-2 group cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed"
+                    id="btn-login-submit"
+                    disabled={loading}
+                    className="relative w-full mt-2 py-3.5 px-6 rounded-xl bg-gradient-to-r from-purple-600 via-indigo-600 to-purple-600 bg-[length:200%_auto] hover:bg-right transition-all duration-300 !text-white font-semibold text-sm shadow-[0_8px_25px_rgba(124,58,237,0.35)] hover:shadow-[0_10px_35px_rgba(124,58,237,0.55)] flex items-center justify-center gap-2 group cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed keep-white-text"
                   >
-                    <span>{loading ? 'Accediendo a Tattoo Hub...' : 'Iniciar Sesión en Tattoo Hub'}</span>
-                    <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1 duration-200" />
+                    <span className="!text-white keep-white-text font-semibold">{loading ? 'Accediendo a Tattoo Hub...' : 'Iniciar Sesión en Tattoo Hub'}</span>
+                    <ArrowRight className="w-4 h-4 !text-white keep-white-text transition-transform group-hover:translate-x-1 duration-200" />
                   </button>
                 </form>
 

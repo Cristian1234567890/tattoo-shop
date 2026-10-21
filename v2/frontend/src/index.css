@@ -18,6 +18,15 @@ html {
   scrollbar-width: thin;
 }
 
+html, body {
+  font-family: 'Plus Jakarta Sans', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+}
+
+h1, h2, h3, h4, h5, h6, .font-heading {
+  font-family: 'Outfit', 'Plus Jakarta Sans', sans-serif;
+  letter-spacing: -0.02em;
+}
+
 /* ==========================================================================
    THEME STYLES: DARK ATELIER (DEFAULT)
    ========================================================================== */
@@ -46,7 +55,7 @@ html.light body {
   padding: 0;
   overflow-x: hidden;
   background-color: #f8fafc;
-  color: #0f172a;
+  color: #334155;
   transition: background-color 0.3s ease, color 0.3s ease;
 }
 
@@ -260,7 +269,7 @@ html.light .bg-zinc-900,
 html.light .bg-zinc-950,
 html.light .bg-gray-800 {
   background-color: rgba(255, 255, 255, 0.94) !important;
-  color: #0f172a !important;
+  color: #334155 !important;
   border-color: rgba(226, 232, 240, 0.9) !important;
 }
 
@@ -273,7 +282,7 @@ html.light .bg-\[\#090d16\],
 html.light .bg-\[\#0f0e17\],
 html.light .bg-\[\#13131A\] {
   background-color: #f8fafc !important;
-  color: #0f172a !important;
+  color: #334155 !important;
 }
 
 /* Luxury Atelier Cards in Light Mode */
@@ -289,15 +298,38 @@ html.light .atelier-card-hover:hover {
   box-shadow: 0 14px 28px -4px rgba(15, 23, 42, 0.1), 0 6px 12px -2px rgba(15, 23, 42, 0.05) !important;
 }
 
-html.light .text-white:not(.bg-primary):not(.bg-violet-600):not(.bg-amber-600):not([class*="bg-primary"]):not([class*="bg-violet"]):not([class*="bg-amber"]):not([class*="bg-emerald"]) {
-  color: #0f172a !important;
+/* Text white overrides in light mode: refined slate-700/600, exempting all button and banner elements */
+html.light .text-white:not(.bg-primary):not(.bg-violet-600):not(.bg-amber-600):not([class*="bg-primary"]):not([class*="bg-violet"]):not([class*="bg-amber"]):not([class*="bg-emerald"]):not([class*="from-violet"]):not([class*="from-purple"]):not([class*="from-indigo"]):not([class*="bg-purple"]):not(.keep-white-text):not(.keep-white-text *):not(.dark-banner *):not(#nav-register):not(#nav-register *):not(#btn-login-submit):not(#btn-login-submit *):not(.btn-atelier-primary):not(.btn-atelier-primary *) {
+  color: #334155 !important;
 }
 
+/* Primary, Gradient & Call-To-Action buttons MUST ALWAYS retain pure white text in Light Mode */
+html.light #nav-register,
+html.light #nav-register *,
+html.light #btn-login-submit,
+html.light #btn-login-submit *,
+html.light .btn-atelier-primary,
+html.light .btn-atelier-primary *,
 html.light button.bg-primary,
+html.light button.bg-primary *,
 html.light a.bg-primary,
+html.light a.bg-primary *,
 html.light button[class*="bg-primary"],
+html.light button[class*="bg-primary"] *,
 html.light button[class*="bg-amber-600"],
-html.light button[class*="bg-violet-600"] {
+html.light button[class*="bg-amber-600"] *,
+html.light button[class*="bg-violet-600"],
+html.light button[class*="bg-violet-600"] *,
+html.light button[class*="from-violet"],
+html.light button[class*="from-violet"] *,
+html.light button[class*="from-purple"],
+html.light button[class*="from-purple"] *,
+html.light button.bg-gradient-to-r,
+html.light button.bg-gradient-to-r *,
+html.light a.bg-gradient-to-r,
+html.light a.bg-gradient-to-r *,
+html.light .keep-white-text,
+html.light .keep-white-text * {
   color: #ffffff !important;
 }
 
@@ -305,7 +337,7 @@ html.light .text-gray-200,
 html.light .text-gray-300,
 html.light .text-zinc-200,
 html.light .text-zinc-300 {
-  color: #334155 !important;
+  color: #475569 !important;
 }
 
 html.light .text-gray-400,
@@ -326,13 +358,13 @@ html.light .divide-zinc-800 > * + * {
   border-color: #e2e8f0 !important;
 }
 
-/* Headings and Labels in Light Mode */
-html.light h1:not([class*="text-violet"]):not([class*="text-emerald"]):not([class*="text-amber"]):not([class*="text-red"]),
-html.light h2:not([class*="text-violet"]):not([class*="text-emerald"]):not([class*="text-amber"]):not([class*="text-red"]),
-html.light h3:not([class*="text-violet"]):not([class*="text-emerald"]):not([class*="text-amber"]):not([class*="text-red"]),
-html.light h4:not([class*="text-violet"]):not([class*="text-emerald"]):not([class*="text-amber"]):not([class*="text-red"]),
-html.light label:not([class*="text-violet"]):not([class*="text-emerald"]):not([class*="text-amber"]):not([class*="text-red"]) {
-  color: #0f172a;
+/* Headings in Light Mode: Refined slate-800 for high-contrast yet elegant reading */
+html.light h1:not([class*="text-violet"]):not([class*="text-emerald"]):not([class*="text-amber"]):not([class*="text-red"]):not(.dark-banner *):not(.keep-white-text *),
+html.light h2:not([class*="text-violet"]):not([class*="text-emerald"]):not([class*="text-amber"]):not([class*="text-red"]):not(.dark-banner *):not(.keep-white-text *),
+html.light h3:not([class*="text-violet"]):not([class*="text-emerald"]):not([class*="text-amber"]):not([class*="text-red"]):not(.dark-banner *):not(.keep-white-text *),
+html.light h4:not([class*="text-violet"]):not([class*="text-emerald"]):not([class*="text-amber"]):not([class*="text-red"]):not(.dark-banner *):not(.keep-white-text *),
+html.light label:not([class*="text-violet"]):not([class*="text-emerald"]):not([class*="text-amber"]):not([class*="text-red"]):not(.dark-banner *):not(.keep-white-text *) {
+  color: #1e293b;
 }
 
 html.light main h1.text-white:not(.dark-banner *):not(.keep-white-text *),
@@ -344,7 +376,7 @@ html.light .atelier-card h2,
 html.light .atelier-card h3,
 html.light .atelier-card h4,
 html.light td.font-semibold {
-  color: #0f172a !important;
+  color: #1e293b !important;
 }
 
 /* Guard intentional dark hero banners and badges in light mode */

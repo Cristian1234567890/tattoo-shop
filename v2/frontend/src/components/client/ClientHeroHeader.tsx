@@ -174,7 +174,7 @@ export const ClientHeroHeader: React.FC<ClientHeroHeaderProps> = ({
           </Link>
           <Link
             to="/chat"
-            className="inline-flex items-center gap-2 bg-gray-800 hover:bg-gray-700 text-gray-200 border border-gray-700 text-xs md:text-sm font-semibold px-4 md:px-5 py-2.5 rounded-xl shadow transition hover:scale-105"
+            className="inline-flex items-center gap-2 bg-slate-100 hover:bg-slate-200 dark:bg-gray-800 dark:hover:bg-gray-700 text-slate-700 dark:text-gray-200 border border-slate-300 dark:border-gray-700 text-xs md:text-sm font-semibold px-4 md:px-5 py-2.5 rounded-xl shadow transition hover:scale-105"
           >
             <MessageCircle size={17} /> {t.messages}
           </Link>
