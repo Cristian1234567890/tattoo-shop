@@ -32,35 +32,35 @@ export const PaymentTracking: React.FC = () => {
     switch (status) {
       case 'completed':
         return (
-          <span className="inline-flex items-center gap-1.5 px-2.5 py-1 text-xs font-semibold rounded-full border border-emerald-500/30 bg-emerald-500/10 text-emerald-400">
+          <span className="inline-flex items-center gap-1.5 px-2.5 py-1 text-xs font-semibold rounded-full border border-emerald-300 dark:border-emerald-500/30 bg-emerald-50 dark:bg-emerald-500/10 text-emerald-700 dark:text-emerald-400">
             <CheckCircle2 className="w-3.5 h-3.5" />
             Completado
           </span>
         );
       case 'pending':
         return (
-          <span className="inline-flex items-center gap-1.5 px-2.5 py-1 text-xs font-semibold rounded-full border border-amber-500/30 bg-amber-500/10 text-amber-400">
+          <span className="inline-flex items-center gap-1.5 px-2.5 py-1 text-xs font-semibold rounded-full border border-amber-300 dark:border-amber-500/30 bg-amber-50 dark:bg-amber-500/10 text-amber-700 dark:text-amber-400">
             <Clock className="w-3.5 h-3.5" />
             Pendiente
           </span>
         );
       case 'failed':
         return (
-          <span className="inline-flex items-center gap-1.5 px-2.5 py-1 text-xs font-semibold rounded-full border border-red-500/30 bg-red-500/10 text-red-400">
+          <span className="inline-flex items-center gap-1.5 px-2.5 py-1 text-xs font-semibold rounded-full border border-rose-300 dark:border-red-500/30 bg-rose-50 dark:bg-red-500/10 text-rose-700 dark:text-red-400">
             <AlertCircle className="w-3.5 h-3.5" />
             Fallido
           </span>
         );
       case 'refunded':
         return (
-          <span className="inline-flex items-center gap-1.5 px-2.5 py-1 text-xs font-semibold rounded-full border border-purple-500/30 bg-purple-500/10 text-purple-400">
+          <span className="inline-flex items-center gap-1.5 px-2.5 py-1 text-xs font-semibold rounded-full border border-purple-300 dark:border-purple-500/30 bg-purple-50 dark:bg-purple-500/10 text-purple-700 dark:text-purple-400">
             <RefreshCw className="w-3.5 h-3.5" />
             Reembolsado
           </span>
         );
       default:
         return (
-          <span className="inline-flex items-center gap-1.5 px-2.5 py-1 text-xs font-semibold rounded-full border border-zinc-700 bg-zinc-800 text-zinc-300">
+          <span className="inline-flex items-center gap-1.5 px-2.5 py-1 text-xs font-semibold rounded-full border border-slate-300 dark:border-zinc-700 bg-slate-100 dark:bg-zinc-800 text-slate-700 dark:text-zinc-300">
             {status}
           </span>
         );
@@ -93,21 +93,21 @@ export const PaymentTracking: React.FC = () => {
   };
 
   return (
-    <div className="atelier-card p-6 border border-white/10 rounded-2xl bg-[#13131A]/90 text-white shadow-2xl">
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6 pb-4 border-b border-white/5">
+    <div className="atelier-card p-6 border border-slate-200 dark:border-white/10 rounded-2xl bg-white dark:bg-[#13131A]/90 text-slate-900 dark:text-white shadow-xl dark:shadow-2xl">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6 pb-4 border-b border-slate-200 dark:border-white/5">
         <div>
-          <h3 className="text-xl font-bold text-white tracking-wide flex items-center gap-2">
-            <CreditCard className="w-5 h-5 text-violet-400" />
+          <h3 className="text-xl font-bold text-slate-900 dark:text-white tracking-wide flex items-center gap-2">
+            <CreditCard className="w-5 h-5 text-violet-600 dark:text-violet-400" />
             Pagos y Transacciones
           </h3>
-          <p className="text-xs text-zinc-400 mt-1">
+          <p className="text-xs text-slate-500 dark:text-zinc-400 mt-1">
             Historial de abonos, pagos en línea y depósitos de reserva para el atelier.
           </p>
         </div>
         <button
           onClick={fetchPayments}
           disabled={loading}
-          className="self-start sm:self-auto px-3 py-1.5 text-xs font-medium bg-white/5 hover:bg-white/10 border border-white/10 rounded-lg text-zinc-300 transition flex items-center gap-1.5"
+          className="self-start sm:self-auto px-3 py-1.5 text-xs font-semibold bg-slate-100 hover:bg-slate-200 border border-slate-300 dark:bg-white/5 dark:hover:bg-white/10 dark:border-white/10 text-slate-700 dark:text-zinc-300 rounded-lg transition flex items-center gap-1.5 cursor-pointer shadow-sm"
           title="Actualizar transacciones"
         >
           <RefreshCw className={`w-3.5 h-3.5 ${loading ? 'animate-spin' : ''}`} />
@@ -120,32 +120,32 @@ export const PaymentTracking: React.FC = () => {
           {[1, 2, 3].map((i) => (
             <div
               key={i}
-              className="p-5 rounded-xl border border-white/5 bg-[#1A1A24]/60 animate-pulse flex justify-between items-center"
+              className="p-5 rounded-xl border border-slate-200 dark:border-white/5 bg-slate-100/70 dark:bg-[#1A1A24]/60 animate-pulse flex justify-between items-center"
             >
               <div className="space-y-2 w-1/2">
-                <div className="h-5 bg-zinc-700/60 rounded w-1/3"></div>
-                <div className="h-3 bg-zinc-800/80 rounded w-2/3"></div>
+                <div className="h-5 bg-slate-200 dark:bg-zinc-700/60 rounded w-1/3"></div>
+                <div className="h-3 bg-slate-200 dark:bg-zinc-800/80 rounded w-2/3"></div>
               </div>
-              <div className="h-6 bg-zinc-700/40 rounded-full w-24"></div>
+              <div className="h-6 bg-slate-200 dark:bg-zinc-700/40 rounded-full w-24"></div>
             </div>
           ))}
         </div>
       ) : error ? (
         <div className="p-6 rounded-xl border border-red-500/20 bg-red-500/10 text-center">
-          <AlertCircle className="w-8 h-8 text-red-400 mx-auto mb-2" />
-          <p className="text-sm text-red-300">{error}</p>
+          <AlertCircle className="w-8 h-8 text-red-500 dark:text-red-400 mx-auto mb-2" />
+          <p className="text-sm text-red-700 dark:text-red-300">{error}</p>
           <button
             onClick={fetchPayments}
-            className="mt-3 px-4 py-1.5 text-xs font-semibold bg-red-500/20 hover:bg-red-500/30 text-red-200 rounded-lg transition"
+            className="mt-3 px-4 py-1.5 text-xs font-semibold bg-red-500/20 hover:bg-red-500/30 text-red-700 dark:text-red-200 rounded-lg transition cursor-pointer"
           >
             Reintentar
           </button>
         </div>
       ) : payments.length === 0 ? (
-        <div className="p-8 text-center border border-dashed border-white/10 rounded-xl">
-          <CreditCard className="w-10 h-10 text-zinc-500 mx-auto mb-3" />
-          <h4 className="text-sm font-semibold text-zinc-300">No hay pagos registrados</h4>
-          <p className="text-xs text-zinc-500 mt-1 max-w-sm mx-auto">
+        <div className="p-8 text-center border border-dashed border-slate-200 dark:border-white/10 bg-slate-50/50 dark:bg-transparent rounded-xl">
+          <CreditCard className="w-10 h-10 text-slate-400 dark:text-zinc-500 mx-auto mb-3" />
+          <h4 className="text-sm font-semibold text-slate-700 dark:text-zinc-300">No hay pagos registrados</h4>
+          <p className="text-xs text-slate-500 dark:text-zinc-500 mt-1 max-w-sm mx-auto">
             Tus transacciones, abonos de citas o compras de productos en la tienda se mostrarán aquí.
           </p>
         </div>
@@ -154,23 +154,23 @@ export const PaymentTracking: React.FC = () => {
           {payments.map((payment) => (
             <div
               key={payment.id}
-              className="atelier-card-hover p-5 rounded-xl border border-white/10 bg-[#1A1A24]/80 transition duration-300 flex flex-col sm:flex-row justify-between sm:items-center gap-4"
+              className="atelier-card-hover p-5 rounded-xl border border-slate-200 dark:border-white/10 bg-slate-50 hover:bg-slate-100/80 dark:bg-[#1A1A24]/80 dark:hover:bg-[#1A1A24] transition duration-300 flex flex-col sm:flex-row justify-between sm:items-center gap-4 shadow-sm"
             >
               <div className="space-y-1">
                 <div className="flex items-center gap-3">
-                  <span className="text-lg font-bold text-white tracking-tight">
+                  <span className="text-lg font-bold text-slate-900 dark:text-white tracking-tight">
                     {formatPrice(payment.amount, payment.currency)}
                   </span>
-                  <span className="px-2 py-0.5 text-[10px] uppercase font-semibold tracking-wider rounded border border-white/10 bg-white/5 text-zinc-300">
+                  <span className="px-2 py-0.5 text-[10px] uppercase font-semibold tracking-wider rounded border border-slate-200 dark:border-white/10 bg-white dark:bg-white/5 text-slate-700 dark:text-zinc-300 shadow-xs">
                     {formatPaymentMethod(payment.payment_method)}
                   </span>
                 </div>
                 {payment.concept && (
-                  <p className="text-xs text-zinc-300 font-medium">
+                  <p className="text-xs text-slate-700 dark:text-zinc-300 font-medium">
                     {payment.concept}
                   </p>
                 )}
-                <p className="text-[11px] text-zinc-500">
+                <p className="text-[11px] text-slate-500 dark:text-zinc-500">
                   Registrado el {formatPaymentDate(payment.created_at)}
                 </p>
               </div>
@@ -183,9 +183,9 @@ export const PaymentTracking: React.FC = () => {
         </div>
       )}
 
-      <div className="mt-6 pt-4 border-t border-white/5 flex items-center justify-between text-xs text-zinc-500">
+      <div className="mt-6 pt-4 border-t border-slate-200 dark:border-white/5 flex items-center justify-between text-xs text-slate-500 dark:text-zinc-500">
         <div className="flex items-center gap-1.5">
-          <ShieldCheck className="w-4 h-4 text-emerald-400" />
+          <ShieldCheck className="w-4 h-4 text-emerald-500 dark:text-emerald-400" />
           <span>Cifrado TLS 256-bit • Respaldado por el Atelier</span>
         </div>
         <span>Fase 1: PayPal &amp; Presencial</span>

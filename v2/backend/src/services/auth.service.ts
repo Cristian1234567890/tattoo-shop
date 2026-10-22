@@ -303,7 +303,7 @@ export class AuthService {
         legal_accepted,
         legal_accepted_at,
         full_name: `${nombre} ${apellido}`.trim() || email.split('@')[0],
-        avatar_url: defaultProfileUrl,
+        avatar_url: ((dto as any)?.picture || (dto as any)?.avatar_url || (dto as any)?.profile) || defaultProfileUrl,
         phone_number: telefono || null,
         is_verified: false,
         onboarding_completed,

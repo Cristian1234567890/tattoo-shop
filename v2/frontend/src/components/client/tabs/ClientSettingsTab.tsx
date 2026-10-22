@@ -7,6 +7,9 @@ import { CustomSelect, SelectOption } from '../../common/CustomSelect';
 import { COUNTRIES, getCountryByName } from '../../../utils/countries';
 import { InternationalPhoneInput } from '../../common/InternationalPhoneInput';
 import { formatWhatsAppUrl } from '../../../utils/whatsapp';
+import { ClientSecuritySettingsSection } from '../ClientSecuritySettingsSection';
+import { ReferralBenefitsSection } from '../ReferralBenefitsSection';
+import { isGenericPlaceholder, getEffectiveUserAvatar } from '../../../utils/avatar';
 import {
   User as UserIcon,
   Bell,
@@ -37,16 +40,16 @@ const COUNTRY_OPTIONS: SelectOption[] = COUNTRIES.map((c) => ({
 }));
 
 const PANAMA_PROVINCES: SelectOption[] = [
-  { value: 'Panamá', label: 'Panamá' },
-  { value: 'Panamá Oeste', label: 'Panamá Oeste' },
-  { value: 'Colón', label: 'Colón' },
-  { value: 'Chiriquí', label: 'Chiriquí' },
+  { value: 'PanamÃ¡', label: 'PanamÃ¡' },
+  { value: 'PanamÃ¡ Oeste', label: 'PanamÃ¡ Oeste' },
+  { value: 'ColÃ³n', label: 'ColÃ³n' },
+  { value: 'ChiriquÃ­', label: 'ChiriquÃ­' },
   { value: 'Bocas del Toro', label: 'Bocas del Toro' },
-  { value: 'Coclé', label: 'Coclé' },
+  { value: 'CoclÃ©', label: 'CoclÃ©' },
   { value: 'Herrera', label: 'Herrera' },
   { value: 'Los Santos', label: 'Los Santos' },
   { value: 'Veraguas', label: 'Veraguas' },
-  { value: 'Darién', label: 'Darién' },
+  { value: 'DariÃ©n', label: 'DariÃ©n' },
 ];
 
 const STUDIO_DEFAULT_AVATAR = '/assets/Tattoo Machine Rotary.png';
@@ -64,7 +67,7 @@ export const ClientSettingsTab: React.FC<ClientSettingsTabProps> = ({
   const [lastName, setLastName] = useState<string>('');
   const [phone, setPhone] = useState<string>('');
   const [phonePrefix, setPhonePrefix] = useState<string>('+507');
-  const [country, setCountry] = useState<string>('Panamá');
+  const [country, setCountry] = useState<string>('PanamÃ¡');
   const [province, setProvince] = useState<string>('');
   const [city, setCity] = useState<string>('');
   const [direction, setDirection] = useState<string>('');
@@ -109,7 +112,7 @@ export const ClientSettingsTab: React.FC<ClientSettingsTabProps> = ({
       setLastName(meta.apellido || cleanedFullName.split(' ').slice(1).join(' ') || '');
       setPhone(meta.telefono || meta.whatsapp_number || meta.phone_number || '');
       setPhonePrefix(meta.phone_prefix || '+507');
-      setCountry(meta.country || 'Panamá');
+      setCountry(meta.country || 'PanamÃ¡');
       setProvince(meta.provincia || '');
       setCity(meta.city || meta.ciudad || '');
       setDirection(meta.direccion || '');
@@ -122,7 +125,10 @@ export const ClientSettingsTab: React.FC<ClientSettingsTabProps> = ({
         setGoogleAvatarUrl(foundGoogleAvatar);
       }
 
-      if (meta.profile || meta.avatar_url || meta.picture) {
+      const effAvatar = getEffectiveUserAvatar(user);
+      if (effAvatar) {
+        setProfileImg(effAvatar);
+      } else if (meta.profile || meta.avatar_url || meta.picture) {
         setProfileImg(meta.profile || meta.avatar_url || meta.picture || '');
       } else {
         setProfileImg('');
@@ -160,7 +166,7 @@ export const ClientSettingsTab: React.FC<ClientSettingsTabProps> = ({
         try {
           await api.updateUser({ profile: res, avatar_url: res });
           onShowToast(
-            lang === 'en' ? 'Profile picture updated successfully!' : '¡Foto de perfil actualizada exitosamente!',
+            lang === 'en' ? 'Profile picture updated successfully!' : 'Â¡Foto de perfil actualizada exitosamente!',
             false
           );
         } catch (err) {
@@ -183,7 +189,7 @@ export const ClientSettingsTab: React.FC<ClientSettingsTabProps> = ({
       console.warn('Set studio avatar error:', err);
     }
     onShowToast(
-      lang === 'en' ? 'Studio brand avatar selected!' : '¡Arte de estudio seleccionado como foto de perfil!',
+      lang === 'en' ? 'Studio brand avatar selected!' : 'Â¡Arte de estudio seleccionado como foto de perfil!',
       false
     );
   };
@@ -200,7 +206,7 @@ export const ClientSettingsTab: React.FC<ClientSettingsTabProps> = ({
         console.warn('Restore google avatar error:', err);
       }
       onShowToast(
-        lang === 'en' ? 'Google profile photo restored!' : '¡Foto de perfil de Google restaurada!',
+        lang === 'en' ? 'Google profile photo restored!' : 'Â¡Foto de perfil de Google restaurada!',
         false
       );
     }
@@ -228,7 +234,7 @@ export const ClientSettingsTab: React.FC<ClientSettingsTabProps> = ({
     if (countryData?.dialCode) {
       setPhonePrefix(countryData.dialCode);
     }
-    if (newCountry !== 'Panamá') {
+    if (newCountry !== 'PanamÃ¡') {
       setProvince('');
     }
   };
@@ -248,7 +254,7 @@ export const ClientSettingsTab: React.FC<ClientSettingsTabProps> = ({
       await api.updateUser({ google_linked: true });
       updateUserMetadata({ google_linked: true });
       onShowToast(
-        lang === 'en' ? 'Google account linked successfully!' : '¡Cuenta de Google vinculada exitosamente!',
+        lang === 'en' ? 'Google account linked successfully!' : 'Â¡Cuenta de Google vinculada exitosamente!',
         false
       );
     } finally {
@@ -312,8 +318,7 @@ export const ClientSettingsTab: React.FC<ClientSettingsTabProps> = ({
         provincia: province,
         ciudad: city,
         direccion: direction,
-        profile: uploadedUrl,
-        avatar_url: uploadedUrl,
+        ...(base64Img || (uploadedUrl && !isGenericPlaceholder(uploadedUrl)) ? { profile: uploadedUrl, avatar_url: uploadedUrl } : {}),
       };
 
       const res = await api.updateUser(payload);
@@ -322,7 +327,7 @@ export const ClientSettingsTab: React.FC<ClientSettingsTabProps> = ({
         onShowToast(
           lang === 'en'
             ? 'Profile updated successfully!'
-            : '¡Perfil actualizado correctamente!',
+            : 'Â¡Perfil actualizado correctamente!',
           false
         );
       } else {
@@ -364,7 +369,7 @@ export const ClientSettingsTab: React.FC<ClientSettingsTabProps> = ({
         onShowToast(
           lang === 'en'
             ? 'Notification preferences saved!'
-            : '¡Preferencias de notificaciones guardadas!',
+            : 'Â¡Preferencias de notificaciones guardadas!',
           false
         );
       } else {
@@ -400,7 +405,7 @@ export const ClientSettingsTab: React.FC<ClientSettingsTabProps> = ({
       console.warn('Language persistence warning:', err);
     }
     onShowToast(
-      newLang === 'en' ? 'Language switched to English' : 'Idioma cambiado a Español',
+      newLang === 'en' ? 'Language switched to English' : 'Idioma cambiado a EspaÃ±ol',
       false
     );
   };
@@ -410,23 +415,23 @@ export const ClientSettingsTab: React.FC<ClientSettingsTabProps> = ({
   const previewWhatsAppUrl = formatWhatsAppUrl(phone, cleanPrefixDigits);
 
   const t = {
-    profileTitle: lang === 'en' ? 'Profile Customization' : 'Personalización de Perfil',
+    profileTitle: lang === 'en' ? 'Profile Customization' : 'PersonalizaciÃ³n de Perfil',
     profileSubtitle:
       lang === 'en'
         ? 'Update your public identity, international contact, and studio location.'
-        : 'Actualiza tu identidad pública, teléfono de contacto y ubicación de residencia.',
+        : 'Actualiza tu identidad pÃºblica, telÃ©fono de contacto y ubicaciÃ³n de residencia.',
     avatarTitle: lang === 'en' ? 'Profile Avatar' : 'Foto de Perfil',
     avatarPresets: lang === 'en' ? 'Preset studio styles' : 'Estilos de estudio predeterminados',
     uploadBtn: lang === 'en' ? 'Upload Custom Photo' : 'Subir Imagen Personalizada',
     name: lang === 'en' ? 'First Name' : 'Nombre',
     lastName: lang === 'en' ? 'Last Name' : 'Apellido',
-    phoneLabel: lang === 'en' ? 'Mobile / WhatsApp' : 'Teléfono / WhatsApp',
+    phoneLabel: lang === 'en' ? 'Mobile / WhatsApp' : 'TelÃ©fono / WhatsApp',
     waPreviewTitle: lang === 'en' ? 'Direct WhatsApp Preview:' : 'Vista previa de enlace WhatsApp:',
     testLink: lang === 'en' ? 'Test link' : 'Probar enlace',
-    country: lang === 'en' ? 'Country' : 'País',
+    country: lang === 'en' ? 'Country' : 'PaÃ­s',
     province: lang === 'en' ? 'Province / State' : 'Provincia / Estado',
     city: lang === 'en' ? 'City' : 'Ciudad',
-    address: lang === 'en' ? 'Address' : 'Dirección',
+    address: lang === 'en' ? 'Address' : 'DirecciÃ³n',
     saveProfileBtn: lang === 'en' ? 'Save Profile Changes' : 'Guardar Cambios de Perfil',
     saving: lang === 'en' ? 'Saving...' : 'Guardando...',
 
@@ -435,11 +440,11 @@ export const ClientSettingsTab: React.FC<ClientSettingsTabProps> = ({
     notificationsSubtitle:
       lang === 'en'
         ? 'Choose what alerts you receive via email and inside the studio application.'
-        : 'Elige qué avisos deseas recibir por correo electrónico y dentro de la aplicación.',
+        : 'Elige quÃ© avisos deseas recibir por correo electrÃ³nico y dentro de la aplicaciÃ³n.',
     emailAlertsSection:
-      lang === 'en' ? 'Email Alerts (Direct to Inbox)' : 'Alertas por Correo Electrónico',
+      lang === 'en' ? 'Email Alerts (Direct to Inbox)' : 'Alertas por Correo ElectrÃ³nico',
     appAlertsSection:
-      lang === 'en' ? 'In-App & Browser Alerts' : 'Notificaciones en la Aplicación y Navegador',
+      lang === 'en' ? 'In-App & Browser Alerts' : 'Notificaciones en la AplicaciÃ³n y Navegador',
     saveNotificationsBtn:
       lang === 'en' ? 'Save Notification Preferences' : 'Guardar Preferencias de Notificaciones',
 
@@ -452,19 +457,19 @@ export const ClientSettingsTab: React.FC<ClientSettingsTabProps> = ({
     notifChatDesc:
       lang === 'en'
         ? 'Receive emails when you receive quotes or direct replies.'
-        : 'Recibe correos cuando te envíen cotizaciones o respuestas a tus consultas.',
-    notifCare: lang === 'en' ? 'Daily Healing Guide' : 'Guía Diaria de Cicatrización',
+        : 'Recibe correos cuando te envÃ­en cotizaciones o respuestas a tus consultas.',
+    notifCare: lang === 'en' ? 'Daily Healing Guide' : 'GuÃ­a Diaria de CicatrizaciÃ³n',
     notifCareDesc:
       lang === 'en'
         ? 'Automated advice customized to your tattoo age (days 1 to 30).'
-        : 'Consejos automatizados según los días transcurridos desde tu tatuaje.',
+        : 'Consejos automatizados segÃºn los dÃ­as transcurridos desde tu tatuaje.',
     notifPromo: lang === 'en' ? 'Guest Artists & Promos' : 'Novedades y Promociones',
     notifPromoDesc:
       lang === 'en'
         ? 'Exclusive studio flashes, discounts, and traveling artists announcements.'
         : 'Flashes exclusivos, descuentos de temporada y artistas internacionales invitados.',
 
-    notifSounds: lang === 'en' ? 'Notification Sounds' : 'Sonidos de Notificación',
+    notifSounds: lang === 'en' ? 'Notification Sounds' : 'Sonidos de NotificaciÃ³n',
     notifSoundsDesc:
       lang === 'en'
         ? 'Play subtle audio alert on new chat message.'
@@ -473,26 +478,26 @@ export const ClientSettingsTab: React.FC<ClientSettingsTabProps> = ({
     notifPushDesc:
       lang === 'en'
         ? 'Desktop alerts even when the tab is running in background.'
-        : 'Alertas de escritorio incluso cuando tengas la pestaña en segundo plano.',
+        : 'Alertas de escritorio incluso cuando tengas la pestaÃ±a en segundo plano.',
     notifUpcoming: lang === 'en' ? '24h Dashboard Alert' : 'Banner de Cita Inminente (24h)',
     notifUpcomingDesc:
       lang === 'en'
         ? 'Show prominent reminder banner on your dashboard 24h prior to session.'
-        : 'Mostrar banner destacado en tu panel 24 horas antes de cada sesión.',
+        : 'Mostrar banner destacado en tu panel 24 horas antes de cada sesiÃ³n.',
 
     langTitle: lang === 'en' ? 'Language & Regional Format' : 'Idioma y Formato Regional',
     langSubtitle:
       lang === 'en'
         ? 'Switch your interface language and customize display formats.'
         : 'Selecciona el idioma del panel y configura tus preferencias de formato.',
-    spanishOption: 'Español (Latinoamérica e Internacional)',
+    spanishOption: 'EspaÃ±ol (LatinoamÃ©rica e Internacional)',
     englishOption: 'English (International)',
     timeFormatTitle: lang === 'en' ? 'Time Format' : 'Formato de Horario',
   };
 
   return (
     <div className="space-y-8">
-      {/* 1. Personalización de Perfil */}
+      {/* 1. PersonalizaciÃ³n de Perfil */}
       <section className="bg-white dark:bg-gray-850/90 border border-slate-200 dark:border-white/10 rounded-2xl p-6 md:p-8 shadow-xl backdrop-blur-md">
         <div className="flex items-center gap-3 mb-6 pb-4 border-b border-slate-200 dark:border-white/10">
           <div className="w-10 h-10 rounded-xl bg-primary/15 border border-primary/30 flex items-center justify-center text-primary">
@@ -632,8 +637,8 @@ export const ClientSettingsTab: React.FC<ClientSettingsTabProps> = ({
                   </h4>
                   <p className="text-xs text-slate-500 dark:text-gray-400 mt-0.5">
                     {isGoogleLinked
-                      ? 'Tu cuenta de Google está vinculada. Puedes iniciar sesión mediante Google o desvincularla para cambiar de correo electrónico.'
-                      : 'Vincula tu cuenta de Google para iniciar sesión rápidamente y sincronizar tu foto de perfil.'}
+                      ? 'Tu cuenta de Google estÃ¡ vinculada. Puedes iniciar sesiÃ³n mediante Google o desvincularla para cambiar de correo electrÃ³nico.'
+                      : 'Vincula tu cuenta de Google para iniciar sesiÃ³n rÃ¡pidamente y sincronizar tu foto de perfil.'}
                   </p>
                 </div>
               </div>
@@ -688,7 +693,7 @@ export const ClientSettingsTab: React.FC<ClientSettingsTabProps> = ({
                 type="text"
                 value={lastName}
                 onChange={(e) => setLastName(e.target.value)}
-                placeholder="González"
+                placeholder="GonzÃ¡lez"
                 className="w-full bg-slate-50 dark:bg-gray-900 border border-slate-300 dark:border-gray-700 rounded-xl px-4 py-2.5 text-slate-900 dark:text-white text-sm focus:outline-none focus:border-primary transition"
               />
             </div>
@@ -740,7 +745,7 @@ export const ClientSettingsTab: React.FC<ClientSettingsTabProps> = ({
             </div>
 
             <div>
-              {country === 'Panamá' ? (
+              {country === 'PanamÃ¡' ? (
                 <CustomSelect
                   label={t.province}
                   options={PANAMA_PROVINCES}
@@ -750,7 +755,7 @@ export const ClientSettingsTab: React.FC<ClientSettingsTabProps> = ({
                 />
               ) : (
                 <div>
-                  <label className="block text-sm font-medium text-white mb-2">
+                  <label className="block text-sm font-medium text-slate-700 dark:text-gray-300 mb-2">
                     {t.province}
                   </label>
                   <input
@@ -758,7 +763,7 @@ export const ClientSettingsTab: React.FC<ClientSettingsTabProps> = ({
                     value={province}
                     onChange={(e) => setProvince(e.target.value)}
                     placeholder="Provincia o Estado"
-                    className="w-full px-4 py-3 bg-[#121217] border border-zinc-800 rounded-xl text-white text-sm focus:outline-none focus:border-violet-500 transition"
+                    className="w-full px-4 py-3 bg-slate-50 dark:bg-gray-900 border border-slate-300 dark:border-gray-700 rounded-xl text-slate-900 dark:text-white text-sm focus:outline-none focus:border-violet-500 transition"
                   />
                 </div>
               )}
@@ -767,15 +772,15 @@ export const ClientSettingsTab: React.FC<ClientSettingsTabProps> = ({
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
-              <label className="block text-xs font-semibold text-gray-300 uppercase mb-1">
+              <label className="block text-xs font-semibold text-slate-700 dark:text-gray-300 uppercase mb-1">
                 {t.city}
               </label>
               <input
                 type="text"
                 value={city}
                 onChange={(e) => setCity(e.target.value)}
-                placeholder="Ciudad de Panamá"
-                className="w-full bg-gray-900 border border-gray-700 rounded-xl px-4 py-2.5 text-white text-sm focus:outline-none focus:border-primary transition"
+                placeholder="Ciudad de PanamÃ¡"
+                className="w-full bg-slate-50 dark:bg-gray-900 border border-slate-300 dark:border-gray-700 rounded-xl px-4 py-2.5 text-slate-900 dark:text-white text-sm focus:outline-none focus:border-primary transition"
               />
             </div>
 
@@ -1031,7 +1036,7 @@ export const ClientSettingsTab: React.FC<ClientSettingsTabProps> = ({
         </div>
       </section>
 
-      {/* 3. Idioma & Región */}
+      {/* 3. Idioma & RegiÃ³n */}
       <section className="bg-white dark:bg-gray-850/90 border border-slate-200 dark:border-white/10 rounded-2xl p-6 md:p-8 shadow-xl backdrop-blur-md">
         <div className="flex items-center gap-3 mb-6 pb-4 border-b border-slate-200 dark:border-white/10">
           <div className="w-10 h-10 rounded-xl bg-emerald-500/15 border border-emerald-500/30 flex items-center justify-center text-emerald-600 dark:text-emerald-400">
@@ -1055,9 +1060,9 @@ export const ClientSettingsTab: React.FC<ClientSettingsTabProps> = ({
               }`}
             >
               <div className="flex items-center gap-3">
-                <span className="text-2xl">🇪🇸</span>
+                <span className="text-2xl">ðŸ‡ªðŸ‡¸</span>
                 <div>
-                  <div className="font-bold text-slate-900 dark:text-white text-sm">Español</div>
+                  <div className="font-bold text-slate-900 dark:text-white text-sm">EspaÃ±ol</div>
                   <div className="text-xs text-slate-500 dark:text-gray-400">{t.spanishOption}</div>
                 </div>
               </div>
@@ -1077,7 +1082,7 @@ export const ClientSettingsTab: React.FC<ClientSettingsTabProps> = ({
               }`}
             >
               <div className="flex items-center gap-3">
-                <span className="text-2xl">🇺🇸</span>
+                <span className="text-2xl">ðŸ‡ºðŸ‡¸</span>
                 <div>
                   <div className="font-bold text-slate-900 dark:text-white text-sm">English</div>
                   <div className="text-xs text-slate-500 dark:text-gray-400">{t.englishOption}</div>
@@ -1129,6 +1134,12 @@ export const ClientSettingsTab: React.FC<ClientSettingsTabProps> = ({
           </div>
         </div>
       </section>
+
+      {/* 4. Seguridad, Correo, Teléfono Vonage SMS y 2FA */}
+      <ClientSecuritySettingsSection user={user} lang={lang} onShowToast={onShowToast} />
+
+      {/* 5. Programa de Invitaciones y Beneficios (Referidos) */}
+      <ReferralBenefitsSection user={user} onShowToast={onShowToast} />
     </div>
   );
 };

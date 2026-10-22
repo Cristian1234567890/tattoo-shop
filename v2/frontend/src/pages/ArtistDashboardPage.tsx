@@ -25,10 +25,13 @@ import {
   Plus,
   Share2,
   X,
+  Gift,
 } from 'lucide-react';
 import { useCurrency } from '../context/CurrencyContext';
 import { api } from '../api/client';
 import { SubscriptionBillingSection } from '../components/common/SubscriptionBillingSection';
+import { ClientSecuritySettingsSection } from '../components/client/ClientSecuritySettingsSection';
+import { ReferralBenefitsSection } from '../components/client/ReferralBenefitsSection';
 
 export const ArtistDashboardPage: React.FC = () => {
   const { user, isAuthenticated, isLoading, logout } = useAuth();
@@ -38,7 +41,12 @@ export const ArtistDashboardPage: React.FC = () => {
 
   // Tab synchronization via URL Query Param (?tab=general|suscripciones)
   const tabParam = (searchParams.get('tab') || 'general').toLowerCase();
-  const activeTab = tabParam === 'suscripciones' ? 'suscripciones' : 'general';
+  const activeTab = ['suscripciones', 'seguridad', 'referidos'].includes(tabParam) ? tabParam : 'general';
+  const [toastMessage, setToastMessage] = useState<{ text: string; isError?: boolean } | null>(null);
+  const handleShowToast = (text: string, isError = false) => {
+    setToastMessage({ text, isError });
+    setTimeout(() => setToastMessage(null), 3500);
+  };
 
   // Studio management states
   const [studios, setStudios] = useState<any[]>([]);
@@ -377,14 +385,65 @@ export const ArtistDashboardPage: React.FC = () => {
             <Sparkles size={18} />
             <span>Suscripciones &amp; Facturación</span>
           </button>
+          <button
+            type="button"
+            id="tab-btn-seguridad"
+            data-testid="tab-btn-seguridad"
+            onClick={() => setSearchParams({ tab: 'seguridad' })}
+            className={`flex items-center gap-2 px-5 py-2.5 rounded-xl font-bold text-xs md:text-sm whitespace-nowrap transition-all duration-200 cursor-pointer ${
+              activeTab === 'seguridad'
+                ? 'bg-gradient-to-r from-primary to-[#ff7a29] !text-white keep-white-text shadow-[0_0_20px_rgba(230,81,0,0.45)] ring-1 ring-white/20'
+                : 'text-slate-600 hover:text-slate-900 hover:bg-slate-200/60 dark:text-gray-400 dark:hover:text-white dark:hover:bg-white/5'
+            }`}
+          >
+            <ShieldCheck size={18} />
+            <span>Seguridad &amp; 2FA</span>
+          </button>
+
+          <button
+            type="button"
+            id="tab-btn-referidos"
+            data-testid="tab-btn-referidos"
+            onClick={() => setSearchParams({ tab: 'referidos' })}
+            className={`flex items-center gap-2 px-5 py-2.5 rounded-xl font-bold text-xs md:text-sm whitespace-nowrap transition-all duration-200 cursor-pointer ${
+              activeTab === 'referidos'
+                ? 'bg-gradient-to-r from-primary to-[#ff7a29] !text-white keep-white-text shadow-[0_0_20px_rgba(230,81,0,0.45)] ring-1 ring-white/20'
+                : 'text-slate-600 hover:text-slate-900 hover:bg-slate-200/60 dark:text-gray-400 dark:hover:text-white dark:hover:bg-white/5'
+            }`}
+          >
+            <Gift size={18} />
+            <span>Embajadores &amp; Beneficios</span>
+          </button>
         </nav>
 
         {/* Suscripciones Dedicated Tab View */}
-        {activeTab === 'suscripciones' ? (
+        {activeTab === 'suscripciones' && (
           <section className="mb-8 space-y-6">
             <SubscriptionBillingSection userRole="tatuador" />
           </section>
-        ) : (
+        )}
+
+        {/* Seguridad & Verificación Dedicated Tab View */}
+        {activeTab === 'seguridad' && (
+          <section className="mb-8 space-y-6">
+            <ClientSecuritySettingsSection
+              user={user}
+              onShowToast={handleShowToast}
+            />
+          </section>
+        )}
+
+        {/* Referidos Dedicated Tab View */}
+        {activeTab === 'referidos' && (
+          <section className="mb-8 space-y-6">
+            <ReferralBenefitsSection
+              user={user}
+              onShowToast={handleShowToast}
+            />
+          </section>
+        )}
+
+        {activeTab === 'general' && (
           <>
         {/* Read-Only Mode Banner for Free / Canceled / Expired Tier */}
         {(!hasActiveSubscription && (isTrialExpired || meta.subscription_status === 'canceled')) && (
@@ -980,6 +1039,20 @@ export const ArtistDashboardPage: React.FC = () => {
           </div>
         </div>
       )}
+        {toastMessage && (
+        <div
+          role="status"
+          aria-live="polite"
+          className={`fixed bottom-6 right-6 z-50 px-5 py-3 rounded-xl shadow-2xl text-sm font-semibold flex items-center gap-2 border transition-all animate-bounce ${
+            toastMessage.isError
+              ? 'bg-red-500/95 text-white border-red-600'
+              : 'bg-emerald-600/95 text-white border-emerald-700'
+          }`}
+        >
+          {toastMessage.isError ? '⚠️' : '✓'} {toastMessage.text}
+        </div>
+      )}
+
       </div>
     </PageTransition>
   );

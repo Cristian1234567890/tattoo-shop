@@ -28,6 +28,7 @@ import {
 } from 'lucide-react';
 import { isQaEnvironment } from '../../api/supabase';
 import { ThemeSwitch } from './ThemeSwitch';
+import { getEffectiveUserAvatar } from '../../utils/avatar';
 import { useTheme } from '../../context/ThemeContext';
 
 export const NavbarContext = React.createContext<{ isMounted: boolean }>({ isMounted: false });
@@ -140,7 +141,8 @@ export const Navbar: React.FC<NavbarProps> = ({ forceRender = false }) => {
     }
   }, [userCandidate]);
 
-  const displayAvatar = navAvatar || userCandidate;
+  const effectiveAvatar = getEffectiveUserAvatar(user);
+  const displayAvatar = effectiveAvatar || navAvatar || userCandidate;
 
   React.useEffect(() => {
     setAvatarError(false);

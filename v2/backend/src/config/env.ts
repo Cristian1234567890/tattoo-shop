@@ -17,6 +17,9 @@ export interface Environment {
   EMAIL: string;
   PASSW: string;
   SENTRY_DSN: string;
+  VONAGE_API_KEY: string;
+  VONAGE_API_SECRET: string;
+  VONAGE_FROM: string;
 }
 
 const defaultSupabaseUrl = 'https://mftthukphffirdcoqprz.supabase.co';
@@ -39,4 +42,7 @@ export const env: Environment = {
   SENTRY_DSN:
     process.env.SENTRY_DSN ||
     'https://f5eb4214b0d467f8509c97e0ff090c28@o4512048240263168.ingest.us.sentry.io/4512216031690752',
+  VONAGE_API_KEY: process.env.VONAGE_API_KEY || '',
+  VONAGE_API_SECRET: process.env.VONAGE_API_SECRET || '',
+  VONAGE_FROM: process.env.VONAGE_FROM || 'TattooHub',
 };

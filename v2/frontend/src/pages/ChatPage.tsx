@@ -184,20 +184,20 @@ export const ChatPage: React.FC = () => {
     : '';
 
   return (
-    <div className="flex-1 w-full h-full min-h-0 flex flex-col overflow-hidden bg-[#090d16] text-white">
+    <div className="flex-1 w-full h-full min-h-0 flex flex-col overflow-hidden bg-slate-50 dark:bg-[#090d16] text-slate-900 dark:text-white">
       <div className="flex-1 w-full max-w-7xl mx-auto h-full min-h-0 flex overflow-hidden p-2 sm:p-4 gap-3">
         {/* ========================================================
             LEFT COLUMN: ARTIST CONTACTS LIST
             ======================================================== */}
         <aside
-          className={`w-full md:w-80 lg:w-96 h-full min-h-0 flex flex-col rounded-2xl bg-zinc-900/90 border border-white/10 shadow-2xl backdrop-blur-xl overflow-hidden shrink-0 ${
+          className={`w-full md:w-80 lg:w-96 h-full min-h-0 flex flex-col rounded-2xl bg-white dark:bg-zinc-900/90 border border-slate-200 dark:border-white/10 shadow-xl dark:shadow-2xl backdrop-blur-xl overflow-hidden shrink-0 ${
             mobileViewChat ? 'hidden md:flex' : 'flex'
           }`}
         >
           {/* Header */}
-          <div className="p-4 border-b border-white/10 bg-zinc-950/60 shrink-0">
+          <div className="p-4 border-b border-slate-200 dark:border-white/10 bg-slate-50/90 dark:bg-zinc-950/60 shrink-0">
             <div className="flex items-center justify-between mb-3">
-              <h2 className="text-base font-bold text-white flex items-center gap-2">
+              <h2 className="text-base font-bold text-slate-900 dark:text-white flex items-center gap-2">
                 <MessageCircle className="w-5 h-5 text-amber-500" />
                 <span>Mensajes de Artistas</span>
               </h2>
@@ -218,13 +218,13 @@ export const ChatPage: React.FC = () => {
                 onChange={(e) => setSearchQuery(e.target.value)}
                 placeholder="Buscar por artista o estilo..."
                 aria-label="Buscar por artista o estilo"
-                className="w-full pl-9 pr-3 py-1.5 bg-zinc-800/80 border border-white/10 rounded-xl text-xs text-white placeholder-zinc-400 focus:outline-none focus:border-amber-500 transition"
+                className="w-full pl-9 pr-3 py-1.5 bg-slate-100 dark:bg-zinc-800/80 border border-slate-200 dark:border-white/10 rounded-xl text-xs text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-zinc-400 focus:outline-none focus:border-amber-500 transition"
               />
             </div>
           </div>
 
           {/* Contacts Scrollable List */}
-          <div className="flex-1 min-h-0 overflow-y-auto divide-y divide-white/5 scrollbar-thin">
+          <div className="flex-1 min-h-0 overflow-y-auto divide-y divide-slate-100 dark:divide-white/5 scrollbar-thin">
             {filteredContacts.map((contact) => {
               const isSelected = activeArtist?.id === contact.id;
               return (
@@ -234,7 +234,7 @@ export const ChatPage: React.FC = () => {
                   className={`w-full p-3.5 flex items-center gap-3 transition-all text-left cursor-pointer ${
                     isSelected
                       ? 'bg-amber-500/15 border-l-4 border-amber-500'
-                      : 'hover:bg-white/5 border-l-4 border-transparent'
+                      : 'hover:bg-slate-100 dark:hover:bg-white/5 border-l-4 border-transparent'
                   }`}
                 >
                   <div className="relative shrink-0">
@@ -255,7 +255,7 @@ export const ChatPage: React.FC = () => {
 
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center justify-between mb-0.5">
-                      <h3 className="text-xs font-bold text-white truncate">{contact.name}</h3>
+                      <h3 className="text-xs font-bold text-slate-900 dark:text-white truncate">{contact.name}</h3>
                       <span className="text-[10px] text-zinc-400">{contact.time}</span>
                     </div>
                     <p className="text-[11px] text-zinc-400 truncate mb-1">
@@ -280,13 +280,13 @@ export const ChatPage: React.FC = () => {
             RIGHT COLUMN: ACTIVE CHAT ROOM
             ======================================================== */}
         <main
-          className={`flex-1 h-full min-h-0 flex flex-col rounded-2xl bg-zinc-900/90 border border-white/10 shadow-2xl backdrop-blur-xl overflow-hidden ${
+          className={`flex-1 h-full min-h-0 flex flex-col rounded-2xl bg-white dark:bg-zinc-900/90 border border-slate-200 dark:border-white/10 shadow-xl dark:shadow-2xl backdrop-blur-xl overflow-hidden ${
             !mobileViewChat ? 'hidden md:flex' : 'flex'
           }`}
         >
           {/* Active Chat Header */}
           {activeArtist ? (
-            <div className="p-3 sm:p-4 border-b border-white/10 bg-zinc-950/70 flex items-center justify-between gap-3 shrink-0">
+            <div className="p-3 sm:p-4 border-b border-slate-200 dark:border-white/10 bg-slate-50/90 dark:bg-zinc-950/70 flex items-center justify-between gap-3 shrink-0">
               <div className="flex items-center gap-3 min-w-0">
                 {/* Mobile Back Button */}
                 <button
@@ -313,7 +313,7 @@ export const ChatPage: React.FC = () => {
                 </div>
 
                 <div className="min-w-0">
-                  <h3 className="text-sm font-bold text-white truncate flex items-center gap-2">
+                  <h3 className="text-sm font-bold text-slate-900 dark:text-white truncate flex items-center gap-2">
                     {activeArtist.name}
                     <span className="text-[10px] font-semibold text-emerald-400 px-2 py-0.2 rounded-full bg-emerald-500/10 border border-emerald-500/20">
                       En línea
@@ -342,7 +342,7 @@ export const ChatPage: React.FC = () => {
 
                 <Link
                   to={`/artist/${activeArtist.id}`}
-                  className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-zinc-800 hover:bg-zinc-750 text-zinc-200 border border-white/10 text-xs font-semibold transition"
+                  className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-zinc-800 dark:hover:bg-zinc-750 text-slate-700 dark:text-zinc-200 border border-slate-200 dark:border-white/10 text-xs font-semibold transition"
                 >
                   <ExternalLink size={13} />
                   <span className="hidden sm:inline">Perfil</span>
@@ -378,7 +378,7 @@ export const ChatPage: React.FC = () => {
                     className={`max-w-[78%] sm:max-w-[65%] rounded-2xl px-4 py-2.5 text-xs sm:text-sm leading-relaxed shadow-lg ${
                       isMine
                         ? 'bg-gradient-to-r from-amber-600 to-amber-700 text-white rounded-br-sm'
-                        : 'bg-zinc-800/90 text-zinc-100 border border-white/10 rounded-bl-sm'
+                        : 'bg-slate-100 dark:bg-zinc-800/90 text-slate-900 dark:text-zinc-100 border border-slate-200 dark:border-white/10 rounded-bl-sm'
                     }`}
                   >
                     <p>{msg.content}</p>
@@ -403,25 +403,25 @@ export const ChatPage: React.FC = () => {
           </div>
 
           {/* Quick Consultation Chips */}
-          <div className="px-4 py-2 border-t border-white/5 bg-zinc-950/40 flex items-center gap-2 overflow-x-auto scrollbar-none shrink-0">
+          <div className="px-4 py-2 border-t border-slate-200 dark:border-white/5 bg-slate-50/70 dark:bg-zinc-950/40 flex items-center gap-2 overflow-x-auto scrollbar-none shrink-0">
             <button
               type="button"
               onClick={() => handleQuickChip('🎨 Quisiera cotizar una pieza en estilo ' + (activeArtist?.style || 'realista') + '.')}
-              className="text-[11px] px-2.5 py-1 rounded-full bg-white/5 hover:bg-amber-500/20 text-zinc-300 hover:text-amber-300 border border-white/10 transition shrink-0 cursor-pointer"
+              className="text-[11px] px-2.5 py-1 rounded-full bg-slate-100 hover:bg-amber-50 dark:bg-white/5 dark:hover:bg-amber-500/20 text-slate-700 hover:text-amber-700 dark:text-zinc-300 dark:hover:text-amber-300 border border-slate-200 dark:border-white/10 transition shrink-0 cursor-pointer"
             >
               🎨 Cotizar diseño
             </button>
             <button
               type="button"
               onClick={() => handleQuickChip('📅 ¿Qué disponibilidad tienes para los próximos días?')}
-              className="text-[11px] px-2.5 py-1 rounded-full bg-white/5 hover:bg-amber-500/20 text-zinc-300 hover:text-amber-300 border border-white/10 transition shrink-0 cursor-pointer"
+              className="text-[11px] px-2.5 py-1 rounded-full bg-slate-100 hover:bg-amber-50 dark:bg-white/5 dark:hover:bg-amber-500/20 text-slate-700 hover:text-amber-700 dark:text-zinc-300 dark:hover:text-amber-300 border border-slate-200 dark:border-white/10 transition shrink-0 cursor-pointer"
             >
               📅 Consultar fechas
             </button>
             <button
               type="button"
               onClick={() => handleQuickChip('📍 ¿Cuál es la dirección exacta del estudio?')}
-              className="text-[11px] px-2.5 py-1 rounded-full bg-white/5 hover:bg-amber-500/20 text-zinc-300 hover:text-amber-300 border border-white/10 transition shrink-0 cursor-pointer"
+              className="text-[11px] px-2.5 py-1 rounded-full bg-slate-100 hover:bg-amber-50 dark:bg-white/5 dark:hover:bg-amber-500/20 text-slate-700 hover:text-amber-700 dark:text-zinc-300 dark:hover:text-amber-300 border border-slate-200 dark:border-white/10 transition shrink-0 cursor-pointer"
             >
               📍 Ubicación de estudio
             </button>
@@ -433,7 +433,7 @@ export const ChatPage: React.FC = () => {
               e.preventDefault();
               sendMessage();
             }}
-            className="p-3 sm:p-4 bg-zinc-950/80 border-t border-white/10 flex items-center gap-2 shrink-0"
+            className="p-3 sm:p-4 bg-slate-50/90 dark:bg-zinc-950/80 border-t border-slate-200 dark:border-white/10 flex items-center gap-2 shrink-0"
           >
             <input
               type="text"
@@ -441,7 +441,7 @@ export const ChatPage: React.FC = () => {
               onChange={(e) => setNewMessage(e.target.value)}
               placeholder={`Escribe un mensaje a ${activeArtist?.name || 'el artista'}...`}
               aria-label={`Escribe un mensaje a ${activeArtist?.name || 'el artista'}`}
-              className="flex-1 bg-zinc-800/90 text-white rounded-xl px-4 py-2.5 text-xs sm:text-sm border border-white/10 outline-none focus:border-amber-500 transition"
+              className="flex-1 bg-white dark:bg-zinc-800/90 text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-zinc-500 rounded-xl px-4 py-2.5 text-xs sm:text-sm border border-slate-300 dark:border-white/10 outline-none focus:border-amber-500 transition"
             />
             <button
               type="submit"

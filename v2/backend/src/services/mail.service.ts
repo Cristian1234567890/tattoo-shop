@@ -1,6 +1,11 @@
 import nodemailer from 'nodemailer';
 import { env } from '../config/env';
-import { renderMailTemplate } from '../templates/mail.template';
+import {
+  renderMailTemplate,
+  renderWelcomeUserTemplate,
+  renderAppointmentReceiptTemplate,
+  renderReferralInvitationTemplate,
+} from '../templates/mail.template';
 
 // Reusable transporter
 const transporter = nodemailer.createTransport({
@@ -63,8 +68,86 @@ export class MailService {
     try {
       await transporter.sendMail(mailOptions);
       return true;
-    } catch (error) {
-      // In development / testing or when dummy credentials are provided, return false gracefully
+    } catch {
+      return false;
+    }
+  }
+
+  /**
+   * Dispatches user creation / onboarding confirmation email
+   */
+  async sendWelcomeEmail(to: string, name: string, role: string = 'Cliente'): Promise<boolean> {
+    if (!to || typeof to !== 'string' || !to.trim()) return false;
+
+    const mailOptions: nodemailer.SendMailOptions = {
+      from: `"Tattoo Hub" <${env.EMAIL}>`,
+      to: to.trim(),
+      subject: '✨ ¡Bienvenido a Tattoo Hub! Tu cuenta ha sido confirmada',
+      html: renderWelcomeUserTemplate(name, role),
+    };
+
+    try {
+      await transporter.sendMail(mailOptions);
+      return true;
+    } catch {
+      return false;
+    }
+  }
+
+  /**
+   * Dispatches appointment receipt and reminder
+   */
+  async sendAppointmentReceipt(
+    to: string,
+    data: {
+      clientName: string;
+      artistName: string;
+      studioName: string;
+      date: string;
+      time: string;
+      deposit: string;
+      address: string;
+    }
+  ): Promise<boolean> {
+    if (!to || typeof to !== 'string' || !to.trim()) return false;
+
+    const mailOptions: nodemailer.SendMailOptions = {
+      from: `"Tattoo Hub" <${env.EMAIL}>`,
+      to: to.trim(),
+      subject: '📅 Cita Confirmada en Tattoo Hub - ' + data.artistName,
+      html: renderAppointmentReceiptTemplate(data),
+    };
+
+    try {
+      await transporter.sendMail(mailOptions);
+      return true;
+    } catch {
+      return false;
+    }
+  }
+
+  /**
+   * Dispatches friend referral invitation
+   */
+  async sendReferralInvite(
+    to: string,
+    inviterName: string,
+    inviteUrl: string,
+    code: string
+  ): Promise<boolean> {
+    if (!to || typeof to !== 'string' || !to.trim()) return false;
+
+    const mailOptions: nodemailer.SendMailOptions = {
+      from: `"Tattoo Hub" <${env.EMAIL}>`,
+      to: to.trim(),
+      subject: `🎁 ${inviterName} te ha invitado a unirte a Tattoo Hub (5% Dto)`,
+      html: renderReferralInvitationTemplate(inviterName, inviteUrl, code),
+    };
+
+    try {
+      await transporter.sendMail(mailOptions);
+      return true;
+    } catch {
       return false;
     }
   }

@@ -1,23 +1,38 @@
-# System Memory
+# System Memory - Tattoo Shop & Tattoo Hub
 
-Este archivo contiene el contexto general del proyecto y la estructura para que los agentes mantengan su memoria persistente durante el desarrollo de la aplicación Tattoo Shop.
+Este archivo contiene el contexto general del proyecto y la estructura para que los agentes mantengan su memoria persistente durante el desarrollo de la aplicación Tattoo Shop / Tattoo Hub.
 
 ## Descripción General del Proyecto
-**Tattoo Shop** es una aplicación web dividida en dos componentes principales:
-- **Frontend**: Una SPA construida con HTML, CSS, y Vanilla JS (ubicada en `/frontend`). Lista para ser servida estáticamente, incluye un `Dockerfile` usando Nginx.
-- **Backend**: Una API REST en Node.js (Express) (ubicada en `/backend/backend`). Gestiona rutas de autenticación, correos (Nodemailer), integración de pagos (PayPal) y consultas de tatuajes.
-- **Base de Datos / Backend as a Service**: Supabase. La configuración apunta a un proyecto alojado en Supabase (`unsftvudwxwbzwekokgr.supabase.co`).
+**Tattoo Hub** es una plataforma moderna para la comunidad de arte corporal, tatuadores independientes y estudios, dividida en dos componentes clave en `v2/`:
+- **Frontend (`v2/frontend`)**: Single Page Application construida con React 18, TypeScript, Vite, Tailwind CSS y Lucide Icons.
+- **Backend (`v2/backend`)**: API REST empresarial en Node.js, Express y TypeScript (`tsx`), protegida con Helmet, rate limiting y CORS.
+- **Base de Datos / Autenticación**: Supabase Cloud (`@supabase/supabase-js`, schemas `public` y `qa`), Supabase Auth con MFA TOTP y envío nativo de correos de recuperación.
+- **Verificación SMS / Telefonía**: Servicio Vonage SMS con códigos criptográficos de 6 dígitos (E.164, cooldown 60s, expiración 10 min, max 5 intentos).
+- **Procesamiento de Pagos**: Stripe (`stripe-node`) y suscripciones comerciales con período de prueba y gracia.
 
-## Estado Actual
-- El código base existe y está dividido en frontend y backend.
-- Existen archivos de configuración para contenedores (`Dockerfile` en frontend, `compose-dev.yaml` para entornos dev).
-- Se está iniciando la configuración local para levantar ambos servicios y continuar el desarrollo de forma estructurada.
+## Módulos y Características Clave (v2)
+1. **Verificación de Teléfono con Vonage SMS (6 dígitos OTP):**
+   - Endpoints en `/api/phone` (`/send-otp`, `/verify-otp`, `/change-request`, `/change-confirm`).
+   - Modal interactivo `PhoneVerificationModal` con selector homologado `CustomSelect` de prefijos internacionales de todos los países.
+   - Componente accesible `OtpVerificationInput` para captura fluida de 6 dígitos.
+2. **Seguridad de Cuenta, Resets de Contraseña & 2FA:**
+   - Envío nativo de correos Supabase para reseteo de contraseña (`supabase.auth.resetPasswordForEmail`).
+   - Gestión y cambio de correo electrónico mediante token de confirmación en `ClientSecuritySettingsSection`.
+   - Autenticación multifactor 2FA / TOTP con generación de código QR en SVG y desafío de verificación mediante `TwoFactorAuthModal`.
+3. **Persistencia Permanente del Avatar de Usuario:**
+   - Módulo centralizado `v2/frontend/src/utils/avatar.ts` que previene sobreescrituras accidentales por imágenes genéricas (`/assets/GB Tattoo.jpg`, `tatto-default-profile.png`).
+   - Prioriza permanentemente el avatar de Google OAuth (`picture`) y uploads directos de usuario.
+4. **Portafolio Interactivo y Personalizable de Tatuadores:**
+   - Galería `ArtistPortfolioGallery` con pestañas de filtrado (Todos, Tatuajes Realizados, Flashes Disponibles, Bocetos), estilos y modal Lightbox HD interactivo.
+   - Modal `PortfolioCustomizerModal` con 5 acentos temáticos (violet, gold, neon, crimson, emerald), 3 layouts (masonry, editorial, grid), 4 micro-animaciones (glow, tilt, zoom, shimmer) y presets de banners.
+5. **Plantillas de Correo Electrónico Modernas & Cumplimiento Legal:**
+   - Templates HTML responsivos para bienvenida, confirmación de reserva, consultas directas e invitaciones de referidos en `mail.template.ts`.
+   - Cumplimiento estricto CAN-SPAM con dirección física y canales de privacidad.
+6. **Sistema de Referidos y Embajadores:**
+   - Generación de código único y enlace por usuario, botón de compartir en WhatsApp y desglose de recompensas escalonadas (5%, 10%, 15% VIP).
+   - Accesible tanto para clientes como para tatuadores en sus paneles respectivos.
 
-## Estructura de Directorios Clave
-- `frontend/`: Archivos estáticos (`/Pages`, `/JS`, `/Img`, `/Design`) y `Dockerfile`.
-- `backend/backend/`: Servidor Express (`app.js`), controladores de rutas (`auth.js`, `paypal.js`, `mail.js`, `tattoo.js`), y su respectivo `package.json` y `Dockerfile`.
-- `supabase/`: Carpeta para la configuración local de Supabase (actualmente vacía, pero se puede inicializar con CLI si es necesario).
-
-## Dependencias Críticas
-- **Backend**: Express, CORS, dotenv, @supabase/supabase-js, axios, nodemailer.
-- **Frontend**: Nginx (si se usa Docker) o Live Server.
+## Estado de Pruebas y Construcción
+- **Backend Tests**: 119 pruebas automatizadas (119/119 passing, 100% green).
+- **Frontend Build**: Compilación limpia con Vite + TypeScript (`npm --prefix v2/frontend run build`).
+- **Backend Build**: Compilación limpia con TypeScript (`npm --prefix v2/backend run build`).

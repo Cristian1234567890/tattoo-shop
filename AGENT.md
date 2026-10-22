@@ -1,15 +1,38 @@
-# Agent Tasks & Guidelines
+# Agent Tasks & Guidelines - Tattoo Hub
 
 ## Directrices del Agente
-- **Prioridad**: Mantener el código modular, seguir las buenas prácticas de seguridad (no exponer claves `.env` en commits).
-- **Comunicación**: Ser conciso, utilizar archivos markdown para mantener el estado y las tareas (Agent.md, Memory.md, Gemini.md).
-- **Ejecución Local**: Antes de proponer comandos, verificar que el entorno tenga instaladas las herramientas (Node, npm, Docker/Podman).
+- **Prioridad**: Mantener el código modular y robusto, seguir las directrices de Clean Code y OWASP, sin exponer credenciales sensibles en commits.
+- **Automatización Primero**: Proactividad para resolver configuraciones antes de pedir acciones manuales al usuario.
+- **Validación E2E**: Ejecutar suite completa de tests de backend y compilación de frontend antes de marcar tareas como completadas.
+- **Consistencia de Diseño**: Uso coherente de paletas oscuras/claras, homologación de componentes (`CustomSelect`, `OtpVerificationInput`, modales) y soporte accesible WCAG 2.2.
 
-## Plan de Acción Inicial
-- [x] Analizar la estructura del proyecto.
-- [x] Crear el sistema de memoria y directrices (Memory.md, Gemini.md, Agent.md).
-- [ ] Instalar dependencias del backend (`npm install` en `/backend/backend`).
-- [ ] Levantar el backend (`npm run dev` o `node app.js`).
-- [ ] Levantar el frontend (Live Server, http-server, o Docker).
-- [ ] Verificar la conectividad con Supabase y las variables de entorno.
-- [ ] Iniciar con el desarrollo de nuevas características o solución de bugs.
+## Roadmap & Registro de Tareas
+
+### Completado Recientemente (v2.0)
+- [x] **Integración Vonage SMS:**
+  - Configuración de API Key y Secret en backend.
+  - Generación criptográfica de OTP de 6 dígitos con expiración de 10 minutos y rate limiting.
+  - Flujo de verificación y cambio de número telefónico con selector de prefijos internacionales homologado.
+  - Suite de pruebas unitarias y de seguridad en `vonage.test.ts`.
+- [x] **Flujo de Seguridad, Reseteo de Contraseña & 2FA:**
+  - Envío nativo de correos de recuperación mediante Supabase.
+  - Flujo de cambio de correo electrónico con confirmación en perfil.
+  - Autenticación multifactor 2FA con TOTP y código QR interactivo (`TwoFactorAuthModal`).
+  - Pestaña de seguridad integrada en panels de cliente y tatuador.
+- [x] **Persistencia de Foto de Perfil (Avatar Fix):**
+  - Corrección de regresión para fotos de perfil de Google OAuth y personalizadas (`avatar.ts`).
+  - Prevenir sobrescritura por imágenes genéricas por defecto.
+- [x] **Portafolio Interactivo y Personalización de Perfil de Tatuador:**
+  - Visualización completa de piezas, flashes y bocetos con lightbox HD.
+  - Personalizador de diseño visual (acentos cromáticos, disposición de cuadrícula/editorial, animaciones de tarjeta y banners).
+- [x] **Sistema de Referidos:**
+  - Generación de código único, enlace directo y botón para compartir vía WhatsApp.
+  - Beneficios escalonados (5% a 15% VIP).
+- [x] **Plantillas de Correo Electrónico:**
+  - Rediseño de templates transaccionales con estética vibrante, soporte dark/light y cumplimiento CAN-SPAM.
+- [x] **Depuración de Registros Huérfanos & Modo Claro/Oscuro:**
+  - Limpieza de datos huérfanos y corrección de contrastes en mapa y componentes clave.
+
+### Próximos Pasos
+- [ ] Monitoreo de entregabilidad SMS en producción con números de prueba reales.
+- [ ] Incorporación de métricas de conversión para el programa de referidos.

@@ -44,7 +44,7 @@ export const ForgotPasswordPage: React.FC = () => {
   };
 
   return (
-    <div className="flex-1 flex items-center justify-center py-16 px-4 bg-[#090d16] relative overflow-hidden">
+    <div className="flex-1 flex items-center justify-center py-16 px-4 bg-slate-50 dark:bg-[#090d16] text-slate-900 dark:text-white relative overflow-hidden">
       {/* Glow ambiental de fondo */}
       <div className="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-amber-500/10 rounded-full blur-3xl pointer-events-none" />
       <div className="absolute bottom-1/4 right-1/3 w-80 h-80 bg-violet-600/10 rounded-full blur-3xl pointer-events-none" />
@@ -53,7 +53,7 @@ export const ForgotPasswordPage: React.FC = () => {
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.4 }}
-        className="w-full max-w-md bg-zinc-900/90 backdrop-blur-xl rounded-2xl shadow-2xl p-8 border border-zinc-800 relative z-10"
+        className="w-full max-w-md bg-white dark:bg-zinc-900/90 backdrop-blur-xl rounded-2xl shadow-2xl p-8 border border-slate-200 dark:border-zinc-800 relative z-10 text-slate-900 dark:text-white"
       >
         <div className="flex justify-center mb-6">
           <div className="w-14 h-14 rounded-2xl bg-amber-500/10 border border-amber-500/20 flex items-center justify-center text-amber-400 shadow-inner">
@@ -61,10 +61,10 @@ export const ForgotPasswordPage: React.FC = () => {
           </div>
         </div>
 
-        <h1 className="text-2xl sm:text-3xl font-extrabold text-center text-white mb-2 tracking-tight">
+        <h1 className="text-2xl sm:text-3xl font-extrabold text-center text-slate-900 dark:text-white mb-2 tracking-tight">
           Recuperar Contraseña
         </h1>
-        <p className="text-zinc-400 text-sm text-center mb-6">
+        <p className="text-slate-600 dark:text-zinc-400 text-sm text-center mb-6">
           Ingresa el correo electrónico asociado a tu cuenta de Tattoo Hub para recibir un enlace seguro de restablecimiento.
         </p>
 
@@ -101,13 +101,13 @@ export const ForgotPasswordPage: React.FC = () => {
               <button
                 type="button"
                 onClick={() => setSubmitted(false)}
-                className="w-full py-2.5 px-4 rounded-xl border border-zinc-700 hover:border-zinc-600 text-zinc-300 text-sm font-medium transition cursor-pointer"
+                className="w-full py-2.5 px-4 rounded-xl border border-slate-300 dark:border-zinc-700 hover:border-slate-400 dark:hover:border-zinc-600 text-slate-700 dark:text-zinc-300 text-sm font-medium transition cursor-pointer"
               >
                 Reintentar con otro correo
               </button>
               <Link
                 to="/login"
-                className="w-full py-2.5 px-4 rounded-xl bg-zinc-800 hover:bg-zinc-700 text-white text-sm font-medium flex items-center justify-center gap-2 transition cursor-pointer text-center"
+                className="w-full py-2.5 px-4 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-zinc-800 dark:hover:bg-zinc-700 text-slate-800 dark:text-white border border-slate-200 dark:border-transparent text-sm font-medium flex items-center justify-center gap-2 transition cursor-pointer text-center"
               >
                 <ArrowLeft className="w-4 h-4" /> Volver al Inicio de Sesión
               </Link>
@@ -116,7 +116,7 @@ export const ForgotPasswordPage: React.FC = () => {
         ) : (
           <form onSubmit={handleSubmit} className="space-y-5">
             <div>
-              <label htmlFor="recovery-email" className="block text-xs font-semibold uppercase tracking-wider text-zinc-300 mb-2">
+              <label htmlFor="recovery-email" className="block text-xs font-semibold uppercase tracking-wider text-slate-700 dark:text-zinc-300 mb-2">
                 Correo Electrónico
               </label>
               <div className="relative">
@@ -132,7 +132,7 @@ export const ForgotPasswordPage: React.FC = () => {
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder="ejemplo@correo.com"
-                  className="w-full pl-10 pr-4 py-3 rounded-xl border border-zinc-800 bg-zinc-950/60 text-white placeholder-zinc-500 focus:border-amber-500 focus:ring-1 focus:ring-amber-500 focus:outline-none transition text-sm"
+                  className="w-full pl-10 pr-4 py-3 rounded-xl border border-slate-300 dark:border-zinc-800 bg-slate-50 dark:bg-zinc-950/60 text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-zinc-500 focus:border-amber-500 focus:ring-1 focus:ring-amber-500 focus:outline-none transition text-sm"
                 />
               </div>
             </div>

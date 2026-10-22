@@ -21,6 +21,15 @@ export class UserService {
     };
     delete (updatedMetadata as any).password;
 
+    const isGenericMeta = (url?: string) => !url || url.includes('tatto-default-profile.png') || url.includes('GB Tattoo.jpg') || url.includes('Tattoo Machine Rotary.png');
+    const incomingAvatarMeta = (sanitizedUserData as any).profile || (sanitizedUserData as any).avatar_url;
+    const existingAvatarMeta = user.user_metadata?.picture || user.user_metadata?.avatar_url;
+    if (incomingAvatarMeta && isGenericMeta(incomingAvatarMeta) && existingAvatarMeta && !isGenericMeta(existingAvatarMeta)) {
+      updatedMetadata.profile = existingAvatarMeta;
+      updatedMetadata.avatar_url = existingAvatarMeta;
+      updatedMetadata.picture = existingAvatarMeta;
+    }
+
     if (userData.country !== undefined) updatedMetadata.country = userData.country;
     if (userData.city !== undefined || userData.ciudad !== undefined) {
       updatedMetadata.city = userData.city || userData.ciudad;
@@ -128,7 +137,16 @@ export class UserService {
     if (userData.full_name || userData.nombre) {
       profileUpdates.full_name = userData.full_name || `${userData.nombre || ''} ${userData.apellido || ''}`.trim();
     }
-    if (userData.profile || userData.avatar_url) profileUpdates.avatar_url = userData.profile || userData.avatar_url;
+    const incomingAvatar = userData.profile || userData.avatar_url;
+    const isGenericAvatar = (url?: string) => !url || url.includes('tatto-default-profile.png') || url.includes('GB Tattoo.jpg') || url.includes('Tattoo Machine Rotary.png');
+    if (incomingAvatar && !isGenericAvatar(incomingAvatar)) {
+      profileUpdates.avatar_url = incomingAvatar;
+    } else if (incomingAvatar && isGenericAvatar(incomingAvatar)) {
+      const existingAvatar = (user as any)?.user_metadata?.avatar_url || (user as any)?.user_metadata?.picture;
+      if (!existingAvatar || isGenericAvatar(existingAvatar)) {
+        profileUpdates.avatar_url = incomingAvatar;
+      }
+    }
     if (userData.telefono || userData.phone_number) profileUpdates.phone_number = userData.telefono || userData.phone_number;
     if (userData.country !== undefined) profileUpdates.country = userData.country;
     if (userData.city !== undefined || userData.ciudad !== undefined) {

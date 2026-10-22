@@ -62,7 +62,7 @@ export const HomePage: React.FC = () => {
           </Link>
           <Link
             to="/register?role=Tatuador"
-            className="flex items-center justify-center gap-2 bg-zinc-900/80 hover:bg-zinc-800 text-white border border-zinc-800 hover:border-zinc-700 px-8 py-3.5 rounded-xl font-medium transition-all backdrop-blur-md"
+            className="flex items-center justify-center gap-2 bg-white hover:bg-slate-100 text-slate-800 border border-slate-300 dark:bg-zinc-900/80 dark:hover:bg-zinc-800 dark:text-white dark:border-zinc-800 dark:hover:border-zinc-700 px-8 py-3.5 rounded-xl font-semibold transition-all backdrop-blur-md shadow-sm"
           >
             Formar un Estudio o Perfil <ChevronRight className="w-4 h-4" />
           </Link>
@@ -267,7 +267,7 @@ export const HomePage: React.FC = () => {
                   alt={item.title}
                   className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                 />
-                <div className="absolute top-2 right-2 px-2.5 py-1 rounded-md bg-zinc-950/80 backdrop-blur-md border border-zinc-800 text-xs font-bold text-violet-300">
+                <div className="absolute top-2 right-2 px-2.5 py-1 rounded-md bg-white/90 dark:bg-zinc-950/80 backdrop-blur-md border border-slate-200 dark:border-zinc-800 text-xs font-bold text-violet-700 dark:text-violet-300 shadow-sm">
                   {formatPrice(item.price)}
                 </div>
               </div>
@@ -410,7 +410,7 @@ export const HomePage: React.FC = () => {
             </div>
             <Link
               to="/register?role=Cliente"
-              className="w-full text-center py-3 rounded-xl bg-slate-900 hover:bg-slate-800 dark:bg-zinc-800 dark:hover:bg-zinc-700 text-white text-xs font-bold transition-colors cursor-pointer shadow-sm"
+              className="w-full text-center py-3 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-800 border border-slate-300 dark:bg-zinc-800 dark:hover:bg-zinc-700 dark:text-white dark:border-zinc-700 text-xs font-bold transition-colors cursor-pointer shadow-sm"
             >
               Empezar Gratis
             </Link>
@@ -451,7 +451,7 @@ export const HomePage: React.FC = () => {
             </div>
             <Link
               to="/register?role=Cliente"
-              className="w-full text-center py-3 rounded-xl bg-slate-900 hover:bg-slate-800 dark:bg-zinc-800 dark:hover:bg-zinc-700 text-white text-xs font-bold transition-colors cursor-pointer shadow-sm"
+              className="w-full text-center py-3 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-800 border border-slate-300 dark:bg-zinc-800 dark:hover:bg-zinc-700 dark:text-white dark:border-zinc-700 text-xs font-bold transition-colors cursor-pointer shadow-sm"
             >
               Elegir Coleccionista VIP
             </Link>

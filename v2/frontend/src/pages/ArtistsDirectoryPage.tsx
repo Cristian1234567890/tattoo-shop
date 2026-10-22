@@ -1,5 +1,6 @@
 import { motion } from 'framer-motion';
 import React, { useState, useMemo } from 'react';
+import { Link } from 'react-router-dom';
 import {
   Search,
   MapPin,
@@ -594,6 +595,14 @@ export const ArtistsDirectoryPage: React.FC = () => {
                   {/* Actions Bar */}
                   {activeResident && (
                     <div className="p-6 pt-0 space-y-2.5">
+                      <Link
+                        to={`/artist/${activeResident.id}`}
+                        data-testid="btn-ver-perfil-directorio"
+                        className="w-full bg-violet-600 hover:bg-violet-700 text-white py-2.5 px-4 rounded-xl text-xs font-bold transition-colors flex items-center justify-center gap-2 cursor-pointer shadow-sm"
+                      >
+                        <User className="w-4 h-4 text-white" />
+                        Ver Perfil y Contacto ({activeResident.alias || activeResident.name})
+                      </Link>
                       <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                         {/* Send Sketch Button */}
                         <button

@@ -141,3 +141,7 @@ $RECYCLE.BIN/
 !.gemini/rules/
 scratch/
 .vercel
+
+# Local backups
+backups/
+**/backups/

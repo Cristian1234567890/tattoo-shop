@@ -30,14 +30,14 @@ export const AgendaTracking: React.FC = () => {
     switch (status) {
       case 'scheduled':
         return (
-          <span className="inline-flex items-center gap-1.5 px-2.5 py-1 text-xs font-semibold rounded-full border border-emerald-500/30 bg-emerald-500/10 text-emerald-400">
+          <span className="inline-flex items-center gap-1.5 px-2.5 py-1 text-xs font-semibold rounded-full border border-emerald-500/30 bg-emerald-50 dark:bg-emerald-500/10 text-emerald-700 dark:text-emerald-400">
             <CheckCircle2 className="w-3.5 h-3.5" />
             Confirmada
           </span>
         );
       case 'pending_approval':
         return (
-          <span className="inline-flex items-center gap-1.5 px-2.5 py-1 text-xs font-semibold rounded-full border border-amber-500/30 bg-amber-500/10 text-amber-400">
+          <span className="inline-flex items-center gap-1.5 px-2.5 py-1 text-xs font-semibold rounded-full border border-amber-500/30 bg-amber-50 dark:bg-amber-500/10 text-amber-700 dark:text-amber-400">
             <Clock className="w-3.5 h-3.5" />
             Pendiente de Aprobación
           </span>
@@ -45,21 +45,21 @@ export const AgendaTracking: React.FC = () => {
       case 'reschedule_requested_client':
       case 'reschedule_requested_artist':
         return (
-          <span className="inline-flex items-center gap-1.5 px-2.5 py-1 text-xs font-semibold rounded-full border border-purple-500/30 bg-purple-500/10 text-purple-400">
+          <span className="inline-flex items-center gap-1.5 px-2.5 py-1 text-xs font-semibold rounded-full border border-purple-500/30 bg-purple-50 dark:bg-purple-500/10 text-purple-700 dark:text-purple-400">
             <RefreshCw className="w-3.5 h-3.5" />
             Reprogramación Solicitada
           </span>
         );
       case 'completed':
         return (
-          <span className="inline-flex items-center gap-1.5 px-2.5 py-1 text-xs font-semibold rounded-full border border-blue-500/30 bg-blue-500/10 text-blue-400">
+          <span className="inline-flex items-center gap-1.5 px-2.5 py-1 text-xs font-semibold rounded-full border border-blue-500/30 bg-blue-50 dark:bg-blue-500/10 text-blue-700 dark:text-blue-400">
             <CheckCircle2 className="w-3.5 h-3.5" />
             Finalizada
           </span>
         );
       case 'cancelled':
         return (
-          <span className="inline-flex items-center gap-1.5 px-2.5 py-1 text-xs font-semibold rounded-full border border-red-500/30 bg-red-500/10 text-red-400">
+          <span className="inline-flex items-center gap-1.5 px-2.5 py-1 text-xs font-semibold rounded-full border border-red-500/30 bg-red-50 dark:bg-red-500/10 text-red-700 dark:text-red-400">
             <AlertCircle className="w-3.5 h-3.5" />
             Cancelada
           </span>
@@ -160,7 +160,7 @@ export const AgendaTracking: React.FC = () => {
                   <h4 className="font-semibold text-slate-800 dark:text-white text-base font-heading">
                     {appt.service_title || 'Sesión en Atelier'}
                   </h4>
-                  <p className="text-xs text-violet-300 flex items-center gap-1.5 mt-0.5">
+                  <p className="text-xs text-violet-700 dark:text-violet-300 flex items-center gap-1.5 mt-0.5">
                     <User className="w-3.5 h-3.5" />
                     Artista: {appt.artist_name || 'Residente Obsidian'}
                   </p>

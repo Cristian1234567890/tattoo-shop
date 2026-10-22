@@ -527,6 +527,64 @@ class ApiClient {
       return { success: false, error: err.message || 'Error validando cupón' };
     }
   }
+
+  // 37. POST /api/phone/send-otp (Vonage 6-digit SMS OTP)
+  async sendPhoneOtp(phonePrefix: string, phoneNumber: string): Promise<{ success: boolean; message?: string; error?: string; cooldownRemaining?: number }> {
+    try {
+      const res = await this.axiosInstance.post('/api/phone/send-otp', {
+        phone_prefix: phonePrefix,
+        phone_number: phoneNumber,
+      });
+      return res.data;
+    } catch (err: any) {
+      if (err.response?.data) return err.response.data;
+      return { success: false, error: err.message || 'Error enviando código de verificación SMS' };
+    }
+  }
+
+  // 38. POST /api/phone/verify-otp
+  async verifyPhoneOtp(phonePrefix: string, phoneNumber: string, code: string): Promise<{ success: boolean; message?: string; error?: string; phone_verified?: boolean }> {
+    try {
+      const res = await this.axiosInstance.post('/api/phone/verify-otp', {
+        phone_prefix: phonePrefix,
+        phone_number: phoneNumber,
+        code,
+      });
+      return res.data;
+    } catch (err: any) {
+      if (err.response?.data) return err.response.data;
+      return { success: false, error: err.message || 'Error verificando código SMS' };
+    }
+  }
+
+  // 39. POST /api/phone/change-request
+  async requestPhoneChange(newPhonePrefix: string, newPhoneNumber: string): Promise<{ success: boolean; message?: string; error?: string; cooldownRemaining?: number }> {
+    try {
+      const res = await this.axiosInstance.post('/api/phone/change-request', {
+        new_phone_prefix: newPhonePrefix,
+        new_phone_number: newPhoneNumber,
+      });
+      return res.data;
+    } catch (err: any) {
+      if (err.response?.data) return err.response.data;
+      return { success: false, error: err.message || 'Error solicitando cambio de número' };
+    }
+  }
+
+  // 40. POST /api/phone/change-confirm
+  async confirmPhoneChange(newPhonePrefix: string, newPhoneNumber: string, code: string): Promise<{ success: boolean; message?: string; error?: string; phone_verified?: boolean; phone_number?: string; phone_prefix?: string }> {
+    try {
+      const res = await this.axiosInstance.post('/api/phone/change-confirm', {
+        new_phone_prefix: newPhonePrefix,
+        new_phone_number: newPhoneNumber,
+        code,
+      });
+      return res.data;
+    } catch (err: any) {
+      if (err.response?.data) return err.response.data;
+      return { success: false, error: err.message || 'Error confirmando cambio de número' };
+    }
+  }
 }
 
 export const api = new ApiClient();

@@ -8,34 +8,35 @@ import mailRoutes from './routes/mail.routes';
 import progressRoutes from './routes/progress.routes';
 import hubRoutes from './routes/hub.routes';
 import studioRoutes from './routes/studio.routes';
+import phoneRoutes from './routes/phone.routes';
 import { errorHandler } from './middlewares/error.middleware';
 import { generalApiLimiter } from './middlewares/rateLimit.middleware';
 import { securityHeadersMiddleware } from './middlewares/security.middleware';
 
 export function createApp(): Application {
-  const app: Application = express();
+  const appInstance: Application = express();
 
   // Trust reverse proxy (Vercel / Cloudflare) for accurate IP-based rate limiting
-  app.set('trust proxy', 1);
+  appInstance.set('trust proxy', 1);
 
   // Disable Express fingerprinting header (OWASP Information Disclosure Prevention)
-  app.disable('x-powered-by');
+  appInstance.disable('x-powered-by');
 
   // OWASP 2025 Security Headers Middleware (Helmet-equivalent hardening)
-  app.use(securityHeadersMiddleware);
+  appInstance.use(securityHeadersMiddleware);
 
   // Cross-Origin Resource Sharing
-  app.use(cors());
+  appInstance.use(cors());
 
   // General API Rate Limiting to prevent scraping and DoS
-  app.use(generalApiLimiter);
+  appInstance.use(generalApiLimiter);
 
   // 50MB body limit for base64 image uploads and email attachments
-  app.use(express.json({ limit: '50mb' }));
-  app.use(express.urlencoded({ limit: '50mb', extended: true }));
+  appInstance.use(express.json({ limit: '50mb' }));
+  appInstance.use(express.urlencoded({ limit: '50mb', extended: true }));
 
   // Healthcheck endpoint
-  app.get('/health', (_req: Request, res: Response) => {
+  appInstance.get('/health', (_req: Request, res: Response) => {
     const { supabaseAdmin } = require('./config/supabase');
     const adminKey = (supabaseAdmin as any).supabaseKey || '';
     const adminRef = adminKey.includes('.') ? JSON.parse(Buffer.from(adminKey.split('.')[1], 'base64').toString()).ref : 'none';
@@ -43,27 +44,31 @@ export function createApp(): Application {
   });
 
   // Mount API route groups at root to preserve exact legacy contracts
-  app.use(authRoutes);
-  app.use(userRoutes);
-  app.use(tattooRoutes);
-  app.use(subscriptionRoutes);
-  app.use(mailRoutes);
-  app.use(progressRoutes);
-  app.use(hubRoutes);
-  app.use(studioRoutes);
+  appInstance.use(authRoutes);
+  appInstance.use(userRoutes);
+  appInstance.use(tattooRoutes);
+  appInstance.use(subscriptionRoutes);
+  appInstance.use(mailRoutes);
+  appInstance.use(progressRoutes);
+  appInstance.use(hubRoutes);
+  appInstance.use(studioRoutes);
+  // Phone verification routes (Vonage SMS)
+  appInstance.use('/api/phone', phoneRoutes);
+  appInstance.use('/phone', phoneRoutes);
 
   // 404 Handler for unmatched routes
-  app.use((_req: Request, res: Response) => {
+  appInstance.use((_req: Request, res: Response) => {
     res.status(404).json({
       success: false,
       error: { message: 'Route not found' },
     });
   });
 
-  // Centralized error handler
-  app.use(errorHandler);
+  // Global Error Handler
+  appInstance.use(errorHandler);
 
-  return app;
+  return appInstance;
 }
 
-export const app = createApp();
+export const app: Application = createApp();
+export default app;

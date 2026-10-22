@@ -13,6 +13,7 @@ import {
   User as UserIcon,
 } from 'lucide-react';
 import { useCurrency } from '../../context/CurrencyContext';
+import { getEffectiveUserAvatar } from '../../utils/avatar';
 
 interface ClientHeroHeaderProps {
   user: User | null;
@@ -60,7 +61,9 @@ export const ClientHeroHeader: React.FC<ClientHeroHeaderProps> = ({
     return () => window.removeEventListener('user_avatar_changed', onAvatarChanged);
   }, []);
 
+  const effectiveAvatar = getEffectiveUserAvatar(user);
   const avatarUrl =
+    effectiveAvatar ||
     avatarOverride ||
     meta.profile ||
     meta.avatar_url ||

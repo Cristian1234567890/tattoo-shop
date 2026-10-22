@@ -13,8 +13,8 @@ Este archivo define c√≥mo el modelo Gemini (y Antigravity) deben interactuar con
 - Utiliza la terminal en Powershell (`run_command`) para instalar paquetes, levantar servicios o revisar git status.
 - Mant√©n las credenciales sensibles aisladas en los `.env`.
 
-## FilosofÌa de EjecuciÛn y AutonomÌa (Aprendizaje Reciente)
-1. **AutomatizaciÛn Primero:** ANTES de pedirle al usuario que realice cambios manuales en interfaces gr·ficas o dashboards (ej. Vercel, Supabase, Google Cloud), el agente DEBE intentar hacerlo de forma autÛnoma. Si requiere un "Management Token" o API Key para hacerlo, pÌdelo. Solo si es estrictamente imposible de automatizar, proporciona los pasos manuales.
-2. **ValidaciÛn End-to-End (E2E):** Antes de entregar un requerimiento como "Completado", el agente debe anticipar configuraciones de terceros (ej. URL callbacks de OAuth, variables de entorno) que podrÌan romper el flujo en producciÛn, y resolverlos proactivamente.
-3. **Fluidez y Batching:** Agrupa las preguntas, requerimientos de credenciales y permisos en un solo mensaje inicial para evitar bloquear la ejecuciÛn constantemente.
-4. **Eficiencia de Tokens:** SÈ directo, conciso y tÈcnico. Evita explicaciones extensas y redundantes de lo que acabas de hacer a menos que el usuario pida detalles.
+## Filosof√≠a de Ejecuci√≥n y Autonom√≠a (Aprendizaje Reciente)
+1. **Automatizaci√≥n Primero:** ANTES de pedirle al usuario que realice cambios manuales en interfaces gr√°ficas o dashboards (ej. Vercel, Supabase, Google Cloud), el agente DEBE intentar hacerlo de forma aut√≥noma. Si requiere un "Management Token" o API Key para hacerlo, p√≠delo. Solo si es estrictamente imposible de automatizar, proporciona los pasos manuales.
+2. **Validaci√≥n End-to-End (E2E):** Antes de entregar un requerimiento como "Completado", el agente debe anticipar configuraciones de terceros (ej. URL callbacks de OAuth, variables de entorno) que podr√≠an romper el flujo en producci√≥n, y resolverlos proactivamente.
+3. **Fluidez y Batching:** Agrupa las preguntas, requerimientos de credenciales y permisos en un solo mensaje inicial para evitar bloquear la ejecuci√≥n constantemente.
+4. **Eficiencia de Tokens:** S√© directo, conciso y t√©cnico. Evita explicaciones extensas y redundantes de lo que acabas de hacer a menos que el usuario pida detalles.

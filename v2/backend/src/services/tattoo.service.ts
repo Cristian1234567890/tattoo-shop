@@ -67,6 +67,299 @@ async function getTestAccountIds(): Promise<Set<string>> {
   return new Set((data || []).map((r: { id: string }) => r.id));
 }
 
+
+
+
+export const RESIDENT_ARTISTS_CATALOG: Record<string, any> = {
+  'artist-kaelen': {
+    email: 'kaelen.silva@obsidian-atelier.com',
+    nombre: 'Kaelen',
+    apellido: 'Silva',
+    name: 'Kaelen Silva',
+    alias: 'Void',
+    bio: 'Especialista en neo-tribal, cybersigilism, geometría oscura y blackwork biomecánico con más de 8 años de trayectoria.',
+    work_type: 'Cybersigilism & Neo-Tribal',
+    specialties: ['Cybersigilism', 'Neo-Tribal', 'Geometría Oscura'],
+    telefono: '60012345',
+    phone_prefix: '+507',
+    whatsapp_number: '60012345',
+    country: 'Panamá',
+    provincia: 'Panamá',
+    ciudad: 'Ciudad de Panamá',
+    city: 'Ciudad de Panamá',
+    direccion: 'Bella Vista, Calle 50',
+    studio: 'Obsidian Atelier & Flash Lab',
+    hourly_rate: 80,
+    price: 80,
+    profile: '/assets/GB Tattoo.jpg',
+    avatar_url: '/assets/GB Tattoo.jpg',
+    instagram: 'https://instagram.com/obsidian.atelier',
+  },
+  'artist-maya': {
+    email: 'maya.lin@obsidian-atelier.com',
+    nombre: 'Maya',
+    apellido: 'Lin',
+    name: 'Maya Lin',
+    alias: 'Thorne',
+    bio: 'Ornamental botánico de alta precisión, puntillismo sutil y micro-estructuras simétricas para piezas anatómicas exclusivas.',
+    work_type: 'Ornamental & Dotwork',
+    specialties: ['Ornamental', 'Dotwork', 'Botánico'],
+    telefono: '61119988',
+    phone_prefix: '+507',
+    whatsapp_number: '61119988',
+    country: 'Panamá',
+    provincia: 'Panamá',
+    ciudad: 'Ciudad de Panamá',
+    city: 'Ciudad de Panamá',
+    direccion: 'Bella Vista, Calle 50',
+    studio: 'Obsidian Atelier & Flash Lab',
+    hourly_rate: 75,
+    price: 75,
+    profile: '/assets/GB.jpeg',
+    avatar_url: '/assets/GB.jpeg',
+    instagram: 'https://instagram.com/thorne.botanical',
+  },
+  'artist-carlos': {
+    email: 'carlos.mendoza@obsidian-atelier.com',
+    nombre: 'Carlos',
+    apellido: 'Mendoza',
+    name: 'Carlos Mendoza',
+    alias: 'Neon',
+    bio: 'Cyberpunk futurista, estética glitch experimental y tatuajes con tintas reactivas UV de alta durabilidad.',
+    work_type: 'Cyberpunk & Glitch',
+    specialties: ['Cyberpunk', 'Glitch Art', 'UV Reactive'],
+    telefono: '62224455',
+    phone_prefix: '+507',
+    whatsapp_number: '62224455',
+    country: 'Panamá',
+    provincia: 'Panamá',
+    ciudad: 'Ciudad de Panamá',
+    city: 'Ciudad de Panamá',
+    direccion: 'Bella Vista, Calle 50',
+    studio: 'Obsidian Atelier & Flash Lab',
+    hourly_rate: 90,
+    price: 90,
+    profile: '/assets/1571.jpg',
+    avatar_url: '/assets/1571.jpg',
+    instagram: 'https://instagram.com/neon.cyberpunk',
+  },
+  'artist-cristian': {
+    email: 'cristian.castillo@inkandiron.com',
+    nombre: 'Cristian',
+    apellido: 'Castillo',
+    name: 'Cristian Castillo',
+    alias: 'Iron Fist',
+    bio: 'Tradicional americano clásico, líneas pesadas, paleta primaria sólida y acabados atemporales.',
+    work_type: 'Tradicional Americano',
+    specialties: ['Tradicional Americano', 'Old School'],
+    telefono: '63337788',
+    phone_prefix: '+507',
+    whatsapp_number: '63337788',
+    country: 'Panamá',
+    provincia: 'Panamá',
+    ciudad: 'Ciudad de Panamá',
+    city: 'Ciudad de Panamá',
+    direccion: 'El Cangrejo, Vía Argentina',
+    studio: 'Ink & Iron Tattoo Parlour',
+    hourly_rate: 70,
+    price: 70,
+    profile: '/assets/1403.jpg',
+    avatar_url: '/assets/1403.jpg',
+    instagram: 'https://instagram.com/ironfist.trad',
+  },
+  'artist-elena': {
+    email: 'elena.vega@inkandiron.com',
+    nombre: 'Elena',
+    apellido: 'Vega',
+    name: 'Elena Vega',
+    alias: 'Black Rose',
+    bio: 'Neotradicional de alto contraste, animales con ornamentación floral y paletas saturadas.',
+    work_type: 'Neotradicional',
+    specialties: ['Neotradicional', 'Full Color'],
+    telefono: '64441122',
+    phone_prefix: '+507',
+    whatsapp_number: '64441122',
+    country: 'Panamá',
+    provincia: 'Panamá',
+    ciudad: 'Ciudad de Panamá',
+    city: 'Ciudad de Panamá',
+    direccion: 'El Cangrejo, Vía Argentina',
+    studio: 'Ink & Iron Tattoo Parlour',
+    hourly_rate: 80,
+    price: 80,
+    profile: '/assets/1251.jpg',
+    avatar_url: '/assets/1251.jpg',
+    instagram: 'https://instagram.com/blackrose.elena',
+  },
+  'artist-ana': {
+    email: 'ana.valdes@cascocollective.com',
+    nombre: 'Ana',
+    apellido: 'Valdés',
+    name: 'Ana Valdés',
+    alias: 'Alma Trad',
+    bio: 'Tatuaje tradicional y lettering chicano personalizado con líneas sólidas y sombras degradadas.',
+    work_type: 'Tradicional & Lettering',
+    specialties: ['Tradicional', 'Lettering'],
+    telefono: '65559900',
+    phone_prefix: '+507',
+    whatsapp_number: '65559900',
+    country: 'Panamá',
+    provincia: 'Panamá',
+    ciudad: 'Ciudad de Panamá',
+    city: 'Ciudad de Panamá',
+    direccion: 'Casco Antiguo, Avenida Central',
+    studio: 'Casco Viejo Tattoo Collective',
+    hourly_rate: 85,
+    price: 85,
+    profile: '/assets/1403.jpg',
+    avatar_url: '/assets/1403.jpg',
+    instagram: 'https://instagram.com/anavaldes.trad',
+  },
+  'artist-valeria': {
+    email: 'valeria.rios@chromagallery.com',
+    nombre: 'Valeria',
+    apellido: 'Ríos',
+    name: 'Valeria Ríos',
+    alias: 'Val Ink',
+    bio: 'Trazos sutiles, micro-ilustraciones minimalistas y caligrafía de aguja única de alta precisión.',
+    work_type: 'Minimalista & Fine Line',
+    specialties: ['Minimalista', 'Fine Line'],
+    telefono: '65551122',
+    phone_prefix: '+507',
+    whatsapp_number: '65551122',
+    country: 'Panamá',
+    provincia: 'Panamá',
+    ciudad: 'Ciudad de Panamá',
+    city: 'Ciudad de Panamá',
+    direccion: 'San Francisco, Calle 74 Este',
+    studio: 'Chroma Gallery & Tattoo',
+    hourly_rate: 75,
+    price: 75,
+    profile: '/assets/1251.jpg',
+    avatar_url: '/assets/1251.jpg',
+    instagram: 'https://instagram.com/valink.fineline',
+  },
+  'artist-diego': {
+    email: 'diego.lopez@chromagallery.com',
+    nombre: 'Diego',
+    apellido: 'López',
+    name: 'Diego López',
+    alias: 'Kitsune',
+    bio: 'Tatuaje japonés tradicional y contemporáneo, dragones, carpas koi y máscaras noh con composición oriental.',
+    work_type: 'Japonés & Irezumi',
+    specialties: ['Japonés', 'Irezumi'],
+    telefono: '66663344',
+    phone_prefix: '+507',
+    whatsapp_number: '66663344',
+    country: 'Panamá',
+    provincia: 'Panamá',
+    ciudad: 'Ciudad de Panamá',
+    city: 'Ciudad de Panamá',
+    direccion: 'San Francisco, Calle 74 Este',
+    studio: 'Chroma Gallery & Tattoo',
+    hourly_rate: 85,
+    price: 85,
+    profile: '/assets/1571.jpg',
+    avatar_url: '/assets/1571.jpg',
+    instagram: 'https://instagram.com/kitsune.irezumi',
+  },
+  'artist-cristian-bp': {
+    email: 'cristian.casco@blackpearl.com',
+    nombre: 'Cristian',
+    apellido: 'Castillo',
+    name: 'Cristian Castillo',
+    alias: 'Black Pearl',
+    bio: 'Blackwork de alto impacto, geometría y grabados medievales inspirados en xilografía en el corazón de Casco Antiguo.',
+    work_type: 'Blackwork Medieval',
+    specialties: ['Blackwork', 'Neotradicional'],
+    telefono: '67894321',
+    phone_prefix: '+507',
+    whatsapp_number: '67894321',
+    country: 'Panamá',
+    provincia: 'Panamá',
+    ciudad: 'Ciudad de Panamá',
+    city: 'Ciudad de Panamá',
+    direccion: 'Casco Antiguo, Calle 4ta Oeste',
+    studio: 'Black Pearl Studio Casco Viejo',
+    hourly_rate: 80,
+    price: 80,
+    profile: '/assets/GB Tattoo.jpg',
+    avatar_url: '/assets/GB Tattoo.jpg',
+    instagram: 'https://instagram.com/blackpearl.casco',
+  },
+  'artist-sofia-bp': {
+    email: 'sofia.arango@blackpearl.com',
+    nombre: 'Sofía',
+    apellido: 'Arango',
+    name: 'Sofía Arango',
+    alias: 'Sofi Art',
+    bio: 'Geometría sagrada, mandalas y puntillismo de alta densidad con equilibrio anatómico.',
+    work_type: 'Dotwork & Geometría',
+    specialties: ['Dotwork', 'Geometría Sagrada'],
+    telefono: '69994433',
+    phone_prefix: '+507',
+    whatsapp_number: '69994433',
+    country: 'Panamá',
+    provincia: 'Panamá',
+    ciudad: 'Ciudad de Panamá',
+    city: 'Ciudad de Panamá',
+    direccion: 'Casco Antiguo, Calle 4ta Oeste',
+    studio: 'Black Pearl Studio Casco Viejo',
+    hourly_rate: 75,
+    price: 75,
+    profile: '/assets/1403.jpg',
+    avatar_url: '/assets/1403.jpg',
+    instagram: 'https://instagram.com/sofiart.dotwork',
+  },
+  'artist-001': {
+    email: 'giovanni.tattoo@example.com',
+    nombre: 'Giovanni',
+    apellido: 'Buglione',
+    name: 'Giovanni Buglione',
+    alias: 'Buglione Ink',
+    work_type: 'realista',
+    specialties: ['Realismo', 'Black & Grey'],
+    telefono: '60012345',
+    phone_prefix: '+507',
+    whatsapp_number: '60012345',
+    country: 'Panamá',
+    provincia: 'Panamá',
+    ciudad: 'Ciudad de Panamá',
+    city: 'Ciudad de Panamá',
+    direccion: 'Bella Vista, Calle 50',
+    studio: 'Obsidian Atelier & Flash Lab',
+    hourly_rate: 80,
+    price: 80,
+    profile: '/assets/GB Tattoo.jpg',
+    avatar_url: '/assets/GB Tattoo.jpg',
+    instagram: 'https://instagram.com',
+  },
+  'artist-002': {
+    email: 'cristian.tattoo@example.com',
+    nombre: 'Cristian',
+    apellido: 'Castillo',
+    name: 'Cristian Castillo',
+    alias: 'Castillo Pro',
+    work_type: 'blackwork',
+    specialties: ['Blackwork', 'Linework'],
+    telefono: '67894321',
+    phone_prefix: '+507',
+    whatsapp_number: '67894321',
+    country: 'Panamá',
+    provincia: 'Panamá',
+    ciudad: 'San Francisco',
+    city: 'San Francisco',
+    direccion: 'Calle 74 Este',
+    studio: 'Chroma Gallery & Tattoo',
+    hourly_rate: 75,
+    price: 75,
+    profile: '/assets/GB Tattoo.jpg',
+    avatar_url: '/assets/GB Tattoo.jpg',
+  },
+};
+
+const UUID_REGEX = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+
 export class TattooService {
   async getTattoPublicData(
     requesterId?: string,
@@ -92,7 +385,12 @@ export class TattooService {
       if (filters.country) {
         const targetCountry = normalizeString(filters.country);
         result = result.filter((row: TatuadorRecord) => {
-          const country = normalizeString(row.data?.country || row.data?.pais);
+          const country = normalizeString(
+            row.data?.country ||
+            row.data?.pais ||
+            (normalizeString(row.data?.provincia).includes('panam') ? 'Panamá' : '') ||
+            (normalizeString(row.data?.ciudad).includes('panam') ? 'Panamá' : '')
+          );
           if (!country) return false;
           return country === targetCountry || country.includes(targetCountry) || targetCountry.includes(country);
         });
@@ -210,19 +508,41 @@ export class TattooService {
   }
 
   async getTattoById(id: string, requesterId?: string): Promise<ApiResponse<TatuadorRecord>> {
+    // 1. Check resident artists catalog
+    if (RESIDENT_ARTISTS_CATALOG[id]) {
+      const requesterIsTest = await isTestAccount(requesterId);
+      if (requesterIsTest) {
+        return { success: false, error: 'Artist not found' };
+      }
+      return {
+        success: true,
+        data: {
+          id,
+          data: RESIDENT_ARTISTS_CATALOG[id],
+          created_at: '2026-01-01T00:00:00.000Z',
+          updated_at: '2026-01-01T00:00:00.000Z',
+        },
+      };
+    }
+
+    // 2. Query database (if DB throws 22P02 invalid uuid syntax or other error, safely treat as not found)
     const { data, error } = await supabaseAdmin
       .from('tatuadores_data')
       .select('*')
       .eq('id', id)
       .maybeSingle();
 
-    if (error) {
-      return { success: false, error };
-    }
-    if (!data) {
+    if (error || !data) {
       return { success: false, error: 'Artist not found' };
     }
-    // Enforce sandbox: a profile from the "other world" behaves as not found.
+
+    // 3. Ensure record has profile data (reject empty/dummy records)
+    const d = data.data || {};
+    if (!d.nombre && !d.name && !d.alias) {
+      return { success: false, error: 'Artist not found' };
+    }
+
+    // 4. Enforce sandbox: a profile from the "other world" behaves as not found.
     const [requesterIsTest, artistIsTest] = await Promise.all([
       isTestAccount(requesterId),
       isTestAccount(id),

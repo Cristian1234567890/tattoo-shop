@@ -402,25 +402,49 @@ const STUDIOS_DATA: StudioLocation[] = [
 /**
  * Creates custom Leaflet HTML DivIcon for studios and independent artists
  */
-function createStudioIcon(studio: StudioLocation, isActive: boolean) {
+function createStudioIcon(studio: StudioLocation, isActive: boolean, isDark: boolean = true) {
   const isStudio = studio.type === 'studio';
   const badgeHtml = isStudio
     ? `<div class="px-3 py-1.5 rounded-full flex items-center gap-1.5 border transition-all ${
         isActive
           ? 'bg-violet-600 border-violet-300 text-white shadow-[0_0_25px_rgba(139,92,246,0.9)] scale-110'
-          : 'bg-zinc-900/95 border-violet-500/50 text-violet-300 hover:border-violet-400 shadow-[0_0_12px_rgba(139,92,246,0.35)]'
+          : isDark
+            ? 'bg-zinc-900/95 border-violet-500/50 text-violet-300 hover:border-violet-400 shadow-[0_0_12px_rgba(139,92,246,0.35)]'
+            : 'bg-white border-2 border-violet-600 text-violet-900 hover:border-violet-800 shadow-lg'
       }">
-        <svg class="w-3.5 h-3.5 text-violet-200" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/></svg>
+        <svg class="w-3.5 h-3.5 ${isDark ? 'text-violet-200' : 'text-violet-700'}" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/></svg>
         <span class="text-xs font-black tracking-tight">${studio.artistsCount || 1}</span>
         <span class="text-[10px] font-bold uppercase tracking-wider opacity-90 hidden sm:inline">Artistas</span>
       </div>`
     : `<div class="w-8 h-8 rounded-full flex items-center justify-center border transition-all ${
         isActive
           ? 'bg-violet-600 border-white text-white shadow-[0_0_20px_rgba(139,92,246,0.85)] scale-110'
-          : 'bg-zinc-900 border-zinc-700 text-zinc-300 hover:border-zinc-500'
+          : isDark
+            ? 'bg-zinc-900 border-zinc-700 text-zinc-300 hover:border-zinc-500'
+            : 'bg-white border-2 border-violet-600 text-violet-800 hover:border-violet-700 shadow-md'
       }">
         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
       </div>`;
+
+  const pointerColor = isActive
+    ? 'bg-violet-600'
+    : isDark
+      ? 'bg-zinc-900 border-r border-b border-violet-500/40'
+      : 'bg-white border-r-2 border-b-2 border-violet-600';
+
+  const labelClasses = isActive
+    ? isDark
+      ? 'text-white bg-zinc-900/95 border border-violet-500/60 shadow-xl'
+      : 'text-violet-950 bg-white border-2 border-violet-500 shadow-xl font-bold'
+    : isDark
+      ? 'text-zinc-400 bg-zinc-950/80 border border-zinc-800'
+      : 'text-slate-900 bg-white border border-slate-300 shadow-lg font-bold';
+
+  const countBadgeHtml = isStudio
+    ? isDark
+      ? `<span class="text-[10px] px-1.5 py-0.5 rounded bg-violet-950 text-violet-300 font-bold border border-violet-800/60">${studio.artistsCount}</span>`
+      : `<span class="text-[10px] px-1.5 py-0.5 rounded bg-violet-100 text-violet-800 font-bold border border-violet-200">${studio.artistsCount}</span>`
+    : '';
 
   const html = `
     <div
@@ -431,22 +455,12 @@ function createStudioIcon(studio: StudioLocation, isActive: boolean) {
     >
       <div class="relative">
         ${badgeHtml}
-        <div class="w-2 h-2 mx-auto rotate-45 -mt-1 ${
-          isActive ? 'bg-violet-600' : 'bg-zinc-900 border-r border-b border-violet-500/40'
-        }"></div>
+        <div class="w-2 h-2 mx-auto rotate-45 -mt-1 ${pointerColor}"></div>
       </div>
-      <div class="mt-1.5 text-xs font-medium px-2.5 py-1 rounded-lg backdrop-blur-md transition-all whitespace-nowrap ${
-        isActive
-          ? 'text-white bg-zinc-900/95 border border-violet-500/60 shadow-xl'
-          : 'text-zinc-400 bg-zinc-950/80 border border-zinc-800'
-      }">
+      <div class="mt-1.5 text-xs font-medium px-2.5 py-1 rounded-lg backdrop-blur-md transition-all whitespace-nowrap ${labelClasses}">
         <div class="flex items-center gap-1.5">
           <span class="font-semibold">${studio.name}</span>
-          ${
-            studio.type === 'studio'
-              ? `<span class="text-[10px] px-1.5 py-0.5 rounded bg-violet-950 text-violet-300 font-bold border border-violet-800/60">${studio.artistsCount}</span>`
-              : ''
-          }
+          ${countBadgeHtml}
         </div>
       </div>
     </div>
@@ -460,7 +474,6 @@ function createStudioIcon(studio: StudioLocation, isActive: boolean) {
     popupAnchor: [0, -40],
   });
 }
-
 
 export const TATTOO_STYLES = [
   'All',
@@ -970,7 +983,7 @@ export default function ArtistsHubPage() {
                 <Marker
                   key={studio.id}
                   position={markerPos}
-                  icon={createStudioIcon(studio, isActive)}
+                  icon={createStudioIcon(studio, isActive, isDark)}
                   eventHandlers={{
                     click: () => {
                       handleSelectStudio(studio.id);
@@ -1050,7 +1063,7 @@ export default function ArtistsHubPage() {
 
                           <Link
                             to={`/artist/${artist.id}`}
-                            className="px-2.5 flex items-center justify-center bg-slate-100 hover:bg-slate-200 dark:bg-zinc-800 dark:hover:bg-zinc-700 text-slate-700 hover:text-slate-900 dark:text-zinc-300 dark:hover:text-white text-xs font-medium rounded-xl transition border border-slate-300 dark:border-zinc-700"
+                            className="px-3 py-2 flex items-center justify-center bg-violet-100 hover:bg-violet-200 dark:bg-zinc-800 dark:hover:bg-zinc-700 text-violet-800 hover:text-violet-950 dark:text-zinc-200 dark:hover:text-white text-xs font-bold rounded-xl transition border border-violet-300 dark:border-zinc-700 shadow-sm"
                           >
                             Perfil
                           </Link>
@@ -1374,7 +1387,7 @@ export default function ArtistsHubPage() {
                       <button
                         data-testid="close-drawer-details"
                         onClick={() => setActiveStudioId(null)}
-                        className="absolute top-3 right-3 p-1.5 rounded-full bg-zinc-900/80 hover:bg-zinc-800 text-white border border-zinc-700 backdrop-blur-sm transition cursor-pointer shadow-md z-10"
+                        className="absolute top-3 right-3 p-1.5 rounded-full bg-white/90 hover:bg-white text-slate-700 hover:text-slate-950 dark:bg-zinc-900/80 dark:hover:bg-zinc-800 dark:text-white border border-slate-200 dark:border-zinc-700 backdrop-blur-sm transition cursor-pointer shadow-md z-10"
                         aria-label="Cerrar detalles del estudio"
                       >
                         <X className="w-4 h-4" />
@@ -1613,7 +1626,19 @@ export default function ArtistsHubPage() {
                           </button>
 
                           {/* 3. Botón de Contacto por WhatsApp */}
-                          <div className="pt-1 flex items-center justify-between">
+                                                    {/* Botón Ver Perfil y Contacto del Artista */}
+                          <div className="pt-1">
+                            <Link
+                              to={`/artist/${activeResident.id}`}
+                              data-testid="btn-ver-perfil-artista"
+                              className="w-full inline-flex items-center justify-center gap-1.5 py-2.5 rounded-xl bg-violet-600 hover:bg-violet-700 dark:bg-violet-600 dark:hover:bg-violet-500 text-white text-xs font-bold transition shadow-sm hover:shadow-md cursor-pointer"
+                            >
+                              <User className="w-4 h-4 text-white" />
+                              {isEn ? "View Profile & Contact" : "Ver Perfil y Contacto"} ({activeResident.alias || activeResident.name})
+                            </Link>
+                          </div>
+
+<div className="pt-1 flex items-center justify-between">
                             <button
                               data-testid="btn-whatsapp-direct"
                               onClick={() => handleContactWhatsApp(activeResident, activeStudio)}
@@ -1754,7 +1779,7 @@ export default function ArtistsHubPage() {
               </h3>
               <button
                 onClick={() => setReviewModalOpen(false)}
-                className="p-1 rounded-lg text-zinc-400 hover:text-white hover:bg-zinc-800 transition"
+                className="p-1 rounded-lg text-slate-400 hover:text-slate-800 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-zinc-800 transition cursor-pointer"
               >
                 <X className="w-4 h-4" />
               </button>
@@ -1817,7 +1842,7 @@ export default function ArtistsHubPage() {
                 <button
                   type="button"
                   onClick={() => setReviewModalOpen(false)}
-                  className="flex-1 py-2 text-xs font-semibold rounded-xl border border-slate-300 dark:border-zinc-700 hover:bg-slate-100 dark:hover:bg-zinc-800 transition"
+                  className="flex-1 py-2 text-xs font-semibold rounded-xl border border-slate-300 dark:border-zinc-700 hover:bg-slate-100 dark:hover:bg-zinc-800 text-slate-700 dark:text-zinc-300 transition cursor-pointer"
                 >
                   {isEn ? 'Cancel' : 'Cancelar'}
                 </button>

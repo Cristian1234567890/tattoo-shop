@@ -121,7 +121,7 @@ export const ChangePasswordPage: React.FC = () => {
   };
 
   return (
-    <div className="flex-1 flex items-center justify-center py-16 px-4 bg-[#090d16] relative overflow-hidden">
+    <div className="flex-1 flex items-center justify-center py-16 px-4 bg-slate-50 dark:bg-[#090d16] text-slate-900 dark:text-white relative overflow-hidden">
       {/* Glow ambiental */}
       <div className="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-amber-500/10 rounded-full blur-3xl pointer-events-none" />
       <div className="absolute bottom-1/4 right-1/3 w-80 h-80 bg-violet-600/10 rounded-full blur-3xl pointer-events-none" />
@@ -130,7 +130,7 @@ export const ChangePasswordPage: React.FC = () => {
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.4 }}
-        className="w-full max-w-md bg-zinc-900/90 backdrop-blur-xl rounded-2xl shadow-2xl p-8 border border-zinc-800 relative z-10"
+        className="w-full max-w-md bg-white dark:bg-zinc-900/90 backdrop-blur-xl rounded-2xl shadow-2xl p-8 border border-slate-200 dark:border-zinc-800 relative z-10 text-slate-900 dark:text-white"
       >
         <div className="flex justify-center mb-6">
           <div className="w-14 h-14 rounded-2xl bg-amber-500/10 border border-amber-500/20 flex items-center justify-center text-amber-400 shadow-inner">
@@ -138,10 +138,10 @@ export const ChangePasswordPage: React.FC = () => {
           </div>
         </div>
 
-        <h1 className="text-2xl sm:text-3xl font-extrabold text-center text-white mb-2 tracking-tight">
+        <h1 className="text-2xl sm:text-3xl font-extrabold text-center text-slate-900 dark:text-white mb-2 tracking-tight">
           Nueva Contraseña
         </h1>
-        <p className="text-zinc-400 text-sm text-center mb-6">
+        <p className="text-slate-600 dark:text-zinc-400 text-sm text-center mb-6">
           Ingresa y confirma tu nueva credencial de acceso para asegurar tu cuenta en Tattoo Hub.
         </p>
 
@@ -196,7 +196,7 @@ export const ChangePasswordPage: React.FC = () => {
                   await supabase.auth.signOut().catch(() => {});
                   navigate('/login?reset=success', { replace: true });
                 }}
-                className="text-xs text-zinc-400 hover:text-white transition cursor-pointer block mx-auto"
+                className="text-xs text-slate-500 hover:text-slate-800 dark:text-zinc-400 dark:hover:text-white transition cursor-pointer block mx-auto"
               >
                 ¿Prefieres cerrar sesión e iniciar sesión manualmente?
               </button>
@@ -205,7 +205,7 @@ export const ChangePasswordPage: React.FC = () => {
         ) : (
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
-              <label htmlFor="new-password" className="block text-xs font-semibold uppercase tracking-wider text-zinc-300 mb-2">
+              <label htmlFor="new-password" className="block text-xs font-semibold uppercase tracking-wider text-slate-700 dark:text-zinc-300 mb-2">
                 Nueva Contraseña (mín. 8 caracteres)
               </label>
               <div className="relative">
@@ -219,7 +219,7 @@ export const ChangePasswordPage: React.FC = () => {
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder="••••••••"
-                  className="w-full pl-10 pr-10 py-3 rounded-xl border border-zinc-800 bg-zinc-950/60 text-white placeholder-zinc-500 focus:border-amber-500 focus:ring-1 focus:ring-amber-500 focus:outline-none transition text-sm"
+                  className="w-full pl-10 pr-10 py-3 rounded-xl border border-slate-300 dark:border-zinc-800 bg-slate-50 dark:bg-zinc-950/60 text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-zinc-500 focus:border-amber-500 focus:ring-1 focus:ring-amber-500 focus:outline-none transition text-sm"
                 />
                 <button
                   type="button"
@@ -232,7 +232,7 @@ export const ChangePasswordPage: React.FC = () => {
             </div>
 
             <div>
-              <label htmlFor="confirm-new-password" className="block text-xs font-semibold uppercase tracking-wider text-zinc-300 mb-2">
+              <label htmlFor="confirm-new-password" className="block text-xs font-semibold uppercase tracking-wider text-slate-700 dark:text-zinc-300 mb-2">
                 Confirmar Contraseña
               </label>
               <div className="relative">
@@ -246,7 +246,7 @@ export const ChangePasswordPage: React.FC = () => {
                   value={confirmPassword}
                   onChange={(e) => setConfirmPassword(e.target.value)}
                   placeholder="••••••••"
-                  className="w-full pl-10 pr-4 py-3 rounded-xl border border-zinc-800 bg-zinc-950/60 text-white placeholder-zinc-500 focus:border-amber-500 focus:ring-1 focus:ring-amber-500 focus:outline-none transition text-sm"
+                  className="w-full pl-10 pr-4 py-3 rounded-xl border border-slate-300 dark:border-zinc-800 bg-slate-50 dark:bg-zinc-950/60 text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-zinc-500 focus:border-amber-500 focus:ring-1 focus:ring-amber-500 focus:outline-none transition text-sm"
                 />
               </div>
             </div>
