@@ -1,4 +1,4 @@
-import { Sparkles, MessageCircle, MapPin, ArrowLeft, Phone, Instagram, Facebook, Globe, Palette } from 'lucide-react';
+import { Sparkles, MessageCircle, MapPin, ArrowLeft, Phone, Palette } from 'lucide-react';
 import React, { useState, useEffect } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import axios from 'axios';
@@ -15,13 +15,113 @@ import { COUNTRIES } from '../utils/countries';
 import { isGenericPlaceholder, getEffectiveUserAvatar } from '../utils/avatar';
 import { ArtistPortfolioGallery, PortfolioItem } from '../components/portfolio/ArtistPortfolioGallery';
 import { PortfolioCustomizerModal, PortfolioThemeConfig, DEFAULT_PORTFOLIO_CONFIG } from '../components/portfolio/PortfolioCustomizerModal';
+interface ThemePalette {
+  primaryHex: string;
+  bannerGradient: string;
+  heroSubtitle: string;
+  heroAliasBadge: string;
+  heroButtonGradient: string;
+  heroAvatarBorder: string;
+  bodyIcon: string;
+  bodyAccentText: string;
+  bodyPill: string;
+  bodyBorder: string;
+}
+
+const THEME_PALETTES: Record<string, ThemePalette> = {
+  violet: {
+    primaryHex: '#8b5cf6',
+    bannerGradient: 'from-slate-950 via-violet-950 to-indigo-950',
+    heroSubtitle: 'text-violet-200',
+    heroAliasBadge: 'bg-violet-500/25 text-violet-100 border-violet-400/40 shadow-xs',
+    heroButtonGradient: 'bg-gradient-to-r from-violet-600 to-indigo-600 hover:from-violet-500 hover:to-indigo-500 text-white shadow-lg shadow-violet-950/40',
+    heroAvatarBorder: 'border-violet-500/50 shadow-[0_0_25px_rgba(139,92,246,0.35)]',
+    bodyIcon: 'text-violet-500',
+    bodyAccentText: 'text-violet-700 dark:text-violet-400',
+    bodyPill: 'bg-violet-100 dark:bg-violet-950/60 text-violet-800 dark:text-violet-300 border-violet-200 dark:border-violet-800/60',
+    bodyBorder: 'border-violet-500/30',
+  },
+  neon: {
+    primaryHex: '#06b6d4',
+    bannerGradient: 'from-slate-950 via-cyan-950 to-fuchsia-950',
+    heroSubtitle: 'text-cyan-200',
+    heroAliasBadge: 'bg-cyan-500/25 text-cyan-100 border-cyan-400/40 shadow-xs',
+    heroButtonGradient: 'bg-gradient-to-r from-cyan-500 to-fuchsia-600 hover:from-cyan-400 hover:to-fuchsia-500 text-white shadow-lg shadow-cyan-950/40',
+    heroAvatarBorder: 'border-cyan-400/60 shadow-[0_0_25px_rgba(6,182,212,0.4)]',
+    bodyIcon: 'text-cyan-500',
+    bodyAccentText: 'text-cyan-700 dark:text-cyan-400',
+    bodyPill: 'bg-cyan-100 dark:bg-cyan-950/60 text-cyan-900 dark:text-cyan-300 border-cyan-200 dark:border-cyan-800/60',
+    bodyBorder: 'border-cyan-500/30',
+  },
+  gold: {
+    primaryHex: '#eab308',
+    bannerGradient: 'from-stone-950 via-zinc-900 to-amber-950',
+    heroSubtitle: 'text-amber-200',
+    heroAliasBadge: 'bg-amber-500/25 text-amber-100 border-amber-400/40 shadow-xs',
+    heroButtonGradient: 'bg-gradient-to-r from-amber-500 to-yellow-600 hover:from-amber-400 hover:to-yellow-500 text-slate-950 font-black shadow-lg shadow-amber-950/40',
+    heroAvatarBorder: 'border-amber-400/60 shadow-[0_0_25px_rgba(234,179,8,0.4)]',
+    bodyIcon: 'text-amber-500',
+    bodyAccentText: 'text-amber-700 dark:text-amber-400',
+    bodyPill: 'bg-amber-100 dark:bg-amber-950/60 text-amber-900 dark:text-amber-300 border-amber-200 dark:border-amber-800/60',
+    bodyBorder: 'border-amber-500/30',
+  },
+  crimson: {
+    primaryHex: '#f43f5e',
+    bannerGradient: 'from-black via-rose-950 to-red-950',
+    heroSubtitle: 'text-rose-200',
+    heroAliasBadge: 'bg-rose-500/25 text-rose-100 border-rose-400/40 shadow-xs',
+    heroButtonGradient: 'bg-gradient-to-r from-rose-600 to-red-600 hover:from-rose-500 hover:to-red-500 text-white shadow-lg shadow-rose-950/40',
+    heroAvatarBorder: 'border-rose-500/60 shadow-[0_0_25px_rgba(244,63,94,0.4)]',
+    bodyIcon: 'text-rose-500',
+    bodyAccentText: 'text-rose-700 dark:text-rose-400',
+    bodyPill: 'bg-rose-100 dark:bg-rose-950/60 text-rose-900 dark:text-rose-300 border-rose-200 dark:border-rose-800/60',
+    bodyBorder: 'border-rose-500/30',
+  },
+  emerald: {
+    primaryHex: '#10b981',
+    bannerGradient: 'from-slate-950 via-emerald-950 to-teal-950',
+    heroSubtitle: 'text-emerald-200',
+    heroAliasBadge: 'bg-emerald-500/25 text-emerald-100 border-emerald-400/40 shadow-xs',
+    heroButtonGradient: 'bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white shadow-lg shadow-emerald-950/40',
+    heroAvatarBorder: 'border-emerald-400/60 shadow-[0_0_25px_rgba(16,185,129,0.4)]',
+    bodyIcon: 'text-emerald-500',
+    bodyAccentText: 'text-emerald-700 dark:text-emerald-400',
+    bodyPill: 'bg-emerald-100 dark:bg-emerald-950/60 text-emerald-900 dark:text-emerald-300 border-emerald-200 dark:border-emerald-800/60',
+    bodyBorder: 'border-emerald-500/30',
+  },
+};
+
+function resolveAutoTheme(artist: any): 'violet' | 'gold' | 'neon' | 'crimson' | 'emerald' {
+  if (artist?.portfolio_customization?.accentTheme) {
+    return artist.portfolio_customization.accentTheme;
+  }
+  const aliasLower = (artist?.alias || '').toLowerCase();
+  const workTypeLower = (artist?.work_type || '').toLowerCase();
+  const bioLower = (artist?.bio || '').toLowerCase();
+  const combined = `${aliasLower} ${workTypeLower} ${bioLower}`;
+
+  if (combined.includes('neon') || combined.includes('cyber') || combined.includes('glitch') || combined.includes('uv')) {
+    return 'neon';
+  }
+  if (combined.includes('gold') || combined.includes('oro') || combined.includes('lujo') || combined.includes('luxury')) {
+    return 'gold';
+  }
+  if (combined.includes('red') || combined.includes('crimson') || combined.includes('sangre') || combined.includes('tradicional')) {
+    return 'crimson';
+  }
+  if (combined.includes('emerald') || combined.includes('botanical') || combined.includes('botánico') || combined.includes('verde')) {
+    return 'emerald';
+  }
+  return 'violet';
+}
+
 
 const WORK_TYPE_OPTIONS: SelectOption[] = [
   { value: 'realista', label: 'Realista' },
   { value: 'tradicional', label: 'Tradicional' },
   { value: 'neotradicional', label: 'Neotradicional' },
   { value: 'blackwork', label: 'Blackwork' },
-  { value: 'japones', label: 'JaponÃ©s' },
+  { value: 'japones', label: 'Japonés' },
   { value: 'tribal', label: 'Tribal' },
   { value: 'acuarela', label: 'Acuarela' },
 ];
@@ -34,16 +134,16 @@ const COUNTRY_OPTIONS: SelectOption[] = COUNTRIES.map((c) => ({
 }));
 
 const PANAMA_PROVINCES: SelectOption[] = [
-  { value: 'PanamÃ¡', label: 'PanamÃ¡' },
-  { value: 'PanamÃ¡ Oeste', label: 'PanamÃ¡ Oeste' },
-  { value: 'ColÃ³n', label: 'ColÃ³n' },
-  { value: 'ChiriquÃ­', label: 'ChiriquÃ­' },
+  { value: 'Panamá', label: 'Panamá' },
+  { value: 'Panamá Oeste', label: 'Panamá Oeste' },
+  { value: 'Colón', label: 'Colón' },
+  { value: 'Chiriquí', label: 'Chiriquí' },
   { value: 'Bocas del Toro', label: 'Bocas del Toro' },
-  { value: 'CoclÃ©', label: 'CoclÃ©' },
+  { value: 'Coclé', label: 'Coclé' },
   { value: 'Herrera', label: 'Herrera' },
   { value: 'Los Santos', label: 'Los Santos' },
   { value: 'Veraguas', label: 'Veraguas' },
-  { value: 'DariÃ©n', label: 'DariÃ©n' },
+  { value: 'Darién', label: 'Darién' },
 ];
 
 export interface PublicArtistData extends Partial<ArtistProfileData> {
@@ -63,16 +163,16 @@ const fallbackPublicArtists: Record<string, PublicArtistData> = {
     apellido: 'Silva',
     name: 'Kaelen Silva',
     alias: 'Void',
-    bio: 'Especialista en neo-tribal, cybersigilism, geometrÃ­a oscura y blackwork biomecÃ¡nico con mÃ¡s de 8 aÃ±os de trayectoria.',
+    bio: 'Especialista en neo-tribal, cybersigilism, geometría oscura y blackwork biomecánico con más de 8 años de trayectoria.',
     work_type: 'Cybersigilism & Neo-Tribal',
-    specialties: ['Cybersigilism', 'Neo-Tribal', 'GeometrÃ­a Oscura'],
+    specialties: ['Cybersigilism', 'Neo-Tribal', 'Geometría Oscura'],
     telefono: '60012345',
     phone_prefix: '+507',
     whatsapp_number: '60012345',
-    country: 'PanamÃ¡',
-    provincia: 'PanamÃ¡',
-    ciudad: 'Ciudad de PanamÃ¡',
-    city: 'Ciudad de PanamÃ¡',
+    country: 'Panamá',
+    provincia: 'Panamá',
+    ciudad: 'Ciudad de Panamá',
+    city: 'Ciudad de Panamá',
     direccion: 'Bella Vista, Calle 50',
     studio: 'Obsidian Atelier & Flash Lab',
     hourly_rate: 80,
@@ -92,16 +192,16 @@ const fallbackPublicArtists: Record<string, PublicArtistData> = {
     apellido: 'Lin',
     name: 'Maya Lin',
     alias: 'Thorne',
-    bio: 'Ornamental botÃ¡nico de alta precisiÃ³n, puntillismo sutil y micro-estructuras simÃ©tricas para piezas anatÃ³micas exclusivas.',
+    bio: 'Ornamental botánico de alta precisión, puntillismo sutil y micro-estructuras simétricas para piezas anatómicas exclusivas.',
     work_type: 'Ornamental & Dotwork',
-    specialties: ['Ornamental', 'Dotwork', 'BotÃ¡nico'],
+    specialties: ['Ornamental', 'Dotwork', 'Botánico'],
     telefono: '61119988',
     phone_prefix: '+507',
     whatsapp_number: '61119988',
-    country: 'PanamÃ¡',
-    provincia: 'PanamÃ¡',
-    ciudad: 'Ciudad de PanamÃ¡',
-    city: 'Ciudad de PanamÃ¡',
+    country: 'Panamá',
+    provincia: 'Panamá',
+    ciudad: 'Ciudad de Panamá',
+    city: 'Ciudad de Panamá',
     direccion: 'Bella Vista, Calle 50',
     studio: 'Obsidian Atelier & Flash Lab',
     hourly_rate: 75,
@@ -115,21 +215,27 @@ const fallbackPublicArtists: Record<string, PublicArtistData> = {
     ],
   },
   'artist-carlos': {
+    portfolio_customization: {
+      accentTheme: 'neon',
+      layoutStyle: 'masonry',
+      cardAnimation: 'glow',
+      bannerPreset: 'gradient-cyber',
+    },
     email: 'carlos.mendoza@obsidian-atelier.com',
     nombre: 'Carlos',
     apellido: 'Mendoza',
     name: 'Carlos Mendoza',
     alias: 'Neon',
-    bio: 'Cyberpunk futurista, estÃ©tica glitch experimental y tatuajes con tintas reactivas UV de alta durabilidad.',
+    bio: 'Cyberpunk futurista, estética glitch experimental y tatuajes con tintas reactivas UV de alta durabilidad.',
     work_type: 'Cyberpunk & Glitch',
     specialties: ['Cyberpunk', 'Glitch Art', 'UV Reactive'],
     telefono: '62224455',
     phone_prefix: '+507',
     whatsapp_number: '62224455',
-    country: 'PanamÃ¡',
-    provincia: 'PanamÃ¡',
-    ciudad: 'Ciudad de PanamÃ¡',
-    city: 'Ciudad de PanamÃ¡',
+    country: 'Panamá',
+    provincia: 'Panamá',
+    ciudad: 'Ciudad de Panamá',
+    city: 'Ciudad de Panamá',
     direccion: 'Bella Vista, Calle 50',
     studio: 'Obsidian Atelier & Flash Lab',
     hourly_rate: 90,
@@ -142,22 +248,28 @@ const fallbackPublicArtists: Record<string, PublicArtistData> = {
     ],
   },
   'artist-cristian': {
+    portfolio_customization: {
+      accentTheme: 'gold',
+      layoutStyle: 'editorial',
+      cardAnimation: 'tilt',
+      bannerPreset: 'gradient-gold',
+    },
     email: 'cristian.castillo@neonink.com',
     nombre: 'Cristian',
     apellido: 'Castillo',
     name: 'Cristian Castillo',
     alias: 'Castillo Ink',
-    bio: 'Maestro del realismo a color, contraste saturado y retratos realistas con acabado fotogrÃ¡fico.',
+    bio: 'Maestro del realismo a color, contraste saturado y retratos realistas con acabado fotográfico.',
     work_type: 'Realismo Color',
     specialties: ['Realismo Color', 'Retratos'],
     telefono: '67894321',
     phone_prefix: '+507',
     whatsapp_number: '67894321',
-    country: 'PanamÃ¡',
-    provincia: 'PanamÃ¡',
-    ciudad: 'Ciudad de PanamÃ¡',
-    city: 'Ciudad de PanamÃ¡',
-    direccion: 'El Cangrejo, VÃ­a Argentina',
+    country: 'Panamá',
+    provincia: 'Panamá',
+    ciudad: 'Ciudad de Panamá',
+    city: 'Ciudad de Panamá',
+    direccion: 'El Cangrejo, Vía Argentina',
     studio: 'Neon Ink Studio',
     hourly_rate: 70,
     price: 70,
@@ -174,17 +286,17 @@ const fallbackPublicArtists: Record<string, PublicArtistData> = {
     apellido: 'Vega',
     name: 'Elena Vega',
     alias: 'Aquarelle',
-    bio: 'Pintura en piel, efectos de acuarela lÃ­quida con difuminados suaves y micro-realismo botÃ¡nico.',
+    bio: 'Pintura en piel, efectos de acuarela líquida con difuminados suaves y micro-realismo botánico.',
     work_type: 'Acuarela',
     specialties: ['Acuarela', 'Micro-realismo'],
     telefono: '63337788',
     phone_prefix: '+507',
     whatsapp_number: '63337788',
-    country: 'PanamÃ¡',
-    provincia: 'PanamÃ¡',
-    ciudad: 'Ciudad de PanamÃ¡',
-    city: 'Ciudad de PanamÃ¡',
-    direccion: 'El Cangrejo, VÃ­a Argentina',
+    country: 'Panamá',
+    provincia: 'Panamá',
+    ciudad: 'Ciudad de Panamá',
+    city: 'Ciudad de Panamá',
+    direccion: 'El Cangrejo, Vía Argentina',
     studio: 'Neon Ink Studio',
     hourly_rate: 65,
     price: 65,
@@ -195,21 +307,21 @@ const fallbackPublicArtists: Record<string, PublicArtistData> = {
   'artist-ana': {
     email: 'ana.valdes@anavaldes.com',
     nombre: 'Ana',
-    apellido: 'ValdÃ©s',
-    name: 'Ana ValdÃ©s',
-    alias: 'ValdÃ©s Trad',
-    bio: 'Tradicional americano sÃ³lido, lÃ­neas limpias y gruesas, paleta clÃ¡sica y temÃ¡tica de tatuaje tradicional.',
+    apellido: 'Valdés',
+    name: 'Ana Valdés',
+    alias: 'Valdés Trad',
+    bio: 'Tradicional americano sólido, líneas limpias y gruesas, paleta clásica y temática de tatuaje tradicional.',
     work_type: 'Tradicional Americano',
     specialties: ['Tradicional', 'Old School'],
     telefono: '68882211',
     phone_prefix: '+507',
     whatsapp_number: '68882211',
-    country: 'PanamÃ¡',
-    provincia: 'PanamÃ¡',
-    ciudad: 'Ciudad de PanamÃ¡',
-    city: 'Ciudad de PanamÃ¡',
+    country: 'Panamá',
+    provincia: 'Panamá',
+    ciudad: 'Ciudad de Panamá',
+    city: 'Ciudad de Panamá',
     direccion: 'Bella Vista, Calle 49',
-    studio: 'Ana ValdÃ©s Tattoo Studio',
+    studio: 'Ana Valdés Tattoo Studio',
     hourly_rate: 85,
     price: 85,
     profile: '/assets/1403.jpg',
@@ -219,19 +331,19 @@ const fallbackPublicArtists: Record<string, PublicArtistData> = {
   'artist-valeria': {
     email: 'valeria.rios@chromagallery.com',
     nombre: 'Valeria',
-    apellido: 'RÃ­os',
-    name: 'Valeria RÃ­os',
+    apellido: 'Ríos',
+    name: 'Valeria Ríos',
     alias: 'Val Ink',
-    bio: 'Trazos sutiles, micro-ilustraciones minimalistas y caligrafÃ­a de aguja Ãºnica de alta precisiÃ³n.',
+    bio: 'Trazos sutiles, micro-ilustraciones minimalistas y caligrafía de aguja única de alta precisión.',
     work_type: 'Minimalista & Fine Line',
     specialties: ['Minimalista', 'Fine Line'],
     telefono: '65551122',
     phone_prefix: '+507',
     whatsapp_number: '65551122',
-    country: 'PanamÃ¡',
-    provincia: 'PanamÃ¡',
-    ciudad: 'Ciudad de PanamÃ¡',
-    city: 'Ciudad de PanamÃ¡',
+    country: 'Panamá',
+    provincia: 'Panamá',
+    ciudad: 'Ciudad de Panamá',
+    city: 'Ciudad de Panamá',
     direccion: 'San Francisco, Calle 74 Este',
     studio: 'Chroma Gallery & Tattoo',
     hourly_rate: 75,
@@ -241,21 +353,27 @@ const fallbackPublicArtists: Record<string, PublicArtistData> = {
     instagram: 'https://instagram.com/valink.fineline',
   },
   'artist-diego': {
+    portfolio_customization: {
+      accentTheme: 'crimson',
+      layoutStyle: 'grid',
+      cardAnimation: 'zoom',
+      bannerPreset: 'gradient-crimson',
+    },
     email: 'diego.lopez@chromagallery.com',
     nombre: 'Diego',
-    apellido: 'LÃ³pez',
-    name: 'Diego LÃ³pez',
+    apellido: 'López',
+    name: 'Diego López',
     alias: 'Kitsune',
-    bio: 'Tatuaje japonÃ©s tradicional y contemporÃ¡neo, dragones, carpas koi y mÃ¡scaras noh con composiciÃ³n oriental.',
-    work_type: 'JaponÃ©s & Irezumi',
-    specialties: ['JaponÃ©s', 'Irezumi'],
+    bio: 'Tatuaje japonés tradicional y contemporáneo, dragones, carpas koi y máscaras noh con composición oriental.',
+    work_type: 'Japonés & Irezumi',
+    specialties: ['Japonés', 'Irezumi'],
     telefono: '66663344',
     phone_prefix: '+507',
     whatsapp_number: '66663344',
-    country: 'PanamÃ¡',
-    provincia: 'PanamÃ¡',
-    ciudad: 'Ciudad de PanamÃ¡',
-    city: 'Ciudad de PanamÃ¡',
+    country: 'Panamá',
+    provincia: 'Panamá',
+    ciudad: 'Ciudad de Panamá',
+    city: 'Ciudad de Panamá',
     direccion: 'San Francisco, Calle 74 Este',
     studio: 'Chroma Gallery & Tattoo',
     hourly_rate: 85,
@@ -270,16 +388,16 @@ const fallbackPublicArtists: Record<string, PublicArtistData> = {
     apellido: 'Castillo',
     name: 'Cristian Castillo',
     alias: 'Black Pearl',
-    bio: 'Blackwork de alto impacto, geometrÃ­a y grabados medievales inspirados en xilografÃ­a en el corazÃ³n de Casco Antiguo.',
+    bio: 'Blackwork de alto impacto, geometría y grabados medievales inspirados en xilografía en el corazón de Casco Antiguo.',
     work_type: 'Blackwork Medieval',
     specialties: ['Blackwork', 'Neotradicional'],
     telefono: '67894321',
     phone_prefix: '+507',
     whatsapp_number: '67894321',
-    country: 'PanamÃ¡',
-    provincia: 'PanamÃ¡',
-    ciudad: 'Ciudad de PanamÃ¡',
-    city: 'Ciudad de PanamÃ¡',
+    country: 'Panamá',
+    provincia: 'Panamá',
+    ciudad: 'Ciudad de Panamá',
+    city: 'Ciudad de Panamá',
     direccion: 'Casco Antiguo, Calle 4ta Oeste',
     studio: 'Black Pearl Studio Casco Viejo',
     hourly_rate: 80,
@@ -290,20 +408,20 @@ const fallbackPublicArtists: Record<string, PublicArtistData> = {
   },
   'artist-sofia-bp': {
     email: 'sofia.arango@blackpearl.com',
-    nombre: 'SofÃ­a',
+    nombre: 'Sofía',
     apellido: 'Arango',
-    name: 'SofÃ­a Arango',
+    name: 'Sofía Arango',
     alias: 'Sofi Art',
-    bio: 'GeometrÃ­a sagrada, mandalas y puntillismo de alta densidad con equilibrio anatÃ³mico.',
-    work_type: 'Dotwork & GeometrÃ­a',
-    specialties: ['Dotwork', 'GeometrÃ­a Sagrada'],
+    bio: 'Geometría sagrada, mandalas y puntillismo de alta densidad con equilibrio anatómico.',
+    work_type: 'Dotwork & Geometría',
+    specialties: ['Dotwork', 'Geometría Sagrada'],
     telefono: '69994433',
     phone_prefix: '+507',
     whatsapp_number: '69994433',
-    country: 'PanamÃ¡',
-    provincia: 'PanamÃ¡',
-    ciudad: 'Ciudad de PanamÃ¡',
-    city: 'Ciudad de PanamÃ¡',
+    country: 'Panamá',
+    provincia: 'Panamá',
+    ciudad: 'Ciudad de Panamá',
+    city: 'Ciudad de Panamá',
     direccion: 'Casco Antiguo, Calle 4ta Oeste',
     studio: 'Black Pearl Studio Casco Viejo',
     hourly_rate: 75,
@@ -323,10 +441,10 @@ const fallbackPublicArtists: Record<string, PublicArtistData> = {
     telefono: '60012345',
     phone_prefix: '+507',
     whatsapp_number: '60012345',
-    country: 'PanamÃ¡',
-    provincia: 'PanamÃ¡',
-    ciudad: 'Ciudad de PanamÃ¡',
-    city: 'Ciudad de PanamÃ¡',
+    country: 'Panamá',
+    provincia: 'Panamá',
+    ciudad: 'Ciudad de Panamá',
+    city: 'Ciudad de Panamá',
     direccion: 'Bella Vista, Calle 50',
     studio: 'Obsidian Atelier & Flash Lab',
     hourly_rate: 80,
@@ -348,8 +466,8 @@ const fallbackPublicArtists: Record<string, PublicArtistData> = {
     telefono: '67894321',
     phone_prefix: '+507',
     whatsapp_number: '67894321',
-    country: 'PanamÃ¡',
-    provincia: 'PanamÃ¡',
+    country: 'Panamá',
+    provincia: 'Panamá',
     ciudad: 'San Francisco',
     city: 'San Francisco',
     direccion: 'Calle 74 Este',
@@ -383,15 +501,15 @@ export const ArtistProfilePage: React.FC = () => {
   const [lastName, setLastName] = useState<string>('');
   const [phone, setPhone] = useState<string>('');
   const [phonePrefix, setPhonePrefix] = useState<string>('+507');
-  const [country, setCountry] = useState<string>('PanamÃ¡');
+  const [country, setCountry] = useState<string>('Panamá');
   const [date, setDate] = useState<string>('');
   const [workType, setWorkType] = useState<string>('realista');
   const [facebook, setFacebook] = useState<string>('');
   const [twitter, setTwitter] = useState<string>('');
   const [instagram, setInstagram] = useState<string>('');
   const [linkUrl, setLinkUrl] = useState<string>('');
-  const [province, setProvince] = useState<string>('PanamÃ¡');
-  const [city, setCity] = useState<string>('Ciudad de PanamÃ¡');
+  const [province, setProvince] = useState<string>('Panamá');
+  const [city, setCity] = useState<string>('Ciudad de Panamá');
   const [direction, setDirection] = useState<string>('');
   const [email, setEmail] = useState<string>('');
   const [password, setPassword] = useState<string>('');
@@ -445,8 +563,8 @@ export const ArtistProfilePage: React.FC = () => {
                 apellido: 'Profesional',
                 work_type: 'realista',
                 telefono: '60012345',
-                provincia: 'PanamÃ¡',
-                ciudad: 'Ciudad de PanamÃ¡',
+                provincia: 'Panamá',
+                ciudad: 'Ciudad de Panamá',
                 direccion: 'Estudio de Tatuajes',
                 profile: '/assets/GB Tattoo.jpg',
               });
@@ -457,7 +575,7 @@ export const ArtistProfilePage: React.FC = () => {
             if (fallbackPublicArtists[id]) {
               setPublicArtist(fallbackPublicArtists[id]);
             } else {
-              setPublicError('No se pudo cargar la informaciÃ³n del tatuador.');
+              setPublicError('No se pudo cargar la información del tatuador.');
             }
           })
           .finally(() => {
@@ -478,15 +596,15 @@ export const ArtistProfilePage: React.FC = () => {
       setLastName(meta.apellido || '');
       setPhone(meta.telefono || meta.phone_number || '');
       setPhonePrefix(meta.phone_prefix || '+507');
-      setCountry(meta.country || 'PanamÃ¡');
+      setCountry(meta.country || 'Panamá');
       setDate(meta.edad || '');
       setWorkType(meta.work_type || 'realista');
       setFacebook(meta.facebook || '');
       setTwitter(meta.twitter || '');
       setInstagram(meta.instagram || '');
       setLinkUrl(meta.link || '');
-      setProvince(meta.provincia || 'PanamÃ¡');
-      setCity(meta.city || meta.ciudad || 'Ciudad de PanamÃ¡');
+      setProvince(meta.provincia || 'Panamá');
+      setCity(meta.city || meta.ciudad || 'Ciudad de Panamá');
       setDirection(meta.direccion || '');
       setEmail(user.email || '');
       const effectiveAv = getEffectiveUserAvatar(user);
@@ -576,7 +694,7 @@ export const ArtistProfilePage: React.FC = () => {
           ...(base64Img || (uploadedUrl && !isGenericPlaceholder(uploadedUrl)) ? { profile: uploadedUrl, avatar_url: uploadedUrl } : {}),
   
         });
-        setMessage({ text: 'Â¡Perfil de tatuador actualizado correctamente!', isError: false });
+        setMessage({ text: '¡Perfil de tatuador actualizado correctamente!', isError: false });
       } else {
         setMessage({
           text: res.error?.message || 'Error al actualizar perfil.',
@@ -603,7 +721,7 @@ export const ArtistProfilePage: React.FC = () => {
         instagram,
         link: linkUrl,
       });
-      setMessage({ text: 'Perfil de tatuador actualizado con Ã©xito.', isError: false });
+      setMessage({ text: 'Perfil de tatuador actualizado con éxito.', isError: false });
     } finally {
       setLoading(false);
     }
@@ -645,16 +763,22 @@ export const ArtistProfilePage: React.FC = () => {
     const avatarUrl = artist.profile || artist.avatar_url || '/assets/GB Tattoo.jpg';
 
     const isOwner = Boolean(user && (user.id === id || user.email === artist.email));
+    const autoTheme = resolveAutoTheme(artist);
     const effectiveThemeConfig: PortfolioThemeConfig =
       artist.portfolio_customization ||
-      (isOwner ? portfolioConfig : DEFAULT_PORTFOLIO_CONFIG);
+      (isOwner ? portfolioConfig : { ...DEFAULT_PORTFOLIO_CONFIG, accentTheme: autoTheme });
 
-    const bannerGradientCss = {
-      'gradient-dark': 'from-slate-950 via-violet-950 to-indigo-950',
-      'gradient-gold': 'from-stone-950 via-zinc-900 to-amber-950',
-      'gradient-crimson': 'from-black via-rose-950 to-red-950',
-      'gradient-cyber': 'from-slate-950 via-cyan-950 to-fuchsia-950',
-    }[effectiveThemeConfig.bannerPreset || 'gradient-dark'] || 'from-slate-900 via-violet-950 to-indigo-950';
+    const activeAccent = effectiveThemeConfig.accentTheme || autoTheme;
+    const themePalette = THEME_PALETTES[activeAccent] || THEME_PALETTES.violet;
+
+    const bannerGradientCss = effectiveThemeConfig.bannerPreset
+      ? {
+          'gradient-dark': 'from-slate-950 via-violet-950 to-indigo-950',
+          'gradient-gold': 'from-stone-950 via-zinc-900 to-amber-950',
+          'gradient-crimson': 'from-black via-rose-950 to-red-950',
+          'gradient-cyber': 'from-slate-950 via-cyan-950 to-fuchsia-950',
+        }[effectiveThemeConfig.bannerPreset] || themePalette.bannerGradient
+      : themePalette.bannerGradient;
 
     const portfolioWorks: PortfolioItem[] = [
       ...(Array.isArray(artist.flashes)
@@ -710,21 +834,21 @@ export const ArtistProfilePage: React.FC = () => {
     return (
       <PageTransition>
         <div className="min-h-screen py-10 px-4 md:px-8">
-          <div className="container mx-auto max-w-4xl bg-white dark:bg-gray-900 rounded-3xl shadow-2xl overflow-hidden border border-slate-200 dark:border-gray-800">
-            {/* Header Banner */}
-            <div className={`relative h-48 md:h-64 bg-gradient-to-r ${bannerGradientCss} flex items-center justify-center transition-all duration-500`}>
-              <div className="absolute top-4 left-4 z-20">
+          <div className="container mx-auto max-w-4xl space-y-6">
+
+            {/* 1. Dedicated Luxury Hero Banner Card */}
+            <div className={`relative rounded-3xl bg-gradient-to-r ${bannerGradientCss} p-6 md:p-8 text-white shadow-2xl border border-white/10 overflow-hidden transition-all duration-500`}>
+              {/* Top Navigation Row */}
+              <div className="flex items-center justify-between mb-6">
                 <Link
                   to="/hub"
-                  className="inline-flex items-center gap-2 px-4 py-2 bg-black/60 hover:bg-black/80 text-white rounded-full text-xs font-bold backdrop-blur-md transition shadow-md"
+                  className="inline-flex items-center gap-2 px-4 py-2 bg-black/50 hover:bg-black/75 text-white rounded-full text-xs font-bold backdrop-blur-md transition shadow border border-white/10"
                 >
                   <ArrowLeft className="w-4 h-4" />
                   Volver al Hub &amp; Mapa
                 </Link>
-              </div>
 
-              {isOwner && (
-                <div className="absolute top-4 right-4 z-20">
+                {isOwner && (
                   <button
                     type="button"
                     onClick={() => setIsCustomizerOpen(true)}
@@ -733,41 +857,41 @@ export const ArtistProfilePage: React.FC = () => {
                     <Palette className="w-4 h-4" />
                     Personalizar Portafolio
                   </button>
-                </div>
-              )}
-            </div>
+                )}
+              </div>
 
-            {/* Profile Overview Row */}
-            <div className="px-6 md:px-10 pb-10">
-              <div className="relative flex flex-col md:flex-row md:items-end justify-between -mt-20 md:-mt-24 mb-6 gap-6">
-                <div className="flex flex-col md:flex-row items-center md:items-end gap-5 text-center md:text-left">
+              {/* Main Identity & Action Row */}
+              <div className="flex flex-col md:flex-row items-center justify-between gap-6">
+                <div className="flex flex-col md:flex-row items-center gap-5 text-center md:text-left">
                   <img
                     src={avatarUrl}
                     alt={`${artist.nombre || 'Artista'} ${artist.apellido || ''}`}
-                    className="w-32 h-32 md:w-36 md:h-36 rounded-2xl object-cover border-4 border-white dark:border-gray-900 shadow-2xl bg-slate-100 dark:bg-gray-800"
+                    className={`w-28 h-28 md:w-36 md:h-36 rounded-2xl object-cover border-2 shadow-2xl bg-slate-900 ${themePalette.heroAvatarBorder}`}
                     onError={(e) => {
                       (e.target as HTMLImageElement).src = '/assets/GB Tattoo.jpg';
                     }}
                   />
                   <div>
                     <div className="flex items-center gap-2.5 flex-wrap justify-center md:justify-start">
-                      <h1 className="text-2xl md:text-3xl font-extrabold text-slate-900 dark:text-white">
+                      <h1 className="text-2xl md:text-3xl font-extrabold text-white tracking-tight drop-shadow-md">
                         {artist.nombre} {artist.apellido}
                       </h1>
                       {artist.alias && (
-                        <span className="px-3 py-0.5 rounded-full text-xs font-black bg-violet-100 dark:bg-violet-950/80 text-violet-700 dark:text-violet-300 border border-violet-200 dark:border-violet-800 shadow-xs">
+                        <span className={`px-3 py-0.5 rounded-full text-xs font-black border ${themePalette.heroAliasBadge}`}>
                           "{artist.alias}"
                         </span>
                       )}
                     </div>
-                    <p className="text-sm font-semibold text-violet-600 dark:text-violet-400 mt-1">
-                      {artist.studio ? `${artist.studio} â€¢ ${artist.work_type || 'Realista'}` : `Especialidad: ${artist.work_type || 'Realista'}`}
+                    <p className={`text-sm font-semibold ${themePalette.heroSubtitle} mt-1.5 flex items-center justify-center md:justify-start gap-2 flex-wrap`}>
+                      <span className="font-bold">{artist.studio || 'Estudio Profesional'}</span>
+                      <span className="opacity-60">•</span>
+                      <span>{artist.work_type || 'Artista de Tatuajes'}</span>
                     </p>
                   </div>
                 </div>
 
                 {/* Action Buttons */}
-                <div className="flex flex-wrap items-center justify-center md:justify-end gap-2.5">
+                <div className="flex flex-wrap items-center justify-center md:justify-end gap-3 shrink-0">
                   {waUrl && (
                     <button
                       type="button"
@@ -779,12 +903,12 @@ export const ArtistProfilePage: React.FC = () => {
                           },
                           {
                             title: 'Contactar por WhatsApp',
-                            message: `Para iniciar una conversaciÃ³n directa vÃ­a WhatsApp con ${artist.nombre || 'el artista'}, regÃ­strate gratis en Tattoo Hub.`,
+                            message: `Para iniciar una conversación directa vía WhatsApp con ${artist.nombre || 'el artista'}, regístrate gratis en Tattoo Hub.`,
                             redirectUrl: window.location.pathname,
                           }
                         );
                       }}
-                      className="inline-flex items-center justify-center gap-2 px-5 py-2.5 bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs sm:text-sm rounded-xl shadow-md transition transform hover:-translate-y-0.5 cursor-pointer"
+                      className="inline-flex items-center justify-center gap-2 px-5 py-2.5 bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs sm:text-sm rounded-xl shadow-lg transition transform hover:-translate-y-0.5 cursor-pointer"
                     >
                       <MessageCircle className="w-4 h-4 text-white" />
                       Contactar por WhatsApp
@@ -792,42 +916,44 @@ export const ArtistProfilePage: React.FC = () => {
                   )}
                   <Link
                     to={`/hub?artist=${id || ''}`}
-                    className="inline-flex items-center justify-center gap-1.5 px-5 py-2.5 bg-violet-600 hover:bg-violet-500 text-white font-bold text-xs sm:text-sm rounded-xl shadow-md transition transform hover:-translate-y-0.5 cursor-pointer"
+                    className={`inline-flex items-center justify-center gap-1.5 px-5 py-2.5 ${themePalette.heroButtonGradient} font-bold text-xs sm:text-sm rounded-xl shadow-lg transition transform hover:-translate-y-0.5 cursor-pointer`}
                   >
-                    <Sparkles className="w-4 h-4 text-white" />
+                    <Sparkles className="w-4 h-4" />
                     Reservar en Mapa
                   </Link>
                 </div>
               </div>
+            </div>
+
+            {/* 2. Body Container with High-Contrast Themed Details */}
+            <div className="bg-white dark:bg-gray-900 rounded-3xl shadow-xl overflow-hidden border border-slate-200 dark:border-gray-800 p-6 md:p-10">
 
               {/* Bio Block */}
               {artist.bio && (
-                <div className="my-6 p-5 rounded-2xl bg-slate-50 dark:bg-gray-800/50 border border-slate-200 dark:border-gray-700">
-                  <h3 className="text-xs uppercase tracking-wider font-bold text-slate-500 dark:text-gray-400 mb-1.5 flex items-center gap-1.5">
-                    <Sparkles className="w-3.5 h-3.5 text-violet-500" />
-                    BiografÃ­a &amp; FilosofÃ­a de Trabajo
+                <div className="mb-8 p-5 rounded-2xl bg-slate-50 dark:bg-gray-800/60 border border-slate-200 dark:border-gray-700">
+                  <h3 className="text-xs uppercase tracking-wider font-bold text-slate-600 dark:text-gray-300 mb-1.5 flex items-center gap-1.5">
+                    <Sparkles className={`w-3.5 h-3.5 ${themePalette.bodyIcon}`} />
+                    Biografía &amp; Filosofía de Trabajo
                   </h3>
-                  <p className="text-sm text-slate-700 dark:text-gray-300 leading-relaxed font-medium">
+                  <p className="text-sm text-slate-800 dark:text-gray-200 leading-relaxed font-medium">
                     {artist.bio}
                   </p>
                 </div>
               )}
 
-              <hr className="my-6 border-slate-200 dark:border-gray-800" />
-
               {/* Details Grid */}
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
                 {/* Studio & Location */}
-                <div className="bg-slate-50 dark:bg-gray-800/50 p-5 rounded-2xl border border-slate-200 dark:border-gray-700">
-                  <h3 className="text-xs uppercase tracking-wider font-bold text-slate-500 dark:text-gray-400 mb-2 flex items-center gap-1.5">
-                    <MapPin className="w-3.5 h-3.5 text-violet-500" />
-                    UbicaciÃ³n &amp; Estudio
+                <div className="bg-slate-50 dark:bg-gray-800/60 p-5 rounded-2xl border border-slate-200 dark:border-gray-700">
+                  <h3 className="text-xs uppercase tracking-wider font-bold text-slate-600 dark:text-gray-300 mb-2 flex items-center gap-1.5">
+                    <MapPin className={`w-3.5 h-3.5 ${themePalette.bodyIcon}`} />
+                    Ubicación &amp; Estudio
                   </h3>
                   <p className="text-slate-900 dark:text-white font-bold text-sm">
                     {artist.studio || artist.direccion || 'Estudio Principal'}
                   </p>
-                  <p className="text-xs text-slate-600 dark:text-gray-300 mt-1">
-                    {artist.ciudad || artist.city || 'Ciudad de PanamÃ¡'}, {artist.provincia || 'PanamÃ¡'}
+                  <p className="text-xs text-slate-600 dark:text-gray-400 mt-1">
+                    {artist.ciudad || artist.city || 'Ciudad de Panamá'}, {artist.provincia || 'Panamá'}
                   </p>
                   {artist.country && (
                     <p className="text-xs text-slate-400 dark:text-gray-400 mt-0.5">
@@ -837,13 +963,13 @@ export const ArtistProfilePage: React.FC = () => {
                 </div>
 
                 {/* Styles & Speciality */}
-                <div className="bg-slate-50 dark:bg-gray-800/50 p-5 rounded-2xl border border-slate-200 dark:border-gray-700">
-                  <h3 className="text-xs uppercase tracking-wider font-bold text-slate-500 dark:text-gray-400 mb-2 flex items-center gap-1.5">
-                    <Sparkles className="w-3.5 h-3.5 text-violet-500" />
+                <div className="bg-slate-50 dark:bg-gray-800/60 p-5 rounded-2xl border border-slate-200 dark:border-gray-700">
+                  <h3 className="text-xs uppercase tracking-wider font-bold text-slate-600 dark:text-gray-300 mb-2 flex items-center gap-1.5">
+                    <Sparkles className={`w-3.5 h-3.5 ${themePalette.bodyIcon}`} />
                     Estilos Principales
                   </h3>
                   <div className="flex flex-wrap gap-1.5 mt-1">
-                    <span className="inline-block px-2.5 py-1 bg-violet-100 dark:bg-violet-950/60 text-violet-800 dark:text-violet-300 font-bold text-xs rounded-lg border border-violet-200 dark:border-violet-800/60 uppercase">
+                    <span className={`inline-block px-2.5 py-1 ${themePalette.bodyPill} font-bold text-xs rounded-lg uppercase`}>
                       {artist.work_type || 'Realista'}
                     </span>
                     {Array.isArray(artist.specialties) &&
@@ -859,26 +985,26 @@ export const ArtistProfilePage: React.FC = () => {
                 </div>
 
                 {/* Tarifa / Precio */}
-                <div className="bg-slate-50 dark:bg-gray-800/50 p-5 rounded-2xl border border-slate-200 dark:border-gray-700">
-                  <h3 className="text-xs uppercase tracking-wider font-bold text-slate-500 dark:text-gray-400 mb-2">
+                <div className="bg-slate-50 dark:bg-gray-800/60 p-5 rounded-2xl border border-slate-200 dark:border-gray-700">
+                  <h3 className="text-xs uppercase tracking-wider font-bold text-slate-600 dark:text-gray-300 mb-2">
                     Tarifa Estimada
                   </h3>
-                  <p className="text-base font-extrabold text-violet-700 dark:text-violet-400">
+                  <p className={`text-base font-extrabold ${themePalette.bodyAccentText}`}>
                     {artist.price ? formatPrice(artist.price) : `${formatPrice(artist.hourly_rate || 80)}/h`}
                   </p>
-                  <p className="text-xs text-slate-500 dark:text-gray-400 mt-1">
-                    CotizaciÃ³n segÃºn diseÃ±o y sesiÃ³n
+                  <p className="text-xs text-slate-600 dark:text-gray-400 mt-1">
+                    Cotización según diseño y sesión
                   </p>
                 </div>
 
                 {/* Contact Information */}
-                <div className="bg-slate-50 dark:bg-gray-800/50 p-5 rounded-2xl border border-slate-200 dark:border-gray-700">
-                  <h3 className="text-xs uppercase tracking-wider font-bold text-slate-500 dark:text-gray-400 mb-2 flex items-center gap-1.5">
+                <div className="bg-slate-50 dark:bg-gray-800/60 p-5 rounded-2xl border border-slate-200 dark:border-gray-700">
+                  <h3 className="text-xs uppercase tracking-wider font-bold text-slate-600 dark:text-gray-300 mb-2 flex items-center gap-1.5">
                     <Phone className="w-3.5 h-3.5 text-emerald-500" />
                     Contacto Directo
                   </h3>
-                  <p className="text-xs text-slate-800 dark:text-gray-200 font-medium truncate">
-                    {artist.email || 'Contacto vÃ­a plataforma'}
+                  <p className="text-xs text-slate-900 dark:text-gray-200 font-medium truncate">
+                    {artist.email || 'Contacto vía plataforma'}
                   </p>
                   {artistPhone && (
                     <p className="text-xs font-mono font-bold text-emerald-600 dark:text-emerald-400 mt-1">
@@ -892,7 +1018,7 @@ export const ArtistProfilePage: React.FC = () => {
               <div className="mt-8 pt-6 border-t border-slate-200 dark:border-gray-800">
                 <div className="flex items-center justify-between mb-4">
                   <h3 className="text-base uppercase tracking-wider font-extrabold text-slate-900 dark:text-white flex items-center gap-2">
-                    <Sparkles className="w-5 h-5 text-primary" />
+                    <Sparkles className={`w-5 h-5 ${themePalette.bodyIcon}`} />
                     Portafolio &amp; Galería de {artist.alias || artist.nombre}
                   </h3>
                   {isOwner && (
@@ -928,66 +1054,9 @@ export const ArtistProfilePage: React.FC = () => {
                 />
               </div>
 
-              {/* Social Links */}
-              {(artist.facebook || artist.twitter || artist.instagram || artist.link) && (
-                <div className="mt-8 flex items-center justify-center md:justify-start gap-4 pt-4 border-t border-slate-200 dark:border-gray-800">
-                  <span className="text-xs font-bold text-slate-500 dark:text-gray-400 uppercase tracking-wider">
-                    Redes Sociales:
-                  </span>
-                  {artist.instagram && (
-                    <a
-                      href={artist.instagram}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="p-2 rounded-full bg-[#e1306c] text-white hover:opacity-85 transition shadow-sm"
-                      aria-label="Instagram"
-                    >
-                      <Instagram className="w-4 h-4" />
-                    </a>
-                  )}
-                  {artist.facebook && (
-                    <a
-                      href={artist.facebook}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="p-2 rounded-full bg-[#3b5998] text-white hover:opacity-85 transition shadow-sm"
-                      aria-label="Facebook"
-                    >
-                      <Facebook className="w-4 h-4" />
-                    </a>
-                  )}
-                  {artist.link && (
-                    <a
-                      href={artist.link}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="p-2 rounded-full bg-slate-700 text-white hover:opacity-85 transition shadow-sm"
-                      aria-label="Sitio Web"
-                    >
-                      <Globe className="w-4 h-4" />
-                    </a>
-                  )}
-                </div>
-              )}
             </div>
           </div>
         </div>
-
-        {/* Portfolio Customizer Modal */}
-        <PortfolioCustomizerModal
-          isOpen={isCustomizerOpen}
-          onClose={() => setIsCustomizerOpen(false)}
-          initialConfig={effectiveThemeConfig}
-          onSaveConfig={(updated) => {
-            setPortfolioConfig(updated);
-            if (publicArtist) {
-              setPublicArtist({
-                ...publicArtist,
-                portfolio_customization: updated,
-              });
-            }
-          }}
-        />
       </PageTransition>
     );
   }
@@ -1022,7 +1091,7 @@ export const ArtistProfilePage: React.FC = () => {
                 to={`/artist/${user.id}`}
                 className="block text-xs text-gray-500 hover:text-primary dark:text-gray-400 dark:hover:text-white py-1 px-3 transition text-center md:text-left"
               >
-                Ver perfil pÃºblico â†’
+                Ver perfil público â†’
               </Link>
             )}
           </div>
@@ -1125,7 +1194,7 @@ export const ArtistProfilePage: React.FC = () => {
                 {/* International Phone Input */}
                 <div>
                   <label htmlFor="phone" className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1">
-                    TelÃ©fono & WhatsApp (con cÃ³digo de paÃ­s)
+                    Teléfono & WhatsApp (con código de país)
                   </label>
                   <InternationalPhoneInput
                     id="phone"
@@ -1140,7 +1209,7 @@ export const ArtistProfilePage: React.FC = () => {
 
                   {/* Live WhatsApp Preview */}
                   <div className="mt-2 text-xs flex items-center gap-2 text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950/30 px-3 py-2 rounded-lg border border-emerald-200 dark:border-emerald-800">
-                    <span className="font-semibold">Enlace dinÃ¡mico de WhatsApp:</span>
+                    <span className="font-semibold">Enlace dinámico de WhatsApp:</span>
                     {liveWhatsAppUrl ? (
                       <a
                         href={liveWhatsAppUrl}
@@ -1265,12 +1334,12 @@ export const ArtistProfilePage: React.FC = () => {
 
                 {/* Direction & Location */}
                 <h3 className="text-lg font-bold text-gray-800 dark:text-gray-200">
-                  DirecciÃ³n
+                  Dirección
                 </h3>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-3">
                   <div>
                     <CustomSelect
-                      label="PaÃ­s"
+                      label="País"
                       options={COUNTRY_OPTIONS}
                       value={country}
                       onChange={(val) => setCountry(val)}
@@ -1278,9 +1347,9 @@ export const ArtistProfilePage: React.FC = () => {
                   </div>
 
                   <div>
-                    {country === 'PanamÃ¡' ? (
+                    {country === 'Panamá' ? (
                       <CustomSelect
-                        label="Provincia / Estado / RegiÃ³n"
+                        label="Provincia / Estado / Región"
                         options={PANAMA_PROVINCES}
                         value={province}
                         onChange={(val) => setProvince(val)}
@@ -1289,7 +1358,7 @@ export const ArtistProfilePage: React.FC = () => {
                     ) : (
                       <div>
                         <label htmlFor="province" className="block text-xs font-semibold text-gray-600 dark:text-gray-400 mb-2">
-                          Provincia / Estado / RegiÃ³n
+                          Provincia / Estado / Región
                         </label>
                         <input
                           type="text"
@@ -1316,7 +1385,7 @@ export const ArtistProfilePage: React.FC = () => {
                   <input
                     type="text"
                     id="direction"
-                    placeholder="DirecciÃ³n"
+                    placeholder="Dirección"
                     value={direction}
                     onChange={(e) => setDirection(e.target.value)}
                     className="w-full px-4 py-2.5 rounded-lg border border-gray-300 dark:border-gray-700 dark:bg-gray-800 dark:text-white"
@@ -1333,7 +1402,7 @@ export const ArtistProfilePage: React.FC = () => {
                 <input
                   type="email"
                   id="email"
-                  placeholder="Correo ElectrÃ³nico"
+                  placeholder="Correo Electrónico"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   className="w-full px-4 py-2.5 rounded-lg border border-gray-300 dark:border-gray-700 dark:bg-gray-800 dark:text-white mb-3"
@@ -1342,7 +1411,7 @@ export const ArtistProfilePage: React.FC = () => {
                   <input
                     type="password"
                     id="password"
-                    placeholder="ContraseÃ±a actual"
+                    placeholder="Contraseña actual"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     className="w-full px-4 py-2.5 rounded-lg border border-gray-300 dark:border-gray-700 dark:bg-gray-800 dark:text-white"
@@ -1350,7 +1419,7 @@ export const ArtistProfilePage: React.FC = () => {
                   <input
                     type="password"
                     id="new-password"
-                    placeholder="Nueva ContraseÃ±a"
+                    placeholder="Nueva Contraseña"
                     value={newPassword}
                     onChange={(e) => setNewPassword(e.target.value)}
                     className="w-full px-4 py-2.5 rounded-lg border border-gray-300 dark:border-gray-700 dark:bg-gray-800 dark:text-white"

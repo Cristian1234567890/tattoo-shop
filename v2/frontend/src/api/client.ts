@@ -74,6 +74,7 @@ class ApiClient {
     password: string;
     nombre: string;
     apellido: string;
+    birthdate?: string;
     edad: string;
     tipo: 'Cliente' | 'Tatuador';
     telefono?: string;

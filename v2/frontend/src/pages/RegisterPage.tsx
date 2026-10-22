@@ -183,7 +183,10 @@ export const RegisterPage: React.FC = () => {
         tipo,
         nombre,
         apellido,
+        birthdate,
         edad: currentAge ? String(currentAge) : '18',
+        legal_accepted: true,
+        legal_accepted_at: new Date().toISOString(),
         telefono: fullPhoneNumber,
         provincia: country,
         ciudad: city,
@@ -567,6 +570,23 @@ export const RegisterPage: React.FC = () => {
                   </span>
                 </div>
               )}
+
+              {/* Disclaimer Legal 18+ & Notificaciones de Cumpleaños */}
+              <div className="mt-3 p-4 rounded-2xl bg-slate-50 dark:bg-zinc-900/60 border border-slate-200 dark:border-zinc-800 text-xs text-slate-700 dark:text-zinc-300 space-y-2">
+                <div className="flex items-center gap-2 font-bold text-slate-900 dark:text-white">
+                  <Sparkles className="w-4 h-4 text-primary shrink-0" />
+                  <span>Declaración Legal 18+ y Beneficios de Cumpleaños Tattoo Hub</span>
+                </div>
+                <p className="leading-relaxed text-slate-600 dark:text-zinc-400">
+                  Para dar estricto cumplimiento a la legislación sanitaria y normativas de consentimiento en arte corporal, el acceso y uso de Tattoo Hub está reservado a mayores de 18 años. Al indicar tu fecha de nacimiento declaras bajo fe de juramento tu mayoría de edad civil y legal.
+                </p>
+                <div className="flex items-start gap-2 pt-1 text-slate-800 dark:text-zinc-200 border-t border-slate-200/80 dark:border-zinc-800/80">
+                  <span className="text-base shrink-0">🎁</span>
+                  <span className="leading-relaxed">
+                    <strong>Beneficios de Cumpleaños:</strong> Tu fecha de nacimiento permite al equipo de Tattoo Hub enviarte felicitaciones automáticas, descuentos exclusivos en flashes y promociones de estudio durante el mes de tu cumpleaños.
+                  </span>
+                </div>
+              </div>
             </div>
 
             <AnimatePresence>
