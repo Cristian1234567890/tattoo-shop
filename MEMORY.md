@@ -31,8 +31,19 @@ Este archivo contiene el contexto general del proyecto y la estructura para que 
 6. **Sistema de Referidos y Embajadores:**
    - Generación de código único y enlace por usuario, botón de compartir en WhatsApp y desglose de recompensas escalonadas (5%, 10%, 15% VIP).
    - Accesible tanto para clientes como para tatuadores en sus paneles respectivos.
+7. **Saneamiento de Paneles, Mayoría de Edad (18+) y Reorganización de Seguridad:**
+   - Pestaña dedicada y única para Suscripciones, eliminando la duplicidad en Configuración.
+   - Centralización de credenciales, cambio de correo y 2FA en la pestaña de Seguridad.
+   - Fecha de nacimiento visible pero bloqueada con candado en perfil de cliente y artista por normativa sanitaria legal.
+   - Corrección de mojibake UTF-8 en banderas de idioma (`🇪🇸` y `🇺🇸`) y botones de referidos con alto contraste (`.keep-white-text !text-white`).
+8. **Galería de Evolución en Vivo Multi-Tatuaje (`TattooLiveEvolutionSection`):**
+   - Selector interactivo entre los distintos tatuajes en proceso del cliente.
+   - Tarjeta del tatuador que da seguimiento con contacto directo en WhatsApp.
+   - Indicador de visualización ('Visto por el artista') en tiempo real.
+   - Feedback médico-artístico y recomendaciones clínicas para cada etapa.
+   - Kit interactivo de productos indispensables por fase (jabón neutro, ungüento pantenol, film curativo, bloqueador solar).
 
 ## Estado de Pruebas y Construcción
-- **Backend Tests**: 119 pruebas automatizadas (119/119 passing, 100% green).
+- **Backend Tests**: 125 pruebas automatizadas (125/125 passing, 100% green).
 - **Frontend Build**: Compilación limpia con Vite + TypeScript (`npm --prefix v2/frontend run build`).
 - **Backend Build**: Compilación limpia con TypeScript (`npm --prefix v2/backend run build`).

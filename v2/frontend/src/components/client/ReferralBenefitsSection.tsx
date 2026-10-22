@@ -113,27 +113,27 @@ export const ReferralBenefitsSection: React.FC<ReferralBenefitsSectionProps> = (
           <button
             type="button"
             onClick={handleCopyLink}
-            className="inline-flex items-center justify-center gap-1.5 px-4 py-2.5 rounded-xl bg-slate-900 dark:bg-white text-white dark:text-slate-900 font-bold text-xs hover:opacity-90 transition shadow-sm cursor-pointer"
+            className="inline-flex items-center justify-center gap-1.5 px-4 py-2.5 rounded-xl bg-violet-600 hover:bg-violet-700 !text-white keep-white-text font-bold text-xs hover:opacity-95 transition shadow-sm cursor-pointer"
           >
             {copied ? (
               <>
-                <Check className="w-4 h-4 text-emerald-500" />
-                Copiado
+                <Check className="w-4 h-4 text-emerald-300" />
+                <span className="!text-white keep-white-text font-bold">Copiado</span>
               </>
             ) : (
               <>
-                <Copy className="w-4 h-4" />
-                Copiar Enlace
+                <Copy className="w-4 h-4 text-white" />
+                <span className="!text-white keep-white-text font-bold">Copiar Enlace</span>
               </>
             )}
           </button>
           <button
             type="button"
             onClick={handleShareWhatsApp}
-            className="inline-flex items-center justify-center gap-1.5 px-4 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs shadow-sm transition cursor-pointer"
+            className="inline-flex items-center justify-center gap-1.5 px-4 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 !text-white keep-white-text font-bold text-xs shadow-sm transition cursor-pointer"
           >
-            <MessageCircle className="w-4 h-4" />
-            WhatsApp
+            <MessageCircle className="w-4 h-4 text-white" />
+            <span className="!text-white keep-white-text font-bold">WhatsApp</span>
           </button>
         </div>
       </div>

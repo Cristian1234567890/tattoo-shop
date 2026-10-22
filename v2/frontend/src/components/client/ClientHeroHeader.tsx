@@ -3,7 +3,6 @@ import { Link } from 'react-router-dom';
 import { User } from '../../types';
 import {
   Sparkles,
-  ShieldCheck,
   Calendar,
   Activity,
   Compass,
@@ -185,7 +184,7 @@ export const ClientHeroHeader: React.FC<ClientHeroHeaderProps> = ({
       </div>
 
       {/* Quick Stats Grid */}
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-6 mt-6 border-t border-slate-200 dark:border-white/10">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-6 mt-6 border-t border-slate-200 dark:border-white/10">
         <div className="bg-slate-50/80 dark:bg-gray-900/60 border border-slate-200 dark:border-white/5 rounded-xl p-3.5 flex items-center gap-3.5">
           <div className="w-10 h-10 rounded-xl bg-primary/15 border border-primary/30 flex items-center justify-center text-primary shrink-0">
             <Activity size={18} />
@@ -203,19 +202,6 @@ export const ClientHeroHeader: React.FC<ClientHeroHeaderProps> = ({
           <div>
             <div className="text-lg md:text-xl font-bold text-slate-800 dark:text-white">{appointmentsCount}</div>
             <div className="text-xs text-slate-500 dark:text-gray-400">{t.statAppointments}</div>
-          </div>
-        </div>
-
-        <div className="bg-slate-50/80 dark:bg-gray-900/60 border border-slate-200 dark:border-white/5 rounded-xl p-3.5 flex items-center gap-3.5">
-          <div className="w-10 h-10 rounded-xl bg-emerald-500/15 border border-emerald-500/30 flex items-center justify-center text-emerald-400 shrink-0">
-            <ShieldCheck size={18} />
-          </div>
-          <div>
-            <div className="text-xs md:text-sm font-bold text-emerald-500 dark:text-emerald-400 flex items-center gap-1.5">
-              <span className="w-2 h-2 rounded-full bg-emerald-500 inline-block" />
-              {t.statProtected}
-            </div>
-            <div className="text-xs text-slate-500 dark:text-gray-400">{t.statSecurity}</div>
           </div>
         </div>
       </div>

@@ -10,12 +10,9 @@ import {
   Activity,
   ArrowRight,
   Plus,
-  Camera,
-  Image as ImageIcon,
 } from 'lucide-react';
-import { TattooTimeline, ProgressItem } from '../../tattoo/TattooTimeline';
-import { ProgressDetailModal } from '../../tattoo/ProgressDetailModal';
-import { UploadProgressModal } from '../../tattoo/UploadProgressModal';
+import { ProgressItem } from '../../tattoo/TattooTimeline';
+import { TattooLiveEvolutionSection } from '../../tattoo/TattooLiveEvolutionSection';
 import { api } from '../../../api/client';
 import { supabase } from '../../../api/supabase';
 import { useCurrency } from '../../../context/CurrencyContext';
@@ -115,9 +112,6 @@ export const TattoosOverviewTab: React.FC<TattoosOverviewTabProps> = ({
   };
 
   const [progressList, setProgressList] = useState<ProgressItem[]>([]);
-  const [isLoadingProgress, setIsLoadingProgress] = useState<boolean>(false);
-  const [selectedDetailEntry, setSelectedDetailEntry] = useState<ProgressItem | null>(null);
-  const [isUploadModalOpen, setIsUploadModalOpen] = useState<boolean>(false);
   const [currentUserId, setCurrentUserId] = useState<string>(user?.id || '');
 
   useEffect(() => {
@@ -133,7 +127,6 @@ export const TattoosOverviewTab: React.FC<TattoosOverviewTabProps> = ({
   }, [user]);
 
   const fetchProgress = useCallback(async () => {
-    setIsLoadingProgress(true);
     try {
       const res = await api.getClientProgress();
       if (res.success && Array.isArray(res.data)) {
@@ -141,38 +134,12 @@ export const TattoosOverviewTab: React.FC<TattoosOverviewTabProps> = ({
       }
     } catch (err) {
       console.warn('Could not fetch client progress:', err);
-    } finally {
-      setIsLoadingProgress(false);
     }
   }, []);
 
   useEffect(() => {
     fetchProgress();
   }, [fetchProgress]);
-
-  const handleOpenUpload = () => {
-    if (!isVip) {
-      onOpenPaywall();
-      return;
-    }
-    setIsUploadModalOpen(true);
-  };
-
-  const handleDeleteEntry = async (id: string) => {
-    try {
-      await api.deleteProgress(id);
-      setProgressList((prev) => prev.filter((item) => item.id !== id));
-      setSelectedDetailEntry(null);
-    } catch (err) {
-      console.error('Error deleting progress item:', err);
-    }
-  };
-
-  const handleProgressSaved = (newEntry: any) => {
-    if (newEntry) {
-      setProgressList((prev) => [newEntry, ...prev]);
-    }
-  };
 
   const timelineEntries: ProgressItem[] = useMemo(() => {
     if (progressList.length > 0) return progressList;
@@ -412,58 +379,14 @@ export const TattoosOverviewTab: React.FC<TattoosOverviewTabProps> = ({
         )}
       </section>
 
-      {/* Anchor Section: Tattoo Progress Gallery Bridge (R3) */}
-      <section
-        id="tattoo-progress-anchor"
-        className="backdrop-blur-xl bg-white/80 dark:bg-zinc-900/60 border border-slate-200/80 dark:border-white/10 rounded-2xl p-6 md:p-8 shadow-xl dark:shadow-2xl relative overflow-hidden"
-      >
-        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-purple-500/15 border border-purple-500/30 flex items-center justify-center text-purple-400">
-              <Camera size={20} />
-            </div>
-            <div>
-              <h3 className="text-lg md:text-xl font-bold text-slate-800 dark:text-white font-heading">
-                {t.galleryAnchorTitle}
-              </h3>
-              <p className="text-xs md:text-sm text-slate-600 dark:text-gray-400 font-body">
-                {t.galleryAnchorSubtitle}
-              </p>
-            </div>
-          </div>
-
-          <button
-            type="button"
-            onClick={handleOpenUpload}
-            className="inline-flex items-center gap-2 bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white font-bold px-4 py-2.5 rounded-xl text-xs md:text-sm shadow-md transition hover:scale-105 cursor-pointer"
-          >
-            <ImageIcon size={16} /> {t.uploadPhoto}
-          </button>
-        </div>
-
-        {/* Live Interactive Tattoo Timeline */}
-        <TattooTimeline
-          entries={timelineEntries}
-          onOpenUpload={handleOpenUpload}
-          onSelectEntry={(entry) => setSelectedDetailEntry(entry)}
-          onDeleteEntry={handleDeleteEntry}
-          isLoading={isLoadingProgress}
-        />
-
-        {/* Detail Lightbox Modal */}
-        <ProgressDetailModal
-          entry={selectedDetailEntry}
-          onClose={() => setSelectedDetailEntry(null)}
-          onDelete={handleDeleteEntry}
-          isOwner={true}
-        />
-
-        {/* Upload Modal with Supabase Storage Integration */}
-        <UploadProgressModal
-          isOpen={isUploadModalOpen}
-          onClose={() => setIsUploadModalOpen(false)}
-          userId={currentUserId}
-          onProgressSaved={handleProgressSaved}
+      {/* Anchor Section: Galería de Evolución en Vivo Multi-Tatuaje */}
+      <section id="tattoo-progress-anchor">
+        <TattooLiveEvolutionSection
+          isVip={isVip}
+          lang={lang}
+          onOpenPaywall={onOpenPaywall}
+          user={user}
+          customEntries={timelineEntries}
         />
       </section>
     </div>

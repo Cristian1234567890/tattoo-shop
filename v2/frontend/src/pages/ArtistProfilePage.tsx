@@ -1,4 +1,4 @@
-import { Sparkles, MessageCircle, MapPin, ArrowLeft, Phone, Palette } from 'lucide-react';
+import { Sparkles, MessageCircle, MapPin, ArrowLeft, Phone, Palette, Lock, Calendar } from 'lucide-react';
 import React, { useState, useEffect } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import axios from 'axios';
@@ -1228,18 +1228,32 @@ export const ArtistProfilePage: React.FC = () => {
                 <br />
                 <hr className="border-gray-200 dark:border-gray-800" />
 
-                {/* Age */}
-                <h3 className="text-lg font-bold text-gray-800 dark:text-gray-200">
-                  Edad
-                </h3>
-                <input
-                  type="date"
-                  name="date"
-                  id="date"
-                  disabled
-                  value={date}
-                  className="w-full px-4 py-2.5 rounded-lg border border-gray-300 dark:border-gray-700 bg-gray-100 dark:bg-gray-800/50 text-gray-500 cursor-not-allowed"
-                />
+                {/* Age & Legal 18+ Locked Birthdate */}
+                <div className="flex items-center justify-between">
+                  <h3 className="text-sm font-bold text-gray-800 dark:text-gray-200 uppercase tracking-wider flex items-center gap-1.5">
+                    <Calendar className="w-4 h-4 text-violet-600 dark:text-violet-400" />
+                    <span>Fecha de Nacimiento</span>
+                  </h3>
+                  <span className="inline-flex items-center gap-1 text-[11px] font-bold text-amber-700 dark:text-amber-400 bg-amber-500/10 border border-amber-500/20 px-2.5 py-0.5 rounded-full">
+                    <Lock size={11} /> Bloqueada (Mayoría de Edad 18+)
+                  </span>
+                </div>
+                <div className="relative">
+                  <input
+                    type="date"
+                    name="date"
+                    id="date"
+                    disabled
+                    value={date}
+                    className="w-full px-4 py-2.5 rounded-lg border border-gray-300 dark:border-gray-700 bg-gray-100 dark:bg-gray-800/50 text-gray-500 cursor-not-allowed font-mono select-none"
+                  />
+                  <div className="absolute right-3.5 top-1/2 -translate-y-1/2 text-gray-400">
+                    <Lock size={16} />
+                  </div>
+                </div>
+                <p className="text-[11px] text-gray-500 dark:text-gray-400 mt-1">
+                  🔒 Bloqueada por validación de mayoría de edad legal (18+). No modificable desde el perfil público.
+                </p>
 
                 <br />
                 <hr className="border-gray-200 dark:border-gray-800" />

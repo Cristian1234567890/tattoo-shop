@@ -22,6 +22,7 @@ import {
   BarChart3,
   Monitor,
 } from 'lucide-react';
+import { ClientSecuritySettingsSection } from '../ClientSecuritySettingsSection';
 
 interface ClientSecurityTabProps {
   user: User | null;
@@ -379,6 +380,13 @@ export const ClientSecurityTab: React.FC<ClientSecurityTabProps> = ({
 
   return (
     <div className="space-y-8">
+      {/* 0. Seguridad de Cuenta, Correo, Teléfono Vonage SMS y 2FA */}
+      <ClientSecuritySettingsSection
+        user={user}
+        lang={lang}
+        onShowToast={onShowToast}
+      />
+
       {/* 1. Gestión de Contraseña */}
       <section className="bg-white dark:bg-gray-850/90 border border-slate-200 dark:border-white/10 rounded-2xl p-6 md:p-8 shadow-xl backdrop-blur-md">
         <div className="flex items-center gap-3 mb-6 pb-4 border-b border-slate-200 dark:border-white/10">

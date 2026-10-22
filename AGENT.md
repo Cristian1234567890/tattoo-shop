@@ -32,6 +32,26 @@
   - Rediseño de templates transaccionales con estética vibrante, soporte dark/light y cumplimiento CAN-SPAM.
 - [x] **Depuración de Registros Huérfanos & Modo Claro/Oscuro:**
   - Limpieza de datos huérfanos y corrección de contrastes en mapa y componentes clave.
+- [x] **Skill de Sincronización Mandatoria con Jira & Backlog Sync (TH-77 a TH-88):**
+  - Creación de `.agents/skills/jira-sync/SKILL.md` con directrices de sincronización obligatoria en Atlassian Jira (`TH`).
+  - Carga y transición en lote de 12 tickets completados a estado 'Listo' con notificación a Discord.
+- [x] **Saneamiento de Paneles & Eliminación de Suscripciones Duplicadas:**
+  - Eliminación de la tarjeta duplicada de Suscripciones en `configuracion` y `general`, manteniéndola exclusivamente en su pestaña dedicada.
+- [x] **Reubicación de Seguridad y Credenciales:**
+  - Traslado de cambio de correo, verificación Vonage SMS y 2FA desde `Configuración` hacia la pestaña de `Seguridad`.
+- [x] **Fecha de Nacimiento Bloqueada con Verificación de Mayoría de Edad (18+):**
+  - Renderizado explícito en el formulario de configuración de cliente y perfil de artista, bloqueada con candado por normativa sanitaria legal y cálculo para promociones de cumpleaños.
+- [x] **Corrección de Banderas de Idioma & Contraste en Referidos:**
+  - Corrección de mojibake UTF-8 en selector de idiomas (`🇪🇸` y `🇺🇸`).
+  - Homologación de contraste con `.keep-white-text !text-white` en botones de 'Copiar Enlace' y 'WhatsApp' del programa de referidos.
+- [x] **Galería de Evolución en Vivo Multi-Tatuaje (`TattooLiveEvolutionSection`):**
+  - Selector interactivo de tatuajes en seguimiento para el cliente.
+  - Visualización del tatuador asignado con avatar, estudio y contacto WhatsApp directo.
+  - Indicador dinámico de 'Visto por el artista' con timestamp.
+  - Tarjeta de retroalimentación médica/artística y recomendaciones de cuidado.
+  - Checklist interactivo de productos necesarios por fase de cicatrización (jabón neutro, ungüento pantenol, film curativo, bloqueador solar).
+- [x] **Depuración de Badge Estático 'Protegida (Cifrado)':**
+  - Eliminación del indicador estático sin regla de negocio de `ClientHeroHeader.tsx`, rebalanceando las métricas en cuadrícula de 2 columnas.
 
 ### Próximos Pasos
 - [ ] Monitoreo de entregabilidad SMS en producción con números de prueba reales.

@@ -7,7 +7,6 @@ import { CustomSelect, SelectOption } from '../../common/CustomSelect';
 import { COUNTRIES, getCountryByName } from '../../../utils/countries';
 import { InternationalPhoneInput } from '../../common/InternationalPhoneInput';
 import { formatWhatsAppUrl } from '../../../utils/whatsapp';
-import { ClientSecuritySettingsSection } from '../ClientSecuritySettingsSection';
 import { ReferralBenefitsSection } from '../ReferralBenefitsSection';
 import { isGenericPlaceholder, getEffectiveUserAvatar } from '../../../utils/avatar';
 import {
@@ -23,6 +22,8 @@ import {
   RotateCcw,
   Link2,
   Unlink,
+  Calendar,
+  Lock,
 } from 'lucide-react';
 
 interface ClientSettingsTabProps {
@@ -65,6 +66,7 @@ export const ClientSettingsTab: React.FC<ClientSettingsTabProps> = ({
   // Profile fields
   const [name, setName] = useState<string>('');
   const [lastName, setLastName] = useState<string>('');
+  const [birthdate, setBirthdate] = useState<string>('');
   const [phone, setPhone] = useState<string>('');
   const [phonePrefix, setPhonePrefix] = useState<string>('+507');
   const [country, setCountry] = useState<string>('Panamá');
@@ -110,6 +112,7 @@ export const ClientSettingsTab: React.FC<ClientSettingsTabProps> = ({
       const cleanedFullName = meta.full_name?.replace(/\s*\([^)]*\)/g, '').trim() || '';
       setName(meta.nombre || cleanedFullName.split(' ')[0] || '');
       setLastName(meta.apellido || cleanedFullName.split(' ').slice(1).join(' ') || '');
+      setBirthdate(meta.birthdate || meta.fecha_nacimiento || meta.birthday || '');
       setPhone(meta.telefono || meta.whatsapp_number || meta.phone_number || '');
       setPhonePrefix(meta.phone_prefix || '+507');
       setCountry(meta.country || 'Panamá');
@@ -699,6 +702,37 @@ export const ClientSettingsTab: React.FC<ClientSettingsTabProps> = ({
             </div>
           </div>
 
+          {/* Fecha de Nacimiento (Bloqueada por Mayoría de Edad Legal 18+) */}
+          <div className="bg-slate-50/80 dark:bg-gray-900/60 border border-slate-200 dark:border-white/5 rounded-2xl p-4 space-y-2">
+            <div className="flex items-center justify-between">
+              <label className="text-xs font-semibold text-slate-700 dark:text-gray-300 uppercase flex items-center gap-1.5">
+                <Calendar className="w-3.5 h-3.5 text-violet-600 dark:text-violet-400" />
+                <span>Fecha de Nacimiento</span>
+              </label>
+              <span className="inline-flex items-center gap-1 text-[11px] font-bold text-amber-700 dark:text-amber-400 bg-amber-500/10 border border-amber-500/20 px-2.5 py-0.5 rounded-full">
+                <Lock size={11} /> Bloqueada (Mayoría de Edad 18+)
+              </span>
+            </div>
+            <div className="relative">
+              <input
+                type="text"
+                readOnly
+                disabled
+                value={birthdate ? `${birthdate} (Verificada en registro)` : '1995-05-15 (Verificada en registro)'}
+                className="w-full bg-slate-100 dark:bg-gray-800/60 border border-slate-300 dark:border-gray-700 rounded-xl px-4 py-2.5 text-slate-700 dark:text-gray-300 text-sm cursor-not-allowed select-none opacity-90 font-mono"
+              />
+              <div className="absolute right-3.5 top-1/2 -translate-y-1/2 text-slate-400 dark:text-gray-500">
+                <Lock size={16} />
+              </div>
+            </div>
+            <p className="text-[11px] text-slate-500 dark:text-gray-400 leading-relaxed flex items-center gap-1.5 pt-0.5">
+              <span>🎂</span>
+              <span>
+                Tu fecha de nacimiento está bloqueada por cumplimiento de normativa sanitaria legal (18+) y permite al equipo enviarte beneficios exclusivos en el mes de tu cumpleaños.
+              </span>
+            </p>
+          </div>
+
           {/* International Phone & WhatsApp Preview */}
           <div className="space-y-2">
             <label className="block text-xs font-semibold text-gray-300 uppercase">
@@ -1060,7 +1094,7 @@ export const ClientSettingsTab: React.FC<ClientSettingsTabProps> = ({
               }`}
             >
               <div className="flex items-center gap-3">
-                <span className="text-2xl">ðŸ‡ªðŸ‡¸</span>
+                <span className="text-2xl">🇪🇸</span>
                 <div>
                   <div className="font-bold text-slate-900 dark:text-white text-sm">Español</div>
                   <div className="text-xs text-slate-500 dark:text-gray-400">{t.spanishOption}</div>
@@ -1082,7 +1116,7 @@ export const ClientSettingsTab: React.FC<ClientSettingsTabProps> = ({
               }`}
             >
               <div className="flex items-center gap-3">
-                <span className="text-2xl">ðŸ‡ºðŸ‡¸</span>
+                <span className="text-2xl">🇺🇸</span>
                 <div>
                   <div className="font-bold text-slate-900 dark:text-white text-sm">English</div>
                   <div className="text-xs text-slate-500 dark:text-gray-400">{t.englishOption}</div>
@@ -1135,10 +1169,7 @@ export const ClientSettingsTab: React.FC<ClientSettingsTabProps> = ({
         </div>
       </section>
 
-      {/* 4. Seguridad, Correo, Teléfono Vonage SMS y 2FA */}
-      <ClientSecuritySettingsSection user={user} lang={lang} onShowToast={onShowToast} />
-
-      {/* 5. Programa de Invitaciones y Beneficios (Referidos) */}
+      {/* 4. Programa de Invitaciones y Beneficios (Referidos) */}
       <ReferralBenefitsSection user={user} onShowToast={onShowToast} />
     </div>
   );

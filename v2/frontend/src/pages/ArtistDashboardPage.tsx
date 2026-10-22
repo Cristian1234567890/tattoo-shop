@@ -520,11 +520,6 @@ export const ArtistDashboardPage: React.FC = () => {
           </div>
         </section>
 
-        {/* Facturación & Suscripción Management */}
-        <section className="mb-8">
-          <SubscriptionBillingSection userRole="tatuador" />
-        </section>
-
         {/* Studio Summary Bar */}
         <section className="bg-white dark:bg-gray-800/60 border border-slate-200 dark:border-gray-700/80 rounded-2xl p-6 mb-8 shadow-lg text-slate-800 dark:text-white">
           <div className="flex flex-wrap items-center justify-between gap-4">

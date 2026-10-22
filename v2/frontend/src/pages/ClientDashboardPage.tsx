@@ -448,7 +448,6 @@ export const ClientDashboardPage: React.FC = () => {
 
               {activeTab === 'configuracion' && (
                 <div className="space-y-8">
-                  <SubscriptionBillingSection userRole="cliente" />
                   <ClientSettingsTab
                     user={user}
                     lang={lang}
