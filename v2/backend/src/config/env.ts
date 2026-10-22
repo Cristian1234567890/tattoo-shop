@@ -20,6 +20,7 @@ export interface Environment {
   VONAGE_API_KEY: string;
   VONAGE_API_SECRET: string;
   VONAGE_FROM: string;
+  RESEND_API_KEY: string;
 }
 
 const defaultSupabaseUrl = 'https://mftthukphffirdcoqprz.supabase.co';
@@ -45,4 +46,5 @@ export const env: Environment = {
   VONAGE_API_KEY: process.env.VONAGE_API_KEY || '',
   VONAGE_API_SECRET: process.env.VONAGE_API_SECRET || '',
   VONAGE_FROM: process.env.VONAGE_FROM || 'TattooHub',
+  RESEND_API_KEY: process.env.RESEND_API_KEY || '',
 };

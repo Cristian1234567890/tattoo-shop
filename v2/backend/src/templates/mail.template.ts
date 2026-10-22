@@ -397,3 +397,52 @@ export function renderReferralInvitationTemplate(
 </body>
 </html>`;
 }
+
+
+/**
+ * Dispatches 6-digit Email Verification Code
+ */
+export function renderEmailOtpTemplate(code: string, email: string): string {
+  return `<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Código de Verificación - Tattoo Hub</title>
+  <style>${BASE_STYLES}</style>
+</head>
+<body>
+  <div class="wrapper">
+    <div class="container">
+      <div class="header">
+        <div class="badge">🔒 SEGURIDAD & IDENTIDAD</div>
+        <h1>Verifica tu Correo Electrónico</h1>
+      </div>
+      <div class="content">
+        <p>Hola,</p>
+        <p>Has solicitado crear o verificar tu cuenta en <strong>Tattoo Hub</strong> con el correo <strong>${escapeHtml(email)}</strong>.</p>
+        <p>Usa el siguiente código de confirmación de 6 dígitos para continuar tu registro de forma segura:</p>
+
+        <div style="background: rgba(139, 92, 246, 0.12); border: 2px dashed rgba(139, 92, 246, 0.4); border-radius: 16px; padding: 24px; text-align: center; margin: 25px 0;">
+          <span style="font-size: 11px; font-weight: 800; letter-spacing: 2px; text-transform: uppercase; color: #a78bfa; display: block; margin-bottom: 8px;">CÓDIGO DE SEGURIDAD (OTP)</span>
+          <span style="font-family: 'Courier New', Courier, monospace; font-size: 38px; font-weight: 900; letter-spacing: 10px; color: #ffffff; text-shadow: 0 0 16px rgba(139, 92, 246, 0.6);">${escapeHtml(code)}</span>
+          <span style="display: block; font-size: 12px; color: #94a3b8; margin-top: 10px;">Válido durante 10 minutos</span>
+        </div>
+
+        <p style="font-size: 13px; color: #94a3b8; line-height: 1.5;">
+          * Si tú no solicitaste este código, puedes ignorar este mensaje de forma segura. Nadie puede acceder a tu cuenta sin este código.
+        </p>
+      </div>
+      <div class="footer">
+        <p>
+          <strong>Tattoo Hub Inc.</strong> • Calle 50, PH Plaza Global, Piso 12, Ciudad de Panamá, República de Panamá<br/>
+          Aviso de seguridad automática de identidad.<br/>
+          ¿Necesitas ayuda? Escríbenos a <a href="mailto:soporte@tattoohub.art">soporte@tattoohub.art</a>.<br/>
+          © 2026 Tattoo Hub Inc. Todos los derechos reservados.
+        </p>
+      </div>
+    </div>
+  </div>
+</body>
+</html>`;
+}

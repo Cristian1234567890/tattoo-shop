@@ -5,6 +5,7 @@ import {
   renderWelcomeUserTemplate,
   renderAppointmentReceiptTemplate,
   renderReferralInvitationTemplate,
+  renderEmailOtpTemplate,
 } from '../templates/mail.template';
 
 // Reusable transporter
@@ -146,6 +147,56 @@ export class MailService {
 
     try {
       await transporter.sendMail(mailOptions);
+      return true;
+    } catch {
+      return false;
+    }
+  }
+
+  /**
+   * Dispatches 6-digit Email Verification OTP code
+   */
+  async sendEmailOtp(to: string, otp: string): Promise<boolean> {
+    if (!to || typeof to !== 'string' || !to.trim() || !otp) return false;
+
+    const recipient = to.trim();
+    const html = renderEmailOtpTemplate(otp, recipient);
+
+    // 1. Primary: Resend API
+    if (env.RESEND_API_KEY) {
+      try {
+        const resendRes = await fetch('https://api.resend.com/emails', {
+          method: 'POST',
+          headers: {
+            Authorization: `Bearer ${env.RESEND_API_KEY}`,
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            from: 'Tattoo Hub <onboarding@resend.dev>',
+            to: [recipient],
+            subject: '🔒 Tu Código de Verificación Tattoo Hub: ' + otp,
+            html,
+            text: `Tu código de verificación de 6 dígitos para Tattoo Hub es: ${otp}. Válido por 10 minutos.`,
+          }),
+        });
+
+        if (resendRes.ok) {
+          return true;
+        }
+      } catch (resendErr: any) {
+        console.warn('Note: Resend dispatch issue:', resendErr?.message || resendErr);
+      }
+    }
+
+    // 2. Secondary / Fallback: SMTP Transporter
+    try {
+      await transporter.sendMail({
+        from: `"Tattoo Hub Seguridad" <${env.EMAIL}>`,
+        to: recipient,
+        subject: '🔒 Tu Código de Verificación Tattoo Hub: ' + otp,
+        html,
+        text: `Tu código de verificación de 6 dígitos para Tattoo Hub es: ${otp}. Válido por 10 minutos.`,
+      });
       return true;
     } catch {
       return false;

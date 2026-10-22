@@ -52,6 +52,7 @@ export const RegisterPage: React.FC = () => {
   const [termsAccepted, setTermsAccepted] = useState(false);
   const [isTermsModalOpen, setIsTermsModalOpen] = useState(false);
   const [isVerificationModalOpen, setIsVerificationModalOpen] = useState(false);
+  const [checkingAvailability, setCheckingAvailability] = useState(false);
   const [turnstileToken, setTurnstileToken] = useState<string | null>(null);
   const [showPassword, setShowPassword] = useState(false);
 
@@ -99,7 +100,7 @@ export const RegisterPage: React.FC = () => {
   const isUnderage = currentAge !== null && currentAge < 18;
 
   // Paso 1: Validación previa personalizada y apertura del modal de verificación
-  const handlePreRegister = (e: React.FormEvent) => {
+  const handlePreRegister = async (e: React.FormEvent) => {
     e.preventDefault();
     setErrorMsg('');
 
@@ -168,6 +169,43 @@ export const RegisterPage: React.FC = () => {
       return;
     }
 
+    // Paso previo obligatorio: Comprobar si correo o teléfono ya existen antes de abrir el modal
+    setCheckingAvailability(true);
+    setErrorMsg('');
+
+    try {
+      const avail = await api.checkAvailability({
+        email: email.trim(),
+        phone: fullPhoneNumber,
+      });
+
+      if (!avail.available) {
+        setCheckingAvailability(false);
+        if (avail.field === 'email') {
+          setFieldErrors((prev) => ({
+            ...prev,
+            email: 'Este correo electrónico ya está registrado en Tattoo Hub.',
+          }));
+          setErrorMsg('already_registered_email');
+          document.getElementById('reg-email')?.focus();
+        } else if (avail.field === 'phone') {
+          setFieldErrors((prev) => ({
+            ...prev,
+            phoneLocal: 'Este número de teléfono ya está asociado a otra cuenta.',
+          }));
+          setErrorMsg('already_registered_phone');
+          document.getElementById('reg-telefono')?.focus();
+        } else {
+          setErrorMsg(avail.message || 'Los datos ingresados ya se encuentran registrados en Tattoo Hub.');
+        }
+        return;
+      }
+    } catch {
+      // Si la verificación de red falla temporalmente, permitir continuar al modal
+    } finally {
+      setCheckingAvailability(false);
+    }
+
     setIsVerificationModalOpen(true);
   };
 
@@ -207,9 +245,21 @@ export const RegisterPage: React.FC = () => {
         } else {
           navigate('/client-dashboard');
         }
+      } else {
+        const rawErr = (response as any).error?.message || (response as any).message || 'Error en el registro';
+        if (rawErr.toLowerCase().includes('already')) {
+          setErrorMsg('already_registered_email');
+        } else {
+          setErrorMsg(rawErr);
+        }
       }
     } catch (err: any) {
-      setErrorMsg(err.response?.data?.message || err.message || 'Error en el registro');
+      const rawErr = err.response?.data?.error?.message || err.response?.data?.message || err.message || 'Error en el registro';
+      if (rawErr.toLowerCase().includes('already')) {
+        setErrorMsg('already_registered_email');
+      } else {
+        setErrorMsg(rawErr);
+      }
     } finally {
       setLoading(false);
     }
@@ -790,11 +840,47 @@ export const RegisterPage: React.FC = () => {
               </div>
             </div>
 
-            {errorMsg && (
-              <div className="p-4 bg-red-900/30 border border-red-500/50 rounded-xl text-red-400 text-sm">
-                {errorMsg}
+            {errorMsg === 'already_registered_email' || errorMsg.includes('ya está registrado') ? (
+              <div className="p-4 bg-amber-500/15 dark:bg-amber-950/40 border border-amber-500/50 rounded-2xl text-amber-800 dark:text-amber-200 text-sm flex items-start gap-3 shadow-md animate-fade-in">
+                <AlertCircle className="w-5 h-5 text-amber-500 shrink-0 mt-0.5" />
+                <div className="space-y-1">
+                  <p className="font-extrabold text-slate-900 dark:text-white text-base">
+                    Este correo electrónico ya está registrado en Tattoo Hub
+                  </p>
+                  <p className="text-xs text-slate-700 dark:text-amber-200/90 leading-relaxed">
+                    Ya existe una cuenta con esta dirección. Puedes{' '}
+                    <Link to="/login" className="font-bold underline text-violet-600 dark:text-violet-400 hover:text-violet-700">
+                      Iniciar Sesión aquí
+                    </Link>{' '}
+                    o si olvidaste tu clave,{' '}
+                    <Link to="/forgot-password" className="font-bold underline text-violet-600 dark:text-violet-400 hover:text-violet-700">
+                      Restablecer tu Contraseña
+                    </Link>.
+                  </p>
+                </div>
               </div>
-            )}
+            ) : errorMsg === 'already_registered_phone' ? (
+              <div className="p-4 bg-amber-500/15 dark:bg-amber-950/40 border border-amber-500/50 rounded-2xl text-amber-800 dark:text-amber-200 text-sm flex items-start gap-3 shadow-md animate-fade-in">
+                <AlertCircle className="w-5 h-5 text-amber-500 shrink-0 mt-0.5" />
+                <div className="space-y-1">
+                  <p className="font-extrabold text-slate-900 dark:text-white text-base">
+                    Número telefónico ya registrado
+                  </p>
+                  <p className="text-xs text-slate-700 dark:text-amber-200/90 leading-relaxed">
+                    Este número de teléfono ya está asociado a otra cuenta. Si es tu número, puedes{' '}
+                    <Link to="/login" className="font-bold underline text-violet-600 dark:text-violet-400 hover:text-violet-700">
+                      Iniciar Sesión
+                    </Link>{' '}
+                    o actualizarlo desde la configuración de tu perfil.
+                  </p>
+                </div>
+              </div>
+            ) : errorMsg ? (
+              <div className="p-4 bg-red-900/30 border border-red-500/50 rounded-xl text-red-400 text-sm flex items-center gap-2">
+                <AlertCircle className="w-4 h-4 text-red-400 shrink-0" />
+                <span>{errorMsg}</span>
+              </div>
+            ) : null}
 
             {/* Terms and Privacy Agreement with Forced Scroll Modal */}
             <div className={`flex items-start gap-3 mt-6 p-4 rounded-2xl bg-slate-50 dark:bg-[#121217] border transition-all ${
@@ -860,12 +946,14 @@ export const RegisterPage: React.FC = () => {
 
             <button
               id="btn-register-submit"
-              disabled={loading}
+              disabled={loading || checkingAvailability}
               type="submit"
               className="btn-atelier-primary keep-white-text !text-white w-full mt-8 py-4 rounded-xl font-bold text-lg cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed shadow-[0_0_25px_rgba(124,58,237,0.3)] transition"
             >
               <span className="!text-white keep-white-text font-bold">
-                {loading
+                {checkingAvailability
+                  ? 'Verificando datos...'
+                  : loading
                   ? 'Creando cuenta...'
                   : isUnderage
                   ? '🔞 Registro Bloqueado: Menor de Edad'
@@ -890,7 +978,8 @@ export const RegisterPage: React.FC = () => {
           <VerificationModal
             isOpen={isVerificationModalOpen}
             email={email}
-            phone={fullPhoneNumber}
+            phone={phoneLocal}
+            phonePrefix={selectedCountryData.dialCode}
             onVerified={executeVerifiedRegistration}
             onClose={() => setIsVerificationModalOpen(false)}
           />

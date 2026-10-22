@@ -212,12 +212,30 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       setUser(null);
       setSession(null);
       setIsPasswordRecovery(false);
-      sessionStorage.removeItem('is_password_recovery');
-      if (typeof window !== 'undefined') {
-        localStorage.removeItem('user_avatar_override');
-        window.dispatchEvent(new CustomEvent('user_avatar_changed', { detail: '' }));
+      try {
+        sessionStorage.clear();
+        if (typeof window !== 'undefined') {
+          Object.keys(localStorage).forEach((key) => {
+            if (
+              key.startsWith('sb-') ||
+              key.includes('supabase') ||
+              key === 'tattoo_shop_auth' ||
+              key === 'user_avatar_override'
+            ) {
+              localStorage.removeItem(key);
+            }
+          });
+          window.dispatchEvent(new CustomEvent('user_avatar_changed', { detail: '' }));
+        }
+      } catch (storageErr) {
+        console.warn('Storage cleanup notice:', storageErr);
       }
       api.clearStoredSession();
+
+      // Redirección forzada y recarga limpia a la pantalla principal para prevenir cualquier fuga de sesión
+      if (typeof window !== 'undefined') {
+        window.location.replace('/');
+      }
     }
   };
 

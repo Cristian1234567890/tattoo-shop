@@ -107,6 +107,35 @@ class ApiClient {
     return res.data;
   }
 
+  // 2.3 POST /check-availability
+  async checkAvailability(payload: {
+    email?: string;
+    phone?: string;
+  }): Promise<{ success: boolean; available: boolean; field?: 'email' | 'phone'; message?: string }> {
+    try {
+      const res = await this.axiosInstance.post('/check-availability', payload);
+      return res.data;
+    } catch (err: any) {
+      return {
+        success: false,
+        available: true, // Graceful degradation on network timeout
+        message: err.response?.data?.message || err.message,
+      };
+    }
+  }
+
+  // 2.4 POST /send-email-otp
+  async sendEmailOtp(email: string): Promise<{ success: boolean; message?: string; cooldownRemaining?: number }> {
+    const res = await this.axiosInstance.post('/send-email-otp', { email });
+    return res.data;
+  }
+
+  // 2.5 POST /verify-email-otp
+  async verifyEmailOtp(email: string, code: string): Promise<{ success: boolean; message?: string }> {
+    const res = await this.axiosInstance.post('/verify-email-otp', { email, code });
+    return res.data;
+  }
+
   // 3. POST /logout
   async logout(): Promise<{ success: boolean; error?: any }> {
     const res = await this.axiosInstance.post('/logout', {});
