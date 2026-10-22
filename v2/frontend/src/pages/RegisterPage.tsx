@@ -78,9 +78,11 @@ export const RegisterPage: React.FC = () => {
   const fullPhoneNumber = `${selectedCountryData.dialCode} ${phoneLocal}`.trim();
 
   const rawRedirect = searchParams.get('redirect');
+  const couponParam = searchParams.get('coupon');
+  const computedRedirect = rawRedirect || (couponParam ? `/precios?coupon=${encodeURIComponent(couponParam)}` : null);
   const loginLink =
-    rawRedirect && rawRedirect.startsWith('/') && !rawRedirect.startsWith('//')
-      ? `/login?redirect=${encodeURIComponent(rawRedirect)}`
+    computedRedirect && computedRedirect.startsWith('/') && !computedRedirect.startsWith('//')
+      ? `/login?redirect=${encodeURIComponent(computedRedirect)}`
       : '/login';
 
   const calculateAge = (birthDateString: string): number | null => {
@@ -235,8 +237,16 @@ export const RegisterPage: React.FC = () => {
       if (response.success && response.data) {
         await login({ user: response.data.user, session: response.data.session });
 
-        if (rawRedirect && rawRedirect.startsWith('/') && !rawRedirect.startsWith('//') && !rawRedirect.startsWith('/hub')) {
-          navigate(rawRedirect);
+        const couponParam = searchParams.get('coupon') || (typeof window !== 'undefined' ? sessionStorage.getItem('pending_coupon') : null);
+        if (rawRedirect && rawRedirect.startsWith('/') && !rawRedirect.startsWith('//')) {
+          let dest = rawRedirect;
+          if (couponParam && !dest.includes('coupon=')) {
+            dest += (dest.includes('?') ? '&' : '?') + `coupon=${encodeURIComponent(couponParam)}`;
+          }
+          navigate(dest);
+          return;
+        } else if (couponParam) {
+          navigate(`/precios?coupon=${encodeURIComponent(couponParam)}`);
           return;
         }
 

@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { createPortal } from 'react-dom';
 import { Link, useLocation } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import { useCurrency } from '../../context/CurrencyContext';
@@ -629,8 +630,12 @@ export const Navbar: React.FC<NavbarProps> = ({ forceRender = false }) => {
       </div>
 
       {/* Mobile Drawer / Full Viewport Overlay */}
-      {mobileMenuOpen && (
-        <div className="lg:hidden fixed inset-x-0 top-20 bottom-0 z-50 bg-white/98 dark:bg-zinc-950/98 backdrop-blur-3xl overflow-y-auto px-4 pt-3 pb-16 space-y-4 animate-in fade-in slide-in-from-top-2 duration-200 text-slate-900 dark:text-white shadow-2xl overscroll-contain">
+      {mobileMenuOpen && typeof document !== 'undefined' && createPortal(
+        <div
+          id="mobile-nav-portal-drawer"
+          className="lg:hidden fixed inset-x-0 top-20 bottom-0 z-[9999] bg-white dark:bg-zinc-950 backdrop-blur-3xl overflow-y-auto px-4 pt-4 pb-24 space-y-4 animate-in fade-in slide-in-from-top-2 duration-200 text-slate-900 dark:text-white shadow-2xl overscroll-contain"
+          style={{ height: 'calc(100vh - 80px)' }}
+        >
           <div className="space-y-1">
             {(!isAuthenticated || !hasVip) && (
               <>
@@ -858,8 +863,9 @@ export const Navbar: React.FC<NavbarProps> = ({ forceRender = false }) => {
               </div>
             )}
           </div>
-        </div>
+        </div>,
+        document.body
       )}
-    </nav>
+      </nav>
   );
 };

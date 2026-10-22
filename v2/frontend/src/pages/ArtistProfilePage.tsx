@@ -837,12 +837,12 @@ export const ArtistProfilePage: React.FC = () => {
           <div className="container mx-auto max-w-4xl space-y-6">
 
             {/* 1. Dedicated Luxury Hero Banner Card */}
-            <div className={`relative rounded-3xl bg-gradient-to-r ${bannerGradientCss} p-6 md:p-8 text-white shadow-2xl border border-white/10 overflow-hidden transition-all duration-500`}>
+            <div className={`relative rounded-3xl bg-gradient-to-r ${bannerGradientCss} p-6 md:p-8 text-white shadow-2xl border border-white/10 overflow-hidden transition-all duration-500 dark-banner keep-white-text`}>
               {/* Top Navigation Row */}
               <div className="flex items-center justify-between mb-6">
                 <Link
                   to="/hub"
-                  className="inline-flex items-center gap-2 px-4 py-2 bg-black/50 hover:bg-black/75 text-white rounded-full text-xs font-bold backdrop-blur-md transition shadow border border-white/10"
+                  className="inline-flex items-center gap-2 px-4 py-2 bg-slate-900/90 hover:bg-slate-900 text-white rounded-full text-xs font-bold backdrop-blur-md transition shadow border border-white/20 keep-white-text"
                 >
                   <ArrowLeft className="w-4 h-4" />
                   Volver al Hub &amp; Mapa
@@ -873,7 +873,7 @@ export const ArtistProfilePage: React.FC = () => {
                   />
                   <div>
                     <div className="flex items-center gap-2.5 flex-wrap justify-center md:justify-start">
-                      <h1 className="text-2xl md:text-3xl font-extrabold text-white tracking-tight drop-shadow-md">
+                      <h1 className="text-2xl md:text-3xl font-extrabold !text-white keep-white-text tracking-tight drop-shadow-md">
                         {artist.nombre} {artist.apellido}
                       </h1>
                       {artist.alias && (
@@ -883,9 +883,9 @@ export const ArtistProfilePage: React.FC = () => {
                       )}
                     </div>
                     <p className={`text-sm font-semibold ${themePalette.heroSubtitle} mt-1.5 flex items-center justify-center md:justify-start gap-2 flex-wrap`}>
-                      <span className="font-bold">{artist.studio || 'Estudio Profesional'}</span>
-                      <span className="opacity-60">•</span>
-                      <span>{artist.work_type || 'Artista de Tatuajes'}</span>
+                      <span className="font-bold !text-white/95 keep-white-text">{artist.studio || 'Estudio Profesional'}</span>
+                      <span className="opacity-60 text-white/70">•</span>
+                      <span className="!text-white/90 keep-white-text">{artist.work_type || 'Artista de Tatuajes'}</span>
                     </p>
                   </div>
                 </div>
@@ -1091,7 +1091,7 @@ export const ArtistProfilePage: React.FC = () => {
                 to={`/artist/${user.id}`}
                 className="block text-xs text-gray-500 hover:text-primary dark:text-gray-400 dark:hover:text-white py-1 px-3 transition text-center md:text-left"
               >
-                Ver perfil público â†’
+                Ver perfil público →
               </Link>
             )}
           </div>

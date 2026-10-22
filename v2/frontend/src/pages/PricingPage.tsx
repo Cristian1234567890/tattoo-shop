@@ -1,6 +1,6 @@
 import { motion } from 'framer-motion';
-import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import {
   CheckCircle2,
   Sparkles,
@@ -17,6 +17,8 @@ import { api } from '../api/client';
 export const PricingPage: React.FC = () => {
   const { formatPrice, currency, countryInfo } = useCurrency();
   const { isAuthenticated, user } = useAuth();
+  const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
   const [billingCycle, setBillingCycle] = useState<'monthly' | 'annual'>('annual');
   const [openFaq, setOpenFaq] = useState<number | null>(null);
 
@@ -35,13 +37,27 @@ export const PricingPage: React.FC = () => {
   const vipPrice = couponDiscount > 0 ? Math.max(0, Number((rawVip * (1 - couponDiscount / 100)).toFixed(2))) : rawVip;
   const studioPrice = couponDiscount > 0 ? Math.max(0, Number((rawStudio * (1 - couponDiscount / 100)).toFixed(2))) : rawStudio;
 
-  const handleApplyCoupon = async (e?: React.FormEvent) => {
-    if (e) e.preventDefault();
-    if (!couponCode.trim()) return;
+  const executeCouponValidation = async (codeToTest: string) => {
+    const clean = codeToTest.trim().toUpperCase();
+    if (!clean) return;
+
     setIsValidatingCoupon(true);
     setCouponMsg(null);
+
+    const KNOWN_MEMBERSHIP_COUPONS: Record<string, number> = {
+      VIP50: 50,
+      TATTOO10: 10,
+      PROMO20: 20,
+      TATTOOHUB: 15,
+      BIENVENIDA10: 10,
+      ESTUDIO30: 30,
+      VIP15: 15,
+      FLASH25: 25,
+      INK50: 50,
+    };
+
     try {
-      const res = await api.validateCoupon(couponCode.trim(), 'subscription');
+      const res = await api.validateCoupon(clean, 'subscription');
       if (res.success && res.data && res.data.valid) {
         const percent = res.data.discount_percentage || res.data.discount_percent || 10;
         setCouponDiscount(percent);
@@ -49,40 +65,71 @@ export const PricingPage: React.FC = () => {
           type: 'success',
           text: `¡Cupón ${res.data.code} aplicado! -${percent}% de descuento en todos los planes.`
         });
-      } else {
-        const code = couponCode.trim().toUpperCase();
-        if (code === 'VIP50') {
-          setCouponDiscount(50);
-          setCouponMsg({ type: 'success', text: '¡Cupón VIP50 aplicado! -50% de descuento en todos los planes.' });
-        } else if (code === 'TATTOO10' || code === 'PROMO20') {
-          const val = code === 'PROMO20' ? 20 : 10;
-          setCouponDiscount(val);
-          setCouponMsg({ type: 'success', text: `¡Cupón ${code} aplicado! -${val}% de descuento en todos los planes.` });
-        } else {
-          setCouponDiscount(0);
-          setCouponMsg({
-            type: 'error',
-            text: res.error || 'El cupón ingresado no es válido o ha expirado.'
-          });
-        }
+        return;
       }
-    } catch {
-      const code = couponCode.trim().toUpperCase();
-      if (code === 'VIP50') {
-        setCouponDiscount(50);
-        setCouponMsg({ type: 'success', text: '¡Cupón VIP50 aplicado! -50% de descuento en todos los planes.' });
-      } else if (code === 'TATTOO10' || code === 'PROMO20') {
-        const val = code === 'PROMO20' ? 20 : 10;
+
+      const rawErr = (res as any)?.error?.message || (res as any)?.error || (res as any)?.message;
+      if (KNOWN_MEMBERSHIP_COUPONS[clean]) {
+        const val = KNOWN_MEMBERSHIP_COUPONS[clean];
         setCouponDiscount(val);
-        setCouponMsg({ type: 'success', text: `¡Cupón ${code} aplicado! -${val}% de descuento en todos los planes.` });
+        setCouponMsg({ type: 'success', text: `¡Cupón ${clean} aplicado! -${val}% de descuento en todos los planes.` });
       } else {
         setCouponDiscount(0);
-        setCouponMsg({ type: 'error', text: 'El cupón ingresado no es válido o ha expirado.' });
+        setCouponMsg({
+          type: 'error',
+          text: rawErr && typeof rawErr === 'string' && !rawErr.toLowerCase().includes('network')
+            ? rawErr
+            : `El cupón "${clean}" no es válido o ha expirado.`
+        });
+      }
+    } catch {
+      if (KNOWN_MEMBERSHIP_COUPONS[clean]) {
+        const val = KNOWN_MEMBERSHIP_COUPONS[clean];
+        setCouponDiscount(val);
+        setCouponMsg({ type: 'success', text: `¡Cupón ${clean} aplicado! -${val}% de descuento en todos los planes.` });
+      } else {
+        setCouponDiscount(0);
+        setCouponMsg({ type: 'error', text: `El cupón "${clean}" no es válido o ha expirado.` });
       }
     } finally {
       setIsValidatingCoupon(false);
     }
   };
+
+  const handleApplyCoupon = async (e?: React.FormEvent) => {
+    if (e) e.preventDefault();
+    const clean = couponCode.trim().toUpperCase();
+    if (!clean) return;
+
+    if (!isAuthenticated) {
+      try {
+        sessionStorage.setItem('pending_coupon', clean);
+      } catch {}
+      navigate(`/register?redirect=${encodeURIComponent(`/precios?coupon=${clean}`)}&coupon=${encodeURIComponent(clean)}`);
+      return;
+    }
+
+    await executeCouponValidation(clean);
+  };
+
+  // Evaluar automáticamente el cupón tras ser redirigido de registro/login o guardado en sesión
+  useEffect(() => {
+    const urlCoupon = searchParams.get('coupon');
+    let sessionCoupon = null;
+    try {
+      sessionCoupon = sessionStorage.getItem('pending_coupon');
+    } catch {}
+
+    const targetCoupon = (urlCoupon || sessionCoupon || '').trim().toUpperCase();
+
+    if (targetCoupon) {
+      setCouponCode(targetCoupon);
+      executeCouponValidation(targetCoupon);
+      try {
+        sessionStorage.removeItem('pending_coupon');
+      } catch {}
+    }
+  }, [searchParams, isAuthenticated]);
 
   const toggleFaq = (idx: number) => {
     setOpenFaq(openFaq === idx ? null : idx);
