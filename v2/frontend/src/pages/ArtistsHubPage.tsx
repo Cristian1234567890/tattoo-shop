@@ -466,28 +466,37 @@ function createStudioIcon(studio: StudioLocation, isActive: boolean, isDark: boo
     <div
       data-testid="studio-pin"
       data-studio-id="${studio.id}"
-      class="studio-pin-wrapper relative flex flex-col items-center cursor-pointer transition-transform hover:scale-110 z-20"
+      class="studio-pin-wrapper group relative flex flex-col items-center cursor-pointer transition-all duration-200 ${
+        isActive ? 'scale-110 z-30' : 'hover:scale-105 z-20'
+      }"
       style="pointer-events: auto;"
     >
-      <div class="relative">
+      <div class="relative flex flex-col items-center">
         ${badgeHtml}
-        <div class="w-2 h-2 mx-auto rotate-45 -mt-1 ${pointerColor}"></div>
+        <div class="w-2 h-2 rotate-45 -mt-1 ${pointerColor}"></div>
       </div>
-      <div class="mt-1.5 text-xs font-medium px-2.5 py-1 rounded-lg backdrop-blur-md transition-all whitespace-nowrap ${labelClasses}">
-        <div class="flex items-center gap-1.5">
-          <span class="font-semibold">${studio.name}</span>
-          ${countBadgeHtml}
-        </div>
-      </div>
+      <span class="sr-only">${studio.name}</span>
+      ${
+        isActive
+          ? `<div class="mt-1 text-[11px] font-bold px-2.5 py-0.5 rounded-lg shadow-xl backdrop-blur-md whitespace-nowrap animate-in fade-in zoom-in-95 duration-150 ${labelClasses}">
+               <div class="flex items-center gap-1">
+                 <span>${studio.name}</span>
+                 ${countBadgeHtml}
+               </div>
+             </div>`
+          : `<div class="mt-1 text-[11px] font-medium px-2 py-0.5 rounded-lg shadow-md backdrop-blur-md whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity duration-150 pointer-events-none ${labelClasses}">
+               <span>${studio.name}</span>
+             </div>`
+      }
     </div>
   `;
 
   return L.divIcon({
     className: 'custom-studio-pin-icon',
     html,
-    iconSize: [120, 50],
-    iconAnchor: [60, 40],
-    popupAnchor: [0, -40],
+    iconSize: isActive ? [140, 56] : [70, 36],
+    iconAnchor: isActive ? [70, 28] : [35, 28],
+    popupAnchor: [0, -32],
   });
 }
 
@@ -1122,9 +1131,9 @@ export default function ArtistsHubPage() {
               <div className="w-12 h-1 bg-slate-300 dark:bg-zinc-700 rounded-full mx-auto my-2 shrink-0 md:hidden" />
             )}
             {/* Barra Superior de Búsqueda y Filtros */}
-            <div className="p-3 sm:p-4 border-b border-slate-200 dark:border-zinc-800 space-y-2.5 sm:space-y-3 bg-slate-50/90 dark:bg-zinc-950/70 shrink-0 relative">
-              <div className="relative">
-                <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 text-zinc-500 w-4 h-4" />
+            <div className="p-3 sm:p-4 border-b border-slate-200 dark:border-zinc-800 space-y-2 sm:space-y-2.5 bg-slate-50/90 dark:bg-zinc-950/70 shrink-0 relative">
+              <div className="relative flex items-center">
+                <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 text-zinc-500 w-4 h-4 pointer-events-none" />
                 <input
                   type="text"
                   data-testid="search-input"
@@ -1132,8 +1141,22 @@ export default function ArtistsHubPage() {
                   onChange={(e) => setSearchQuery(e.target.value)}
                   onFocus={() => setIsSearchFocused(true)}
                   placeholder={isEn ? "Search studio, artist or style..." : "Buscar estudio, artista o estilo..."}
-                  className="w-full bg-white dark:bg-zinc-950 border border-slate-300 dark:border-zinc-800 rounded-xl py-2 pl-10 pr-4 text-sm text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-zinc-500 focus:outline-none focus:border-violet-500 transition-colors shadow-sm"
+                  className="w-full bg-white dark:bg-zinc-950 border border-slate-300 dark:border-zinc-800 rounded-xl py-2 pl-10 pr-10 text-sm text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-zinc-500 focus:outline-none focus:border-violet-500 transition-colors shadow-xs"
                 />
+                {/* Botón GPS integrado de bajo perfil en la barra de búsqueda */}
+                <button
+                  id="hub-request-location-btn"
+                  onClick={requestUserLocation}
+                  aria-label={isEn ? "Use my location" : "Usar mi ubicación"}
+                  title={isEn ? "Use my location" : "Usar mi ubicación"}
+                  className={`absolute right-2 p-1.5 rounded-lg transition-colors cursor-pointer ${
+                    gpsStatus === 'granted'
+                      ? 'text-emerald-500 hover:text-emerald-600 bg-emerald-500/10'
+                      : 'text-violet-600 dark:text-violet-400 hover:bg-violet-50 dark:hover:bg-zinc-800'
+                  }`}
+                >
+                  <MapPin className="w-4 h-4" />
+                </button>
                 {/* Autocomplete Predictive Suggestions Popover */}
                 {isSearchFocused && searchQuery.trim().length > 0 && (
                   <>
@@ -1234,13 +1257,13 @@ export default function ArtistsHubPage() {
 
               <div className="flex items-center justify-between gap-2">
                 {/* Selector de Tipo: Todos / Estudios / Independientes */}
-                <div className="flex gap-1.5 p-1 bg-slate-100 dark:bg-zinc-950 rounded-lg border border-slate-200 dark:border-zinc-800/80">
+                <div className="flex gap-1 p-1 bg-slate-100 dark:bg-zinc-950 rounded-xl border border-slate-200 dark:border-zinc-800/80">
                   <button
                     data-testid="filter-type-all"
                     onClick={() => setTypeFilter('all')}
-                    className={`px-2.5 py-1 rounded-md text-xs font-semibold transition-colors cursor-pointer ${
+                    className={`px-2.5 py-1 rounded-lg text-xs font-semibold transition-colors cursor-pointer ${
                       typeFilter === 'all'
-                        ? 'bg-white dark:bg-zinc-800 text-slate-900 dark:text-white shadow-sm'
+                        ? 'bg-white dark:bg-zinc-800 text-slate-900 dark:text-white shadow-xs'
                         : 'text-slate-600 dark:text-zinc-400 hover:text-slate-900 dark:hover:text-zinc-200'
                     }`}
                   >
@@ -1249,9 +1272,9 @@ export default function ArtistsHubPage() {
                   <button
                     data-testid="filter-type-studio"
                     onClick={() => setTypeFilter('studio')}
-                    className={`px-2.5 py-1 rounded-md text-xs font-semibold flex items-center gap-1 transition-colors cursor-pointer ${
+                    className={`px-2.5 py-1 rounded-lg text-xs font-semibold flex items-center gap-1 transition-colors cursor-pointer ${
                       typeFilter === 'studio'
-                        ? 'bg-violet-600 text-white'
+                        ? 'bg-violet-600 text-white shadow-xs'
                         : 'text-slate-600 dark:text-zinc-400 hover:text-slate-900 dark:hover:text-zinc-200'
                     }`}
                   >
@@ -1260,22 +1283,22 @@ export default function ArtistsHubPage() {
                   <button
                     data-testid="filter-type-independent"
                     onClick={() => setTypeFilter('independent')}
-                    className={`px-2.5 py-1 rounded-md text-xs font-semibold flex items-center gap-1 transition-colors cursor-pointer ${
+                    className={`px-2.5 py-1 rounded-lg text-xs font-semibold flex items-center gap-1 transition-colors cursor-pointer ${
                       typeFilter === 'independent'
-                        ? 'bg-white dark:bg-zinc-800 text-slate-900 dark:text-white shadow-sm'
+                        ? 'bg-white dark:bg-zinc-800 text-slate-900 dark:text-white shadow-xs'
                         : 'text-slate-600 dark:text-zinc-400 hover:text-slate-900 dark:hover:text-zinc-200'
                     }`}
                   >
-                    <User className="w-3 h-3" /> Independientes
+                    <User className="w-3 h-3" /> Indep.
                   </button>
                 </div>
 
                 {/* Toggle Vista Mapa / Lista */}
-                <div className="flex p-1 bg-slate-100 dark:bg-zinc-950 rounded-lg border border-slate-200 dark:border-zinc-800/80">
+                <div className="flex p-1 bg-slate-100 dark:bg-zinc-950 rounded-xl border border-slate-200 dark:border-zinc-800/80 shrink-0">
                   <button
                     onClick={() => setViewMode('map')}
-                    className={`p-1.5 rounded-md transition-colors cursor-pointer ${
-                      viewMode === 'map' ? 'bg-white dark:bg-zinc-800 text-slate-900 dark:text-white shadow-sm' : 'text-slate-500 dark:text-zinc-500 hover:text-slate-800 dark:hover:text-zinc-300'
+                    className={`p-1.5 rounded-lg transition-colors cursor-pointer ${
+                      viewMode === 'map' ? 'bg-white dark:bg-zinc-800 text-slate-900 dark:text-white shadow-xs' : 'text-slate-500 dark:text-zinc-500 hover:text-slate-800 dark:hover:text-zinc-300'
                     }`}
                     aria-label="Ver Mapa"
                   >
@@ -1283,8 +1306,8 @@ export default function ArtistsHubPage() {
                   </button>
                   <button
                     onClick={() => setViewMode('list')}
-                    className={`p-1.5 rounded-md transition-colors cursor-pointer ${
-                      viewMode === 'list' ? 'bg-white dark:bg-zinc-800 text-slate-900 dark:text-white shadow-sm' : 'text-slate-500 dark:text-zinc-500 hover:text-slate-800 dark:hover:text-zinc-300'
+                    className={`p-1.5 rounded-lg transition-colors cursor-pointer ${
+                      viewMode === 'list' ? 'bg-white dark:bg-zinc-800 text-slate-900 dark:text-white shadow-xs' : 'text-slate-500 dark:text-zinc-500 hover:text-slate-800 dark:hover:text-zinc-300'
                     }`}
                     aria-label="Ver Lista"
                   >
@@ -1293,85 +1316,62 @@ export default function ArtistsHubPage() {
                 </div>
               </div>
 
-              {/* Filtro de Calificación Mínima */}
-              <div className="flex items-center gap-1.5 overflow-x-auto py-0.5 scrollbar-none">
-                <span className="text-[10px] font-bold uppercase tracking-wider text-slate-500 dark:text-zinc-500 shrink-0">
-                  Rating:
-                </span>
-                <button
-                  data-testid="filter-rating-all"
-                  onClick={() => setMinRatingFilter(0)}
-                  className={`px-2 py-0.5 rounded-lg text-xs font-semibold shrink-0 transition-colors cursor-pointer ${
-                    minRatingFilter === 0
-                      ? 'bg-violet-600 text-white shadow-sm'
-                      : 'bg-slate-100 dark:bg-zinc-900 text-slate-700 dark:text-zinc-400 hover:text-slate-900 dark:hover:text-zinc-200 border border-slate-200 dark:border-zinc-800'
-                  }`}
-                >
-                  Todas
-                </button>
-                <button
-                  data-testid="filter-rating-45"
-                  onClick={() => setMinRatingFilter(4.5)}
-                  className={`px-2 py-0.5 rounded-lg text-xs font-semibold shrink-0 flex items-center gap-1 transition-colors cursor-pointer ${
-                    minRatingFilter === 4.5
-                      ? 'bg-violet-600 text-white shadow-sm'
-                      : 'bg-slate-100 dark:bg-zinc-900 text-slate-700 dark:text-zinc-400 hover:text-slate-900 dark:hover:text-zinc-200 border border-slate-200 dark:border-zinc-800'
-                  }`}
-                >
-                  4.5+ <Star className="w-2.5 h-2.5 fill-amber-400 text-amber-400" />
-                </button>
-                <button
-                  data-testid="filter-rating-48"
-                  onClick={() => setMinRatingFilter(4.8)}
-                  className={`px-2 py-0.5 rounded-lg text-xs font-semibold shrink-0 flex items-center gap-1 transition-colors cursor-pointer ${
-                    minRatingFilter === 4.8
-                      ? 'bg-violet-600 text-white shadow-sm'
-                      : 'bg-slate-100 dark:bg-zinc-900 text-slate-700 dark:text-zinc-400 hover:text-slate-900 dark:hover:text-zinc-200 border border-slate-200 dark:border-zinc-800'
-                  }`}
-                >
-                  4.8+ <Star className="w-2.5 h-2.5 fill-amber-400 text-amber-400" />
-                </button>
-              </div>
+              {/* Filtros horizontales unificados de Calificación y Estilos */}
+              <div className="flex items-center gap-2 overflow-x-auto py-0.5 scrollbar-none overscroll-x-contain touch-pan-x">
+                {/* Rating Chips */}
+                <div className="flex items-center gap-1 shrink-0 pr-2 border-r border-slate-200 dark:border-zinc-800">
+                  <button
+                    data-testid="filter-rating-all"
+                    onClick={() => setMinRatingFilter(0)}
+                    className={`px-2 py-1 rounded-lg text-xs font-semibold shrink-0 transition-colors cursor-pointer ${
+                      minRatingFilter === 0
+                        ? 'bg-violet-600 text-white shadow-xs'
+                        : 'bg-slate-100 dark:bg-zinc-900 text-slate-700 dark:text-zinc-400 hover:text-slate-900 dark:hover:text-zinc-200 border border-slate-200 dark:border-zinc-800'
+                    }`}
+                  >
+                    ★ Todas
+                  </button>
+                  <button
+                    data-testid="filter-rating-45"
+                    onClick={() => setMinRatingFilter(4.5)}
+                    className={`px-2 py-1 rounded-lg text-xs font-semibold shrink-0 flex items-center gap-1 transition-colors cursor-pointer ${
+                      minRatingFilter === 4.5
+                        ? 'bg-violet-600 text-white shadow-xs'
+                        : 'bg-slate-100 dark:bg-zinc-900 text-slate-700 dark:text-zinc-400 hover:text-slate-900 dark:hover:text-zinc-200 border border-slate-200 dark:border-zinc-800'
+                    }`}
+                  >
+                    4.5+ <Star className="w-2.5 h-2.5 fill-amber-400 text-amber-400" />
+                  </button>
+                  <button
+                    data-testid="filter-rating-48"
+                    onClick={() => setMinRatingFilter(4.8)}
+                    className={`px-2 py-1 rounded-lg text-xs font-semibold shrink-0 flex items-center gap-1 transition-colors cursor-pointer ${
+                      minRatingFilter === 4.8
+                        ? 'bg-violet-600 text-white shadow-xs'
+                        : 'bg-slate-100 dark:bg-zinc-900 text-slate-700 dark:text-zinc-400 hover:text-slate-900 dark:hover:text-zinc-200 border border-slate-200 dark:border-zinc-800'
+                    }`}
+                  >
+                    4.8+ <Star className="w-2.5 h-2.5 fill-amber-400 text-amber-400" />
+                  </button>
+                </div>
 
-              {/* Filtros dinámicos de estilo y geolocalización con scroll táctil suave */}
-              <div
-                id="hub-style-filters-container"
-                className="flex items-center gap-2 overflow-x-auto py-1 scrollbar-none overscroll-x-contain touch-pan-x"
-                style={{
-                  WebkitOverflowScrolling: 'touch',
-                  touchAction: 'pan-x',
-                }}
-                onTouchStart={(e) => e.stopPropagation()}
-                onTouchMove={(e) => e.stopPropagation()}
-              >
-                {TATTOO_STYLES.map(
-                  (styleName) => (
+                {/* Style Filters */}
+                <div id="hub-style-filters-container" className="flex items-center gap-1.5 shrink-0">
+                  {TATTOO_STYLES.map((styleName) => (
                     <button
                       key={styleName}
                       onClick={() => setFilter(styleName)}
-                      className={`px-3 py-1.5 rounded-xl text-xs font-semibold shrink-0 whitespace-nowrap transition-all cursor-pointer ${
+                      className={`px-2.5 py-1 rounded-lg text-xs font-semibold shrink-0 whitespace-nowrap transition-all cursor-pointer ${
                         filter === styleName
-                          ? 'bg-violet-600 text-white shadow-md shadow-violet-600/30'
+                          ? 'bg-violet-600 text-white shadow-xs shadow-violet-600/30'
                           : 'bg-slate-100 dark:bg-zinc-900 text-slate-700 dark:text-zinc-400 hover:text-slate-900 dark:hover:text-zinc-200 border border-slate-200 dark:border-zinc-800'
                       }`}
                     >
                       {styleName}
                     </button>
-                  )
-                )}
+                  ))}
+                </div>
               </div>
-
-              {/* Botón manual de GPS si no fue otorgado */}
-              {gpsStatus !== 'granted' && (
-                <button
-                  id="hub-request-location-btn"
-                  onClick={requestUserLocation}
-                  className="w-full flex items-center justify-center gap-1.5 py-1.5 px-3 rounded-lg bg-slate-100 hover:bg-slate-200 dark:bg-zinc-900 dark:hover:bg-zinc-800 border border-violet-500/30 text-violet-700 dark:text-violet-300 text-xs font-semibold transition cursor-pointer shadow-sm"
-                >
-                  <MapPin className="w-3.5 h-3.5 text-violet-600 dark:text-violet-400" />
-                  Usar mi ubicación
-                </button>
-              )}
             </div>
 
             {/* Contenido con Scroll: Tarjeta del Estudio & Artistas Residentes O Directorio de Estudios */}
@@ -1385,7 +1385,7 @@ export default function ArtistsHubPage() {
               onTouchStart={(e) => e.stopPropagation()}
               onTouchMove={(e) => e.stopPropagation()}
               onWheel={(e) => e.stopPropagation()}
-              className={`flex-1 min-h-0 overflow-y-auto p-3 sm:p-4 space-y-4 custom-scrollbar ${
+              className={`flex-1 min-h-0 overflow-y-auto p-3 sm:p-4 pb-32 space-y-4 custom-scrollbar ${
                 !activeStudio && viewMode === 'map' ? 'max-md:hidden' : 'block'
               }`}
             >
@@ -1968,10 +1968,10 @@ export default function ArtistsHubPage() {
             ) : (
               <button
                 onClick={() => setViewMode('map')}
-                className="flex items-center gap-2 px-5 py-2.5 rounded-full bg-slate-900/90 dark:bg-zinc-100 hover:bg-black dark:hover:bg-white text-white dark:text-zinc-900 font-bold text-xs shadow-xl border border-slate-700 dark:border-zinc-300 transition-transform active:scale-95 cursor-pointer backdrop-blur-md"
+                className="flex items-center gap-2 px-5 py-2.5 rounded-full bg-white/95 dark:bg-zinc-900/95 text-violet-700 dark:text-violet-300 hover:bg-violet-50 dark:hover:bg-zinc-800 font-bold text-xs shadow-2xl shadow-violet-500/20 border border-violet-500/30 transition-transform active:scale-95 cursor-pointer backdrop-blur-xl"
                 aria-label="Ver mapa de estudios"
               >
-                <MapIcon className="w-4 h-4" />
+                <MapIcon className="w-4 h-4 text-violet-600 dark:text-violet-400" />
                 <span>{isEn ? 'Show Map' : 'Ver en Mapa'}</span>
               </button>
             )}

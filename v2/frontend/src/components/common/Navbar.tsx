@@ -55,9 +55,9 @@ export const Navbar: React.FC<NavbarProps> = ({ forceRender = false }) => {
       currentPath === targetPath ||
       (targetPath !== '/' && currentPath.startsWith(targetPath));
     if (isActive) {
-      return 'px-3.5 py-1.5 rounded-full text-xs xl:text-sm font-bold bg-violet-600 !text-white shadow-sm shadow-violet-500/25 whitespace-nowrap shrink-0 transition-all keep-white-text';
+      return 'px-3 py-1.5 xl:px-3.5 xl:py-1.5 rounded-full text-xs xl:text-sm font-bold bg-violet-600 !text-white shadow-sm shadow-violet-500/25 whitespace-nowrap shrink-0 transition-all keep-white-text';
     }
-    return 'px-3 py-1.5 rounded-full text-xs xl:text-sm font-medium text-slate-700 hover:text-slate-900 hover:bg-slate-100 dark:text-gray-300 dark:hover:text-white dark:hover:bg-white/10 transition-colors whitespace-nowrap shrink-0';
+    return 'px-2.5 py-1.5 xl:px-3 xl:py-1.5 rounded-full text-xs xl:text-sm font-medium text-slate-700 hover:text-slate-900 hover:bg-slate-100 dark:text-gray-300 dark:hover:text-white dark:hover:bg-white/10 transition-colors whitespace-nowrap shrink-0';
   };
 
   const getMobileNavLinkClass = (targetPath: string) => {
@@ -148,19 +148,30 @@ export const Navbar: React.FC<NavbarProps> = ({ forceRender = false }) => {
     setAvatarError(false);
   }, [displayAvatar]);
 
+  React.useEffect(() => {
+    if (mobileMenuOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
+    }
+    return () => {
+      document.body.style.overflow = '';
+    };
+  }, [mobileMenuOpen]);
+
   return (
     <nav className="sticky top-0 z-50 bg-gradient-to-b from-white/95 via-white/90 to-white/80 dark:from-zinc-950/95 dark:via-zinc-950/90 dark:to-zinc-950/80 dark:bg-gray-950/40 backdrop-blur-md backdrop-blur-xl border-b border-slate-200/60 dark:border-zinc-800/60 dark:border-white/10 shadow-sm dark:shadow-none transition-all duration-300 font-sans text-slate-900 dark:text-white">
       <div className="w-full max-w-[1720px] mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between h-20 w-full gap-4 xl:gap-8 py-2">
+        <div className="flex items-center justify-between h-20 w-full gap-2 xl:gap-6 py-2">
           {/* Brand Logo (Left Section) */}
-          <div className="flex items-center justify-start flex-1 min-w-[180px]">
+          <div className="flex items-center justify-start shrink-0 min-w-[140px] xl:min-w-[180px]">
             <Link to="/" id="logo" onClick={closeMenu} className="flex items-center gap-2 no-underline">
               <Logo size="md" />
             </Link>
           </div>
 
-          {/* Desktop Navigation Links (Center Section - Perfectly Centered) */}
-          <div className="hidden lg:flex items-center justify-center gap-2 xl:gap-4 shrink-0 px-4">
+          {/* Desktop Navigation Links (Center Section - Balanced Spacing) */}
+          <div className="hidden lg:flex items-center justify-center gap-1 xl:gap-3 flex-1 px-1 xl:px-2">
             {/* Only show Beneficios & Precios if NOT authenticated with VIP */}
             {(!isAuthenticated || !hasVip) && (
               <>
@@ -214,7 +225,7 @@ export const Navbar: React.FC<NavbarProps> = ({ forceRender = false }) => {
           </div>
 
           {/* Desktop Right Actions: Consolidated Preferences Dropdown (Guest) or User Menu with embedded preferences (Authenticated) */}
-          <div className="hidden lg:flex items-center justify-end gap-2 xl:gap-3 flex-1 min-w-[280px]">
+          <div className="hidden lg:flex items-center justify-end gap-1.5 xl:gap-2.5 shrink-0">
             {isRecoveryMode ? (
               <div
                 id="recovery-lock-badge"
@@ -617,9 +628,9 @@ export const Navbar: React.FC<NavbarProps> = ({ forceRender = false }) => {
         </div>
       </div>
 
-      {/* Mobile Drawer / Overlay */}
+      {/* Mobile Drawer / Full Viewport Overlay */}
       {mobileMenuOpen && (
-        <div className="lg:hidden bg-white/95 dark:bg-gray-950/95 backdrop-blur-2xl border-b border-slate-200 dark:border-white/10 px-4 pt-3 pb-6 space-y-4 animate-in fade-in slide-in-from-top-2 duration-200 text-slate-900 dark:text-white shadow-xl">
+        <div className="lg:hidden fixed inset-x-0 top-20 bottom-0 z-50 bg-white/98 dark:bg-zinc-950/98 backdrop-blur-3xl overflow-y-auto px-4 pt-3 pb-16 space-y-4 animate-in fade-in slide-in-from-top-2 duration-200 text-slate-900 dark:text-white shadow-2xl overscroll-contain">
           <div className="space-y-1">
             {(!isAuthenticated || !hasVip) && (
               <>
